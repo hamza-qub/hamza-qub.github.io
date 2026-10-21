@@ -1,0 +1,1166 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="Mohd Hamza Naim Shaikh, Research Fellow at Queen's University Belfast, working on the physical layer of 6G: reconfigurable intelligent surfaces, fluid antennas, NOMA, ISAC and hardware impairments.">
+<meta name="author" content="Mohd Hamza Naim Shaikh">
+<title>Mohd Hamza Naim Shaikh</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&amp;family=STIX+Two+Text:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&amp;family=Noto+Nastaliq+Urdu:wght@400;600&amp;display=swap">
+<style>
+:root {
+  --bg: #F5F7FA;
+  --surface: #FFFFFF;
+  --ink: #0E1A2B;
+  --ink-2: #2C3B50;
+  --muted: #5A6779;
+  --line: #D8DFE8;
+  --accent: #00468C;
+  --accent-hover: #003468;
+  --on-accent: #FFFFFF;
+  --signal: #C98200;
+  --tile-lo: #0A2B57;
+  --tile-hi: #EAF0F7;
+  --serif: "STIX Two Text", "STIX Two", "Times New Roman", Times, serif;
+  --sans: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  color-scheme: light;
+  box-sizing: border-box;
+  padding-top: env(safe-area-inset-top, 0px);
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0A1524;
+    --surface: #0F1E31;
+    --ink: #E6ECF4;
+    --ink-2: #C4CEDB;
+    --muted: #94A2B5;
+    --line: #22344A;
+    --accent: #8DB9F2;
+    --accent-hover: #B7D3F8;
+    --on-accent: #06182E;
+    --signal: #F2B544;
+    --tile-lo: #0E2443;
+    --tile-hi: #A8C9F3;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0A1524;
+  --surface: #0F1E31;
+  --ink: #E6ECF4;
+  --ink-2: #C4CEDB;
+  --muted: #94A2B5;
+  --line: #22344A;
+  --accent: #8DB9F2;
+  --accent-hover: #B7D3F8;
+  --on-accent: #06182E;
+  --signal: #F2B544;
+  --tile-lo: #0E2443;
+  --tile-hi: #A8C9F3;
+  color-scheme: dark;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+html {
+  scroll-padding-top: calc(env(safe-area-inset-top, 0px) + 4.5rem);
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+@media (prefers-reduced-motion: no-preference) { html { scroll-behavior: smooth; } }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--serif);
+  font-size: 1.125rem;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+img { max-width: 100%; height: auto; }
+a { color: var(--accent); text-underline-offset: 0.18em; }
+a:hover { color: var(--accent-hover); }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 2px; }
+p { margin: 0 0 1em; }
+h1, h2, h3 { font-family: var(--serif); color: var(--ink); text-wrap: balance; }
+
+.wrap { max-width: 72rem; margin-inline: auto; padding-inline: clamp(1.25rem, 4vw, 2.5rem); }
+
+.skip {
+  position: absolute; left: 1rem; top: -4rem; z-index: 50;
+  background: var(--ink); color: var(--bg);
+  font-family: var(--sans); font-size: 0.875rem; padding: 0.6rem 0.9rem; text-decoration: none;
+}
+.skip:focus { top: calc(env(safe-area-inset-top, 0px) + 0.75rem); color: var(--bg); }
+
+/* Header */
+.site-header {
+  position: sticky;
+  top: env(safe-area-inset-top, 0px);
+  z-index: 20;
+  background: var(--bg);
+  background: color-mix(in srgb, var(--bg) 88%, transparent);
+  -webkit-backdrop-filter: saturate(1.4) blur(12px);
+  backdrop-filter: saturate(1.4) blur(12px);
+  border-bottom: 1px solid var(--line);
+}
+.header-inner { display: flex; align-items: center; justify-content: space-between; gap: 1.5rem; min-height: 3.5rem; }
+.brand { font-family: var(--serif); font-weight: 600; font-size: 1.125rem; color: var(--ink); text-decoration: none; white-space: nowrap; }
+.brand:hover { color: var(--ink); }
+.site-nav { min-width: 0; }
+.site-nav ul {
+  display: flex; gap: clamp(0.9rem, 2.4vw, 1.9rem);
+  list-style: none; margin: 0; padding: 0;
+  overflow-x: auto; scrollbar-width: none;
+}
+.site-nav ul::-webkit-scrollbar { display: none; }
+.site-nav a {
+  display: inline-block; padding: 1rem 0 0.9rem;
+  font-family: var(--sans); font-size: 0.9375rem; color: var(--muted);
+  text-decoration: none; white-space: nowrap;
+  border-bottom: 2px solid transparent;
+}
+.site-nav a:hover { color: var(--ink); }
+.site-nav a[aria-current="true"] { color: var(--ink); border-bottom-color: var(--accent); }
+@media (max-width: 560px) {
+  .brand { display: none; }
+  .site-nav { width: 100%; }
+  .site-nav ul { justify-content: space-between; }
+}
+
+/* Hero */
+.hero { padding-block: clamp(3rem, 8vw, 6.5rem) clamp(3rem, 7vw, 5.5rem); }
+.hero-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.12fr) minmax(0, 0.88fr);
+  gap: clamp(2.5rem, 6vw, 5rem);
+  align-items: center;
+}
+.hero h1 {
+  font-weight: 600;
+  font-size: clamp(2.6rem, 6.4vw, 4.6rem);
+  line-height: 1.02;
+  letter-spacing: -0.018em;
+  margin: 0 0 1.1rem;
+}
+.role { font-family: var(--sans); font-weight: 500; font-size: 1.0625rem; color: var(--ink-2); margin: 0 0 1.75rem; }
+.lede { font-size: clamp(1.25rem, 2.3vw, 1.5rem); line-height: 1.45; max-width: 31ch; margin: 0 0 1.25rem; }
+.metrics { font-family: var(--sans); font-size: 0.9375rem; color: var(--muted); margin: 0 0 2rem; }
+.actions { display: flex; flex-wrap: wrap; gap: 0.75rem; margin: 0 0 1.75rem; }
+.btn {
+  display: inline-flex; align-items: center; justify-content: center;
+  min-height: 2.75rem; padding: 0 1.2rem;
+  font-family: var(--sans); font-weight: 500; font-size: 0.9375rem;
+  background: var(--accent); color: var(--on-accent);
+  border: 1px solid var(--accent); border-radius: 3px; text-decoration: none;
+}
+.btn:hover { background: var(--accent-hover); border-color: var(--accent-hover); color: var(--on-accent); }
+.btn-quiet { background: transparent; color: var(--ink); border-color: var(--line); }
+.btn-quiet:hover { background: transparent; color: var(--ink); border-color: var(--ink-2); }
+.profiles {
+  list-style: none; margin: 0; padding: 0;
+  display: flex; flex-wrap: wrap; gap: 0.4rem 1.15rem;
+  font-family: var(--sans); font-size: 0.9375rem;
+}
+.profiles a { color: var(--ink-2); text-decoration: underline; text-decoration-color: var(--line); text-decoration-thickness: 1px; }
+.profiles a:hover { color: var(--accent); text-decoration-color: var(--accent); }
+
+.ris { margin: 0; width: 100%; max-width: 30rem; justify-self: end; }
+.ris canvas { display: block; width: 100%; aspect-ratio: 1 / 1; cursor: crosshair; touch-action: pan-y; }
+.ris figcaption { font-family: var(--sans); font-size: 0.8125rem; line-height: 1.55; color: var(--muted); margin-top: 0.9rem; max-width: 46ch; }
+@media (max-width: 880px) {
+  .hero-grid { grid-template-columns: minmax(0, 1fr); }
+  .ris { justify-self: start; max-width: 26rem; }
+}
+
+/* Sections */
+.section { padding-block: clamp(3.5rem, 8vw, 6rem); border-top: 1px solid var(--line); }
+.section-grid { display: grid; grid-template-columns: 11.5rem minmax(0, 1fr); gap: 2.5rem; }
+.section-grid > h2 {
+  position: sticky; top: calc(env(safe-area-inset-top, 0px) + 5rem); align-self: start;
+  margin: 0; font-size: 2rem; font-weight: 600; line-height: 1.15;
+}
+@media (max-width: 880px) {
+  .section-grid { grid-template-columns: minmax(0, 1fr); gap: 1.5rem; }
+  .section-grid > h2 { position: static; }
+}
+h3 { font-weight: 600; font-size: 1.3125rem; line-height: 1.3; margin: 0 0 0.5rem; }
+.intro { color: var(--ink-2); max-width: 62ch; margin-bottom: 1.75rem; }
+
+/* About */
+.about-grid { display: grid; grid-template-columns: minmax(0, 1fr) 17rem; gap: 3.5rem; }
+.prose p { max-width: 66ch; }
+.side h3 { font-family: var(--sans); font-size: 0.9375rem; font-weight: 600; margin: 0 0 0.6rem; }
+.side ul { list-style: none; margin: 0; padding: 0; }
+.side li { padding: 0.8rem 0; border-top: 1px solid var(--line); font-size: 1rem; line-height: 1.45; }
+.side .date { display: block; font-family: var(--sans); font-size: 0.8125rem; color: var(--muted); margin-bottom: 0.15rem; }
+.portrait { margin: 0 0 1.75rem; }
+.portrait img { display: block; width: 100%; max-width: 15rem; aspect-ratio: 4 / 5; object-fit: cover; border-radius: 2px; }
+@media (max-width: 1060px) { .about-grid { grid-template-columns: minmax(0, 1fr); gap: 2.5rem; } }
+
+/* Research */
+.themes { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 2.75rem; }
+.theme { border-top: 1px solid var(--line); padding: 1.3rem 0 1.6rem; }
+.theme p { font-size: 1.0625rem; color: var(--ink-2); margin: 0 0 0.7rem; max-width: 52ch; }
+@media (max-width: 720px) { .themes { grid-template-columns: minmax(0, 1fr); } }
+.linkish {
+  font-family: var(--sans); font-size: 0.875rem; font-weight: 500; color: var(--accent);
+  background: none; border: 0; padding: 0.3rem 0; cursor: pointer;
+  text-decoration: underline; text-underline-offset: 0.2em; text-decoration-thickness: 1px;
+}
+.linkish:hover { color: var(--accent-hover); }
+
+/* Publications */
+.pub-controls {
+  display: flex; flex-wrap: wrap; align-items: center; gap: 0.85rem 1.25rem;
+  font-family: var(--sans); font-size: 0.9375rem;
+  padding-bottom: 1.25rem; border-bottom: 1px solid var(--line);
+}
+.seg { display: flex; flex-wrap: wrap; gap: 0.4rem; width: 100%; }
+.seg button {
+  font-family: var(--sans); font-size: 0.875rem; color: var(--ink-2);
+  background: transparent; border: 1px solid var(--line); border-radius: 3px;
+  min-height: 2.25rem; padding: 0 0.75rem; cursor: pointer;
+}
+.seg button:hover { border-color: var(--ink-2); }
+.seg button[aria-checked="true"] { background: var(--ink); border-color: var(--ink); color: var(--bg); }
+.seg .n { margin-left: 0.35rem; opacity: 0.68; font-variant-numeric: tabular-nums; }
+.field { display: inline-flex; align-items: center; gap: 0.5rem; color: var(--ink-2); }
+.field select, .search input {
+  font-family: var(--sans); font-size: 0.875rem; color: var(--ink);
+  background: var(--surface); border: 1px solid var(--line); border-radius: 3px;
+  min-height: 2.25rem; padding: 0 0.6rem;
+}
+.field select { max-width: 15rem; }
+.check { display: inline-flex; align-items: center; gap: 0.45rem; color: var(--ink-2); cursor: pointer; }
+.check input { width: 1rem; height: 1rem; accent-color: var(--accent); margin: 0; }
+.search { flex: 1 1 13rem; min-width: 0; }
+.search input { width: 100%; }
+.pub-count { font-family: var(--sans); font-size: 0.8125rem; color: var(--muted); margin: 0.85rem 0 0; }
+.pub-empty { font-family: var(--sans); font-size: 0.9375rem; color: var(--ink-2); padding: 1.5rem 0; }
+.pub-empty[hidden] { display: none; }
+
+.pub-year { display: grid; grid-template-columns: 4.25rem minmax(0, 1fr); gap: 1rem; padding-top: 1.4rem; }
+.pub-year[hidden] { display: none; }
+.pub-year > h3 { font-family: var(--sans); font-size: 0.9375rem; font-weight: 600; color: var(--muted); margin: 1rem 0 0; font-variant-numeric: tabular-nums; }
+.pub-list { list-style: none; margin: 0; padding: 0; }
+.pub { display: grid; grid-template-columns: 2.6rem minmax(0, 1fr); gap: 0.6rem; padding: 0.95rem 0 1.05rem; border-bottom: 1px solid var(--line); }
+.pub:last-child { border-bottom: 0; }
+.pub[hidden] { display: none; }
+.pub-id { font-family: var(--sans); font-size: 0.8125rem; color: var(--muted); padding-top: 0.22rem; font-variant-numeric: tabular-nums; }
+.pub-title { font-size: 1.0625rem; font-weight: 600; line-height: 1.4; color: var(--ink); text-decoration: none; }
+.pub-title:hover { color: var(--accent); text-decoration: underline; text-decoration-thickness: 1px; }
+.pub-authors { font-size: 1rem; line-height: 1.5; color: var(--ink-2); margin: 0.3rem 0 0; }
+.pub-authors strong { color: var(--ink); font-weight: 600; }
+.pub-venue { font-size: 1rem; line-height: 1.5; color: var(--muted); margin: 0.1rem 0 0; }
+.pub-links { display: flex; flex-wrap: wrap; gap: 0.25rem 1.1rem; font-family: var(--sans); font-size: 0.8125rem; margin: 0.4rem 0 0; }
+@media (max-width: 600px) {
+  .pub-year { grid-template-columns: minmax(0, 1fr); gap: 0; }
+  .pub-year > h3 { margin-top: 0.5rem; }
+}
+
+/* CV */
+.cv-head { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 1rem; margin-bottom: 1.5rem; }
+.cv-head p { margin: 0; color: var(--ink-2); max-width: 54ch; }
+.cv-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 3.5rem; }
+@media (max-width: 980px) { .cv-grid { grid-template-columns: minmax(0, 1fr); } }
+.cv-block { margin-bottom: 2.5rem; }
+.timeline { list-style: none; margin: 0.4rem 0 0; padding: 0; }
+.timeline li { display: grid; grid-template-columns: 7rem minmax(0, 1fr); gap: 1rem; padding: 0.9rem 0; border-top: 1px solid var(--line); }
+.when { font-family: var(--sans); font-size: 0.875rem; color: var(--muted); padding-top: 0.2rem; font-variant-numeric: tabular-nums; }
+.when .now { display: inline-block; width: 0.5rem; height: 0.5rem; border-radius: 50%; background: var(--signal); margin-right: 0.4rem; vertical-align: 0.06em; }
+.what strong { display: block; font-weight: 600; }
+.what .where { display: block; color: var(--ink-2); }
+.what .note { display: block; color: var(--muted); font-size: 1rem; line-height: 1.5; margin-top: 0.25rem; }
+@media (max-width: 480px) { .timeline li { grid-template-columns: minmax(0, 1fr); gap: 0.2rem; } }
+.ruled { list-style: none; margin: 0.4rem 0 0; padding: 0; }
+.ruled li { padding: 0.65rem 0; border-top: 1px solid var(--line); line-height: 1.5; }
+.ruled .yr { font-family: var(--sans); font-size: 0.875rem; color: var(--muted); white-space: nowrap; }
+.dl { margin: 0.4rem 0 0; }
+.dl dt { font-family: var(--sans); font-size: 0.875rem; font-weight: 600; color: var(--ink); padding-top: 0.7rem; border-top: 1px solid var(--line); }
+.dl dd { margin: 0.2rem 0 0.8rem; color: var(--ink-2); line-height: 1.55; }
+[data-cv-pdf][hidden] { display: none; }
+
+/* Contact */
+.contact-mail {
+  display: inline-block; font-size: clamp(1.5rem, 3.6vw, 2.25rem); font-weight: 500; line-height: 1.2;
+  color: var(--ink); text-decoration: underline; text-decoration-color: var(--line); text-decoration-thickness: 2px;
+  overflow-wrap: anywhere; margin-bottom: 1rem;
+}
+.contact-mail:hover { color: var(--accent); text-decoration-color: var(--accent); }
+.contact-where { color: var(--ink-2); margin-bottom: 1.5rem; }
+
+.site-footer { border-top: 1px solid var(--line); padding-block: 2rem 2.5rem; font-family: var(--sans); font-size: 0.8125rem; color: var(--muted); }
+.site-footer p { margin: 0; }
+
+@media print {
+  .site-header, .skip, .ris, .actions, .pub-controls, .pub-count, .linkish, .pub-links { display: none !important; }
+  body { background: #fff; color: #000; font-size: 10.5pt; }
+  .section { border-top: 0; padding-block: 1rem; }
+  .section-grid { grid-template-columns: 1fr; gap: 0.5rem; }
+  .section-grid > h2 { position: static; }
+  .pub[hidden], .pub-year[hidden] { display: grid !important; }
+  a { color: inherit; text-decoration: none; }
+}
+/* ---- additions: tutorials, interactive models, diagrams, Urdu ---- */
+/* Chart colours validated for colour-vision deficiency on both surfaces. */
+:root {
+  --chart-1: #1F62AE;
+  --chart-2: #C98200;
+  --tint: #EAF0F7;
+  --ok-bg: #E3F1E8;
+  --ok-ink: #1D5B34;
+  --no-bg: #F7E8E2;
+  --no-ink: #7A2E14;
+  --urdu: "Noto Nastaliq Urdu", "Jameel Noori Nastaleeq", "Alvi Nastaleeq", "Urdu Typesetting", serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --chart-1: #4A8EE2;
+    --chart-2: #C4851E;
+    --tint: #12253D;
+    --ok-bg: #163524;
+    --ok-ink: #A9DDBA;
+    --no-bg: #3A2117;
+    --no-ink: #F2BBA4;
+  }
+}
+:root[data-theme="dark"] {
+  --chart-1: #4A8EE2;
+  --chart-2: #C4851E;
+  --tint: #12253D;
+  --ok-bg: #163524;
+  --ok-ink: #A9DDBA;
+  --no-bg: #3A2117;
+  --no-ink: #F2BBA4;
+}
+
+[hidden] { display: none !important; }
+.site-nav a[aria-current="page"] { color: var(--ink); border-bottom-color: var(--accent); }
+
+/* Shared page head for inner pages */
+.page-head { padding-block: clamp(2.5rem, 6vw, 4.5rem) clamp(1.5rem, 4vw, 2.5rem); }
+.crumbs { font-family: var(--sans); font-size: 0.875rem; color: var(--muted); margin: 0 0 1.25rem; display: flex; flex-wrap: wrap; gap: 0.4rem; }
+.crumbs a { color: var(--ink-2); }
+.page-head h1 { font-weight: 600; font-size: clamp(2.2rem, 5.2vw, 3.6rem); line-height: 1.05; letter-spacing: -0.015em; margin: 0 0 1rem; max-width: 22ch; }
+.page-head .lede { max-width: 40ch; }
+.meta-row { display: flex; flex-wrap: wrap; gap: 0.5rem 1.25rem; font-family: var(--sans); font-size: 0.875rem; color: var(--muted); margin: 0; padding: 0; list-style: none; }
+.meta-row li { display: inline-flex; align-items: center; gap: 0.4rem; }
+.meta-row .level { color: var(--ink-2); font-weight: 500; }
+
+/* Tutorial layout */
+.tut-grid { display: grid; grid-template-columns: 12.5rem minmax(0, 1fr); gap: 3.5rem; padding-bottom: clamp(3rem, 8vw, 5rem); border-top: 1px solid var(--line); padding-top: 2.5rem; }
+.toc { position: sticky; top: calc(env(safe-area-inset-top, 0px) + 5rem); align-self: start; font-family: var(--sans); font-size: 0.875rem; }
+.toc h2 { font-family: var(--sans); font-size: 0.75rem; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); margin: 0 0 0.75rem; }
+.toc ol { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.15rem; }
+.toc a { display: block; padding: 0.3rem 0 0.3rem 0.75rem; color: var(--ink-2); text-decoration: none; border-left: 2px solid var(--line); line-height: 1.35; }
+.toc a:hover { color: var(--ink); border-left-color: var(--ink-2); }
+.toc a[aria-current="true"] { color: var(--ink); border-left-color: var(--accent); }
+@media (max-width: 1000px) {
+  .tut-grid { grid-template-columns: minmax(0, 1fr); gap: 1.5rem; }
+  .toc { display: none; }
+}
+
+.prose { min-width: 0; max-width: 44rem; }
+.prose > * { max-width: 100%; }
+.prose h2 { font-size: 1.625rem; font-weight: 600; line-height: 1.2; margin: 3rem 0 0.9rem; scroll-margin-top: 5rem; }
+.prose > h2:first-child { margin-top: 0; }
+.prose h3 { font-size: 1.1875rem; margin: 1.75rem 0 0.5rem; }
+.prose p, .prose li { line-height: 1.65; }
+.prose ul, .prose ol { padding-left: 1.3rem; margin: 0 0 1.1em; }
+.prose li { margin-bottom: 0.4em; }
+.prose li::marker { color: var(--muted); }
+.prose strong { font-weight: 600; }
+.prose a { text-decoration-thickness: 1px; }
+.prose dl.terms { margin: 0 0 1.2em; display: grid; gap: 0.9rem; }
+.prose dl.terms dt { font-weight: 600; }
+.prose dl.terms dd { margin: 0.15rem 0 0; color: var(--ink-2); }
+
+/* Equations rendered to SVG at build time */
+svg.tex { display: inline-block; overflow: visible; }
+.eq { overflow-x: auto; overflow-y: hidden; text-align: center; margin: 1.25rem 0 1.4rem; padding-block: 0.2rem; font-size: 1.12em; }
+.eq svg.tex { margin-inline: auto; }
+
+.callout { background: var(--tint); border-radius: 4px; padding: 1.1rem 1.25rem; margin: 1.5rem 0; }
+.callout p:last-child, .callout ul:last-child { margin-bottom: 0; }
+.label { display: block; font-family: var(--sans); font-size: 0.75rem; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink-2); margin-bottom: 0.45rem; }
+
+/* Diagrams */
+figure.diagram { margin: 1.75rem 0; }
+.fig-scroll { overflow-x: auto; }
+.fig-scroll svg { display: block; width: 100%; height: auto; min-width: 34rem; }
+figure.diagram figcaption, figure.table-fig figcaption { font-family: var(--sans); font-size: 0.875rem; line-height: 1.55; color: var(--muted); margin-top: 0.6rem; }
+.dg { color: var(--ink); }
+.dg text { fill: currentColor; font-family: var(--sans); font-size: 13px; }
+.dg .sm { font-size: 11.5px; fill: var(--muted); }
+.dg .lbl { font-weight: 500; }
+.dg .stroke { stroke: currentColor; fill: none; stroke-width: 1.5; }
+.dg .thin { stroke: var(--muted); fill: none; stroke-width: 1; }
+.dg .c1 { stroke: var(--chart-1); fill: none; stroke-width: 2; }
+.dg .c2 { stroke: var(--chart-2); fill: none; stroke-width: 2; }
+.dg .ref { stroke: var(--muted); fill: none; stroke-width: 1.5; stroke-dasharray: 6 5; }
+.dg .fill-c1 { fill: var(--chart-1); }
+.dg .fill-c2 { fill: var(--chart-2); }
+.dg .fill-ink { fill: currentColor; }
+.dg .fill-muted { fill: var(--muted); }
+.dg .fill-line { fill: var(--line); }
+.dg .box { fill: var(--surface); stroke: var(--muted); stroke-width: 1; }
+.dg .box-tint { fill: var(--tint); stroke: none; }
+.dg .surf { fill: var(--surface); }
+
+/* Tables */
+figure.table-fig { margin: 1.5rem 0; }
+.table-scroll { overflow-x: auto; }
+table.cmp { width: 100%; border-collapse: collapse; font-family: var(--sans); font-size: 0.9375rem; min-width: 32rem; }
+table.cmp th, table.cmp td { text-align: left; padding: 0.6rem 0.75rem 0.6rem 0; border-bottom: 1px solid var(--line); vertical-align: top; }
+table.cmp thead th { font-size: 0.8125rem; font-weight: 600; color: var(--ink-2); border-bottom-color: var(--ink-2); }
+table.cmp td { font-variant-numeric: tabular-nums; color: var(--ink-2); }
+table.cmp td:first-child { color: var(--ink); font-weight: 500; }
+table.cmp td.new { color: var(--ink); }
+
+/* Interactive models */
+.demo { background: var(--surface); border: 1px solid var(--line); border-radius: 4px; padding: 1.1rem 1.1rem 1rem; margin: 1.5rem 0; font-family: var(--sans); }
+.demo-controls { display: grid; grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr)); gap: 0.9rem 1.5rem; margin-bottom: 0.9rem; }
+.ctl { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 0.25rem 0.75rem; min-width: 0; }
+.ctl label, .ctl .ctl-l { font-size: 0.8125rem; color: var(--ink-2); grid-column: 1; }
+.ctl output { grid-column: 2; grid-row: 1; font-size: 0.875rem; font-weight: 600; color: var(--ink); font-variant-numeric: tabular-nums; text-align: right; }
+.ctl input[type="range"] { grid-column: 1 / -1; width: 100%; margin: 0; accent-color: var(--chart-1); height: 1.75rem; }
+.ctl-seg, .ctl-presets { grid-template-columns: minmax(0, 1fr); }
+.ctl-btn { grid-template-columns: minmax(0, 1fr); align-content: end; }
+.seg-mini { display: flex; flex-wrap: wrap; gap: 0.35rem; }
+.seg-mini button { font: inherit; font-size: 0.8125rem; color: var(--ink-2); background: transparent; border: 1px solid var(--line); border-radius: 3px; min-height: 2rem; padding: 0 0.6rem; cursor: pointer; }
+.seg-mini button:hover { border-color: var(--ink-2); }
+.seg-mini button[aria-checked="true"] { background: var(--ink); border-color: var(--ink); color: var(--bg); }
+.btn-small { min-height: 2.1rem; font-size: 0.8125rem; padding: 0 0.85rem; justify-self: start; cursor: pointer; }
+.legend { list-style: none; margin: 0 0 0.5rem; padding: 0; display: flex; flex-wrap: wrap; gap: 0.3rem 1.25rem; font-size: 0.8125rem; color: var(--ink-2); }
+.legend li { display: inline-flex; align-items: center; gap: 0.45rem; }
+.key { display: inline-block; width: 1.1rem; height: 0; border-top: 2px solid var(--chart-1); flex: none; }
+.key-c1 { border-top-color: var(--chart-1); }
+.key-c2 { border-top-color: var(--chart-2); }
+.key-ref { border-top-color: var(--muted); }
+.key-dash { border-top-style: dashed; }
+.key-dot { width: 0.55rem; height: 0.55rem; border: 0; border-radius: 50%; background: var(--chart-1); }
+.key-dot.key-c2 { background: var(--chart-2); }
+.key-dot.key-ref { background: var(--muted); }
+.demo-plot { position: relative; width: 100%; aspect-ratio: 16 / 9; max-width: 100%; }
+.demo-plot canvas { display: block; width: 100%; height: 100%; touch-action: pan-y; cursor: crosshair; }
+@media (max-width: 600px) { .demo-plot { aspect-ratio: 4 / 3.4; } }
+.tip { position: absolute; left: 0; top: 0; pointer-events: none; background: var(--surface); border: 1px solid var(--line); border-radius: 3px; padding: 0.45rem 0.6rem; font-size: 0.8125rem; line-height: 1.45; color: var(--ink-2); box-shadow: 0 4px 14px rgba(10, 21, 36, 0.12); white-space: nowrap; z-index: 2; }
+.tip p { margin: 0; display: flex; align-items: center; gap: 0.4rem; }
+.tip .tip-h { color: var(--ink); font-weight: 600; margin-bottom: 0.15rem; }
+.tip b { color: var(--ink); font-weight: 600; font-variant-numeric: tabular-nums; }
+.demo-read { display: grid; grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr)); gap: 0.75rem 1.5rem; margin: 0.9rem 0 0; padding-top: 0.85rem; border-top: 1px solid var(--line); }
+.demo-read dt { font-size: 0.75rem; color: var(--muted); margin-bottom: 0.15rem; }
+.demo-read dd { margin: 0; font-size: 0.9375rem; font-weight: 600; color: var(--ink); font-variant-numeric: tabular-nums; }
+.chip { display: inline-block; font-size: 0.8125rem; font-weight: 600; border-radius: 999px; padding: 0.1rem 0.6rem; }
+.chip-ok { background: var(--ok-bg); color: var(--ok-ink); }
+.chip-no { background: var(--no-bg); color: var(--no-ink); }
+.demo-note { font-family: var(--sans); font-size: 0.875rem; color: var(--muted); margin-top: -0.6rem; }
+
+/* Takeaways, self-check, references, papers */
+.takeaways { border-top: 2px solid var(--ink); padding-top: 1rem; margin-top: 3rem; }
+.takeaways ul { margin-bottom: 0; }
+details.qa { border-bottom: 1px solid var(--line); padding: 0.85rem 0; }
+details.qa:first-of-type { border-top: 1px solid var(--line); }
+details.qa summary { cursor: pointer; font-weight: 600; line-height: 1.5; list-style-position: outside; margin-left: 1.1rem; }
+details.qa summary::marker { color: var(--muted); }
+details.qa .ans { margin: 0.6rem 0 0 1.1rem; color: var(--ink-2); }
+details.qa .ans p:last-child { margin-bottom: 0; }
+ol.refs { padding-left: 1.5rem; }
+ol.refs li { font-size: 1rem; line-height: 1.55; color: var(--ink-2); margin-bottom: 0.7rem; }
+ol.refs a { font-family: var(--sans); font-size: 0.8125rem; white-space: nowrap; }
+.paper-list { list-style: none; margin: 0; padding: 0; }
+.paper-list li { padding: 0.8rem 0; border-bottom: 1px solid var(--line); }
+.paper-list li:first-child { border-top: 1px solid var(--line); }
+.paper-list a.t { font-weight: 600; color: var(--ink); text-decoration: none; line-height: 1.4; }
+.paper-list a.t:hover { color: var(--accent); text-decoration: underline; text-decoration-thickness: 1px; }
+.paper-list .v { display: block; font-size: 0.9375rem; color: var(--muted); margin-top: 0.2rem; }
+.prevnext { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; margin-top: 3.5rem; font-family: var(--sans); }
+.prevnext a { display: block; padding: 0.9rem 1rem; border: 1px solid var(--line); border-radius: 4px; text-decoration: none; color: var(--ink); }
+.prevnext a:hover { border-color: var(--ink-2); color: var(--ink); }
+.prevnext .dir { display: block; font-size: 0.75rem; color: var(--muted); margin-bottom: 0.2rem; }
+.prevnext .nm { font-weight: 600; font-size: 0.9375rem; }
+.prevnext .next { text-align: right; grid-column: 2; }
+@media (max-width: 560px) { .prevnext { grid-template-columns: minmax(0, 1fr); } .prevnext .next { grid-column: 1; } }
+
+/* Tutorial hub */
+.hub-list { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--line); }
+.hub-item a { display: grid; grid-template-columns: 2.5rem minmax(0, 1fr) auto; gap: 0.25rem 1.25rem; align-items: baseline; padding: 1.35rem 0; border-bottom: 1px solid var(--line); text-decoration: none; color: var(--ink); }
+.hub-item a:hover .nm { color: var(--accent); text-decoration: underline; text-decoration-thickness: 1px; }
+.hub-item .no { font-family: var(--sans); font-size: 0.875rem; color: var(--muted); font-variant-numeric: tabular-nums; }
+.hub-item .nm { font-size: 1.375rem; font-weight: 600; line-height: 1.25; }
+.hub-item .sm { grid-column: 2; color: var(--ink-2); font-size: 1.0625rem; max-width: 52ch; }
+.hub-item .mt { grid-column: 3; grid-row: 1; font-family: var(--sans); font-size: 0.8125rem; color: var(--muted); white-space: nowrap; text-align: right; }
+.hub-item .dm { grid-column: 2; font-family: var(--sans); font-size: 0.8125rem; color: var(--muted); }
+@media (max-width: 640px) {
+  .hub-item a { grid-template-columns: 2rem minmax(0, 1fr); }
+  .hub-item .mt { grid-column: 2; grid-row: auto; text-align: left; }
+}
+.hub-note { font-family: var(--sans); font-size: 0.875rem; color: var(--muted); margin-top: 1.5rem; max-width: 60ch; }
+
+/* Home page teasers */
+.tut-teaser { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 2.75rem; }
+.tut-teaser li { border-top: 1px solid var(--line); padding: 1rem 0 1.15rem; }
+.tut-teaser a { font-weight: 600; font-size: 1.125rem; color: var(--ink); text-decoration: none; }
+.tut-teaser a:hover { color: var(--accent); text-decoration: underline; text-decoration-thickness: 1px; }
+.tut-teaser p { margin: 0.25rem 0 0; font-size: 1rem; color: var(--ink-2); }
+@media (max-width: 720px) { .tut-teaser { grid-template-columns: minmax(0, 1fr); } }
+.more { font-family: var(--sans); font-size: 0.9375rem; margin-top: 1.5rem; }
+.theme .theme-links { display: flex; flex-wrap: wrap; gap: 0.25rem 1.25rem; align-items: baseline; }
+.theme .theme-links a { font-family: var(--sans); font-size: 0.875rem; font-weight: 500; }
+
+/* Urdu */
+.ur { font-family: var(--urdu); direction: rtl; unicode-bidi: isolate; line-height: 2.3; font-weight: 400; }
+.urdu-teaser { display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); gap: 2.5rem; align-items: center; }
+.urdu-teaser .ur { font-size: clamp(1.2rem, 2vw, 1.4rem); margin: 0; text-align: right; }
+.urdu-teaser .ur span, .urdu-teaser .en span { display: block; }
+.urdu-teaser .en { color: var(--ink-2); font-style: italic; margin: 0 0 0.5rem; }
+.urdu-teaser .who { font-family: var(--sans); font-size: 0.875rem; color: var(--muted); margin: 0 0 1rem; }
+@media (max-width: 820px) { .urdu-teaser { grid-template-columns: minmax(0, 1fr); gap: 1rem; } }
+
+.urdu-head h1 .ur { display: block; font-size: clamp(2.4rem, 6vw, 3.6rem); line-height: 1.9; font-weight: 400; margin-bottom: 0.2rem; letter-spacing: 0; }
+.urdu-head h1 .en-t { display: block; font-size: clamp(1.6rem, 3.6vw, 2.25rem); }
+.urdu-sec { padding-block: clamp(2.5rem, 6vw, 4rem); border-top: 1px solid var(--line); }
+.urdu-sec > .wrap > h2 { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.25rem 1rem; font-size: 2rem; font-weight: 600; margin: 0 0 0.5rem; }
+.urdu-sec > .wrap > h2 .ur { font-size: 1.6rem; font-weight: 400; line-height: 1.8; color: var(--ink-2); }
+.urdu-sec .intro { margin-bottom: 1.25rem; }
+.toggles { display: flex; flex-wrap: wrap; gap: 0.5rem 1.5rem; font-family: var(--sans); font-size: 0.9375rem; color: var(--ink-2); margin: 0 0 1.75rem; }
+.toggles label { display: inline-flex; align-items: center; gap: 0.45rem; cursor: pointer; }
+.toggles input { width: 1rem; height: 1rem; accent-color: var(--accent); margin: 0; }
+.couplets { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 22rem), 1fr)); gap: 1.25rem; }
+.couplet { background: var(--surface); border: 1px solid var(--line); border-radius: 4px; padding: 1.25rem 1.4rem 1.1rem; display: grid; gap: 0.75rem; align-content: start; }
+.couplet .ur { font-size: clamp(1.25rem, 2.2vw, 1.5rem); margin: 0; text-align: right; color: var(--ink); }
+.couplet .ur span, .couplet .ro span, .couplet .en span { display: block; }
+.couplet .ro { font-family: var(--sans); font-size: 0.9375rem; color: var(--ink-2); margin: 0; line-height: 1.6; }
+.couplet .en { font-style: italic; color: var(--ink-2); margin: 0; line-height: 1.55; }
+.couplet .who { font-family: var(--sans); font-size: 0.8125rem; color: var(--muted); margin: 0.25rem 0 0; display: flex; justify-content: space-between; gap: 1rem; border-top: 1px solid var(--line); padding-top: 0.65rem; }
+.couplet .who .ur { font-size: 1rem; line-height: 1.6; color: var(--muted); text-align: left; }
+.hide-roman .ro, .hide-en .en { display: none; }
+.books { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 16rem), 1fr)); gap: 0 2.25rem; }
+.book { border-top: 1px solid var(--line); padding: 1.1rem 0 1.4rem; }
+.book .ur { font-size: 1.5rem; margin: 0; text-align: right; }
+.book h3 { font-size: 1.125rem; margin: 0.1rem 0 0.15rem; }
+.book .by { font-family: var(--sans); font-size: 0.875rem; color: var(--muted); margin: 0 0 0.6rem; }
+.book p.nt { font-size: 1rem; color: var(--ink-2); margin: 0; }
+
+/* Contact copy button */
+.mail-row { display: flex; flex-wrap: wrap; align-items: center; gap: 0.75rem 1rem; margin-bottom: 1rem; }
+.mail-row .contact-mail { margin-bottom: 0; }
+.copy-status { font-family: var(--sans); font-size: 0.875rem; color: var(--muted); }
+.prose dl.terms dt .tag { font-family: var(--sans); font-size: 0.8125rem; font-weight: 500; color: var(--muted); margin-left: 0.5rem; }
+@media (max-width: 560px) { .site-nav ul { gap: 0.7rem; } .site-nav a { font-size: 0.8125rem; } }
+
+/* Footer links */
+.foot { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 0.75rem 2rem; }
+.foot nav { display: flex; flex-wrap: wrap; gap: 0.5rem 1.25rem; }
+.foot a { color: var(--ink-2); }
+
+/* Places */
+.place-head .local { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.25rem 1.5rem; margin: -0.35rem 0 0.6rem; color: var(--ink-2); font-size: 1.375rem; }
+.place-head .local .ur { font-size: 1.375rem; line-height: 2; }
+.place-head .local .hi { font-family: "Noto Serif Devanagari", var(--serif); }
+.place-head .local .en-full { font-size: 1.125rem; font-style: italic; }
+.place-head .where { font-family: var(--sans); font-size: 0.9375rem; color: var(--muted); margin: 0 0 1.25rem; }
+.conn { background: var(--tint); border-radius: 4px; padding: 0.9rem 1.15rem; max-width: 44rem; margin: 1.5rem 0 0; color: var(--ink); }
+.conn .label { margin-bottom: 0.25rem; }
+.place-grid { display: grid; grid-template-columns: minmax(0, 19rem) minmax(0, 1fr); gap: 3.5rem; padding-block: 2.5rem clamp(3rem, 8vw, 5rem); border-top: 1px solid var(--line); }
+.place-grid h2 { font-size: 1.375rem; margin: 0 0 0.9rem; }
+.fact-list { margin: 0; }
+.fact-list div { padding: 0.7rem 0; border-top: 1px solid var(--line); }
+.fact-list dt { font-family: var(--sans); font-size: 0.75rem; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; color: var(--muted); }
+.fact-list dd { margin: 0.2rem 0 0; font-size: 1.0625rem; line-height: 1.45; color: var(--ink); font-variant-numeric: tabular-nums; }
+.ext-links { display: flex; flex-wrap: wrap; gap: 0.5rem 1.25rem; font-family: var(--sans); font-size: 0.9375rem; margin: 1.25rem 0 0; }
+.notes ul { list-style: none; margin: 0; padding: 0; max-width: 44rem; }
+.notes li { padding: 0.9rem 0; border-top: 1px solid var(--line); line-height: 1.6; }
+.see-also { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.5rem 1.25rem; font-family: var(--sans); font-size: 0.9375rem; margin-top: 1.75rem; }
+.see-also .label { margin: 0; }
+@media (max-width: 860px) { .place-grid { grid-template-columns: minmax(0, 1fr); gap: 2.5rem; } }
+
+.places-wrap { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr); gap: 3.5rem; padding-block: 2.5rem clamp(3rem, 8vw, 5rem); border-top: 1px solid var(--line); }
+.places-wrap h2 { font-size: 1.625rem; margin: 0 0 0.6rem; }
+.places-wrap h3 { font-family: var(--sans); font-size: 0.75rem; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); margin: 1.5rem 0 0.25rem; }
+@media (max-width: 900px) { .places-wrap { grid-template-columns: minmax(0, 1fr); } }
+.route { list-style: none; margin: 1.25rem 0 0; padding: 0; }
+.route .stop { display: grid; grid-template-columns: 1.4rem minmax(0, 1fr) auto; gap: 0 0.9rem; align-items: start; }
+.route .dot { width: 0.85rem; height: 0.85rem; border-radius: 50%; border: 2px solid var(--ink); background: var(--bg); margin-top: 0.5rem; justify-self: center; }
+.route .stop.now .dot { background: var(--signal); border-color: var(--signal); }
+.route .stop-body { display: grid; gap: 0.1rem; min-width: 0; }
+.route .city { font-size: 1.375rem; font-weight: 600; color: var(--ink); text-decoration: none; line-height: 1.35; }
+.route .city:hover { color: var(--accent); text-decoration: underline; text-decoration-thickness: 1px; }
+.route .sub { font-family: var(--sans); font-size: 0.875rem; color: var(--muted); }
+.route .role { font-size: 1rem; color: var(--ink-2); }
+.route .yrs { font-family: var(--sans); font-size: 0.875rem; color: var(--ink-2); font-variant-numeric: tabular-nums; padding-top: 0.35rem; white-space: nowrap; }
+.route .leg { display: grid; grid-template-columns: 1.4rem minmax(0, 1fr); gap: 0 0.9rem; min-height: 2.6rem; }
+.route .leg .line { justify-self: center; width: 0; border-left: 2px dashed var(--line); }
+.route .leg .km { align-self: center; font-family: var(--sans); font-size: 0.8125rem; color: var(--muted); font-variant-numeric: tabular-nums; }
+.place-index { list-style: none; margin: 0; padding: 0; }
+.place-index li { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 0.15rem 1rem; padding: 0.6rem 0; border-top: 1px solid var(--line); }
+.place-index a { font-weight: 600; color: var(--ink); text-decoration: none; }
+.place-index a:hover { color: var(--accent); text-decoration: underline; text-decoration-thickness: 1px; }
+.place-index span { font-family: var(--sans); font-size: 0.8125rem; color: var(--muted); }
+</style>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="site-header">
+  <div class="wrap header-inner">
+    <a class="brand" href="#top">Hamza Shaikh</a>
+    <nav class="site-nav" aria-label="Site">
+      <ul>
+        <li><a href="#research">Research</a></li>
+        <li><a href="#publications">Publications</a></li>
+        <li><a href="learn/index.html">Tutorials</a></li>
+        <li><a href="urdu.html">Urdu</a></li>
+        <li><a href="#cv">CV</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+
+<section class="hero" id="top">
+  <div class="wrap hero-grid">
+    <div class="hero-text">
+      <h1>Mohd Hamza Naim Shaikh</h1>
+      <p class="role">Research Fellow, Queen's University Belfast</p>
+      <p class="lede">Working on the physical layer of 6G: surfaces and antennas that reshape the wireless channel, and the multiple-access, sensing and security schemes they make possible.</p>
+      <p class="metrics">34 peer-reviewed papers, 25 as first author. 300+ citations, h-index 10.</p>
+      <div class="actions">
+        <a class="btn" href="mailto:h.shaikh@qub.ac.uk">Send an email</a>
+        <a class="btn btn-quiet" href="#cv">View CV</a>
+      </div>
+      <ul class="profiles" aria-label="Research profiles">
+        <li><a href="https://scholar.google.com/citations?user=wH9Q3RkAAAAJ&amp;hl=en" target="_blank" rel="noopener noreferrer">Google Scholar</a></li>
+        <li><a href="https://www.scopus.com/authid/detail.uri?authorId=58252818800" target="_blank" rel="noopener noreferrer">Scopus</a></li>
+        <li><a href="https://ieeexplore.ieee.org/author/37089381874" target="_blank" rel="noopener noreferrer">IEEE Xplore</a></li>
+        <li><a href="https://orcid.org/0000-0002-1869-0009" target="_blank" rel="noopener noreferrer">ORCID</a></li>
+        <li><a href="https://dblp.org/pid/240/7499.html" target="_blank" rel="noopener noreferrer">DBLP</a></li>
+        <li><a href="https://www.researchgate.net/profile/Mohd-Hamza-Shaikh" target="_blank" rel="noopener noreferrer">ResearchGate</a></li>
+        <li><a href="https://www.linkedin.com/in/hamza1322/" target="_blank" rel="noopener noreferrer">LinkedIn</a></li>
+      </ul>
+    </div>
+    <figure class="ris">
+      <canvas id="ris-canvas" role="img" aria-label="Phase profile of a 28 by 28 reconfigurable intelligent surface with 2-bit phase control: concentric bands centred on the point where its reflection is focused."></canvas>
+      <figcaption>A 28&#8202;×&#8202;28 reconfigurable intelligent surface with 2-bit phase control, re-phased live so its reflection focuses where you point. Each tile is shaded by cos&#8202;φ of its phase state.</figcaption>
+    </figure>
+  </div>
+</section>
+
+<section class="section" id="about">
+  <div class="wrap section-grid">
+    <h2>About</h2>
+    <div class="about-grid">
+      <div class="prose">
+        <p>Mohd Hamza Naim Shaikh is a Research Fellow at <a href="places/qub.html">Queen's University Belfast</a>. His research is on the physical layer of beyond-5G and 6G networks, and in particular on hardware that can reshape the wireless channel: reconfigurable intelligent surfaces (RIS), simultaneously transmitting and reflecting surfaces (STAR-RIS), and fluid and movable antennas. He studies how these devices work with non-orthogonal and rate-splitting multiple access, integrated sensing and communication, and physical-layer security, and how they behave when transceivers are imperfect. His work combines communication theory, stochastic analysis and optimization with learning-based methods.</p>
+        <p>Before joining Queen's, he was a Research Fellow at <a href="places/ucl.html">University College London</a> (2025&ndash;2026), working on fluid reconfigurable intelligent surfaces and fluid-antenna multiple access, and a Postdoctoral Research Assistant at <a href="places/nazarbayev-university.html">Nazarbayev University</a> in <a href="places/astana.html">Astana</a>, <a href="places/kazakhstan.html">Kazakhstan</a> (2022&ndash;2025), where he worked on STAR-RIS and aerial-RIS-assisted NOMA and on ISAC, and co-supervised undergraduate researchers. He received his PhD in Communication Engineering from <a href="places/iiit-delhi.html">IIIT-Delhi</a> in 2022 as a Visvesvaraya PhD Fellow; his thesis on residual hardware impairments in future wireless systems received the institute's Best PhD Dissertation Award in 2023. He holds M.Tech and B.Tech degrees from <a href="places/amu.html">Aligarh Muslim University</a>.</p>
+        <p>He reviews for IEEE Transactions on Wireless Communications, IEEE Transactions on Vehicular Technology, IEEE Internet of Things Journal and IEEE Wireless Communications Letters, among others, and serves on the technical program committees of IEEE ICC, VTC and ANTS.</p>
+        <p>Read about the places along the way, from Najibabad to Belfast, on the <a href="places/index.html">Places</a> page.</p>
+      </div>
+      <aside class="side" aria-labelledby="recent-h">
+        <figure class="portrait" id="portrait" hidden></figure>
+        <h3 id="recent-h">Recent</h3>
+        <ul>
+          <li><span class="date">2026</span>Joined <a href="places/qub.html">Queen's University Belfast</a> as a Research Fellow.</li>
+          <li><span class="date">January 2026</span>Two letters on fluid-RIS-enabled NOMA published in IEEE Wireless Communications Letters, with colleagues at UCL.</li>
+          <li><span class="date">January 2026</span>Aerial RIS with deep reinforcement learning for uplink NOMA, published in IEEE Transactions on Cognitive Communications and Networking.</li>
+          <li><span class="date">2025</span>Session chair at the WI-NOW 2025 International Workshop, University College London.</li>
+        </ul>
+      </aside>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="research">
+  <div class="wrap section-grid">
+    <h2>Research</h2>
+    <div>
+      <p class="intro">Seven threads run through the work. Each one links to the papers behind it.</p>
+      <ul class="themes">
+        <li class="theme"><h3>Reconfigurable intelligent surfaces</h3><p>How to partition, assign and place RIS and STAR-RIS so that one surface can serve many users, from dual-IRS outdoor-to-indoor links to multi-STAR-RIS NOMA and UAV-mounted aerial RIS.</p><div class="theme-links"><button type="button" class="linkish" data-topic="ris">Show 24 papers</button><a href="learn/ris.html">Read the tutorial</a></div></li>
+        <li class="theme"><h3>Fluid and movable antennas</h3><p>Antennas and surfaces whose elements can change position: performance analysis and sum-rate optimization for fluid-RIS-enabled NOMA, and port selection for compact ultra-massive antenna arrays.</p><div class="theme-links"><button type="button" class="linkish" data-topic="fas">Show 5 papers</button><a href="learn/fluid-antennas.html">Read the tutorial</a></div></li>
+        <li class="theme"><h3>Next-generation multiple access</h3><p>Grant-free and cooperative NOMA, user clustering, RIS partitioning and power control, and rate-splitting multiple access for massive connectivity.</p><div class="theme-links"><button type="button" class="linkish" data-topic="ma">Show 16 papers</button><a href="learn/noma.html">Read the tutorial</a></div></li>
+        <li class="theme"><h3>Sensing and physical-layer security</h3><p>Using the sensing signal of an ISAC system to jam eavesdroppers whose location is uncertain, and using RIS to protect vehicular and indoor links.</p><div class="theme-links"><button type="button" class="linkish" data-topic="isac">Show 3 papers</button><a href="learn/isac.html">Read the tutorial</a></div></li>
+        <li class="theme"><h3>Hardware-impaired transceivers</h3><p>What residual hardware impairments, phase noise and amplifier nonlinearity do to RIS-aided, NOMA and OFDM systems. This was the subject of his PhD thesis.</p><div class="theme-links"><button type="button" class="linkish" data-topic="hwi">Show 12 papers</button><a href="learn/hardware-impairments.html">Read the tutorial</a></div></li>
+        <li class="theme"><h3>UAV and vehicular networks</h3><p>3D deployment and partitioning of aerial RIS, deep reinforcement learning for resource allocation, and V2I, V2V and D2D links under Nakagami-<i>m</i> fading.</p><div class="theme-links"><button type="button" class="linkish" data-topic="uav">Show 5 papers</button><a href="learn/v2x.html">Read the tutorial</a></div></li>
+        <li class="theme"><h3>Full-duplex relaying</h3><p>Antenna allocation and self-energy recycling for energy-efficient full-duplex MIMO relays, and the energy-spectral efficiency trade-off.</p><div class="theme-links"><button type="button" class="linkish" data-topic="fd">Show 7 papers</button></div></li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="publications">
+  <div class="wrap section-grid">
+    <h2>Publications</h2>
+    <div>
+      <div class="pub-controls">
+        <div class="seg" role="radiogroup" aria-label="Publication type">
+          <button type="button" role="radio" aria-checked="true" data-type="all">All<span class="n">37</span></button>
+          <button type="button" role="radio" aria-checked="false" data-type="journal">Journal articles<span class="n">14</span></button>
+          <button type="button" role="radio" aria-checked="false" data-type="conference">Conference papers<span class="n">18</span></button>
+          <button type="button" role="radio" aria-checked="false" data-type="chapter">Book chapters<span class="n">2</span></button>
+          <button type="button" role="radio" aria-checked="false" data-type="preprint">Preprints<span class="n">3</span></button>
+        </div>
+        <label class="field">Topic
+          <select id="pub-topic">
+            <option value="">All topics</option>
+            <option value="ris">Reconfigurable intelligent surfaces</option>
+            <option value="fas">Fluid and movable antennas</option>
+            <option value="ma">Next-generation multiple access</option>
+            <option value="isac">Sensing and physical-layer security</option>
+            <option value="hwi">Hardware-impaired transceivers</option>
+            <option value="uav">UAV and vehicular networks</option>
+            <option value="fd">Full-duplex relaying</option>
+            <option value="bio">Biomedical signal processing (early work)</option>
+          </select>
+        </label>
+        <label class="check"><input type="checkbox" id="pub-first"> First-authored only</label>
+        <label class="search"><span class="visually-hidden" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap">Search publications</span>
+          <input type="search" id="pub-q" placeholder="Search titles, co-authors, venues" autocomplete="off">
+        </label>
+      </div>
+      <p class="pub-count" id="pub-count" aria-live="polite"></p>
+      <div class="pub-empty" id="pub-empty" hidden>No publications match these filters. <button type="button" class="linkish" id="pub-clear">Clear filters</button></div>
+      <div id="pubs">
+        <section class="pub-year" aria-label="2026"><h3>2026</h3>
+          <ol class="pub-list">
+            <li class="pub" data-type="journal" data-tags="fas ris ma" data-first="1" data-text="sum-rate maximization for fris-enabled noma communications m. h. n. shaikh k.-k. wong f. r. ghadi c.-b. chae y. zhang ieee wireless communications letters 2026 2026"><span class="pub-id">J14</span><div><a class="pub-title" href="https://ieeexplore.ieee.org/document/11414135" target="_blank" rel="noopener noreferrer">Sum-Rate Maximization for FRIS-Enabled NOMA Communications</a><p class="pub-authors"><strong>M. H. N. Shaikh</strong>, K.-K. Wong, F. R. Ghadi, C.-B. Chae, and Y. Zhang</p><p class="pub-venue"><em>IEEE Wireless Communications Letters</em>, 2026.</p><p class="pub-links"><a href="https://ieeexplore.ieee.org/document/11414135" target="_blank" rel="noopener noreferrer">IEEE Xplore</a></p></div></li>
+            <li class="pub" data-type="journal" data-tags="fas ris ma" data-first="1" data-text="on performance of fris-enabled uplink noma m. h. n. shaikh k.-k. wong f. r. ghadi ieee wireless communications letters 2026 2026"><span class="pub-id">J13</span><div><a class="pub-title" href="https://ieeexplore.ieee.org/document/11411785" target="_blank" rel="noopener noreferrer">On Performance of FRIS-Enabled Uplink NOMA</a><p class="pub-authors"><strong>M. H. N. Shaikh</strong>, K.-K. Wong, F. R. Ghadi, et al.</p><p class="pub-venue"><em>IEEE Wireless Communications Letters</em>, 2026.</p><p class="pub-links"><a href="https://ieeexplore.ieee.org/document/11411785" target="_blank" rel="noopener noreferrer">IEEE Xplore</a></p></div></li>
+            <li class="pub" data-type="journal" data-tags="ris ma uav" data-first="0" data-text="aerial ris-aided uplink noma: a drl-aided resource allocation framework t. altay m. h. n. shaikh a. celik a. m. eltawil g. nauryzbayev ieee transactions on cognitive communications and networking 2026 2026"><span class="pub-id">J12</span><div><a class="pub-title" href="https://scholar.google.com/scholar?q=%22Aerial%20RIS-Aided%20Uplink%20NOMA%3A%20A%20DRL-Aided%20Resource%20Allocation%20Framework%22" target="_blank" rel="noopener noreferrer">Aerial RIS-Aided Uplink NOMA: A DRL-Aided Resource Allocation Framework</a><p class="pub-authors">T. Altay, <strong>M. H. N. Shaikh</strong>, A. Çelik, A. M. Eltawil, and G. Nauryzbayev</p><p class="pub-venue"><em>IEEE Transactions on Cognitive Communications and Networking</em>, 2026.</p><p class="pub-links"><a href="https://scholar.google.com/scholar?q=%22Aerial%20RIS-Aided%20Uplink%20NOMA%3A%20A%20DRL-Aided%20Resource%20Allocation%20Framework%22" target="_blank" rel="noopener noreferrer">Find on Google Scholar</a></p></div></li>
+            <li class="pub" data-type="chapter" data-tags="ris uav" data-first="0" data-text="evolution of intelligent transportation systems for the next generation: irs enabled 6g s. rajak v. c. dodda lakshmi  2026 2026"><span class="pub-id">B2</span><div><a class="pub-title" href="https://www.researchgate.net/publication/410133583_Evolution_of_Intelligent_Transportation_Systems_for_the_Next_Generation_IRS_Enabled_6G" target="_blank" rel="noopener noreferrer">Evolution of Intelligent Transportation Systems for the Next Generation: IRS Enabled 6G</a><p class="pub-authors">S. Rajak, V. C. Dodda, Lakshmi, et al.</p><p class="pub-venue">Book chapter, 2026.</p><p class="pub-links"><a href="https://www.researchgate.net/publication/410133583_Evolution_of_Intelligent_Transportation_Systems_for_the_Next_Generation_IRS_Enabled_6G" target="_blank" rel="noopener noreferrer">ResearchGate</a></p></div></li>
+            <li class="pub" data-type="preprint" data-tags="ris fas ma" data-first="0" data-text="exploiting movable-element stars for rate splitting multiple access m. asif a. ihsan i. muhammad  2026 2026"><span class="pub-id">P3</span><div><a class="pub-title" href="https://www.researchgate.net/publication/412348893_Exploiting_Movable-Element_STARS_for_Rate_Splitting_Multiple_Access" target="_blank" rel="noopener noreferrer">Exploiting Movable-Element STARS for Rate Splitting Multiple Access</a><p class="pub-authors">M. Asif, A. Ihsan, I. Muhammad, et al.</p><p class="pub-venue">Preprint, 2026.</p><p class="pub-links"><a href="https://www.researchgate.net/publication/412348893_Exploiting_Movable-Element_STARS_for_Rate_Splitting_Multiple_Access" target="_blank" rel="noopener noreferrer">ResearchGate</a></p></div></li>
+            <li class="pub" data-type="preprint" data-tags="ris fas ma hwi" data-first="0" data-text="robust transmission design for ris-assisted rsma-swipt systems with movable antennas under hardware distortions m. asif a. ihsan i. muhammad  2026 2026"><span class="pub-id">P2</span><div><a class="pub-title" href="https://www.researchgate.net/publication/408406873_Robust_Transmission_Design_for_RIS-Assisted_RSMA-SWIPT_Systems_With_Movable_Antennas_Under_Hardware_Distortions" target="_blank" rel="noopener noreferrer">Robust Transmission Design for RIS-Assisted RSMA-SWIPT Systems With Movable Antennas Under Hardware Distortions</a><p class="pub-authors">M. Asif, A. Ihsan, I. Muhammad, et al.</p><p class="pub-venue">Preprint, 2026.</p><p class="pub-links"><a href="https://www.researchgate.net/publication/408406873_Robust_Transmission_Design_for_RIS-Assisted_RSMA-SWIPT_Systems_With_Movable_Antennas_Under_Hardware_Distortions" target="_blank" rel="noopener noreferrer">ResearchGate</a></p></div></li>
+          </ol>
+        </section>
+        <section class="pub-year" aria-label="2025"><h3>2025</h3>
+          <ol class="pub-list">
+            <li class="pub" data-type="journal" data-tags="ris ma" data-first="1" data-text="multi-star-ris noma: clustering, ris assignment and power optimization m. h. n. shaikh k. m. rabie t. y. elganimi x. li m. s. hashmi g. nauryzbayev ieee transactions on vehicular technology vol. 74, no. 4, pp. 63896405, 2025 2025"><span class="pub-id">J11</span><div><a class="pub-title" href="https://ieeexplore.ieee.org/document/10772059" target="_blank" rel="noopener noreferrer">Multi-STAR-RIS NOMA: Clustering, RIS Assignment and Power Optimization</a><p class="pub-authors"><strong>M. H. N. Shaikh</strong>, K. M. Rabie, T. Y. Elganimi, X. Li, M. S. Hashmi, and G. Nauryzbayev</p><p class="pub-venue"><em>IEEE Transactions on Vehicular Technology</em>, vol. 74, no. 4, pp. 6389–6405, 2025.</p><p class="pub-links"><a href="https://ieeexplore.ieee.org/document/10772059" target="_blank" rel="noopener noreferrer">IEEE Xplore</a></p></div></li>
+            <li class="pub" data-type="conference" data-tags="ris ma uav hwi" data-first="1" data-text="optimizing deployment and partitioning strategies for aerial ris-aided uplink noma under residual hardware impairments m. h. n. shaikh a. celik s. arzykulov  2025 2025"><span class="pub-id">C18</span><div><a class="pub-title" href="https://ieeexplore.ieee.org/document/11274767" target="_blank" rel="noopener noreferrer">Optimizing Deployment and Partitioning Strategies for Aerial RIS-Aided Uplink NOMA under Residual Hardware Impairments</a><p class="pub-authors"><strong>M. H. N. Shaikh</strong>, A. Çelik, S. Arzykulov, et al.</p><p class="pub-venue">Conference paper, 2025.</p><p class="pub-links"><a href="https://ieeexplore.ieee.org/document/11274767" target="_blank" rel="noopener noreferrer">IEEE Xplore</a></p></div></li>
+            <li class="pub" data-type="preprint" data-tags="fas ma" data-first="0" data-text="geometric port selection in cuma systems c. rao k.-k. wong m. h. n. shaikh h. hong h. shin y. zhang arxiv preprint arxiv:2509.20299 2025 2025"><span class="pub-id">P1</span><div><a class="pub-title" href="https://arxiv.org/abs/2509.20299" target="_blank" rel="noopener noreferrer">Geometric Port Selection in CUMA Systems</a><p class="pub-authors">C. Rao, K.-K. Wong, <strong>M. H. N. Shaikh</strong>, H. Hong, H. Shin, and Y. Zhang</p><p class="pub-venue">arXiv preprint arXiv:2509.20299, 2025.</p><p class="pub-links"><a href="https://arxiv.org/abs/2509.20299" target="_blank" rel="noopener noreferrer">arXiv</a></p></div></li>
+          </ol>
+        </section>
+        <section class="pub-year" aria-label="2024"><h3>2024</h3>
+          <ol class="pub-list">
+            <li class="pub" data-type="journal" data-tags="ris ma isac uav" data-first="0" data-text="enhancing vehicular noma communication security through reconfigurable intelligent surfaces a. serikov m. h. n. shaikh g. nauryzbayev vehicular communications vol. 50, art. no. 100841, 2024 2024"><span class="pub-id">J10</span><div><a class="pub-title" href="https://www.sciencedirect.com/science/article/pii/S2214209624001165" target="_blank" rel="noopener noreferrer">Enhancing Vehicular NOMA Communication Security through Reconfigurable Intelligent Surfaces</a><p class="pub-authors">A. Serikov, <strong>M. H. N. Shaikh</strong>, and G. Nauryzbayev</p><p class="pub-venue"><em>Vehicular Communications</em>, vol. 50, Art. no. 100841, 2024.</p><p class="pub-links"><a href="https://www.sciencedirect.com/science/article/pii/S2214209624001165" target="_blank" rel="noopener noreferrer">ScienceDirect</a></p></div></li>
+            <li class="pub" data-type="journal" data-tags="ris ma" data-first="1" data-text="grant-free noma through optimal partitioning and cluster assignment in star-ris networks m. h. n. shaikh a. celik a. m. eltawil g. nauryzbayev ieee transactions on wireless communications vol. 23, no. 8, pp. 1016610181, aug. 2024 2024"><span class="pub-id">J8</span><div><a class="pub-title" href="https://ieeexplore.ieee.org/document/10458024" target="_blank" rel="noopener noreferrer">Grant-Free NOMA Through Optimal Partitioning and Cluster Assignment in STAR-RIS Networks</a><p class="pub-authors"><strong>M. H. N. Shaikh</strong>, A. Çelik, A. M. Eltawil, and G. Nauryzbayev</p><p class="pub-venue"><em>IEEE Transactions on Wireless Communications</em>, vol. 23, no. 8, pp. 10166–10181, Aug. 2024.</p><p class="pub-links"><a href="https://ieeexplore.ieee.org/document/10458024" target="_blank" rel="noopener noreferrer">IEEE Xplore</a></p></div></li>
+            <li class="pub" data-type="journal" data-tags="ris ma" data-first="0" data-text="performance of star-ris-aided cooperative noma networks under nakagami-m fading t. toregozhin m. h. n. shaikh a. almagambetov g. nauryzbayev ad hoc networks vol. 156, art. no. 103399, 2024 2024"><span class="pub-id">J9</span><div><a class="pub-title" href="https://www.sciencedirect.com/science/article/abs/pii/S1570870524000106" target="_blank" rel="noopener noreferrer">Performance of STAR-RIS-Aided Cooperative NOMA Networks under Nakagami-<i>m</i> Fading</a><p class="pub-authors">T. Toregozhin, <strong>M. H. N. Shaikh</strong>, A. Almagambetov, and G. Nauryzbayev</p><p class="pub-venue"><em>Ad Hoc Networks</em>, vol. 156, Art. no. 103399, 2024.</p><p class="pub-links"><a href="https://www.sciencedirect.com/science/article/abs/pii/S1570870524000106" target="_blank" rel="noopener noreferrer">ScienceDirect</a></p></div></li>
+            <li class="pub" data-type="conference" data-tags="isac" data-first="1" data-text="sense and jam: isac-aided robust physical layer security m. h. n. shaikh a. celik a. m. eltawil g. nauryzbayev 58th asilomar conference on signals, systems, and computers pacific grove, ca, usa, oct. 2024, pp. 653657 2024"><span class="pub-id">C17</span><div><a class="pub-title" href="https://ieeexplore.ieee.org/document/10942975" target="_blank" rel="noopener noreferrer">Sense and Jam: ISAC-Aided Robust Physical Layer Security</a><p class="pub-authors"><strong>M. H. N. Shaikh</strong>, A. Çelik, A. M. Eltawil, and G. Nauryzbayev</p><p class="pub-venue">In <em>Proc. 58th Asilomar Conference on Signals, Systems, and Computers</em>, Pacific Grove, CA, USA, Oct. 2024, pp. 653–657.</p><p class="pub-links"><a href="https://ieeexplore.ieee.org/document/10942975" target="_blank" rel="noopener noreferrer">IEEE Xplore</a></p></div></li>
+          </ol>
+        </section>
+        <section class="pub-year" aria-label="2023"><h3>2023</h3>
+          <ol class="pub-list">
+            <li class="pub" data-type="journal" data-tags="ris" data-first="1" data-text="an energy efficient dual irs-aided outdoor-to-indoor communication system m. h. n. shaikh v. a. bohara a. srivastava g. ghatak ieee systems journal vol. 17, no. 3, pp. 37183729, 2023 2023"><span class="pub-id">J7</span><div><a class="pub-title" href="https://ieeexplore.ieee.org/document/10067242" target="_blank" rel="noopener noreferrer">An Energy Efficient Dual IRS-Aided Outdoor-to-Indoor Communication System</a><p class="pub-authors"><strong>M. H. N. Shaikh</strong>, V. A. Bohara, A. Srivastava, and G. Ghatak</p><p class="pub-venue"><em>IEEE Systems Journal</em>, vol. 17, no. 3, pp. 3718–3729, 2023.</p><p class="pub-links"><a href="https://ieeexplore.ieee.org/document/10067242" target="_blank" rel="noopener noreferrer">IEEE Xplore</a></p></div></li>
+            <li class="pub" data-type="journal" data-tags="ris hwi" data-first="1" data-text="on the performance of dual irs-aided communication system under non-ideal transceiver over nakagami-m fading channels m. h. n. shaikh v. a. bohara a. srivastava internet technology letters vol. 6, no. 3, 2023 2023"><span class="pub-id">J6</span><div><a class="pub-title" href="https://scholar.google.com/scholar?q=%22On%20the%20Performance%20of%20Dual%20IRS-Aided%20Communication%20System%20under%20Non-Ideal%20Transceiver%20over%20Nakagami-m%20Fading%20Channels%22" target="_blank" rel="noopener noreferrer">On the Performance of Dual IRS-Aided Communication System under Non-Ideal Transceiver over Nakagami-<i>m</i> Fading Channels</a><p class="pub-authors"><strong>M. H. N. Shaikh</strong>, V. A. Bohara, and A. Srivastava</p><p class="pub-venue"><em>Internet Technology Letters</em>, vol. 6, no. 3, 2023.</p><p class="pub-links"><a href="https://scholar.google.com/scholar?q=%22On%20the%20Performance%20of%20Dual%20IRS-Aided%20Communication%20System%20under%20Non-Ideal%20Transceiver%20over%20Nakagami-m%20Fading%20Channels%22" target="_blank" rel="noopener noreferrer">Find on Google Scholar</a></p></div></li>
+            <li class="pub" data-type="conference" data-tags="ris ma" data-first="1" data-text="on the optimization of virtual ris partitioning for grant-free non-orthogonal multiple access m. h. n. shaikh a. celik a. m. eltawil g. nauryzbayev ieee global communications conference (globecom) kuala lumpur, malaysia, dec. 2023, pp. 72197224 2023"><span class="pub-id">C16</span><div><a class="pub-title" href="https://ieeexplore.ieee.org/document/10437227" target="_blank" rel="noopener noreferrer">On the Optimization of Virtual RIS Partitioning for Grant-Free Non-Orthogonal Multiple Access</a><p class="pub-authors"><strong>M. H. N. Shaikh</strong>, A. Çelik, A. M. Eltawil, and G. Nauryzbayev</p><p class="pub-venue">In <em>Proc. IEEE Global Communications Conference (GLOBECOM)</em>, Kuala Lumpur, Malaysia, Dec. 2023, pp. 7219–7224.</p><p class="pub-links"><a href="https://ieeexplore.ieee.org/document/10437227" target="_blank" rel="noopener noreferrer">IEEE Xplore</a></p></div></li>
+            <li class="pub" data-type="conference" data-tags="ris ma" data-first="0" data-text="performance analysis and enhancement through cooperative noma in star-ris-aided systems t. toregozhin m. h. n. shaikh g. nauryzbayev international balkan conference on communications and networking (balkancom) 2023 2023"><span class="pub-id">C15</span><div><a class="pub-title" href="https://ieeexplore.ieee.org/document/10167959" target="_blank" rel="noopener noreferrer">Performance Analysis and Enhancement through Cooperative NOMA in STAR-RIS-Aided Systems</a><p class="pub-authors">T. Toregozhin, <strong>M. H. N. Shaikh</strong>, and G. Nauryzbayev</p><p class="pub-venue">In <em>Proc. International Balkan Conference on Communications and Networking (BalkanCom)</em>, 2023.</p><p class="pub-links"><a href="https://ieeexplore.ieee.org/document/10167959" target="_blank" rel="noopener noreferrer">IEEE Xplore</a></p></div></li>
+            <li class="pub" data-type="conference" data-tags="ris hwi" data-first="1" data-text="irs-aided communication system with phase noise and hardware impairments: performance analysis and characterization m. h. n. shaikh v. a. bohara a. srivastava international conference on communication systems &amp; networks (comsnets) bengaluru, india, jan. 2023, pp. 392396 2023"><span class="pub-id">C14</span><div><a class="pub-title" href="https://ieeexplore.ieee.org/document/10041338" target="_blank" rel="noopener noreferrer">IRS-Aided Communication System with Phase Noise and Hardware Impairments: Performance Analysis and Characterization</a><p class="pub-authors"><strong>M. H. N. Shaikh</strong>, V. A. Bohara, and A. Srivastava</p><p class="pub-venue">In <em>Proc. International Conference on COMmunication Systems &amp; NETworkS (COMSNETS)</em>, Bengaluru, India, Jan. 2023, pp. 392–396.</p><p class="pub-links"><a href="https://ieeexplore.ieee.org/document/10041338" target="_blank" rel="noopener noreferrer">IEEE Xplore</a></p></div></li>
+          </ol>
+        </section>
+        <section class="pub-year" aria-label="2022"><h3>2022</h3>
+          <ol class="pub-list">
+            <li class="pub" data-type="journal" data-tags="ris hwi" data-first="0" data-text="on the performance of irs-assisted ofdm system with non-ideal oscillator and amplifier k. joshi m. h. n. shaikh s. a. naqvi v. a. bohara internet technology letters vol. 5, no. 4, 2022 2022"><span class="pub-id">J5</span><div><a class="pub-title" href="https://onlinelibrary.wiley.com/doi/abs/10.1002/itl2.380" target="_blank" rel="noopener noreferrer">On the Performance of IRS-Assisted OFDM System with Non-Ideal Oscillator and Amplifier</a><p class="pub-authors">K. Joshi, <strong>M. H. N. Shaikh</strong>, S. A. Naqvi, and V. A. Bohara</p><p class="pub-venue"><em>Internet Technology Letters</em>, vol. 5, no. 4, 2022.</p><p class="pub-links"><a href="https://onlinelibrary.wiley.com/doi/abs/10.1002/itl2.380" target="_blank" rel="noopener noreferrer">Wiley Online Library</a> <span class="doi">doi:10.1002/itl2.380</span></p></div></li>
+            <li class="pub" data-type="journal" data-tags="ris ma hwi" data-first="1" data-text="a downlink ris-aided noma system with hardware impairments: performance characterization and analysis m. h. n. shaikh v. a. bohara a. srivastava g. ghatak ieee open journal of signal processing vol. 3, 2022 2022"><span class="pub-id">J4</span><div><a class="pub-title" href="https://ieeexplore.ieee.org/document/9842326" target="_blank" rel="noopener noreferrer">A Downlink RIS-Aided NOMA System With Hardware Impairments: Performance Characterization and Analysis</a><p class="pub-authors"><strong>M. H. N. Shaikh</strong>, V. A. Bohara, A. Srivastava, and G. Ghatak</p><p class="pub-venue"><em>IEEE Open Journal of Signal Processing</em>, vol. 3, 2022.</p><p class="pub-links"><a href="https://ieeexplore.ieee.org/document/9842326" target="_blank" rel="noopener noreferrer">IEEE Xplore</a></p></div></li>
+            <li class="pub" data-type="conference" data-tags="ris isac" data-first="0" data-text="intelligent reflecting surfaces versus optical mirrors: performance comparison for indoor physical layer security environments k. lata v. a. bohara a. srivastava m. h. n. shaikh ieee international conference on advanced networks and telecommunications systems (ants) dec. 2022, pp. 314319 2022"><span class="pub-id">C13</span><div><a class="pub-title" href="https://scholar.google.com/scholar?q=%22Intelligent%20Reflecting%20Surfaces%20Versus%20Optical%20Mirrors%3A%20Performance%20Comparison%20for%20Indoor%20Physical%20Layer%20Security%20Environments%22" target="_blank" rel="noopener noreferrer">Intelligent Reflecting Surfaces Versus Optical Mirrors: Performance Comparison for Indoor Physical Layer Security Environments</a><p class="pub-authors">K. Lata, V. A. Bohara, A. Srivastava, and <strong>M. H. N. Shaikh</strong></p><p class="pub-venue">In <em>Proc. IEEE International Conference on Advanced Networks and Telecommunications Systems (ANTS)</em>, Dec. 2022, pp. 314–319.</p><p class="pub-links"><a href="https://scholar.google.com/scholar?q=%22Intelligent%20Reflecting%20Surfaces%20Versus%20Optical%20Mirrors%3A%20Performance%20Comparison%20for%20Indoor%20Physical%20Layer%20Security%20Environments%22" target="_blank" rel="noopener noreferrer">Find on Google Scholar</a></p></div></li>
+            <li class="pub" data-type="conference" data-tags="ris ma" data-first="1" data-text="performance of ris-empowered noma-based d2d communication under nakagami-m fading m. h. n. shaikh s. arzykulov a. celik a. m. eltawil g. nauryzbayev ieee 96th vehicular technology conference (vtc2022-fall) london, uk, sep. 2022, pp. 15 2022"><span class="pub-id">C12</span><div><a class="pub-title" href="https://ieeexplore.ieee.org/document/10012767" target="_blank" rel="noopener noreferrer">Performance of RIS-Empowered NOMA-Based D2D Communication under Nakagami-<i>m</i> Fading</a><p class="pub-authors"><strong>M. H. N. Shaikh</strong>, S. Arzykulov, A. Çelik, A. M. Eltawil, and G. Nauryzbayev</p><p class="pub-venue">In <em>Proc. IEEE 96th Vehicular Technology Conference (VTC2022-Fall)</em>, London, UK, Sep. 2022, pp. 1–5.</p><p class="pub-links"><a href="https://ieeexplore.ieee.org/document/10012767" target="_blank" rel="noopener noreferrer">IEEE Xplore</a> <a href="https://arxiv.org/abs/2301.03973" target="_blank" rel="noopener noreferrer">arXiv</a></p></div></li>
+            <li class="pub" data-type="conference" data-tags="ris uav" data-first="1" data-text="on the performance of dual ris-assisted v2i communication under nakagami-m fading m. h. n. shaikh k. m. rabie x. li t. a. tsiftsis g. nauryzbayev ieee 96th vehicular technology conference (vtc2022-fall) london, uk, sep. 2022, pp. 15 2022"><span class="pub-id">C11</span><div><a class="pub-title" href="https://ieeexplore.ieee.org/document/10012862" target="_blank" rel="noopener noreferrer">On the Performance of Dual RIS-Assisted V2I Communication under Nakagami-<i>m</i> Fading</a><p class="pub-authors"><strong>M. H. N. Shaikh</strong>, K. M. Rabie, X. Li, T. A. Tsiftsis, and G. Nauryzbayev</p><p class="pub-venue">In <em>Proc. IEEE 96th Vehicular Technology Conference (VTC2022-Fall)</em>, London, UK, Sep. 2022, pp. 1–5.</p><p class="pub-links"><a href="https://ieeexplore.ieee.org/document/10012862" target="_blank" rel="noopener noreferrer">IEEE Xplore</a> <a href="https://arxiv.org/abs/2301.03983" target="_blank" rel="noopener noreferrer">arXiv</a></p></div></li>
+            <li class="pub" data-type="conference" data-tags="ris ma hwi" data-first="1" data-text="on the performance of ris-aided noma system with non-ideal transceiver over nakagami-m fading m. h. n. shaikh v. a. bohara a. srivastava g. ghatak ieee wireless communications and networking conference (wcnc) austin, tx, usa, apr. 2022, pp. 17371742 2022"><span class="pub-id">C10</span><div><a class="pub-title" href="https://ieeexplore.ieee.org/document/9771831" target="_blank" rel="noopener noreferrer">On the Performance of RIS-Aided NOMA System with Non-Ideal Transceiver over Nakagami-<i>m</i> Fading</a><p class="pub-authors"><strong>M. H. N. Shaikh</strong>, V. A. Bohara, A. Srivastava, and G. Ghatak</p><p class="pub-venue">In <em>Proc. IEEE Wireless Communications and Networking Conference (WCNC)</em>, Austin, TX, USA, Apr. 2022, pp. 1737–1742.</p><p class="pub-links"><a href="https://ieeexplore.ieee.org/document/9771831" target="_blank" rel="noopener noreferrer">IEEE Xplore</a></p></div></li>
+          </ol>
+        </section>
+        <section class="pub-year" aria-label="2021"><h3>2021</h3>
+          <ol class="pub-list">
+            <li class="pub" data-type="journal" data-tags="ris hwi" data-first="1" data-text="performance analysis of intelligent reflecting surface-assisted wireless system with non-ideal transceiver m. h. n. shaikh v. a. bohara a. srivastava g. ghatak ieee open journal of the communications society vol. 2, pp. 671686, 2021 2021"><span class="pub-id">J3</span><div><a class="pub-title" href="https://ieeexplore.ieee.org/document/9388920" target="_blank" rel="noopener noreferrer">Performance Analysis of Intelligent Reflecting Surface-Assisted Wireless System With Non-Ideal Transceiver</a><p class="pub-authors"><strong>M. H. N. Shaikh</strong>, V. A. Bohara, A. Srivastava, and G. Ghatak</p><p class="pub-venue"><em>IEEE Open Journal of the Communications Society</em>, vol. 2, pp. 671–686, 2021.</p><p class="pub-links"><a href="https://ieeexplore.ieee.org/document/9388920" target="_blank" rel="noopener noreferrer">IEEE Xplore</a></p></div></li>
+            <li class="pub" data-type="conference" data-tags="ris fd hwi" data-first="1" data-text="intelligent reflecting surfaces versus full-duplex relaying: performance comparison for non-ideal transmitter case m. h. n. shaikh v. a. bohara a. srivastava g. ghatak ieee international symposium on personal, indoor and mobile radio communications (pimrc) sep. 2021, pp. 513518 2021"><span class="pub-id">C9</span><div><a class="pub-title" href="https://ieeexplore.ieee.org/document/9569598" target="_blank" rel="noopener noreferrer">Intelligent Reflecting Surfaces Versus Full-Duplex Relaying: Performance Comparison for Non-Ideal Transmitter Case</a><p class="pub-authors"><strong>M. H. N. Shaikh</strong>, V. A. Bohara, A. Srivastava, and G. Ghatak</p><p class="pub-venue">In <em>Proc. IEEE International Symposium on Personal, Indoor and Mobile Radio Communications (PIMRC)</em>, Sep. 2021, pp. 513–518.</p><p class="pub-links"><a href="https://ieeexplore.ieee.org/document/9569598" target="_blank" rel="noopener noreferrer">IEEE Xplore</a></p></div></li>
+          </ol>
+        </section>
+        <section class="pub-year" aria-label="2020"><h3>2020</h3>
+          <ol class="pub-list">
+            <li class="pub" data-type="journal" data-tags="fd" data-first="1" data-text="performance analysis of a full-duplex mimo decode-and-forward relay system with self-energy recycling m. h. n. shaikh v. a. bohara a. srivastava ieee access vol. 8, pp. 226248226266, 2020 2020"><span class="pub-id">J2</span><div><a class="pub-title" href="https://ieeexplore.ieee.org/document/9298754" target="_blank" rel="noopener noreferrer">Performance Analysis of a Full-Duplex MIMO Decode-and-Forward Relay System With Self-Energy Recycling</a><p class="pub-authors"><strong>M. H. N. Shaikh</strong>, V. A. Bohara, and A. Srivastava</p><p class="pub-venue"><em>IEEE Access</em>, vol. 8, pp. 226248–226266, 2020.</p><p class="pub-links"><a href="https://ieeexplore.ieee.org/document/9298754" target="_blank" rel="noopener noreferrer">IEEE Xplore</a></p></div></li>
+            <li class="pub" data-type="journal" data-tags="fd hwi" data-first="1" data-text="energy efficiency evaluation for downlink full-duplex nonlinear mu-mimo-ofdm system with self-energy recycling m. h. n. shaikh v. a. bohara p. aggarwal a. srivastava ieee systems journal vol. 14, no. 3, pp. 33133324, 2020 2020"><span class="pub-id">J1</span><div><a class="pub-title" href="https://ieeexplore.ieee.org/document/8966489" target="_blank" rel="noopener noreferrer">Energy Efficiency Evaluation for Downlink Full-Duplex Nonlinear MU-MIMO-OFDM System With Self-Energy Recycling</a><p class="pub-authors"><strong>M. H. N. Shaikh</strong>, V. A. Bohara, P. Aggarwal, and A. Srivastava</p><p class="pub-venue"><em>IEEE Systems Journal</em>, vol. 14, no. 3, pp. 3313–3324, 2020.</p><p class="pub-links"><a href="https://ieeexplore.ieee.org/document/8966489" target="_blank" rel="noopener noreferrer">IEEE Xplore</a></p></div></li>
+            <li class="pub" data-type="conference" data-tags="fd" data-first="1" data-text="performance enhancement in full-duplex af relay system through smart antenna allocation m. h. n. shaikh v. a. bohara a. srivastava ieee 3rd 5g world forum (5gwf) sep. 2020, pp. 303308 2020"><span class="pub-id">C8</span><div><a class="pub-title" href="https://ieeexplore.ieee.org/document/9221287" target="_blank" rel="noopener noreferrer">Performance Enhancement in Full-Duplex AF Relay System through Smart Antenna Allocation</a><p class="pub-authors"><strong>M. H. N. Shaikh</strong>, V. A. Bohara, and A. Srivastava</p><p class="pub-venue">In <em>Proc. IEEE 3rd 5G World Forum (5GWF)</em>, Sep. 2020, pp. 303–308.</p><p class="pub-links"><a href="https://ieeexplore.ieee.org/document/9221287" target="_blank" rel="noopener noreferrer">IEEE Xplore</a></p></div></li>
+            <li class="pub" data-type="conference" data-tags="fd" data-first="1" data-text="ee enhancement in fd mimo relay system through adaptive antenna allocation and self-energy recycling m. h. n. shaikh v. a. bohara a. srivastava g. ghatak ieee international conference on communications workshops (icc workshops) jun. 2020, pp. 17 2020"><span class="pub-id">C7</span><div><a class="pub-title" href="https://ieeexplore.ieee.org/document/9145112" target="_blank" rel="noopener noreferrer">EE Enhancement in FD MIMO Relay System through Adaptive Antenna Allocation and Self-Energy Recycling</a><p class="pub-authors"><strong>M. H. N. Shaikh</strong>, V. A. Bohara, A. Srivastava, and G. Ghatak</p><p class="pub-venue">In <em>Proc. IEEE International Conference on Communications Workshops (ICC Workshops)</em>, Jun. 2020, pp. 1–7.</p><p class="pub-links"><a href="https://ieeexplore.ieee.org/document/9145112" target="_blank" rel="noopener noreferrer">IEEE Xplore</a></p></div></li>
+            <li class="pub" data-type="conference" data-tags="hwi" data-first="1" data-text="spectral analysis of a nonlinear wola-ofdm system with dpd m. h. n. shaikh v. a. bohara a. srivastava national conference on communications (ncc) feb. 2020, pp. 14 2020"><span class="pub-id">C6</span><div><a class="pub-title" href="https://ieeexplore.ieee.org/document/9056066" target="_blank" rel="noopener noreferrer">Spectral Analysis of a Nonlinear WOLA-OFDM System with DPD</a><p class="pub-authors"><strong>M. H. N. Shaikh</strong>, V. A. Bohara, and A. Srivastava</p><p class="pub-venue">In <em>Proc. National Conference on Communications (NCC)</em>, Feb. 2020, pp. 1–4.</p><p class="pub-links"><a href="https://ieeexplore.ieee.org/document/9056066" target="_blank" rel="noopener noreferrer">IEEE Xplore</a> <span class="doi">doi:10.1109/NCC48643.2020.9056066</span></p></div></li>
+          </ol>
+        </section>
+        <section class="pub-year" aria-label="2019"><h3>2019</h3>
+          <ol class="pub-list">
+            <li class="pub" data-type="conference" data-tags="fd" data-first="1" data-text="energy efficiency enhancement in full-duplex relay system through adaptive antenna allocation m. h. n. shaikh v. a. bohara a. srivastava ieee international conference on advanced networks and telecommunications systems (ants) dec. 2019, pp. 16 2019"><span class="pub-id">C5</span><div><a class="pub-title" href="https://ieeexplore.ieee.org/document/9117956" target="_blank" rel="noopener noreferrer">Energy Efficiency Enhancement in Full-Duplex Relay System through Adaptive Antenna Allocation</a><p class="pub-authors"><strong>M. H. N. Shaikh</strong>, V. A. Bohara, and A. Srivastava</p><p class="pub-venue">In <em>Proc. IEEE International Conference on Advanced Networks and Telecommunications Systems (ANTS)</em>, Dec. 2019, pp. 1–6.</p><p class="pub-links"><a href="https://ieeexplore.ieee.org/document/9117956" target="_blank" rel="noopener noreferrer">IEEE Xplore</a></p></div></li>
+            <li class="pub" data-type="conference" data-tags="fd" data-first="1" data-text="on ee-se trade-off for downlink full duplex miso systems with self-energy recycling m. h. n. shaikh v. a. bohara p. aggarwal a. srivastava ieee 89th vehicular technology conference (vtc2019-spring) apr. 2019, pp. 15 2019"><span class="pub-id">C4</span><div><a class="pub-title" href="https://ieeexplore.ieee.org/document/8746392" target="_blank" rel="noopener noreferrer">On EE-SE Trade-Off for Downlink Full Duplex MISO Systems with Self-Energy Recycling</a><p class="pub-authors"><strong>M. H. N. Shaikh</strong>, V. A. Bohara, P. Aggarwal, and A. Srivastava</p><p class="pub-venue">In <em>Proc. IEEE 89th Vehicular Technology Conference (VTC2019-Spring)</em>, Apr. 2019, pp. 1–5.</p><p class="pub-links"><a href="https://ieeexplore.ieee.org/document/8746392" target="_blank" rel="noopener noreferrer">IEEE Xplore</a></p></div></li>
+          </ol>
+        </section>
+        <section class="pub-year" aria-label="2018"><h3>2018</h3>
+          <ol class="pub-list">
+            <li class="pub" data-type="conference" data-tags="hwi" data-first="1" data-text="on the spectral content of nonlinear carrier aggregated windowed ofdm systems m. h. n. shaikh a. agarwal p. aggarwal v. a. bohara ieee international conference on advanced networks and telecommunications systems (ants) dec. 2018, pp. 15 2018"><span class="pub-id">C3</span><div><a class="pub-title" href="https://ieeexplore.ieee.org/document/8710162" target="_blank" rel="noopener noreferrer">On the Spectral Content of Nonlinear Carrier Aggregated Windowed OFDM Systems</a><p class="pub-authors"><strong>M. H. N. Shaikh</strong>, A. Agarwal, P. Aggarwal, and V. A. Bohara</p><p class="pub-venue">In <em>Proc. IEEE International Conference on Advanced Networks and Telecommunications Systems (ANTS)</em>, Dec. 2018, pp. 1–5.</p><p class="pub-links"><a href="https://ieeexplore.ieee.org/document/8710162" target="_blank" rel="noopener noreferrer">IEEE Xplore</a></p></div></li>
+            <li class="pub" data-type="chapter" data-tags="bio" data-first="1" data-text="emd analysis of eeg signals for seizure detection m. h. n. shaikh o. farooq g. chandel advances in system optimization and control, lecture notes in electrical engineering springer, 2018, pp. 189196 2018"><span class="pub-id">B1</span><div><a class="pub-title" href="https://link.springer.com/chapter/10.1007/978-981-13-0665-5_16" target="_blank" rel="noopener noreferrer">EMD Analysis of EEG Signals for Seizure Detection</a><p class="pub-authors"><strong>M. H. N. Shaikh</strong>, O. Farooq, and G. Chandel</p><p class="pub-venue">In <em>Advances in System Optimization and Control, Lecture Notes in Electrical Engineering</em>, Springer, 2018, pp. 189–196.</p><p class="pub-links"><a href="https://link.springer.com/chapter/10.1007/978-981-13-0665-5_16" target="_blank" rel="noopener noreferrer">SpringerLink</a> <span class="doi">doi:10.1007/978-981-13-0665-5_16</span></p></div></li>
+          </ol>
+        </section>
+        <section class="pub-year" aria-label="2017"><h3>2017</h3>
+          <ol class="pub-list">
+            <li class="pub" data-type="conference" data-tags="bio" data-first="0" data-text="seizure detection in neonatal eeg signals using emd based features g. chandel o. farooq m. h. n. shaikh m. shanir p. p.  2017 2017"><span class="pub-id">C2</span><div><a class="pub-title" href="https://ieeexplore.ieee.org/document/8363980" target="_blank" rel="noopener noreferrer">Seizure Detection in Neonatal EEG Signals Using EMD Based Features</a><p class="pub-authors">G. Chandel, O. Farooq, <strong>M. H. N. Shaikh</strong>, and M. Shanir P. P.</p><p class="pub-venue">Conference paper, 2017.</p><p class="pub-links"><a href="https://ieeexplore.ieee.org/document/8363980" target="_blank" rel="noopener noreferrer">IEEE Xplore</a></p></div></li>
+          </ol>
+        </section>
+        <section class="pub-year" aria-label="2016"><h3>2016</h3>
+          <ol class="pub-list">
+            <li class="pub" data-type="conference" data-tags="bio" data-first="0" data-text="a simple approach of ecg beat classification a. mohammad f. azeem m. noman m. h. n. shaikh  2016 2016"><span class="pub-id">C1</span><div><a class="pub-title" href="https://scholar.google.com/scholar?q=%22A%20Simple%20Approach%20of%20ECG%20Beat%20Classification%22" target="_blank" rel="noopener noreferrer">A Simple Approach of ECG Beat Classification</a><p class="pub-authors">A. Mohammad, F. Azeem, M. Noman, and <strong>M. H. N. Shaikh</strong></p><p class="pub-venue">Conference paper, 2016.</p><p class="pub-links"><a href="https://scholar.google.com/scholar?q=%22A%20Simple%20Approach%20of%20ECG%20Beat%20Classification%22" target="_blank" rel="noopener noreferrer">Find on Google Scholar</a></p></div></li>
+          </ol>
+        </section>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="tutorials">
+  <div class="wrap section-grid">
+    <h2>Tutorials</h2>
+    <div>
+      <p class="intro">Short introductions to the ideas behind this research, each with the key equations, a diagram and an interactive model. They are written for students and engineers who are new to the area.</p>
+      <ul class="tut-teaser">
+        <li><a href="learn/6g.html">6G networks</a><p>What 6G is meant to deliver, how its targets compare with 5G, and where standardisation stands.</p></li>
+        <li><a href="learn/ris.html">Reconfigurable intelligent surfaces</a><p>Panels of passive elements that reflect with controllable phase, so the network can shape the channel itself.</p></li>
+        <li><a href="learn/noma.html">Non-orthogonal multiple access</a><p>Several users share one time slot and band, separated by power and successive interference cancellation.</p></li>
+        <li><a href="learn/isac.html">Integrated sensing and communication</a><p>One radio, one band and often one signal that both carries data and senses the surroundings.</p></li>
+        <li><a href="learn/v2x.html">Vehicular communications</a><p>V2V, V2I, V2P and V2N links, and why speed makes the channel change within a millisecond.</p></li>
+        <li><a href="learn/fluid-antennas.html">Fluid antenna systems</a><p>Antennas that switch position within a few wavelengths to find a strong spot in the fading pattern.</p></li>
+        <li><a href="learn/hardware-impairments.html">Hardware impairments</a><p>Why distortion that grows with the signal puts a ceiling on every link, and what it means for RIS and NOMA.</p></li>
+        <li><a href="learn/optimization.html">Optimization for wireless networks</a><p>How networks choose powers, beams and phases, and the methods used when the problem is not convex.</p></li>
+      </ul>
+      <p class="more"><a href="learn/index.html">All tutorials, in suggested reading order</a></p>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="cv">
+  <div class="wrap section-grid">
+    <h2>CV</h2>
+    <div>
+      <div class="cv-head">
+        <p>The short version. Every publication is listed above, and the full CV is available as a PDF.</p>
+        <a class="btn btn-quiet" data-cv-pdf hidden href="#" target="_blank" rel="noopener">Full CV with all publications (PDF)</a>
+      </div>
+      <div class="cv-grid">
+        <div>
+          <div class="cv-block">
+            <h3>Appointments</h3>
+            <ul class="timeline">
+              <li><span class="when"><span class="now" aria-hidden="true"></span>2026&ndash;now</span><span class="what"><strong>Research Fellow</strong><span class="where"><a href="places/qub.html">Queen's University Belfast</a>, <a href="places/belfast.html">Belfast</a>, United Kingdom</span><span class="note">RIS-enabled and fluid-antenna-assisted wireless networks: analytical modelling, optimization and performance evaluation.</span></span></li>
+              <li><span class="when">2025&ndash;2026</span><span class="what"><strong>Research Fellow</strong><span class="where"><a href="places/ucl.html">University College London</a>, <a href="places/london.html">London</a>, United Kingdom</span><span class="note">Fluid reconfigurable intelligent surfaces for NOMA, and port selection for fluid-antenna multiple access.</span></span></li>
+              <li><span class="when">2022&ndash;2025</span><span class="what"><strong>Postdoctoral Research Assistant</strong><span class="where"><a href="places/nazarbayev-university.html">Nazarbayev University</a>, <a href="places/astana.html">Astana</a>, <a href="places/kazakhstan.html">Kazakhstan</a></span><span class="note">RIS-assisted and UAV-enabled networks, ISAC and mmWave communications. Co-supervised undergraduate researchers, whose work led to Q1 journal publications.</span></span></li>
+              <li><span class="when">2016&ndash;2020</span><span class="what"><strong>Teaching Assistant</strong><span class="where"><a href="places/iiit-delhi.html">IIIT-Delhi</a>, <a href="places/delhi.html">New Delhi</a>, India</span><span class="note">Teaching and laboratory support for communication engineering courses. Teaching Assistant Award, Mobile Communication.</span></span></li>
+            </ul>
+          </div>
+          <div class="cv-block">
+            <h3>Education</h3>
+            <ul class="timeline">
+              <li><span class="when">2016&ndash;2022</span><span class="what"><strong>PhD, Communication Engineering</strong><span class="where"><a href="places/iiit-delhi.html">IIIT-Delhi</a>, <a href="places/delhi.html">New Delhi</a>, India</span><span class="note">Thesis: <em>Performance Analysis of Future Wireless Communication Systems under Residual Hardware Impairments</em>. Advisors: Prof. Vivek Ashok Bohara and Prof. Anand Srivastava. Best PhD Dissertation Award, 2023.</span></span></li>
+              <li><span class="when">2014&ndash;2016</span><span class="what"><strong>M.Tech, Communication and Information Systems</strong><span class="where"><a href="places/amu.html">Aligarh Muslim University</a>, <a href="places/aligarh.html">Aligarh</a>, India</span></span></li>
+              <li><span class="when">2010&ndash;2014</span><span class="what"><strong>B.Tech, Electronics Engineering</strong><span class="where"><a href="places/amu.html">Aligarh Muslim University</a>, <a href="places/aligarh.html">Aligarh</a>, India</span></span></li>
+            </ul>
+          </div>
+          <div class="cv-block">
+            <h3>Awards and fellowships</h3>
+            <ul class="ruled">
+              <li>Best PhD Dissertation Award, IIIT-Delhi <span class="yr">2023</span></li>
+              <li>Visvesvaraya PhD Fellowship, MeitY, Government of India <span class="yr">2017&ndash;2022</span></li>
+              <li>Teaching Assistant Award, Mobile Communication, IIIT-Delhi <span class="yr">2018&ndash;2019</span></li>
+              <li>Institute Teaching Fellowship, IIIT-Delhi <span class="yr">2016&ndash;2017</span></li>
+              <li>GATE Scholarship, AICTE, Government of India <span class="yr">2014&ndash;2016</span></li>
+              <li>UGC-NET qualified, Electronic Science <span class="yr">2017</span></li>
+              <li>GATE qualified, Electronics and Communication Engineering <span class="yr">2014, 2015</span></li>
+            </ul>
+          </div>
+        </div>
+        <div>
+          <div class="cv-block">
+            <h3>Service</h3>
+            <dl class="dl">
+              <dt>Journal reviewer</dt>
+              <dd>IEEE Transactions on Wireless Communications, IEEE Transactions on Vehicular Technology, IEEE Internet of Things Journal, IEEE Systems Journal, IEEE Communications Letters, IEEE Wireless Communications Letters, IEEE Access, Vehicular Communications, Wireless Networks.</dd>
+              <dt>Technical program committees</dt>
+              <dd>IEEE ICC 2025; IEEE ANTS 2020 and 2023&ndash;2026; IEEE Vehicular Technology Conference; IEEE Future Networks World Forum; IEEE World Forum on Internet of Things; ICCSPA 2026.</dd>
+              <dt>Session chair</dt>
+              <dd>WI-NOW 2025 International Workshop, University College London; IEEE ANTS 2020.</dd>
+              <dt>Memberships</dt>
+              <dd>IEEE; IEEE Communications Society; IEEE Vehicular Technology Society.</dd>
+            </dl>
+          </div>
+          <div class="cv-block">
+            <h3>Teaching</h3>
+            <p>Wireless, digital and mobile communication; communication theory; signals and systems; probability and random processes; digital signal processing; engineering mathematics; machine learning; 5G and 6G wireless networks.</p>
+          </div>
+          <div class="cv-block">
+            <h3>Collaborations</h3>
+            <p>University College London; Nazarbayev University; King Abdullah University of Science and Technology (KAUST); King Fahd University of Petroleum and Minerals (KFUPM); University of Southampton; IIIT-Delhi.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="urdu">
+  <div class="wrap section-grid">
+    <h2>Urdu</h2>
+    <div class="urdu-teaser">
+      <p class="ur" lang="ur"><span>ہزاروں خواہشیں ایسی کہ ہر خواہش پہ دم نکلے</span><span>بہت نکلے مرے ارمان لیکن پھر بھی کم نکلے</span></p>
+      <div>
+        <p class="en"><span>A thousand desires, each one enough to take my breath away;</span><span>many of my hopes came true, and still they were too few.</span></p>
+        <p class="who">Mirza Ghalib (1797–1869)</p>
+        <a class="btn btn-quiet" href="urdu.html">Urdu poetry and novels</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="contact">
+  <div class="wrap section-grid">
+    <h2>Contact</h2>
+    <div>
+      <div class="mail-row"><a class="contact-mail" id="mail-text" href="mailto:h.shaikh@qub.ac.uk">h.shaikh@qub.ac.uk</a><button type="button" class="btn btn-quiet btn-small" id="copy-mail">Copy address</button><span class="copy-status" id="copy-status" aria-live="polite"></span></div>
+      <p class="contact-where"><a href="places/qub.html">Queen's University Belfast</a>, <a href="places/belfast.html">Belfast</a>, Northern Ireland, United Kingdom</p>
+      <ul class="profiles" aria-label="Research profiles">
+        <li><a href="https://scholar.google.com/citations?user=wH9Q3RkAAAAJ&amp;hl=en" target="_blank" rel="noopener noreferrer">Google Scholar</a></li>
+        <li><a href="https://www.scopus.com/authid/detail.uri?authorId=58252818800" target="_blank" rel="noopener noreferrer">Scopus</a></li>
+        <li><a href="https://ieeexplore.ieee.org/author/37089381874" target="_blank" rel="noopener noreferrer">IEEE Xplore</a></li>
+        <li><a href="https://orcid.org/0000-0002-1869-0009" target="_blank" rel="noopener noreferrer">ORCID</a></li>
+        <li><a href="https://dblp.org/pid/240/7499.html" target="_blank" rel="noopener noreferrer">DBLP</a></li>
+        <li><a href="https://www.researchgate.net/profile/Mohd-Hamza-Shaikh" target="_blank" rel="noopener noreferrer">ResearchGate</a></li>
+        <li><a href="https://www.linkedin.com/in/hamza1322/" target="_blank" rel="noopener noreferrer">LinkedIn</a></li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer class="site-footer">
+  <div class="wrap foot"><p>&copy; 2026 Mohd Hamza Naim Shaikh. Last updated October 2026.</p>
+    <nav aria-label="More pages"><a href="learn/index.html">Tutorials</a><a href="urdu.html">Urdu</a><a href="places/index.html">Places</a></nav>
+  </div>
+</footer>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "Person", "name": "Mohd Hamza Naim Shaikh", "honorificPrefix": "Dr", "jobTitle": "Research Fellow", "affiliation": {"@type": "CollegeOrUniversity", "name": "Queen's University Belfast"}, "alumniOf": [{"@type": "CollegeOrUniversity", "name": "Indraprastha Institute of Information Technology Delhi"}, {"@type": "CollegeOrUniversity", "name": "Aligarh Muslim University"}], "email": "mailto:h.shaikh@qub.ac.uk", "knowsAbout": ["Reconfigurable intelligent surfaces", "Fluid antenna systems", "NOMA", "Integrated sensing and communication", "6G wireless networks"], "sameAs": ["https://scholar.google.com/citations?user=wH9Q3RkAAAAJ", "https://www.scopus.com/authid/detail.uri?authorId=58252818800", "https://ieeexplore.ieee.org/author/37089381874", "https://orcid.org/0000-0002-1869-0009", "https://dblp.org/pid/240/7499.html", "https://www.researchgate.net/profile/Mohd-Hamza-Shaikh", "https://www.linkedin.com/in/hamza1322/"]}</script>
+<script>
+/* ------------------------------------------------------------------
+   Site settings. When you host this page yourself:
+   - cvPdf: put your CV PDF next to this file and give its name,
+            e.g. "Shaikh_CV.pdf". The download button appears automatically.
+   - photo: a portrait next to this file ("photo.jpg") or a data: URI.
+------------------------------------------------------------------- */
+const SITE = {
+  cvPdf: "Shaikh_CV.pdf",
+  photo: ""
+};
+
+(function settings() {
+  if (SITE.photo) {
+    const slot = document.getElementById("portrait");
+    const img = new Image();
+    img.src = SITE.photo;
+    img.alt = "Portrait of Mohd Hamza Naim Shaikh";
+    img.loading = "lazy";
+    slot.appendChild(img);
+    slot.hidden = false;
+  }
+  if (SITE.cvPdf) {
+    document.querySelectorAll("[data-cv-pdf]").forEach(function (a) {
+      a.href = SITE.cvPdf;
+      a.hidden = false;
+    });
+  }
+})();
+
+/* Highlight the current section in the navigation */
+(function scrollSpy() {
+  const links = Array.from(document.querySelectorAll('.site-nav a[href^="#"]'));
+  if (!("IntersectionObserver" in window)) return;
+  const byId = new Map(links.map(function (a) { return [a.getAttribute("href").slice(1), a]; }));
+  const io = new IntersectionObserver(function (entries) {
+    entries.forEach(function (e) {
+      if (!e.isIntersecting) return;
+      links.forEach(function (l) { l.removeAttribute("aria-current"); });
+      const a = byId.get(e.target.id);
+      if (a) a.setAttribute("aria-current", "true");
+    });
+  }, { rootMargin: "-40% 0px -55% 0px" });
+  byId.forEach(function (_a, id) { const s = document.getElementById(id); if (s) io.observe(s); });
+})();
+
+/* Live RIS phase profile.
+   N x N elements, half-wavelength spacing, 2-bit phase control, focusing a
+   normally incident wave onto a point at height Z (in wavelengths) above the
+   surface. Element phase: phi = -k * |r_element - r_focus|, quantised to
+   multiples of pi/2; tile shade = (1 + cos phi) / 2. */
+(function risCanvas() {
+  const canvas = document.getElementById("ris-canvas");
+  if (!canvas || !canvas.getContext) return;
+  const ctx = canvas.getContext("2d");
+  const N = 28, d = 0.5, k = 2 * Math.PI, Z = 18, A = N * d, Q = Math.PI / 2; // 2-bit phase states
+  const reduce = window.matchMedia("(prefers-reduced-motion: reduce)");
+  const REST = { x: 0.12, y: -0.1 };
+  let focus = reduce.matches ? { x: REST.x, y: REST.y } : { x: -0.34, y: 0.33 };
+  let target = { x: REST.x, y: REST.y };
+  let W = 0, dpr = 1, raf = 0, visible = true;
+  let lo = [10, 43, 87], hi = [234, 240, 247], signal = "#C98200";
+
+  function rgb(hex) {
+    const h = hex.replace("#", "").trim();
+    const v = h.length === 3 ? h.split("").map(function (c) { return c + c; }).join("") : h;
+    return [parseInt(v.slice(0, 2), 16), parseInt(v.slice(2, 4), 16), parseInt(v.slice(4, 6), 16)];
+  }
+  function readColors() {
+    const cs = getComputedStyle(document.documentElement);
+    try {
+      lo = rgb(cs.getPropertyValue("--tile-lo"));
+      hi = rgb(cs.getPropertyValue("--tile-hi"));
+      signal = cs.getPropertyValue("--signal").trim() || signal;
+    } catch (e) { /* keep defaults */ }
+  }
+  function resize() {
+    const r = canvas.getBoundingClientRect();
+    W = Math.max(1, Math.round(r.width));
+    dpr = Math.min(window.devicePixelRatio || 1, 2);
+    canvas.width = Math.round(W * dpr);
+    canvas.height = Math.round(W * dpr);
+    draw();
+  }
+  function draw() {
+    if (!W) return;
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    ctx.clearRect(0, 0, W, W);
+    const cell = W / N;
+    const gap = Math.max(1, cell * 0.11);
+    const fx = focus.x * A, fy = focus.y * A;
+    for (let m = 0; m < N; m++) {
+      const x = (m - (N - 1) / 2) * d;
+      for (let n = 0; n < N; n++) {
+        const y = (n - (N - 1) / 2) * d;
+        const r = Math.sqrt((x - fx) * (x - fx) + (y - fy) * (y - fy) + Z * Z);
+        const phi = ((-k * r) % (2 * Math.PI) + 2 * Math.PI) % (2 * Math.PI);
+        const v = 0.5 * (1 + Math.cos(Math.round(phi / Q) * Q));
+        ctx.fillStyle = "rgb(" + Math.round(lo[0] + (hi[0] - lo[0]) * v) + "," +
+          Math.round(lo[1] + (hi[1] - lo[1]) * v) + "," + Math.round(lo[2] + (hi[2] - lo[2]) * v) + ")";
+        ctx.fillRect(m * cell + gap / 2, n * cell + gap / 2, cell - gap, cell - gap);
+      }
+    }
+    const px = (focus.x + 0.5) * W, py = (focus.y + 0.5) * W;
+    ctx.lineWidth = 2;
+    ctx.strokeStyle = signal;
+    ctx.beginPath();
+    ctx.arc(px, py, Math.max(7, cell * 0.55), 0, Math.PI * 2);
+    ctx.stroke();
+    ctx.fillStyle = signal;
+    ctx.beginPath();
+    ctx.arc(px, py, 2.4, 0, Math.PI * 2);
+    ctx.fill();
+  }
+  function tick() {
+    raf = 0;
+    const ease = reduce.matches ? 1 : 0.06;
+    const dx = target.x - focus.x, dy = target.y - focus.y;
+    focus.x += dx * ease;
+    focus.y += dy * ease;
+    draw();
+    if (visible && (Math.abs(dx) > 0.0008 || Math.abs(dy) > 0.0008)) raf = requestAnimationFrame(tick);
+  }
+  function kick() { if (!raf && visible) raf = requestAnimationFrame(tick); }
+  function aim(e) {
+    const r = canvas.getBoundingClientRect();
+    target.x = Math.min(0.5, Math.max(-0.5, (e.clientX - r.left) / r.width - 0.5));
+    target.y = Math.min(0.5, Math.max(-0.5, (e.clientY - r.top) / r.height - 0.5));
+    kick();
+  }
+  canvas.addEventListener("pointermove", aim);
+  canvas.addEventListener("pointerdown", aim);
+  canvas.addEventListener("pointerleave", function () { target = { x: REST.x, y: REST.y }; kick(); });
+
+  readColors();
+  if ("ResizeObserver" in window) new ResizeObserver(resize).observe(canvas);
+  else window.addEventListener("resize", resize);
+  resize();
+  if ("IntersectionObserver" in window) {
+    new IntersectionObserver(function (entries) {
+      visible = entries[0].isIntersecting;
+      if (visible) kick(); else if (raf) { cancelAnimationFrame(raf); raf = 0; }
+    }).observe(canvas);
+  }
+  const scheme = window.matchMedia("(prefers-color-scheme: dark)");
+  const onScheme = function () { readColors(); draw(); };
+  if (scheme.addEventListener) scheme.addEventListener("change", onScheme);
+  new MutationObserver(onScheme).observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
+  kick();
+})();
+
+/* Publication filters */
+(function publications() {
+  const root = document.getElementById("pubs");
+  if (!root) return;
+  const items = Array.from(root.querySelectorAll(".pub"));
+  const years = Array.from(root.querySelectorAll(".pub-year"));
+  const seg = Array.from(document.querySelectorAll(".seg [role=radio]"));
+  const topic = document.getElementById("pub-topic");
+  const first = document.getElementById("pub-first");
+  const q = document.getElementById("pub-q");
+  const count = document.getElementById("pub-count");
+  const empty = document.getElementById("pub-empty");
+  const reduce = window.matchMedia("(prefers-reduced-motion: reduce)");
+  let type = "all";
+
+  function apply() {
+    const terms = q.value.trim().toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").split(/\s+/).filter(Boolean);
+    const tp = topic.value;
+    let shown = 0;
+    items.forEach(function (li) {
+      const ok = (type === "all" || li.dataset.type === type) &&
+        (!tp || li.dataset.tags.split(" ").indexOf(tp) !== -1) &&
+        (!first.checked || li.dataset.first === "1") &&
+        terms.every(function (t) { return li.dataset.text.indexOf(t) !== -1; });
+      li.hidden = !ok;
+      if (ok) shown++;
+    });
+    years.forEach(function (y) { y.hidden = !y.querySelector(".pub:not([hidden])"); });
+    count.textContent = shown === items.length ? "Showing all " + items.length + " entries" : "Showing " + shown + " of " + items.length + " entries";
+    empty.hidden = shown !== 0;
+  }
+  function setType(t) {
+    type = t;
+    seg.forEach(function (b) { b.setAttribute("aria-checked", String(b.dataset.type === t)); });
+  }
+  seg.forEach(function (b) { b.addEventListener("click", function () { setType(b.dataset.type); apply(); }); });
+  topic.addEventListener("change", apply);
+  first.addEventListener("change", apply);
+  q.addEventListener("input", apply);
+  document.getElementById("pub-clear").addEventListener("click", function () {
+    setType("all"); topic.value = ""; first.checked = false; q.value = ""; apply();
+  });
+  document.querySelectorAll("[data-topic]").forEach(function (b) {
+    b.addEventListener("click", function () {
+      setType("all"); topic.value = b.dataset.topic; first.checked = false; q.value = ""; apply();
+      document.getElementById("publications").scrollIntoView({ behavior: reduce.matches ? "auto" : "smooth" });
+    });
+  });
+  apply();
+})();
+
+/* Copy the email address */
+(function copyMail() {
+  const b = document.getElementById("copy-mail"), s = document.getElementById("copy-status");
+  if (!b) return;
+  function select() {
+    const r = document.createRange(); r.selectNodeContents(document.getElementById("mail-text"));
+    const sel = window.getSelection(); sel.removeAllRanges(); sel.addRange(r);
+    s.textContent = "Selected. Press Ctrl+C or Cmd+C to copy.";
+  }
+  b.addEventListener("click", function () {
+    try {
+      navigator.clipboard.writeText("h.shaikh@qub.ac.uk").then(function () {
+        s.textContent = "Copied"; setTimeout(function () { s.textContent = ""; }, 2500);
+      }, select);
+    } catch (e) { select(); }
+  });
+})();
+</script>
+
+</body></html>
