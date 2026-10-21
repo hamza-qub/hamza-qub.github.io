@@ -1,0 +1,1313 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="Real transceivers add distortion that grows with the signal itself. Raising the transmit power does not remove it, so it sets a ceiling on what any link can achieve.">
+<meta name="author" content="Mohd Hamza Naim Shaikh">
+<meta name="theme-color" content="#F5F7FA" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0A1524" media="(prefers-color-scheme: dark)">
+<title>Hardware Impairments Tutorial</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&amp;family=STIX+Two+Text:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&amp;display=swap">
+<style>
+:root {
+  --bg: #F5F7FA;
+  --surface: #FFFFFF;
+  --ink: #0E1A2B;
+  --ink-2: #2C3B50;
+  --muted: #5A6779;
+  --line: #D8DFE8;
+  --accent: #00468C;
+  --accent-hover: #003468;
+  --on-accent: #FFFFFF;
+  --signal: #C98200;
+  --tile-lo: #0A2B57;
+  --tile-hi: #EAF0F7;
+  --serif: "STIX Two Text", "STIX Two", "Times New Roman", Times, serif;
+  --sans: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  color-scheme: light;
+  box-sizing: border-box;
+  padding-top: env(safe-area-inset-top, 0px);
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0A1524;
+    --surface: #0F1E31;
+    --ink: #E6ECF4;
+    --ink-2: #C4CEDB;
+    --muted: #94A2B5;
+    --line: #22344A;
+    --accent: #8DB9F2;
+    --accent-hover: #B7D3F8;
+    --on-accent: #06182E;
+    --signal: #F2B544;
+    --tile-lo: #0E2443;
+    --tile-hi: #A8C9F3;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0A1524;
+  --surface: #0F1E31;
+  --ink: #E6ECF4;
+  --ink-2: #C4CEDB;
+  --muted: #94A2B5;
+  --line: #22344A;
+  --accent: #8DB9F2;
+  --accent-hover: #B7D3F8;
+  --on-accent: #06182E;
+  --signal: #F2B544;
+  --tile-lo: #0E2443;
+  --tile-hi: #A8C9F3;
+  color-scheme: dark;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+html {
+  scroll-padding-top: calc(env(safe-area-inset-top, 0px) + 4.5rem);
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+@media (prefers-reduced-motion: no-preference) { html { scroll-behavior: smooth; } }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--serif);
+  font-size: 1.125rem;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+img { max-width: 100%; height: auto; }
+a { color: var(--accent); text-underline-offset: 0.18em; }
+a:hover { color: var(--accent-hover); }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 2px; }
+p { margin: 0 0 1em; }
+h1, h2, h3 { font-family: var(--serif); color: var(--ink); text-wrap: balance; }
+
+.wrap { max-width: 72rem; margin-inline: auto; padding-inline: clamp(1.25rem, 4vw, 2.5rem); }
+
+.skip {
+  position: absolute; left: 1rem; top: -4rem; z-index: 50;
+  background: var(--ink); color: var(--bg);
+  font-family: var(--sans); font-size: 0.875rem; padding: 0.6rem 0.9rem; text-decoration: none;
+}
+.skip:focus { top: calc(env(safe-area-inset-top, 0px) + 0.75rem); color: var(--bg); }
+
+/* Header */
+.site-header {
+  position: sticky;
+  top: env(safe-area-inset-top, 0px);
+  z-index: 20;
+  background: var(--bg);
+  background: color-mix(in srgb, var(--bg) 88%, transparent);
+  -webkit-backdrop-filter: saturate(1.4) blur(12px);
+  backdrop-filter: saturate(1.4) blur(12px);
+  border-bottom: 1px solid var(--line);
+}
+.header-inner { display: flex; align-items: center; justify-content: space-between; gap: 1.5rem; min-height: 3.5rem; }
+.brand { font-family: var(--serif); font-weight: 600; font-size: 1.125rem; color: var(--ink); text-decoration: none; white-space: nowrap; }
+.brand:hover { color: var(--ink); }
+.site-nav { min-width: 0; }
+.site-nav ul {
+  display: flex; gap: clamp(0.9rem, 2.4vw, 1.9rem);
+  list-style: none; margin: 0; padding: 0;
+  overflow-x: auto; scrollbar-width: none;
+}
+.site-nav ul::-webkit-scrollbar { display: none; }
+.site-nav a {
+  display: inline-block; padding: 1rem 0 0.9rem;
+  font-family: var(--sans); font-size: 0.9375rem; color: var(--muted);
+  text-decoration: none; white-space: nowrap;
+  border-bottom: 2px solid transparent;
+}
+.site-nav a:hover { color: var(--ink); }
+.site-nav a[aria-current="true"] { color: var(--ink); border-bottom-color: var(--accent); }
+@media (max-width: 560px) {
+  .brand { display: none; }
+  .site-nav { width: 100%; }
+  .site-nav ul { justify-content: space-between; }
+}
+
+/* Hero */
+.hero { padding-block: clamp(3rem, 8vw, 6.5rem) clamp(3rem, 7vw, 5.5rem); }
+.hero-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.12fr) minmax(0, 0.88fr);
+  gap: clamp(2.5rem, 6vw, 5rem);
+  align-items: center;
+}
+.hero h1 {
+  font-weight: 600;
+  font-size: clamp(2.6rem, 6.4vw, 4.6rem);
+  line-height: 1.02;
+  letter-spacing: -0.018em;
+  margin: 0 0 1.1rem;
+}
+.role { font-family: var(--sans); font-weight: 500; font-size: 1.0625rem; color: var(--ink-2); margin: 0 0 1.75rem; }
+.lede { font-size: clamp(1.25rem, 2.3vw, 1.5rem); line-height: 1.45; max-width: 31ch; margin: 0 0 1.25rem; }
+.metrics { font-family: var(--sans); font-size: 0.9375rem; color: var(--muted); margin: 0 0 2rem; }
+.actions { display: flex; flex-wrap: wrap; gap: 0.75rem; margin: 0 0 1.75rem; }
+.btn {
+  display: inline-flex; align-items: center; justify-content: center;
+  min-height: 2.75rem; padding: 0 1.2rem;
+  font-family: var(--sans); font-weight: 500; font-size: 0.9375rem;
+  background: var(--accent); color: var(--on-accent);
+  border: 1px solid var(--accent); border-radius: 3px; text-decoration: none;
+}
+.btn:hover { background: var(--accent-hover); border-color: var(--accent-hover); color: var(--on-accent); }
+.btn-quiet { background: transparent; color: var(--ink); border-color: var(--line); }
+.btn-quiet:hover { background: transparent; color: var(--ink); border-color: var(--ink-2); }
+.profiles {
+  list-style: none; margin: 0; padding: 0;
+  display: flex; flex-wrap: wrap; gap: 0.4rem 1.15rem;
+  font-family: var(--sans); font-size: 0.9375rem;
+}
+.profiles a { color: var(--ink-2); text-decoration: underline; text-decoration-color: var(--line); text-decoration-thickness: 1px; }
+.profiles a:hover { color: var(--accent); text-decoration-color: var(--accent); }
+
+.ris { margin: 0; width: 100%; max-width: 30rem; justify-self: end; }
+.ris canvas { display: block; width: 100%; aspect-ratio: 1 / 1; cursor: crosshair; touch-action: pan-y; }
+.ris figcaption { font-family: var(--sans); font-size: 0.8125rem; line-height: 1.55; color: var(--muted); margin-top: 0.9rem; max-width: 46ch; }
+@media (max-width: 880px) {
+  .hero-grid { grid-template-columns: minmax(0, 1fr); }
+  .ris { justify-self: start; max-width: 26rem; }
+}
+
+/* Sections */
+.section { padding-block: clamp(3.5rem, 8vw, 6rem); border-top: 1px solid var(--line); }
+.section-grid { display: grid; grid-template-columns: 11.5rem minmax(0, 1fr); gap: 2.5rem; }
+.section-grid > h2 {
+  position: sticky; top: calc(env(safe-area-inset-top, 0px) + 5rem); align-self: start;
+  margin: 0; font-size: 2rem; font-weight: 600; line-height: 1.15;
+}
+@media (max-width: 880px) {
+  .section-grid { grid-template-columns: minmax(0, 1fr); gap: 1.5rem; }
+  .section-grid > h2 { position: static; }
+}
+h3 { font-weight: 600; font-size: 1.3125rem; line-height: 1.3; margin: 0 0 0.5rem; }
+.intro { color: var(--ink-2); max-width: 62ch; margin-bottom: 1.75rem; }
+
+/* About */
+.about-grid { display: grid; grid-template-columns: minmax(0, 1fr) 17rem; gap: 3.5rem; }
+.prose p { max-width: 66ch; }
+.side h3 { font-family: var(--sans); font-size: 0.9375rem; font-weight: 600; margin: 0 0 0.6rem; }
+.side ul { list-style: none; margin: 0; padding: 0; }
+.side li { padding: 0.8rem 0; border-top: 1px solid var(--line); font-size: 1rem; line-height: 1.45; }
+.side .date { display: block; font-family: var(--sans); font-size: 0.8125rem; color: var(--muted); margin-bottom: 0.15rem; }
+.portrait { margin: 0 0 1.75rem; }
+.portrait img { display: block; width: 100%; max-width: 15rem; aspect-ratio: 4 / 5; object-fit: cover; border-radius: 2px; }
+@media (max-width: 1060px) { .about-grid { grid-template-columns: minmax(0, 1fr); gap: 2.5rem; } }
+
+/* Research */
+.themes { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 2.75rem; }
+.theme { border-top: 1px solid var(--line); padding: 1.3rem 0 1.6rem; }
+.theme p { font-size: 1.0625rem; color: var(--ink-2); margin: 0 0 0.7rem; max-width: 52ch; }
+@media (max-width: 720px) { .themes { grid-template-columns: minmax(0, 1fr); } }
+.linkish {
+  font-family: var(--sans); font-size: 0.875rem; font-weight: 500; color: var(--accent);
+  background: none; border: 0; padding: 0.3rem 0; cursor: pointer;
+  text-decoration: underline; text-underline-offset: 0.2em; text-decoration-thickness: 1px;
+}
+.linkish:hover { color: var(--accent-hover); }
+
+/* Publications */
+.pub-controls {
+  display: flex; flex-wrap: wrap; align-items: center; gap: 0.85rem 1.25rem;
+  font-family: var(--sans); font-size: 0.9375rem;
+  padding-bottom: 1.25rem; border-bottom: 1px solid var(--line);
+}
+.seg { display: flex; flex-wrap: wrap; gap: 0.4rem; width: 100%; }
+.seg button {
+  font-family: var(--sans); font-size: 0.875rem; color: var(--ink-2);
+  background: transparent; border: 1px solid var(--line); border-radius: 3px;
+  min-height: 2.25rem; padding: 0 0.75rem; cursor: pointer;
+}
+.seg button:hover { border-color: var(--ink-2); }
+.seg button[aria-checked="true"] { background: var(--ink); border-color: var(--ink); color: var(--bg); }
+.seg .n { margin-left: 0.35rem; opacity: 0.68; font-variant-numeric: tabular-nums; }
+.field { display: inline-flex; align-items: center; gap: 0.5rem; color: var(--ink-2); }
+.field select, .search input {
+  font-family: var(--sans); font-size: 0.875rem; color: var(--ink);
+  background: var(--surface); border: 1px solid var(--line); border-radius: 3px;
+  min-height: 2.25rem; padding: 0 0.6rem;
+}
+.field select { max-width: 15rem; }
+.check { display: inline-flex; align-items: center; gap: 0.45rem; color: var(--ink-2); cursor: pointer; }
+.check input { width: 1rem; height: 1rem; accent-color: var(--accent); margin: 0; }
+.search { flex: 1 1 13rem; min-width: 0; }
+.search input { width: 100%; }
+.pub-count { font-family: var(--sans); font-size: 0.8125rem; color: var(--muted); margin: 0.85rem 0 0; }
+.pub-empty { font-family: var(--sans); font-size: 0.9375rem; color: var(--ink-2); padding: 1.5rem 0; }
+.pub-empty[hidden] { display: none; }
+
+.pub-year { display: grid; grid-template-columns: 4.25rem minmax(0, 1fr); gap: 1rem; padding-top: 1.4rem; }
+.pub-year[hidden] { display: none; }
+.pub-year > h3 { font-family: var(--sans); font-size: 0.9375rem; font-weight: 600; color: var(--muted); margin: 1rem 0 0; font-variant-numeric: tabular-nums; }
+.pub-list { list-style: none; margin: 0; padding: 0; }
+.pub { display: grid; grid-template-columns: 2.6rem minmax(0, 1fr); gap: 0.6rem; padding: 0.95rem 0 1.05rem; border-bottom: 1px solid var(--line); }
+.pub:last-child { border-bottom: 0; }
+.pub[hidden] { display: none; }
+.pub-id { font-family: var(--sans); font-size: 0.8125rem; color: var(--muted); padding-top: 0.22rem; font-variant-numeric: tabular-nums; }
+.pub-title { font-size: 1.0625rem; font-weight: 600; line-height: 1.4; color: var(--ink); text-decoration: none; }
+.pub-title:hover { color: var(--accent); text-decoration: underline; text-decoration-thickness: 1px; }
+.pub-authors { font-size: 1rem; line-height: 1.5; color: var(--ink-2); margin: 0.3rem 0 0; }
+.pub-authors strong { color: var(--ink); font-weight: 600; }
+.pub-venue { font-size: 1rem; line-height: 1.5; color: var(--muted); margin: 0.1rem 0 0; }
+.pub-links { display: flex; flex-wrap: wrap; gap: 0.25rem 1.1rem; font-family: var(--sans); font-size: 0.8125rem; margin: 0.4rem 0 0; }
+@media (max-width: 600px) {
+  .pub-year { grid-template-columns: minmax(0, 1fr); gap: 0; }
+  .pub-year > h3 { margin-top: 0.5rem; }
+}
+
+/* CV */
+.cv-head { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 1rem; margin-bottom: 1.5rem; }
+.cv-head p { margin: 0; color: var(--ink-2); max-width: 54ch; }
+.cv-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 3.5rem; }
+@media (max-width: 980px) { .cv-grid { grid-template-columns: minmax(0, 1fr); } }
+.cv-block { margin-bottom: 2.5rem; }
+.timeline { list-style: none; margin: 0.4rem 0 0; padding: 0; }
+.timeline li { display: grid; grid-template-columns: 7rem minmax(0, 1fr); gap: 1rem; padding: 0.9rem 0; border-top: 1px solid var(--line); }
+.when { font-family: var(--sans); font-size: 0.875rem; color: var(--muted); padding-top: 0.2rem; font-variant-numeric: tabular-nums; }
+.when .now { display: inline-block; width: 0.5rem; height: 0.5rem; border-radius: 50%; background: var(--signal); margin-right: 0.4rem; vertical-align: 0.06em; }
+.what strong { display: block; font-weight: 600; }
+.what .where { display: block; color: var(--ink-2); }
+.what .note { display: block; color: var(--muted); font-size: 1rem; line-height: 1.5; margin-top: 0.25rem; }
+@media (max-width: 480px) { .timeline li { grid-template-columns: minmax(0, 1fr); gap: 0.2rem; } }
+.ruled { list-style: none; margin: 0.4rem 0 0; padding: 0; }
+.ruled li { padding: 0.65rem 0; border-top: 1px solid var(--line); line-height: 1.5; }
+.ruled .yr { font-family: var(--sans); font-size: 0.875rem; color: var(--muted); white-space: nowrap; }
+.dl { margin: 0.4rem 0 0; }
+.dl dt { font-family: var(--sans); font-size: 0.875rem; font-weight: 600; color: var(--ink); padding-top: 0.7rem; border-top: 1px solid var(--line); }
+.dl dd { margin: 0.2rem 0 0.8rem; color: var(--ink-2); line-height: 1.55; }
+[data-cv-pdf][hidden] { display: none; }
+
+/* Contact */
+.contact-mail {
+  display: inline-block; font-size: clamp(1.5rem, 3.6vw, 2.25rem); font-weight: 500; line-height: 1.2;
+  color: var(--ink); text-decoration: underline; text-decoration-color: var(--line); text-decoration-thickness: 2px;
+  overflow-wrap: anywhere; margin-bottom: 1rem;
+}
+.contact-mail:hover { color: var(--accent); text-decoration-color: var(--accent); }
+.contact-where { color: var(--ink-2); margin-bottom: 1.5rem; }
+
+.site-footer { border-top: 1px solid var(--line); padding-block: 2rem 2.5rem; font-family: var(--sans); font-size: 0.8125rem; color: var(--muted); }
+.site-footer p { margin: 0; }
+
+@media print {
+  .site-header, .skip, .ris, .actions, .pub-controls, .pub-count, .linkish, .pub-links { display: none !important; }
+  body { background: #fff; color: #000; font-size: 10.5pt; }
+  .section { border-top: 0; padding-block: 1rem; }
+  .section-grid { grid-template-columns: 1fr; gap: 0.5rem; }
+  .section-grid > h2 { position: static; }
+  .pub[hidden], .pub-year[hidden] { display: grid !important; }
+  a { color: inherit; text-decoration: none; }
+}
+/* ---- additions: tutorials, interactive models, diagrams, Urdu ---- */
+/* Chart colours validated for colour-vision deficiency on both surfaces. */
+:root {
+  --chart-1: #1F62AE;
+  --chart-2: #C98200;
+  --tint: #EAF0F7;
+  --ok-bg: #E3F1E8;
+  --ok-ink: #1D5B34;
+  --no-bg: #F7E8E2;
+  --no-ink: #7A2E14;
+  --urdu: "Noto Nastaliq Urdu", "Jameel Noori Nastaleeq", "Alvi Nastaleeq", "Urdu Typesetting", serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --chart-1: #4A8EE2;
+    --chart-2: #C4851E;
+    --tint: #12253D;
+    --ok-bg: #163524;
+    --ok-ink: #A9DDBA;
+    --no-bg: #3A2117;
+    --no-ink: #F2BBA4;
+  }
+}
+:root[data-theme="dark"] {
+  --chart-1: #4A8EE2;
+  --chart-2: #C4851E;
+  --tint: #12253D;
+  --ok-bg: #163524;
+  --ok-ink: #A9DDBA;
+  --no-bg: #3A2117;
+  --no-ink: #F2BBA4;
+}
+
+[hidden] { display: none !important; }
+.site-nav a[aria-current="page"] { color: var(--ink); border-bottom-color: var(--accent); }
+
+/* Shared page head for inner pages */
+.page-head { padding-block: clamp(2.5rem, 6vw, 4.5rem) clamp(1.5rem, 4vw, 2.5rem); }
+.crumbs { font-family: var(--sans); font-size: 0.875rem; color: var(--muted); margin: 0 0 1.25rem; display: flex; flex-wrap: wrap; gap: 0.4rem; }
+.crumbs a { color: var(--ink-2); }
+.page-head h1 { font-weight: 600; font-size: clamp(2.2rem, 5.2vw, 3.6rem); line-height: 1.05; letter-spacing: -0.015em; margin: 0 0 1rem; max-width: 22ch; }
+.page-head .lede { max-width: 40ch; }
+.meta-row { display: flex; flex-wrap: wrap; gap: 0.5rem 1.25rem; font-family: var(--sans); font-size: 0.875rem; color: var(--muted); margin: 0; padding: 0; list-style: none; }
+.meta-row li { display: inline-flex; align-items: center; gap: 0.4rem; }
+.meta-row .level { color: var(--ink-2); font-weight: 500; }
+
+/* Tutorial layout */
+.tut-grid { display: grid; grid-template-columns: 12.5rem minmax(0, 1fr); gap: 3.5rem; padding-bottom: clamp(3rem, 8vw, 5rem); border-top: 1px solid var(--line); padding-top: 2.5rem; }
+.toc { position: sticky; top: calc(env(safe-area-inset-top, 0px) + 5rem); align-self: start; font-family: var(--sans); font-size: 0.875rem; }
+.toc h2 { font-family: var(--sans); font-size: 0.75rem; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); margin: 0 0 0.75rem; }
+.toc ol { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.15rem; }
+.toc a { display: block; padding: 0.3rem 0 0.3rem 0.75rem; color: var(--ink-2); text-decoration: none; border-left: 2px solid var(--line); line-height: 1.35; }
+.toc a:hover { color: var(--ink); border-left-color: var(--ink-2); }
+.toc a[aria-current="true"] { color: var(--ink); border-left-color: var(--accent); }
+@media (max-width: 1000px) {
+  .tut-grid { grid-template-columns: minmax(0, 1fr); gap: 1.5rem; }
+  .toc { display: none; }
+}
+
+.prose { min-width: 0; max-width: 44rem; }
+.prose > * { max-width: 100%; }
+.prose h2 { font-size: 1.625rem; font-weight: 600; line-height: 1.2; margin: 3rem 0 0.9rem; scroll-margin-top: 5rem; }
+.prose > h2:first-child { margin-top: 0; }
+.prose h3 { font-size: 1.1875rem; margin: 1.75rem 0 0.5rem; }
+.prose p, .prose li { line-height: 1.65; }
+.prose ul, .prose ol { padding-left: 1.3rem; margin: 0 0 1.1em; }
+.prose li { margin-bottom: 0.4em; }
+.prose li::marker { color: var(--muted); }
+.prose strong { font-weight: 600; }
+.prose a { text-decoration-thickness: 1px; }
+.prose dl.terms { margin: 0 0 1.2em; display: grid; gap: 0.9rem; }
+.prose dl.terms dt { font-weight: 600; }
+.prose dl.terms dd { margin: 0.15rem 0 0; color: var(--ink-2); }
+
+/* Equations rendered to SVG at build time */
+svg.tex { display: inline-block; overflow: visible; }
+.eq { overflow-x: auto; overflow-y: hidden; text-align: center; margin: 1.25rem 0 1.4rem; padding-block: 0.2rem; font-size: 1.12em; }
+.eq svg.tex { margin-inline: auto; }
+
+.callout { background: var(--tint); border-radius: 4px; padding: 1.1rem 1.25rem; margin: 1.5rem 0; }
+.callout p:last-child, .callout ul:last-child { margin-bottom: 0; }
+.label { display: block; font-family: var(--sans); font-size: 0.75rem; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink-2); margin-bottom: 0.45rem; }
+
+/* Diagrams */
+figure.diagram { margin: 1.75rem 0; }
+.fig-scroll { overflow-x: auto; }
+.fig-scroll svg { display: block; width: 100%; height: auto; min-width: 34rem; }
+figure.diagram figcaption, figure.table-fig figcaption { font-family: var(--sans); font-size: 0.875rem; line-height: 1.55; color: var(--muted); margin-top: 0.6rem; }
+.dg { color: var(--ink); }
+.dg text { fill: currentColor; font-family: var(--sans); font-size: 13px; }
+.dg .sm { font-size: 11.5px; fill: var(--muted); }
+.dg .lbl { font-weight: 500; }
+.dg .stroke { stroke: currentColor; fill: none; stroke-width: 1.5; }
+.dg .thin { stroke: var(--muted); fill: none; stroke-width: 1; }
+.dg .c1 { stroke: var(--chart-1); fill: none; stroke-width: 2; }
+.dg .c2 { stroke: var(--chart-2); fill: none; stroke-width: 2; }
+.dg .ref { stroke: var(--muted); fill: none; stroke-width: 1.5; stroke-dasharray: 6 5; }
+.dg .fill-c1 { fill: var(--chart-1); }
+.dg .fill-c2 { fill: var(--chart-2); }
+.dg .fill-ink { fill: currentColor; }
+.dg .fill-muted { fill: var(--muted); }
+.dg .fill-line { fill: var(--line); }
+.dg .box { fill: var(--surface); stroke: var(--muted); stroke-width: 1; }
+.dg .box-tint { fill: var(--tint); stroke: none; }
+.dg .surf { fill: var(--surface); }
+
+/* Tables */
+figure.table-fig { margin: 1.5rem 0; }
+.table-scroll { overflow-x: auto; }
+table.cmp { width: 100%; border-collapse: collapse; font-family: var(--sans); font-size: 0.9375rem; min-width: 32rem; }
+table.cmp th, table.cmp td { text-align: left; padding: 0.6rem 0.75rem 0.6rem 0; border-bottom: 1px solid var(--line); vertical-align: top; }
+table.cmp thead th { font-size: 0.8125rem; font-weight: 600; color: var(--ink-2); border-bottom-color: var(--ink-2); }
+table.cmp td { font-variant-numeric: tabular-nums; color: var(--ink-2); }
+table.cmp td:first-child { color: var(--ink); font-weight: 500; }
+table.cmp td.new { color: var(--ink); }
+
+/* Interactive models */
+.demo { background: var(--surface); border: 1px solid var(--line); border-radius: 4px; padding: 1.1rem 1.1rem 1rem; margin: 1.5rem 0; font-family: var(--sans); }
+.demo-controls { display: grid; grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr)); gap: 0.9rem 1.5rem; margin-bottom: 0.9rem; }
+.ctl { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 0.25rem 0.75rem; min-width: 0; }
+.ctl label, .ctl .ctl-l { font-size: 0.8125rem; color: var(--ink-2); grid-column: 1; }
+.ctl output { grid-column: 2; grid-row: 1; font-size: 0.875rem; font-weight: 600; color: var(--ink); font-variant-numeric: tabular-nums; text-align: right; }
+.ctl input[type="range"] { grid-column: 1 / -1; width: 100%; margin: 0; accent-color: var(--chart-1); height: 1.75rem; }
+.ctl-seg, .ctl-presets { grid-template-columns: minmax(0, 1fr); }
+.ctl-btn { grid-template-columns: minmax(0, 1fr); align-content: end; }
+.seg-mini { display: flex; flex-wrap: wrap; gap: 0.35rem; }
+.seg-mini button { font: inherit; font-size: 0.8125rem; color: var(--ink-2); background: transparent; border: 1px solid var(--line); border-radius: 3px; min-height: 2rem; padding: 0 0.6rem; cursor: pointer; }
+.seg-mini button:hover { border-color: var(--ink-2); }
+.seg-mini button[aria-checked="true"] { background: var(--ink); border-color: var(--ink); color: var(--bg); }
+.btn-small { min-height: 2.1rem; font-size: 0.8125rem; padding: 0 0.85rem; justify-self: start; cursor: pointer; }
+.legend { list-style: none; margin: 0 0 0.5rem; padding: 0; display: flex; flex-wrap: wrap; gap: 0.3rem 1.25rem; font-size: 0.8125rem; color: var(--ink-2); }
+.legend li { display: inline-flex; align-items: center; gap: 0.45rem; }
+.key { display: inline-block; width: 1.1rem; height: 0; border-top: 2px solid var(--chart-1); flex: none; }
+.key-c1 { border-top-color: var(--chart-1); }
+.key-c2 { border-top-color: var(--chart-2); }
+.key-ref { border-top-color: var(--muted); }
+.key-dash { border-top-style: dashed; }
+.key-dot { width: 0.55rem; height: 0.55rem; border: 0; border-radius: 50%; background: var(--chart-1); }
+.key-dot.key-c2 { background: var(--chart-2); }
+.key-dot.key-ref { background: var(--muted); }
+.demo-plot { position: relative; width: 100%; aspect-ratio: 16 / 9; max-width: 100%; }
+.demo-plot canvas { display: block; width: 100%; height: 100%; touch-action: pan-y; cursor: crosshair; }
+@media (max-width: 600px) { .demo-plot { aspect-ratio: 4 / 3.4; } }
+.tip { position: absolute; left: 0; top: 0; pointer-events: none; background: var(--surface); border: 1px solid var(--line); border-radius: 3px; padding: 0.45rem 0.6rem; font-size: 0.8125rem; line-height: 1.45; color: var(--ink-2); box-shadow: 0 4px 14px rgba(10, 21, 36, 0.12); white-space: nowrap; z-index: 2; }
+.tip p { margin: 0; display: flex; align-items: center; gap: 0.4rem; }
+.tip .tip-h { color: var(--ink); font-weight: 600; margin-bottom: 0.15rem; }
+.tip b { color: var(--ink); font-weight: 600; font-variant-numeric: tabular-nums; }
+.demo-read { display: grid; grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr)); gap: 0.75rem 1.5rem; margin: 0.9rem 0 0; padding-top: 0.85rem; border-top: 1px solid var(--line); }
+.demo-read dt { font-size: 0.75rem; color: var(--muted); margin-bottom: 0.15rem; }
+.demo-read dd { margin: 0; font-size: 0.9375rem; font-weight: 600; color: var(--ink); font-variant-numeric: tabular-nums; }
+.chip { display: inline-block; font-size: 0.8125rem; font-weight: 600; border-radius: 999px; padding: 0.1rem 0.6rem; }
+.chip-ok { background: var(--ok-bg); color: var(--ok-ink); }
+.chip-no { background: var(--no-bg); color: var(--no-ink); }
+.demo-note { font-family: var(--sans); font-size: 0.875rem; color: var(--muted); margin-top: -0.6rem; }
+
+/* Takeaways, self-check, references, papers */
+.takeaways { border-top: 2px solid var(--ink); padding-top: 1rem; margin-top: 3rem; }
+.takeaways ul { margin-bottom: 0; }
+details.qa { border-bottom: 1px solid var(--line); padding: 0.85rem 0; }
+details.qa:first-of-type { border-top: 1px solid var(--line); }
+details.qa summary { cursor: pointer; font-weight: 600; line-height: 1.5; list-style-position: outside; margin-left: 1.1rem; }
+details.qa summary::marker { color: var(--muted); }
+details.qa .ans { margin: 0.6rem 0 0 1.1rem; color: var(--ink-2); }
+details.qa .ans p:last-child { margin-bottom: 0; }
+ol.refs { padding-left: 1.5rem; }
+ol.refs li { font-size: 1rem; line-height: 1.55; color: var(--ink-2); margin-bottom: 0.7rem; }
+ol.refs a { font-family: var(--sans); font-size: 0.8125rem; white-space: nowrap; }
+.paper-list { list-style: none; margin: 0; padding: 0; }
+.paper-list li { padding: 0.8rem 0; border-bottom: 1px solid var(--line); }
+.paper-list li:first-child { border-top: 1px solid var(--line); }
+.paper-list a.t { font-weight: 600; color: var(--ink); text-decoration: none; line-height: 1.4; }
+.paper-list a.t:hover { color: var(--accent); text-decoration: underline; text-decoration-thickness: 1px; }
+.paper-list .v { display: block; font-size: 0.9375rem; color: var(--muted); margin-top: 0.2rem; }
+.prevnext { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; margin-top: 3.5rem; font-family: var(--sans); }
+.prevnext a { display: block; padding: 0.9rem 1rem; border: 1px solid var(--line); border-radius: 4px; text-decoration: none; color: var(--ink); }
+.prevnext a:hover { border-color: var(--ink-2); color: var(--ink); }
+.prevnext .dir { display: block; font-size: 0.75rem; color: var(--muted); margin-bottom: 0.2rem; }
+.prevnext .nm { font-weight: 600; font-size: 0.9375rem; }
+.prevnext .next { text-align: right; grid-column: 2; }
+@media (max-width: 560px) { .prevnext { grid-template-columns: minmax(0, 1fr); } .prevnext .next { grid-column: 1; } }
+
+/* Tutorial hub */
+.hub-list { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--line); }
+.hub-item a { display: grid; grid-template-columns: 2.5rem minmax(0, 1fr) auto; gap: 0.25rem 1.25rem; align-items: baseline; padding: 1.35rem 0; border-bottom: 1px solid var(--line); text-decoration: none; color: var(--ink); }
+.hub-item a:hover .nm { color: var(--accent); text-decoration: underline; text-decoration-thickness: 1px; }
+.hub-item .no { font-family: var(--sans); font-size: 0.875rem; color: var(--muted); font-variant-numeric: tabular-nums; }
+.hub-item .nm { font-size: 1.375rem; font-weight: 600; line-height: 1.25; }
+.hub-item .sm { grid-column: 2; color: var(--ink-2); font-size: 1.0625rem; max-width: 52ch; }
+.hub-item .mt { grid-column: 3; grid-row: 1; font-family: var(--sans); font-size: 0.8125rem; color: var(--muted); white-space: nowrap; text-align: right; }
+.hub-item .dm { grid-column: 2; font-family: var(--sans); font-size: 0.8125rem; color: var(--muted); }
+@media (max-width: 640px) {
+  .hub-item a { grid-template-columns: 2rem minmax(0, 1fr); }
+  .hub-item .mt { grid-column: 2; grid-row: auto; text-align: left; }
+}
+.hub-note { font-family: var(--sans); font-size: 0.875rem; color: var(--muted); margin-top: 1.5rem; max-width: 60ch; }
+
+/* Home page teasers */
+.tut-teaser { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 2.75rem; }
+.tut-teaser li { border-top: 1px solid var(--line); padding: 1rem 0 1.15rem; }
+.tut-teaser a { font-weight: 600; font-size: 1.125rem; color: var(--ink); text-decoration: none; }
+.tut-teaser a:hover { color: var(--accent); text-decoration: underline; text-decoration-thickness: 1px; }
+.tut-teaser p { margin: 0.25rem 0 0; font-size: 1rem; color: var(--ink-2); }
+@media (max-width: 720px) { .tut-teaser { grid-template-columns: minmax(0, 1fr); } }
+.more { font-family: var(--sans); font-size: 0.9375rem; margin-top: 1.5rem; }
+.theme .theme-links { display: flex; flex-wrap: wrap; gap: 0.25rem 1.25rem; align-items: baseline; }
+.theme .theme-links a { font-family: var(--sans); font-size: 0.875rem; font-weight: 500; }
+
+/* Urdu */
+.ur { font-family: var(--urdu); direction: rtl; unicode-bidi: isolate; line-height: 2.3; font-weight: 400; }
+.urdu-teaser { display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); gap: 2.5rem; align-items: center; }
+.urdu-teaser .ur { font-size: clamp(1.2rem, 2vw, 1.4rem); margin: 0; text-align: right; }
+.urdu-teaser .ur span, .urdu-teaser .en span { display: block; }
+.urdu-teaser .en { color: var(--ink-2); font-style: italic; margin: 0 0 0.5rem; }
+.urdu-teaser .who { font-family: var(--sans); font-size: 0.875rem; color: var(--muted); margin: 0 0 1rem; }
+@media (max-width: 820px) { .urdu-teaser { grid-template-columns: minmax(0, 1fr); gap: 1rem; } }
+
+.urdu-head h1 .ur { display: block; font-size: clamp(2.4rem, 6vw, 3.6rem); line-height: 1.9; font-weight: 400; margin-bottom: 0.2rem; letter-spacing: 0; }
+.urdu-head h1 .en-t { display: block; font-size: clamp(1.6rem, 3.6vw, 2.25rem); }
+.urdu-sec { padding-block: clamp(2.5rem, 6vw, 4rem); border-top: 1px solid var(--line); }
+.urdu-sec > .wrap > h2 { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.25rem 1rem; font-size: 2rem; font-weight: 600; margin: 0 0 0.5rem; }
+.urdu-sec > .wrap > h2 .ur { font-size: 1.6rem; font-weight: 400; line-height: 1.8; color: var(--ink-2); }
+.urdu-sec .intro { margin-bottom: 1.25rem; }
+.toggles { display: flex; flex-wrap: wrap; gap: 0.5rem 1.5rem; font-family: var(--sans); font-size: 0.9375rem; color: var(--ink-2); margin: 0 0 1.75rem; }
+.toggles label { display: inline-flex; align-items: center; gap: 0.45rem; cursor: pointer; }
+.toggles input { width: 1rem; height: 1rem; accent-color: var(--accent); margin: 0; }
+.couplets { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 22rem), 1fr)); gap: 1.25rem; }
+.couplet { background: var(--surface); border: 1px solid var(--line); border-radius: 4px; padding: 1.25rem 1.4rem 1.1rem; display: grid; gap: 0.75rem; align-content: start; }
+.couplet .ur { font-size: clamp(1.25rem, 2.2vw, 1.5rem); margin: 0; text-align: right; color: var(--ink); }
+.couplet .ur span, .couplet .ro span, .couplet .en span { display: block; }
+.couplet .ro { font-family: var(--sans); font-size: 0.9375rem; color: var(--ink-2); margin: 0; line-height: 1.6; }
+.couplet .en { font-style: italic; color: var(--ink-2); margin: 0; line-height: 1.55; }
+.couplet .who { font-family: var(--sans); font-size: 0.8125rem; color: var(--muted); margin: 0.25rem 0 0; display: flex; justify-content: space-between; gap: 1rem; border-top: 1px solid var(--line); padding-top: 0.65rem; }
+.couplet .who .ur { font-size: 1rem; line-height: 1.6; color: var(--muted); text-align: left; }
+.hide-roman .ro, .hide-en .en { display: none; }
+.books { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 16rem), 1fr)); gap: 0 2.25rem; }
+.book { border-top: 1px solid var(--line); padding: 1.1rem 0 1.4rem; }
+.book .ur { font-size: 1.5rem; margin: 0; text-align: right; }
+.book h3 { font-size: 1.125rem; margin: 0.1rem 0 0.15rem; }
+.book .by { font-family: var(--sans); font-size: 0.875rem; color: var(--muted); margin: 0 0 0.6rem; }
+.book p.nt { font-size: 1rem; color: var(--ink-2); margin: 0; }
+
+/* Contact copy button */
+.mail-row { display: flex; flex-wrap: wrap; align-items: center; gap: 0.75rem 1rem; margin-bottom: 1rem; }
+.mail-row .contact-mail { margin-bottom: 0; }
+.copy-status { font-family: var(--sans); font-size: 0.875rem; color: var(--muted); }
+.prose dl.terms dt .tag { font-family: var(--sans); font-size: 0.8125rem; font-weight: 500; color: var(--muted); margin-left: 0.5rem; }
+@media (max-width: 560px) { .site-nav ul { gap: 0.7rem; } .site-nav a { font-size: 0.8125rem; } }
+
+/* Footer links */
+.foot { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 0.75rem 2rem; }
+.foot nav { display: flex; flex-wrap: wrap; gap: 0.5rem 1.25rem; }
+.foot a { color: var(--ink-2); }
+
+/* Places */
+.place-head .local { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.25rem 1.5rem; margin: -0.35rem 0 0.6rem; color: var(--ink-2); font-size: 1.375rem; }
+.place-head .local .ur { font-size: 1.375rem; line-height: 2; }
+.place-head .local .hi { font-family: "Noto Serif Devanagari", var(--serif); }
+.place-head .local .en-full { font-size: 1.125rem; font-style: italic; }
+.place-head .where { font-family: var(--sans); font-size: 0.9375rem; color: var(--muted); margin: 0 0 1.25rem; }
+.conn { background: var(--tint); border-radius: 4px; padding: 0.9rem 1.15rem; max-width: 44rem; margin: 1.5rem 0 0; color: var(--ink); }
+.conn .label { margin-bottom: 0.25rem; }
+.place-grid { display: grid; grid-template-columns: minmax(0, 19rem) minmax(0, 1fr); gap: 3.5rem; padding-block: 2.5rem clamp(3rem, 8vw, 5rem); border-top: 1px solid var(--line); }
+.place-grid h2 { font-size: 1.375rem; margin: 0 0 0.9rem; }
+.fact-list { margin: 0; }
+.fact-list div { padding: 0.7rem 0; border-top: 1px solid var(--line); }
+.fact-list dt { font-family: var(--sans); font-size: 0.75rem; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; color: var(--muted); }
+.fact-list dd { margin: 0.2rem 0 0; font-size: 1.0625rem; line-height: 1.45; color: var(--ink); font-variant-numeric: tabular-nums; }
+.ext-links { display: flex; flex-wrap: wrap; gap: 0.5rem 1.25rem; font-family: var(--sans); font-size: 0.9375rem; margin: 1.25rem 0 0; }
+.notes ul { list-style: none; margin: 0; padding: 0; max-width: 44rem; }
+.notes li { padding: 0.9rem 0; border-top: 1px solid var(--line); line-height: 1.6; }
+.see-also { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.5rem 1.25rem; font-family: var(--sans); font-size: 0.9375rem; margin-top: 1.75rem; }
+.see-also .label { margin: 0; }
+@media (max-width: 860px) { .place-grid { grid-template-columns: minmax(0, 1fr); gap: 2.5rem; } }
+
+.places-wrap { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr); gap: 3.5rem; padding-block: 2.5rem clamp(3rem, 8vw, 5rem); border-top: 1px solid var(--line); }
+.places-wrap h2 { font-size: 1.625rem; margin: 0 0 0.6rem; }
+.places-wrap h3 { font-family: var(--sans); font-size: 0.75rem; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); margin: 1.5rem 0 0.25rem; }
+@media (max-width: 900px) { .places-wrap { grid-template-columns: minmax(0, 1fr); } }
+.route { list-style: none; margin: 1.25rem 0 0; padding: 0; }
+.route .stop { display: grid; grid-template-columns: 1.4rem minmax(0, 1fr) auto; gap: 0 0.9rem; align-items: start; }
+.route .dot { width: 0.85rem; height: 0.85rem; border-radius: 50%; border: 2px solid var(--ink); background: var(--bg); margin-top: 0.5rem; justify-self: center; }
+.route .stop.now .dot { background: var(--signal); border-color: var(--signal); }
+.route .stop-body { display: grid; gap: 0.1rem; min-width: 0; }
+.route .city { font-size: 1.375rem; font-weight: 600; color: var(--ink); text-decoration: none; line-height: 1.35; }
+.route .city:hover { color: var(--accent); text-decoration: underline; text-decoration-thickness: 1px; }
+.route .sub { font-family: var(--sans); font-size: 0.875rem; color: var(--muted); }
+.route .role { font-size: 1rem; color: var(--ink-2); }
+.route .yrs { font-family: var(--sans); font-size: 0.875rem; color: var(--ink-2); font-variant-numeric: tabular-nums; padding-top: 0.35rem; white-space: nowrap; }
+.route .leg { display: grid; grid-template-columns: 1.4rem minmax(0, 1fr); gap: 0 0.9rem; min-height: 2.6rem; }
+.route .leg .line { justify-self: center; width: 0; border-left: 2px dashed var(--line); }
+.route .leg .km { align-self: center; font-family: var(--sans); font-size: 0.8125rem; color: var(--muted); font-variant-numeric: tabular-nums; }
+.place-index { list-style: none; margin: 0; padding: 0; }
+.place-index li { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 0.15rem 1rem; padding: 0.6rem 0; border-top: 1px solid var(--line); }
+.place-index a { font-weight: 600; color: var(--ink); text-decoration: none; }
+.place-index a:hover { color: var(--accent); text-decoration: underline; text-decoration-thickness: 1px; }
+.place-index span { font-family: var(--sans); font-size: 0.8125rem; color: var(--muted); }
+</style>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="site-header">
+  <div class="wrap header-inner">
+    <a class="brand" href="../index.html">Hamza Shaikh</a>
+    <nav class="site-nav" aria-label="Site">
+      <ul>
+        <li><a href="../index.html#research">Research</a></li>
+        <li><a href="../index.html#publications">Publications</a></li>
+        <li><a href="index.html" aria-current="page">Tutorials</a></li>
+        <li><a href="../urdu.html">Urdu</a></li>
+        <li><a href="../index.html#cv">CV</a></li>
+        <li><a href="../index.html#contact">Contact</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+<main id="main">
+  <div class="wrap page-head">
+    <nav class="crumbs" aria-label="Breadcrumb"><a href="index.html">Tutorials</a><span aria-hidden="true">/</span><span>7 of 8</span></nav>
+    <h1>Hardware impairments</h1>
+    <p class="lede">Real transceivers add distortion that grows with the signal itself. Raising the transmit power does not remove it, so it sets a ceiling on what any link can achieve.</p>
+    <ul class="meta-row"><li class="level">Intermediate</li><li>14 min read</li><li>Interactive model: Find the capacity ceiling</li></ul>
+  </div>
+  <div class="wrap tut-grid">
+    <nav class="toc" aria-labelledby="toc-h">
+      <h2 id="toc-h">On this page</h2>
+      <ol>
+      <li><a href="#sources">Where the distortion comes from</a></li>
+      <li><a href="#model">A model for what remains</a></li>
+      <li><a href="#ceiling">The ceiling</a></li>
+      <li><a href="#consequences">What it means for new technologies</a></li>
+      <li><a href="#design">What designers can do</a></li>
+      <li><a href="#check">Check your understanding</a></li>
+      <li><a href="#papers">Related papers</a></li>
+      <li><a href="#reading">Further reading</a></li>
+      </ol>
+    </nav>
+    <article class="prose">
+<h2 id="sources">Where the distortion comes from</h2>
+<p>Every radio chain is imperfect, in a few well-known ways.</p>
+<dl class="terms">
+  <dt>Power amplifiers</dt>
+  <dd>They become nonlinear near saturation, compressing peaks and spreading energy into neighbouring channels. OFDM signals, with their high peak-to-average power ratio, suffer most.</dd>
+  <dt>Oscillators</dt>
+  <dd>Phase noise makes the carrier’s phase drift randomly. It rotates the constellation and, in OFDM, leaks energy between subcarriers.</dd>
+  <dt>IQ imbalance</dt>
+  <dd>The in-phase and quadrature branches differ slightly in gain and phase, which creates a mirror image of the signal.</dd>
+  <dt>Data converters</dt>
+  <dd>Digital-to-analogue and analogue-to-digital converters quantise the signal with finite resolution.</dd>
+</dl>
+<p>Calibration and compensation, such as digital predistortion of the amplifier, remove most of this distortion but never all of it. What remains is called residual hardware impairment.</p>
+<figure class="diagram">
+  <div class="fig-scroll">
+    <svg class="dg" viewBox="0 0 690 200" role="img" aria-label="Transmit and receive chains with the impairment each block adds, grouped into transmitter and receiver distortion terms.">
+      <defs><marker id="hwi-arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" class="fill-ink"/></marker></defs>
+      <g text-anchor="middle">
+        <rect x="16" y="56" width="70" height="40" rx="3" class="box"/><text x="51" y="81">DAC</text>
+        <rect x="104" y="56" width="70" height="40" rx="3" class="box"/><text x="139" y="81">Mixer</text>
+        <rect x="192" y="56" width="70" height="40" rx="3" class="box"/><text x="227" y="81">PA</text>
+        <rect x="428" y="56" width="70" height="40" rx="3" class="box"/><text x="463" y="81">LNA</text>
+        <rect x="516" y="56" width="70" height="40" rx="3" class="box"/><text x="551" y="81">Mixer</text>
+        <rect x="604" y="56" width="70" height="40" rx="3" class="box"/><text x="639" y="81">ADC</text>
+        <text class="sm" x="51" y="116">quantisation</text>
+        <text class="sm" x="139" y="116">phase noise,</text><text class="sm" x="139" y="130">IQ imbalance</text>
+        <text class="sm" x="227" y="116">nonlinearity</text>
+        <text class="sm" x="463" y="116">nonlinearity</text>
+        <text class="sm" x="551" y="116">phase noise,</text><text class="sm" x="551" y="130">IQ imbalance</text>
+        <text class="sm" x="639" y="116">quantisation</text>
+        <text x="345" y="66" class="lbl">channel h</text>
+        <text x="345" y="112" class="sm">plus thermal</text><text x="345" y="126" class="sm">noise w</text>
+        <text x="139" y="186">transmitter distortion ηₜ, power κₜ²P</text>
+        <text x="551" y="186">receiver distortion ηᵣ, power κᵣ²P|h|²</text>
+      </g>
+      <line class="stroke" x1="86" y1="76" x2="102" y2="76" marker-end="url(#hwi-arr)"/>
+      <line class="stroke" x1="174" y1="76" x2="190" y2="76" marker-end="url(#hwi-arr)"/>
+      <line class="c1" x1="262" y1="76" x2="424" y2="76" marker-end="url(#hwi-arr)"/>
+      <line class="stroke" x1="498" y1="76" x2="514" y2="76" marker-end="url(#hwi-arr)"/>
+      <line class="stroke" x1="586" y1="76" x2="602" y2="76" marker-end="url(#hwi-arr)"/>
+      <path class="thin" d="M16 146 L16 154 L262 154 L262 146 M139 154 L139 164"/>
+      <path class="thin" d="M428 146 L428 154 L674 154 L674 146 M551 154 L551 164"/>
+    </svg>
+  </div>
+  <figcaption>Each block adds its own imperfection. After compensation, what remains at each end is modelled as one Gaussian distortion term whose power grows with the signal.</figcaption>
+</figure>
+
+<h2 id="model">A model for what remains</h2>
+<p>Modelling every imperfection exactly is complicated. A simple aggregate model has proved accurate: residual distortion behaves like additive Gaussian noise whose power is proportional to the signal power,</p>
+<div class="eq"><svg class="tex" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 865 98" style="width:8.650em;height:0.980em" role="img" aria-label="y=h\left(x+\eta_t\right)+\eta_r+w" focusable="false"><path fill="currentColor" d="M28.3 53.7L30.4 64.7Q37.1 53.7 39.8 48Q42.6 42.2 42.6 39Q42.6 37.4 40 35.8Q37.4 34.1 37.4 31.9Q37.4 30.3 38.5 29.2Q39.7 28.2 41.4 28.2Q43.6 28.2 45.1 29.8Q46.6 31.4 46.6 33.7Q46.6 42.4 33.5 64.2Q25.7 77.1 18.3 85Q11 92.9 6.7 92.9Q4.4 92.9 3 91.7Q1.6 90.5 1.6 88.6Q1.6 86.9 2.8 85.7Q3.9 84.6 5.5 84.6Q7.4 84.6 8.9 86Q10.4 87.4 11.6 87.4Q13.4 87.4 16.4 84.1Q17.7 82.8 20.2 79.4Q22.8 76.1 23.5 75Q24.5 73 24.5 71.5Q24.5 68.5 21.4 56Q18.3 43.4 16.3 38.3Q14.9 34.6 13.2 33.2Q11.6 31.9 8.6 31.9Q7 31.9 5.5 32.3L5.5 30.6Q7.7 30.2 8.7 30Q12.8 29.2 19.4 28.2L19.8 28.2Q20.9 28.2 24 37.5Q27 46.8 28.3 53.7ZM132.1 40.3L73.2 40.3L73.2 33.7L132.1 33.7L132.1 40.3ZM132.1 60.3L73.2 60.3L73.2 53.7L132.1 53.7L132.1 60.3ZM203.4 60.5L204.7 61.8Q200.1 68.3 197 70.8Q193.9 73.2 190.1 73.2Q188.1 73.2 186.9 72Q185.7 70.9 185.7 69Q185.7 67.3 187.7 59.8L193.2 39.1Q193.9 36.3 193.9 35.8Q193.9 33.3 191.1 33.3Q188.4 33.3 184.1 37.3Q179.9 41.3 175.9 47.3Q172.8 52.1 171 56.7Q169.2 61.2 166.3 72.3L158.8 72.3L173.4 16.9Q174.7 11.9 174.7 10.7Q174.7 9.5 173.4 8.9Q172.1 8.2 170.6 8.2L167.9 8.2L167.9 6.7Q175.5 5.8 183.6 4L184.3 4.6L172.2 49.3Q185.2 28.2 195.2 28.2Q198.5 28.2 200.1 30Q201.7 31.9 201.7 34.9Q201.7 39.2 196.9 54.2Q193.6 64.3 193.6 66.7Q193.6 68.5 195.2 68.5Q196.4 68.5 197.9 67Q199.3 65.6 203.4 60.5ZM237.3 88.4L236.1 90Q224.5 83.4 218.1 71.8Q211.7 60.2 211.7 47.1Q211.7 19.4 236.4 4.7L237.3 6.3Q227.1 15 223.7 23.5Q220.3 31.9 220.3 46.8Q220.3 61.6 223.8 70.8Q227.3 80 237.3 88.4ZM264.5 36.8L265.7 42.5Q271 34.4 274.2 31.3Q277.5 28.2 280.8 28.2Q282.6 28.2 283.7 29.2Q284.9 30.3 284.9 31.9Q284.9 33.5 283.9 34.5Q283 35.5 281.5 35.5Q280.6 35.5 279.1 34.7Q277.6 33.8 276.3 33.8Q273.4 33.8 266.5 45.9Q266.5 47.2 267.3 50.4L270.5 63.8Q271.5 67.9 273.5 67.9Q275.1 67.9 278.2 63.9Q278.5 63.5 278.9 63Q279.3 62.4 279.6 62Q279.9 61.5 280.3 61.1L281.8 62Q277.5 68.7 275 71Q272.5 73.4 269.6 73.4Q267.2 73.4 265.9 71.9Q264.6 70.4 263.7 66.6L260.8 54.7L252 66.6Q248.9 70.8 246.9 72.1Q245 73.4 242.5 73.4Q240.2 73.4 238.9 72.3Q237.5 71.2 237.5 69.2Q237.5 67.7 238.4 66.7Q239.4 65.6 240.9 65.6Q242.1 65.6 244.1 66.7Q245.6 67.6 246.7 67.6Q248.4 67.6 251.8 62.7L260 51.1L257.2 38.7Q256.2 34.3 255.3 33.1Q254.5 31.9 252.6 31.9Q251.4 31.9 248.7 32.6L246.9 33.1L246.6 31.5L247.7 31.1Q255.7 28.2 259.4 28.2Q261.3 28.2 262.4 30Q263.5 31.8 264.5 36.8ZM368.2 50.3L342.1 50.3L342.1 76.4L335.5 76.4L335.5 50.3L309.4 50.3L309.4 43.7L335.5 43.7L335.5 17.6L342.1 17.6L342.1 43.7L368.2 43.7L368.2 50.3ZM407.9 49.5L408.1 49.6Q421.4 28.2 430.2 28.2Q433.3 28.2 435.3 29.7Q437.3 31.1 437.3 33.9Q437.3 36.3 436.3 40.2L427.6 72.3Q424.6 83.2 424.6 89.4Q424.6 90.9 425.4 92.8L418.1 92.8Q417 91.5 417 88.4Q417 83.4 420.3 71.4L427.8 44Q429.2 39.3 429.2 36.8Q429.2 33.3 426.7 33.3Q422.7 33.3 415.4 42.7Q408.1 52 405.2 61.7L402 72.3L394.5 72.3L402.7 41.8Q404.1 36.8 404.1 35.6Q404.1 33.9 402.7 33.9Q402.3 33.9 401.8 34.1Q401.4 34.3 400.9 34.8Q400.4 35.2 399.9 35.6Q399.5 36 398.9 36.7Q398.4 37.3 398 37.8Q397.7 38.2 397.1 38.9Q396.6 39.5 396.4 39.7L395.2 38.7Q396.5 36.5 398.1 34.6Q403 28.5 407.8 28.5Q411.8 28.5 411.8 33Q411.8 37.1 407.9 49.5ZM461.2 57.3L460.9 59.6L455 59.6L448.9 82.5Q448.8 83.1 448.8 83.5Q448.8 84.6 449.8 84.6Q450.6 84.6 451.8 83.6Q452.9 82.5 455.5 79.1L456.4 79.6Q453.2 84.5 451.1 86.3Q449 88.1 446.4 88.1Q443.2 88.1 443.2 85.5Q443.2 84.8 444.3 80.3L449.7 59.6L444.5 59.6L444.4 59.2Q444.4 57.9 446.7 57.4Q448.5 57 451.3 54.7Q454.2 52.4 456 49.7Q456.5 49.1 457 49.1Q457.6 49.1 457.6 49.6Q457.6 50 457.6 50.1L455.6 57.3L461.2 57.3ZM467.4 6.3L468.6 4.7Q480 11.5 486.5 23.1Q493 34.7 493 47.6Q493 74.9 468.3 90L467.4 88.4Q477.7 79.9 481 71.5Q484.4 63 484.4 47.9Q484.4 32.7 481 23.5Q477.7 14.4 467.4 6.3ZM581.4 50.3L555.3 50.3L555.3 76.4L548.7 76.4L548.7 50.3L522.6 50.3L522.6 43.7L548.7 43.7L548.7 17.6L555.3 17.6L555.3 43.7L581.4 43.7L581.4 50.3ZM621.1 49.5L621.3 49.6Q634.6 28.2 643.4 28.2Q646.5 28.2 648.5 29.7Q650.5 31.1 650.5 33.9Q650.5 36.3 649.5 40.2L640.8 72.3Q637.8 83.2 637.8 89.4Q637.8 90.9 638.6 92.8L631.3 92.8Q630.2 91.5 630.2 88.4Q630.2 83.4 633.5 71.4L641 44Q642.4 39.3 642.4 36.8Q642.4 33.3 639.9 33.3Q635.9 33.3 628.6 42.7Q621.3 52 618.4 61.7L615.2 72.3L607.7 72.3L615.9 41.8Q617.3 36.8 617.3 35.6Q617.3 33.9 615.9 33.9Q615.5 33.9 615 34.1Q614.6 34.3 614.1 34.8Q613.6 35.2 613.1 35.6Q612.7 36 612.1 36.7Q611.6 37.3 611.2 37.8Q610.9 38.2 610.3 38.9Q609.8 39.5 609.6 39.7L608.4 38.7Q609.7 36.5 611.3 34.6Q616.2 28.5 621 28.5Q625 28.5 625 33Q625 37.1 621.1 49.5ZM666 71.7L667.1 69.2Q669.5 64 673.7 59.6Q676.7 56.4 679.2 56.4Q680.7 56.4 681.6 57.4Q682.5 58.4 682.5 60Q682.5 61.6 681.6 62.7Q680.8 63.8 679.2 63.8Q677.9 63.8 676.8 62Q676.2 61 675.6 61Q673.8 61 669.9 67.6Q667.5 71.6 666.1 75.2Q664.7 78.8 662.1 87.3L656.8 87.3L662.5 66.9Q663.6 62.7 663.6 61.1Q663.6 59.3 660.9 59.3Q660.4 59.3 658.8 59.5L658.8 58.3L669.6 56.4L669.8 56.6L666 71.7ZM769 50.3L742.9 50.3L742.9 76.4L736.3 76.4L736.3 50.3L710.2 50.3L710.2 43.7L736.3 43.7L736.3 17.6L742.9 17.6L742.9 43.7L769 43.7L769 50.3ZM834.2 29.7L837.4 64.9Q847.3 52.6 850.6 47.3Q853.9 42.1 853.9 38.9Q853.9 37.5 851.7 35.4Q849.6 33.4 849.6 31.3Q849.6 30.1 850.7 29.2Q851.9 28.2 853.5 28.2Q855.7 28.2 857.2 29.8Q858.7 31.4 858.7 33.8Q858.7 42.9 837.5 68.7L836.6 69.8Q833.1 74.1 832.1 74.1Q831.3 74.1 831 70.6L828.1 39.6L819.2 54.8Q816.9 58.6 813.7 64.7Q808.8 74.1 807.3 74.1Q806.6 74.1 806.4 73.2Q806.2 72.3 806 69.4L805.6 60.3Q804.8 43.9 802.9 36.1Q802.2 33.4 801.3 32.6Q800.5 31.9 798.2 31.9L795.4 31.9L795.4 30.6Q803.3 29.3 804.9 28.9Q805.4 28.8 806 28.6Q806.7 28.4 807.1 28.3Q807.5 28.2 807.8 28.2Q808.6 28.2 808.9 28.7Q809.2 29.2 809.7 31.6Q812.2 43.6 812.9 59.7L832.1 29.3Q832.7 28.3 833.4 28.3Q834.2 28.3 834.2 29.7Z"/></svg></div>
+<p>with <svg class="tex" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 654 129" style="width:6.540em;height:1.290em;vertical-align:-0.360em" role="img" aria-label="\eta_t\sim\mathcal{CN}(0,\kappa_t^2P)" focusable="false"><path fill="currentColor" d="M18.8 69.8L19 69.9Q32.3 48.5 41.1 48.5Q44.2 48.5 46.2 50Q48.2 51.4 48.2 54.2Q48.2 56.6 47.2 60.5L38.5 92.6Q35.5 103.5 35.5 109.7Q35.5 111.2 36.3 113.1L29 113.1Q27.9 111.8 27.9 108.7Q27.9 103.7 31.2 91.7L38.7 64.3Q40.1 59.6 40.1 57.1Q40.1 53.6 37.6 53.6Q33.6 53.6 26.3 63Q19 72.3 16.1 82L12.9 92.6L5.4 92.6L13.6 62.1Q15 57.1 15 55.9Q15 54.2 13.6 54.2Q13.2 54.2 12.8 54.4Q12.3 54.6 11.8 55.1Q11.3 55.5 10.8 55.9Q10.4 56.3 9.8 57Q9.3 57.6 8.9 58.1Q8.6 58.5 8 59.2Q7.5 59.8 7.3 60L6.1 59Q7.4 56.8 9 54.9Q13.9 48.8 18.7 48.8Q22.7 48.8 22.7 53.3Q22.7 57.4 18.8 69.8ZM72.1 77.7L71.8 79.9L65.9 79.9L59.8 102.9Q59.7 103.4 59.7 103.8Q59.7 105 60.7 105Q61.5 105 62.7 103.9Q63.8 102.8 66.4 99.4L67.3 99.9Q64.1 104.8 62 106.6Q59.9 108.4 57.3 108.4Q54.1 108.4 54.1 105.8Q54.1 105.1 55.2 100.6L60.6 79.9L55.4 79.9L55.3 79.5Q55.3 78.2 57.6 77.7Q59.4 77.3 62.2 75Q65.1 72.8 66.9 70Q67.4 69.4 67.9 69.4Q68.5 69.4 68.5 70Q68.5 70.3 68.5 70.4L66.5 77.7L72.1 77.7ZM155.8 56.4L159.1 56.4Q158.6 63.8 154.3 70.3Q150 76.8 143.3 76.8Q139.2 76.8 133.8 73.6Q128.5 70.4 123.5 67.2Q118.7 64 115.8 64Q110.9 64 107.9 67.9Q104.9 71.8 103.5 77.8L100.2 77.8Q100.6 69.7 105 63.6Q109.5 57.4 116.5 57.4Q120.6 57.4 125.9 60.6Q131.3 63.8 136.2 67Q141.1 70.2 144.1 70.2Q152.9 70.2 155.8 56.4ZM235.3 78.6L236.8 80.2Q236.3 81 235.6 81.9Q234.9 82.8 232.5 85.2Q230.1 87.5 227.4 89.2Q224.8 90.9 220.5 92.3Q216.3 93.7 211.8 93.7Q202 93.7 195 88Q188.2 82.2 188.2 70.7Q188.2 54.6 198.7 42.1Q209.2 29.6 223.9 26.3Q227.7 25.5 230.6 25.5Q236 25.5 239.2 28Q242.5 30.5 242.5 34.9Q242.5 37.6 240.3 40.5Q238.1 43.4 235 43.4Q232.4 43.4 230.9 41.9Q229.4 40.4 229.4 38.2Q229.4 36.5 230.2 35.4Q231 34.2 231.9 33.8Q232.8 33.4 233.6 32.8Q234.4 32.2 234.4 31.3Q234.4 30.3 232.9 29.7Q231.4 29 229.6 29Q221.5 29 214.2 34.7Q206.9 40.3 202.8 50.4Q198.9 60.2 198.9 71.2Q198.9 80.3 203.4 84.9Q208 89.4 215.1 89.4Q225.1 89.4 235.3 78.6ZM307.9 80.1L308 80.1Q323.5 29 325.3 24.2Q326.3 21.7 327.1 20.5Q331.9 13.1 338.5 13.1Q342.2 13.1 344.7 15.6Q347.2 18 347.2 21.5Q347.2 24.2 345.8 25.9Q344.4 27.5 341.9 27.5Q340.3 27.5 339.2 26.6Q338.1 25.7 337.6 24.7Q337.2 23.6 336.4 22.7Q335.6 21.8 334.6 21.8Q333.6 21.8 332.7 22.2Q331.8 22.5 331.2 23Q330.6 23.4 329.9 24.3Q329.3 25.2 328.9 25.8Q328.5 26.4 328 27.6Q327.6 28.7 327.4 29.2Q327.3 29.7 326.9 30.9Q326.5 32 326.5 32.2L307.4 95L305.4 95Q288.9 72.6 279.6 47.4L279.4 47.4Q278.4 52.3 277.6 55.7Q276.9 59.1 275.4 64.6Q273.9 70.1 272.4 74Q271.1 77.9 268.9 82.4Q266.9 86.9 264.7 89.7Q262.5 92.5 259.6 94.4Q256.7 96.3 253.5 96.3Q249.8 96.3 247.3 93.9Q244.8 91.4 244.8 87.9Q244.8 85.2 246.2 83.6Q247.6 81.9 250.1 81.9Q251.7 81.9 252.8 82.8Q253.9 83.7 254.3 84.8Q254.8 85.8 255.6 86.7Q256.4 87.6 257.4 87.6Q259.9 87.6 262.2 85.1Q264.5 82.6 266.4 78.1Q268.3 73.6 269.9 68.5Q271.5 63.4 272.9 56.9Q274.4 50.3 275.4 45.2Q276.4 40.1 277.4 34.2Q278.6 28.2 279.2 25.5L281.9 25.5Q282.7 27.5 285.7 35.1Q288.7 42.7 289.9 45.6Q291.1 48.5 293.8 54.8Q296.5 61 298.3 64.5Q300.2 68 302.8 72.4Q305.4 76.8 307.9 80.1ZM366.9 108.7L365.7 110.3Q354.1 103.7 347.6 92.1Q341.3 80.5 341.3 67.4Q341.3 39.7 366 25L366.9 26.6Q356.7 35.3 353.3 43.8Q349.9 52.2 349.9 67.1Q349.9 81.9 353.4 91.1Q356.9 100.3 366.9 108.7ZM417.4 59.6Q417.4 66.3 416.1 72.3Q414.8 78.2 412.2 83.2Q409.7 88.2 405.2 91.1Q400.7 94 394.8 94Q388.7 94 384.1 90.9Q379.5 87.8 377 82.6Q374.5 77.4 373.3 71.5Q372.2 65.6 372.2 59Q372.2 49.7 374.5 42.3Q376.8 34.8 382.1 29.9Q387.5 25 395.2 25Q405 25 411.2 34.6Q417.4 44.2 417.4 59.6ZM407.8 60.1Q407.8 44.3 404.4 36Q401.1 27.6 394.6 27.6Q388.4 27.6 385.1 36Q381.8 44.4 381.8 59.7Q381.8 75.1 385.1 83.3Q388.4 91.4 394.8 91.4Q401.1 91.4 404.4 83.3Q407.8 75.1 407.8 60.1ZM428.1 106.7L427.1 104.8Q435.4 99.2 435.4 94.1Q435.4 92.8 434 92.8Q433.6 92.8 432.6 93Q431.7 93.2 431.1 93.2Q425.3 93.2 425.3 88.1Q425.3 85.5 426.9 84Q428.6 82.4 431.3 82.4Q434.7 82.4 437 84.9Q439.3 87.3 439.3 91.1Q439.3 95.7 436.2 100Q433.2 104.3 428.1 106.7ZM480.1 70.1L480.4 70Q493.7 52.9 503.3 49Q504.6 48.5 505.9 48.5Q508.5 48.5 509.9 49.9Q511.3 51.2 511.3 53.2Q511.3 55.3 510 56.6Q508.7 57.8 506.7 57.8Q505.5 57.8 503.9 56.9Q502.3 55.9 501.3 55.9Q498.7 55.9 495.9 58.2Q493.1 60.4 486.9 66.9L496.7 84.1Q499.2 88.5 500.9 89.8Q502.6 91 505.8 91L505.8 92.6Q501.9 93.9 498.9 93.9Q492.7 93.9 489.1 87.5L479.8 71.5L473.8 92.6L466.2 92.6L474.8 61.7Q476.2 56.4 476.2 55Q476.2 52.6 472.9 52.6L470.1 52.6L470.1 51.2Q475.4 50.5 485.2 48.5L485.5 48.8L480.1 70.1ZM548.5 41.7L544.7 51.3L517.3 51.3L517.3 50.5L529.8 37.2Q534.7 32.1 536.8 27.9Q538.9 23.6 538.9 19Q538.9 14.4 536.3 11.8Q533.7 9.2 529.1 9.2Q525.4 9.2 523.1 11.1Q520.9 13.1 518.8 18.3L517.4 17.9Q518.6 11.4 522.2 7.7Q525.8 4 531.9 4Q537.7 4 541.3 7.5Q544.9 11 544.9 16.3Q544.9 24.2 535.9 33.7L524.4 46L540.8 46Q543.1 46 544.4 45.1Q545.8 44.2 547.5 41.3L548.5 41.7ZM529.9 93.6L529.5 95.8L523.7 95.8L517.6 118.8Q517.4 119.3 517.4 119.7Q517.4 120.9 518.5 120.9Q519.3 120.9 520.4 119.8Q521.6 118.7 524.1 115.3L525.1 115.8Q521.8 120.7 519.8 122.5Q517.7 124.3 515 124.3Q511.8 124.3 511.8 121.7Q511.8 121 512.9 116.5L518.4 95.8L513.2 95.8L513.1 95.4Q513.1 94.1 515.4 93.6Q517.1 93.2 520 90.9Q522.9 88.7 524.7 85.9Q525.1 85.3 525.7 85.3Q526.3 85.3 526.3 85.9Q526.3 86.2 526.2 86.3L524.3 93.6L529.9 93.6ZM569.4 27.3L593.5 27.3Q615.3 27.3 615.3 42.1Q615.3 46.1 613.4 50Q611.6 53.8 608.5 56.4Q601.6 62.1 588 62.1Q582.5 62.1 579 61.3L573.7 80.6Q572.3 86 572.3 86.9Q572.3 88.7 573.8 89.7Q575.3 90.6 579.2 91L579.2 92.6L554.8 92.6L554.8 91Q559.1 90.4 560.4 89.1Q561.8 87.7 563.2 82.8L574.8 41.4Q576.5 35.3 576.5 33.1Q576.5 31.1 575.1 30.3Q573.7 29.4 569.4 28.9L569.4 27.3ZM586.8 33.4L579.9 57.9Q582.8 58.4 585.1 58.4Q593.8 58.4 597.9 56Q605 52 605 42.6Q605 30.3 592 30.3Q587.6 30.3 586.8 33.4ZM618.8 26.6L620 25Q631.4 31.8 637.9 43.4Q644.4 55 644.4 67.9Q644.4 95.2 619.7 110.3L618.8 108.7Q629.1 100.2 632.4 91.8Q635.8 83.3 635.8 68.2Q635.8 53 632.4 43.9Q629.1 34.7 618.8 26.6Z"/></svg> at the transmitter and <svg class="tex" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 793 128" style="width:7.930em;height:1.280em;vertical-align:-0.350em" role="img" aria-label="\eta_r\sim\mathcal{CN}(0,\kappa_r^2P|h|^2)" focusable="false"><path fill="currentColor" d="M18.8 69.8L19 69.9Q32.3 48.5 41.1 48.5Q44.2 48.5 46.2 50Q48.2 51.4 48.2 54.2Q48.2 56.6 47.2 60.5L38.5 92.6Q35.5 103.5 35.5 109.7Q35.5 111.2 36.3 113.1L29 113.1Q27.9 111.8 27.9 108.7Q27.9 103.7 31.2 91.7L38.7 64.3Q40.1 59.6 40.1 57.1Q40.1 53.6 37.6 53.6Q33.6 53.6 26.3 63Q19 72.3 16.1 82L12.9 92.6L5.4 92.6L13.6 62.1Q15 57.1 15 55.9Q15 54.2 13.6 54.2Q13.2 54.2 12.8 54.4Q12.3 54.6 11.8 55.1Q11.3 55.5 10.8 55.9Q10.4 56.3 9.8 57Q9.3 57.6 8.9 58.1Q8.6 58.5 8 59.2Q7.5 59.8 7.3 60L6.1 59Q7.4 56.8 9 54.9Q13.9 48.8 18.7 48.8Q22.7 48.8 22.7 53.3Q22.7 57.4 18.8 69.8ZM63.7 92L64.8 89.6Q67.2 84.3 71.4 79.9Q74.4 76.8 76.9 76.8Q78.4 76.8 79.3 77.7Q80.2 78.7 80.2 80.3Q80.2 81.9 79.4 83Q78.5 84.1 76.9 84.1Q75.6 84.1 74.5 82.3Q73.9 81.3 73.4 81.3Q71.5 81.3 67.6 87.9Q65.3 91.9 63.8 95.5Q62.4 99.1 59.9 107.6L54.5 107.6L60.2 87.2Q61.3 83 61.3 81.4Q61.3 79.6 58.7 79.6Q58.1 79.6 56.5 79.8L56.5 78.6L67.4 76.8L67.6 76.9L63.7 92ZM163.5 56.4L166.8 56.4Q166.3 63.8 162 70.3Q157.7 76.8 151 76.8Q146.9 76.8 141.6 73.6Q136.2 70.4 131.3 67.2Q126.4 64 123.5 64Q118.6 64 115.6 67.9Q112.6 71.8 111.2 77.8L107.9 77.8Q108.3 69.7 112.8 63.6Q117.2 57.4 124.2 57.4Q128.3 57.4 133.7 60.6Q139 63.8 143.9 67Q148.8 70.2 151.8 70.2Q160.6 70.2 163.5 56.4ZM243 78.6L244.5 80.2Q244 81 243.3 81.9Q242.6 82.8 240.2 85.2Q237.8 87.5 235.2 89.2Q232.5 90.9 228.3 92.3Q224 93.7 219.5 93.7Q209.7 93.7 202.8 88Q195.9 82.2 195.9 70.7Q195.9 54.6 206.4 42.1Q216.9 29.6 231.6 26.3Q235.4 25.5 238.3 25.5Q243.7 25.5 247 28Q250.2 30.5 250.2 34.9Q250.2 37.6 248 40.5Q245.8 43.4 242.7 43.4Q240.1 43.4 238.6 41.9Q237.1 40.4 237.1 38.2Q237.1 36.5 237.9 35.4Q238.7 34.2 239.6 33.8Q240.5 33.4 241.3 32.8Q242.1 32.2 242.1 31.3Q242.1 30.3 240.6 29.7Q239.1 29 237.3 29Q229.2 29 221.9 34.7Q214.6 40.3 210.5 50.4Q206.6 60.2 206.6 71.2Q206.6 80.3 211.2 84.9Q215.7 89.4 222.8 89.4Q232.8 89.4 243 78.6ZM315.6 80.1L315.7 80.1Q331.2 29 333 24.2Q334 21.7 334.8 20.5Q339.6 13.1 346.2 13.1Q349.9 13.1 352.4 15.6Q354.9 18 354.9 21.5Q354.9 24.2 353.5 25.9Q352.1 27.5 349.6 27.5Q348 27.5 346.9 26.6Q345.8 25.7 345.4 24.7Q344.9 23.6 344.1 22.7Q343.3 21.8 342.3 21.8Q341.3 21.8 340.4 22.2Q339.5 22.5 338.9 23Q338.3 23.4 337.7 24.3Q337 25.2 336.6 25.8Q336.2 26.4 335.8 27.6Q335.3 28.7 335.2 29.2Q335 29.7 334.6 30.9Q334.2 32 334.2 32.2L315.1 95L313.1 95Q296.6 72.6 287.3 47.4L287.1 47.4Q286.1 52.3 285.4 55.7Q284.6 59.1 283.1 64.6Q281.6 70.1 280.2 74Q278.8 77.9 276.7 82.4Q274.6 86.9 272.4 89.7Q270.2 92.5 267.3 94.4Q264.4 96.3 261.2 96.3Q257.5 96.3 255 93.9Q252.5 91.4 252.5 87.9Q252.5 85.2 253.9 83.6Q255.3 81.9 257.8 81.9Q259.4 81.9 260.5 82.8Q261.6 83.7 262.1 84.8Q262.5 85.8 263.3 86.7Q264.1 87.6 265.1 87.6Q267.6 87.6 269.9 85.1Q272.2 82.6 274.1 78.1Q276 73.6 277.6 68.5Q279.2 63.4 280.7 56.9Q282.1 50.3 283.1 45.2Q284.1 40.1 285.2 34.2Q286.3 28.2 286.9 25.5L289.6 25.5Q290.4 27.5 293.4 35.1Q296.4 42.7 297.6 45.6Q298.8 48.5 301.5 54.8Q304.2 61 306.1 64.5Q307.9 68 310.5 72.4Q313.1 76.8 315.6 80.1ZM374.6 108.7L373.4 110.3Q361.8 103.7 355.4 92.1Q349 80.5 349 67.4Q349 39.7 373.7 25L374.6 26.6Q364.4 35.3 361 43.8Q357.6 52.2 357.6 67.1Q357.6 81.9 361.1 91.1Q364.6 100.3 374.6 108.7ZM425.1 59.6Q425.1 66.3 423.8 72.3Q422.5 78.2 420 83.2Q417.4 88.2 412.9 91.1Q408.4 94 402.5 94Q396.4 94 391.8 90.9Q387.2 87.8 384.7 82.6Q382.2 77.4 381.1 71.5Q379.9 65.6 379.9 59Q379.9 49.7 382.2 42.3Q384.5 34.8 389.9 29.9Q395.2 25 402.9 25Q412.7 25 418.9 34.6Q425.1 44.2 425.1 59.6ZM415.5 60.1Q415.5 44.3 412.2 36Q408.8 27.6 402.3 27.6Q396.1 27.6 392.8 36Q389.5 44.4 389.5 59.7Q389.5 75.1 392.8 83.3Q396.1 91.4 402.5 91.4Q408.8 91.4 412.2 83.3Q415.5 75.1 415.5 60.1ZM435.8 106.7L434.8 104.8Q443.1 99.2 443.1 94.1Q443.1 92.8 441.7 92.8Q441.3 92.8 440.4 93Q439.4 93.2 438.8 93.2Q433 93.2 433 88.1Q433 85.5 434.7 84Q436.3 82.4 439 82.4Q442.4 82.4 444.7 84.9Q447 87.3 447 91.1Q447 95.7 444 100Q440.9 104.3 435.8 106.7ZM487.8 70.1L488.1 70Q501.4 52.9 511 49Q512.3 48.5 513.6 48.5Q516.2 48.5 517.6 49.9Q519 51.2 519 53.2Q519 55.3 517.7 56.6Q516.4 57.8 514.4 57.8Q513.2 57.8 511.6 56.9Q510 55.9 509 55.9Q506.4 55.9 503.6 58.2Q500.8 60.4 494.6 66.9L504.4 84.1Q506.9 88.5 508.6 89.8Q510.3 91 513.5 91L513.5 92.6Q509.6 93.9 506.6 93.9Q500.4 93.9 496.8 87.5L487.5 71.5L481.5 92.6L473.9 92.6L482.5 61.7Q483.9 56.4 483.9 55Q483.9 52.6 480.6 52.6L477.8 52.6L477.8 51.2Q483.1 50.5 492.9 48.5L493.2 48.8L487.8 70.1ZM556.2 41.7L552.4 51.3L525.1 51.3L525.1 50.5L537.5 37.2Q542.4 32.1 544.5 27.9Q546.6 23.6 546.6 19Q546.6 14.4 544 11.8Q541.4 9.2 536.9 9.2Q533.1 9.2 530.9 11.1Q528.7 13.1 526.6 18.3L525.1 17.9Q526.3 11.4 529.9 7.7Q533.5 4 539.7 4Q545.5 4 549.1 7.5Q552.6 11 552.6 16.3Q552.6 24.2 543.7 33.7L532.1 46L548.5 46Q550.8 46 552.2 45.1Q553.6 44.2 555.2 41.3L556.2 41.7ZM529.2 107.9L530.4 105.5Q532.7 100.2 536.9 95.8Q540 92.7 542.5 92.7Q543.9 92.7 544.9 93.6Q545.8 94.6 545.8 96.2Q545.8 97.8 544.9 98.9Q544 100 542.5 100Q541.1 100 540 98.2Q539.5 97.2 538.9 97.2Q537 97.2 533.2 103.8Q530.8 107.8 529.4 111.4Q527.9 115 525.4 123.5L520.1 123.5L525.7 103.1Q526.9 99 526.9 97.3Q526.9 95.5 524.2 95.5Q523.6 95.5 522 95.7L522 94.5L532.9 92.7L533.1 92.8L529.2 107.9ZM577.1 27.3L601.2 27.3Q623 27.3 623 42.1Q623 46.1 621.2 50Q619.3 53.8 616.2 56.4Q609.3 62.1 595.7 62.1Q590.2 62.1 586.7 61.3L581.4 80.6Q580 86 580 86.9Q580 88.7 581.5 89.7Q583 90.6 586.9 91L586.9 92.6L562.5 92.6L562.5 91Q566.8 90.4 568.2 89.1Q569.5 87.7 570.9 82.8L582.5 41.4Q584.2 35.3 584.2 33.1Q584.2 31.1 582.8 30.3Q581.4 29.4 577.1 28.9L577.1 27.3ZM594.5 33.4L587.6 57.9Q590.5 58.4 592.8 58.4Q601.5 58.4 605.6 56Q612.7 52 612.7 42.6Q612.7 30.3 599.7 30.3Q595.3 30.3 594.5 33.4ZM636.9 94L630.3 94L630.3 25L636.9 25L636.9 94ZM690.1 80.8L691.4 82.1Q686.8 88.6 683.7 91.1Q680.6 93.5 676.8 93.5Q674.8 93.5 673.6 92.4Q672.4 91.2 672.4 89.3Q672.4 87.6 674.4 80.1L679.9 59.4Q680.6 56.6 680.6 56.1Q680.6 53.6 677.8 53.6Q675.1 53.6 670.9 57.6Q666.6 61.6 662.6 67.6Q659.5 72.4 657.7 77Q655.9 81.5 653 92.6L645.5 92.6L660.1 37.2Q661.4 32.2 661.4 31Q661.4 29.8 660.1 29.2Q658.8 28.5 657.3 28.5L654.6 28.5L654.6 27Q662.2 26.1 670.3 24.3L671 24.9L658.9 69.6Q671.9 48.5 681.9 48.5Q685.2 48.5 686.8 50.4Q688.4 52.2 688.4 55.2Q688.4 59.5 683.6 74.5Q680.3 84.6 680.3 87Q680.3 88.8 681.9 88.8Q683.1 88.8 684.6 87.4Q686 85.9 690.1 80.8ZM706.9 94L700.3 94L700.3 25L706.9 25L706.9 94ZM748.4 41.7L744.6 51.3L717.2 51.3L717.2 50.5L729.7 37.2Q734.6 32.1 736.7 27.9Q738.8 23.6 738.8 19Q738.8 14.4 736.2 11.8Q733.6 9.2 729.1 9.2Q725.3 9.2 723.1 11.1Q720.9 13.1 718.8 18.3L717.3 17.9Q718.5 11.4 722.1 7.7Q725.7 4 731.9 4Q737.7 4 741.2 7.5Q744.8 11 744.8 16.3Q744.8 24.2 735.9 33.7L724.3 46L740.7 46Q743 46 744.4 45.1Q745.7 44.2 747.4 41.3L748.4 41.7ZM757.6 26.6L758.8 25Q770.2 31.8 776.7 43.4Q783.2 55 783.2 67.9Q783.2 95.2 758.5 110.3L757.6 108.7Q767.9 100.2 771.3 91.8Q774.6 83.3 774.6 68.2Q774.6 53 771.3 43.9Q767.9 34.7 757.6 26.6Z"/></svg> at the receiver. The impairment levels <svg class="tex" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 77 69" style="width:0.770em;height:0.690em;vertical-align:-0.200em" role="img" aria-label="\kappa_t" focusable="false"><path fill="currentColor" d="M19.3 25.6L19.6 25.5Q32.9 8.4 42.5 4.5Q43.8 4 45.1 4Q47.7 4 49.1 5.3Q50.5 6.7 50.5 8.7Q50.5 10.8 49.2 12Q47.9 13.3 45.9 13.3Q44.7 13.3 43.1 12.3Q41.5 11.4 40.5 11.4Q37.9 11.4 35.1 13.6Q32.3 15.9 26.1 22.4L35.9 39.6Q38.4 44 40.1 45.2Q41.8 46.5 45 46.5L45 48.1Q41.1 49.4 38.1 49.4Q31.9 49.4 28.3 43L19 27L13 48.1L5.4 48.1L14 17.2Q15.4 11.9 15.4 10.5Q15.4 8.1 12.1 8.1L9.3 8.1L9.3 6.7Q14.6 6 24.4 4L24.7 4.3L19.3 25.6ZM69.1 33.1L68.8 35.4L62.9 35.4L56.8 58.3Q56.7 58.9 56.7 59.3Q56.7 60.4 57.7 60.4Q58.5 60.4 59.7 59.4Q60.8 58.3 63.4 54.9L64.3 55.4Q61.1 60.3 59 62.1Q56.9 63.9 54.3 63.9Q51.1 63.9 51.1 61.3Q51.1 60.6 52.2 56.1L57.6 35.4L52.4 35.4L52.3 35Q52.3 33.7 54.6 33.2Q56.4 32.8 59.2 30.5Q62.1 28.2 63.9 25.5Q64.4 24.9 64.9 24.9Q65.5 24.9 65.5 25.4Q65.5 25.8 65.5 25.9L63.5 33.1L69.1 33.1Z"/></svg> and <svg class="tex" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 85 68" style="width:0.850em;height:0.680em;vertical-align:-0.190em" role="img" aria-label="\kappa_r" focusable="false"><path fill="currentColor" d="M19.3 25.6L19.6 25.5Q32.9 8.4 42.5 4.5Q43.8 4 45.1 4Q47.7 4 49.1 5.3Q50.5 6.7 50.5 8.7Q50.5 10.8 49.2 12Q47.9 13.3 45.9 13.3Q44.7 13.3 43.1 12.3Q41.5 11.4 40.5 11.4Q37.9 11.4 35.1 13.6Q32.3 15.9 26.1 22.4L35.9 39.6Q38.4 44 40.1 45.2Q41.8 46.5 45 46.5L45 48.1Q41.1 49.4 38.1 49.4Q31.9 49.4 28.3 43L19 27L13 48.1L5.4 48.1L14 17.2Q15.4 11.9 15.4 10.5Q15.4 8.1 12.1 8.1L9.3 8.1L9.3 6.7Q14.6 6 24.4 4L24.7 4.3L19.3 25.6ZM60.7 47.5L61.8 45Q64.2 39.8 68.4 35.4Q71.4 32.2 73.9 32.2Q75.4 32.2 76.3 33.2Q77.2 34.2 77.2 35.8Q77.2 37.4 76.4 38.5Q75.5 39.6 73.9 39.6Q72.6 39.6 71.5 37.8Q70.9 36.8 70.4 36.8Q68.5 36.8 64.6 43.4Q62.3 47.4 60.8 51Q59.4 54.6 56.9 63.1L51.5 63.1L57.2 42.7Q58.3 38.5 58.3 36.9Q58.3 35.1 55.7 35.1Q55.1 35.1 53.5 35.3L53.5 34.1L64.4 32.2L64.6 32.4L60.7 47.5Z"/></svg> have a practical meaning: they equal the error vector magnitude (EVM) that hardware datasheets and standards quote. The signal-to-noise-and-distortion ratio is</p>
+<div class="eq"><svg class="tex" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1368 156" style="width:13.680em;height:1.560em" role="img" aria-label="\mathrm{SNDR}=\frac{P|h|^2}{P|h|^2\kappa^2+\sigma^2},\quad\kappa^2=\kappa_t^2+\kappa_r^2" focusable="false"><path fill="currentColor" d="M50.9 55.1L48.4 55.1Q46.7 48.9 44.3 45.7Q38.2 37.9 29.8 37.9Q25.2 37.9 22.5 40.5Q19.7 43.2 19.7 47.4Q19.7 49.4 20.7 51.3Q21.7 53.2 22.8 54.5Q24 55.9 26.9 57.9Q29.8 59.9 31.6 60.9Q33.4 62 37.6 64.5Q45.7 69.2 49.4 73.8Q53.1 78.5 53.1 84.1Q53.1 92.4 47.3 97.6Q41.5 102.8 32.7 102.8Q26.2 102.8 20.9 100.5Q18.3 99.4 16.2 99.4Q15 99.4 14.2 100.3Q13.4 101.2 13.4 102.7L11.2 102.7L8.3 81.5L10.5 81.5Q17.2 99.2 31.1 99.2Q36.4 99.2 39.7 96Q43 92.9 43 88Q43 83.3 40.1 80.1Q35.3 74.9 23.3 68.5Q11.1 62 11.1 51.3Q11.1 43.3 16 38.5Q20.9 33.8 28.5 33.8Q33.8 33.8 39 36Q41.7 37.2 43.4 37.2Q46 37.2 46.6 33.8L48.7 33.8L50.9 55.1ZM130.3 35.2L130.3 37.1Q125.2 37.6 123.7 38.9Q122.1 40.3 121.4 42.7Q120.8 45.1 120.8 50.7L120.8 102.5L119 102.5L74.9 47.6L74.9 86.4Q74.9 94 76.6 96.3Q78.3 98.7 84.2 99.5L84.2 101.4L60.8 101.4L60.8 99.5Q67 98.8 68.8 96.5Q70.5 94.3 70.5 86.4L70.5 42.4Q67.9 39.2 66.1 38.1Q64.3 37.1 60.8 37.1L60.8 35.2L77.8 35.2L116.4 83.5L116.4 49.5Q116.4 41.9 114.5 39.7Q113.3 38.4 111.8 37.9Q110.4 37.5 106.6 37.1L106.6 35.2L130.3 35.2ZM133.4 35.2L160.4 35.2Q179.9 35.2 190.4 44.3Q200.3 52.8 200.3 68Q200.3 86.3 186.7 95Q176.8 101.4 161.5 101.4L133.4 101.4L133.4 99.5Q139.2 99.1 140.7 97.5Q142.2 95.8 142.2 89.9L142.2 46.4Q142.2 40.6 140.7 39Q139.2 37.5 133.4 37.1L133.4 35.2ZM152.4 43.1L152.4 93Q152.4 95.7 153.3 96.7Q154.3 97.7 157.2 97.7Q165 97.7 169.8 96.6Q174.6 95.5 179 92.5Q189.4 85.5 189.4 68.6Q189.4 54.1 179.9 45.8Q175.6 42 170.5 40.4Q165.4 38.9 157.7 38.9Q154.8 38.9 153.6 39.8Q152.4 40.7 152.4 43.1ZM270 101.4L253.8 101.4L230 70.6L224.4 70.8L224.4 90.2Q224.4 95.9 226 97.5Q227.5 99.1 233.3 99.5L233.3 101.4L205.7 101.4L205.7 99.5Q211.4 99 212.8 97.3Q214.2 95.6 214.2 89L214.2 46.3Q214.2 40.7 212.8 39.1Q211.4 37.5 205.7 37.1L205.7 35.2L232.9 35.2Q246.6 35.2 253.8 41.1Q258.7 45.1 258.7 53.1Q258.7 66.7 240.6 69.5L260.6 94.8Q262.7 97.4 264.6 98.3Q266.5 99.2 270 99.5L270 101.4ZM224.4 43.1L224.4 67.1Q231.6 67 235.1 66.3Q238.6 65.6 242.1 63.7Q247.8 60.5 247.8 52.3Q247.8 38.9 229.5 38.9Q226.8 38.9 225.6 39.7Q224.4 40.6 224.4 43.1ZM354.4 69.4L295.5 69.4L295.5 62.8L354.4 62.8L354.4 69.4ZM354.4 89.4L295.5 89.4L295.5 82.8L354.4 82.8L354.4 89.4ZM498.7 20.3L515.5 20.3Q530.8 20.3 530.8 30.7Q530.8 33.5 529.5 36.2Q528.2 38.9 526 40.7Q521.2 44.7 511.7 44.7Q507.8 44.7 505.4 44.1L501.7 57.6Q500.7 61.4 500.7 62Q500.7 63.3 501.7 64Q502.8 64.6 505.5 64.9L505.5 66L488.4 66L488.4 64.9Q491.5 64.5 492.4 63.5Q493.3 62.6 494.3 59.2L502.4 30.2Q503.6 25.9 503.6 24.4Q503.6 23 502.7 22.4Q501.7 21.8 498.7 21.4L498.7 20.3ZM510.8 24.6L506 41.7Q508 42.1 509.7 42.1Q515.7 42.1 518.6 40.4Q523.6 37.6 523.6 31Q523.6 22.4 514.5 22.4Q511.4 22.4 510.8 24.6ZM540.5 67L535.9 67L535.9 18.7L540.5 18.7L540.5 67ZM577.8 57.8L578.7 58.7Q575.5 63.2 573.3 64.9Q571.1 66.7 568.5 66.7Q567.1 66.7 566.2 65.9Q565.4 65 565.4 63.7Q565.4 62.5 566.8 57.3L570.6 42.8Q571.1 40.8 571.1 40.5Q571.1 38.7 569.2 38.7Q567.3 38.7 564.3 41.5Q561.3 44.3 558.5 48.5Q556.4 51.9 555.1 55.1Q553.8 58.3 551.8 66L546.6 66L556.8 27.2Q557.7 23.7 557.7 22.9Q557.7 22.1 556.8 21.6Q555.9 21.2 554.8 21.2L552.9 21.2L552.9 20.1Q558.2 19.5 563.9 18.2L564.4 18.6L555.9 49.9Q565 35.2 572 35.2Q574.3 35.2 575.5 36.5Q576.6 37.7 576.6 39.8Q576.6 42.9 573.2 53.4Q570.9 60.4 570.9 62.1Q570.9 63.4 572 63.4Q572.9 63.4 573.9 62.4Q574.9 61.3 577.8 57.8ZM589.5 67L584.9 67L584.9 18.7L589.5 18.7L589.5 67ZM618.6 30.4L615.9 37.1L596.7 37.1L596.7 36.5L605.5 27.3Q608.9 23.7 610.4 20.7Q611.8 17.7 611.8 14.5Q611.8 11.3 610 9.4Q608.2 7.6 605 7.6Q602.4 7.6 600.8 9Q599.3 10.4 597.8 14L596.8 13.7Q597.6 9.2 600.1 6.6Q602.7 4 607 4Q611 4 613.5 6.4Q616 8.9 616 12.6Q616 18.2 609.8 24.8L601.7 33.4L613.2 33.4Q614.8 33.4 615.7 32.8Q616.7 32.1 617.9 30.1L618.6 30.4ZM395.7 102.1L412.5 102.1Q427.8 102.1 427.8 112.4Q427.8 115.2 426.5 117.9Q425.2 120.6 423 122.5Q418.2 126.4 408.7 126.4Q404.8 126.4 402.4 125.9L398.7 139.4Q397.7 143.2 397.7 143.8Q397.7 145.1 398.7 145.7Q399.8 146.4 402.5 146.7L402.5 147.8L385.4 147.8L385.4 146.7Q388.5 146.3 389.4 145.3Q390.3 144.4 391.3 140.9L399.4 112Q400.6 107.7 400.6 106.1Q400.6 104.7 399.7 104.2Q398.7 103.6 395.7 103.2L395.7 102.1ZM407.8 106.4L403 123.5Q405 123.9 406.7 123.9Q412.7 123.9 415.6 122.2Q420.6 119.4 420.6 112.8Q420.6 104.2 411.5 104.2Q408.4 104.2 407.8 106.4ZM437.5 148.8L432.9 148.8L432.9 100.5L437.5 100.5L437.5 148.8ZM474.8 139.5L475.7 140.4Q472.5 145 470.3 146.7Q468.1 148.4 465.5 148.4Q464.1 148.4 463.2 147.6Q462.4 146.8 462.4 145.5Q462.4 144.3 463.8 139L467.6 124.6Q468.1 122.6 468.1 122.2Q468.1 120.5 466.2 120.5Q464.3 120.5 461.3 123.3Q458.3 126.1 455.5 130.3Q453.4 133.7 452.1 136.8Q450.8 140 448.8 147.8L443.6 147.8L453.8 109Q454.7 105.5 454.7 104.7Q454.7 103.8 453.8 103.4Q452.9 102.9 451.8 102.9L449.9 102.9L449.9 101.9Q455.2 101.2 460.9 100L461.4 100.4L452.9 131.7Q462 116.9 469 116.9Q471.3 116.9 472.5 118.2Q473.6 119.5 473.6 121.6Q473.6 124.6 470.2 135.1Q467.9 142.2 467.9 143.9Q467.9 145.1 469 145.1Q469.9 145.1 470.9 144.1Q471.9 143.1 474.8 139.5ZM486.5 148.8L481.9 148.8L481.9 100.5L486.5 100.5L486.5 148.8ZM515.6 112.2L512.9 118.9L493.7 118.9L493.7 118.3L502.5 109Q505.9 105.5 507.4 102.5Q508.8 99.5 508.8 96.3Q508.8 93 507 91.2Q505.2 89.4 502 89.4Q499.4 89.4 497.8 90.8Q496.3 92.1 494.8 95.8L493.8 95.5Q494.6 91 497.1 88.4Q499.7 85.8 504 85.8Q508 85.8 510.5 88.2Q513 90.7 513 94.4Q513 99.9 506.8 106.5L498.7 115.2L510.2 115.2Q511.8 115.2 512.7 114.5Q513.7 113.9 514.9 111.9L515.6 112.2ZM530.7 132L530.9 132Q540.2 120 546.9 117.3Q547.8 116.9 548.7 116.9Q550.6 116.9 551.5 117.9Q552.5 118.8 552.5 120.2Q552.5 121.7 551.6 122.6Q550.7 123.4 549.3 123.4Q548.5 123.4 547.3 122.8Q546.2 122.1 545.5 122.1Q543.7 122.1 541.7 123.7Q539.8 125.3 535.4 129.8L542.3 141.8Q544.1 144.9 545.2 145.8Q546.4 146.7 548.7 146.7L548.7 147.8Q545.9 148.7 543.8 148.7Q539.5 148.7 537 144.2L530.5 133L526.3 147.8L521 147.8L527 126.2Q528 122.5 528 121.5Q528 119.8 525.6 119.8L523.7 119.8L523.7 118.8Q527.4 118.3 534.3 116.9L534.5 117.1L530.7 132ZM578.6 112.2L575.9 118.9L556.8 118.9L556.8 118.3L565.5 109Q568.9 105.5 570.4 102.5Q571.8 99.5 571.8 96.3Q571.8 93 570 91.2Q568.2 89.4 565 89.4Q562.4 89.4 560.8 90.8Q559.3 92.1 557.8 95.8L556.8 95.5Q557.6 91 560.2 88.4Q562.7 85.8 567 85.8Q571.1 85.8 573.6 88.2Q576.1 90.7 576.1 94.4Q576.1 99.9 569.8 106.5L561.7 115.2L573.2 115.2Q574.8 115.2 575.7 114.5Q576.7 113.9 577.9 111.9L578.6 112.2ZM641.5 132.4L623.2 132.4L623.2 150.7L618.6 150.7L618.6 132.4L600.3 132.4L600.3 127.8L618.6 127.8L618.6 109.5L623.2 109.5L623.2 127.8L641.5 127.8L641.5 132.4ZM696.1 117.8L694.8 123L682.9 123Q684 124.7 685.8 126.1Q687.6 127.6 688.6 128.9Q689.7 130.3 689.7 132.6Q689.7 138.5 684 143.5Q678.2 148.6 671 148.6Q666.1 148.6 663.5 145.9Q660.8 143.3 660.8 138.7Q660.8 133.9 663.4 129.1Q666 124.4 671.1 121.1Q676.2 117.8 682.5 117.8L696.1 117.8ZM683.8 132.3Q683.8 129.1 682.6 126.6Q681.5 124.1 679.7 123Q675.7 123 671.2 128.4Q666.7 133.9 666.7 140.8Q666.7 143.9 668.2 145.5Q669.6 147.1 672.2 147.1Q676.8 147.1 680.3 142.1Q683.8 137 683.8 132.3ZM721.1 112.2L718.5 118.9L699.3 118.9L699.3 118.3L708 109Q711.4 105.5 712.9 102.5Q714.4 99.5 714.4 96.3Q714.4 93 712.6 91.2Q710.8 89.4 707.6 89.4Q704.9 89.4 703.4 90.8Q701.8 92.1 700.4 95.8L699.3 95.5Q700.2 91 702.7 88.4Q705.2 85.8 709.5 85.8Q713.6 85.8 716.1 88.2Q718.6 90.7 718.6 94.4Q718.6 99.9 712.3 106.5L704.2 115.2L715.7 115.2Q717.3 115.2 718.3 114.5Q719.2 113.9 720.4 111.9L721.1 112.2ZM740.1 115.5L739.1 113.6Q747.4 108 747.4 102.9Q747.4 101.6 746 101.6Q745.6 101.6 744.6 101.8Q743.7 102 743.1 102Q737.3 102 737.3 96.9Q737.3 94.3 738.9 92.7Q740.6 91.2 743.3 91.2Q746.7 91.2 749 93.6Q751.3 96.1 751.3 99.9Q751.3 104.5 748.2 108.8Q745.2 113.1 740.1 115.5ZM892.1 78.9L892.4 78.8Q905.7 61.7 915.3 57.8Q916.6 57.3 917.9 57.3Q920.5 57.3 921.9 58.6Q923.3 60 923.3 62Q923.3 64.1 922 65.3Q920.7 66.6 918.7 66.6Q917.5 66.6 915.9 65.6Q914.3 64.7 913.3 64.7Q910.7 64.7 907.9 66.9Q905.1 69.2 898.9 75.7L908.7 92.9Q911.2 97.3 912.9 98.5Q914.6 99.8 917.8 99.8L917.8 101.4Q913.9 102.7 910.9 102.7Q904.7 102.7 901.1 96.3L891.8 80.3L885.8 101.4L878.2 101.4L886.8 70.5Q888.2 65.2 888.2 63.8Q888.2 61.4 884.9 61.4L882.1 61.4L882.1 60Q887.4 59.3 897.2 57.3L897.5 57.6L892.1 78.9ZM960.5 50.5L956.7 60.1L929.3 60.1L929.3 59.2L941.8 46Q946.7 40.9 948.8 36.6Q950.9 32.4 950.9 27.8Q950.9 23.1 948.3 20.5Q945.7 17.9 941.1 17.9Q937.4 17.9 935.2 19.9Q933 21.9 930.9 27L929.4 26.7Q930.6 20.2 934.2 16.5Q937.8 12.8 943.9 12.8Q949.8 12.8 953.3 16.3Q956.9 19.8 956.9 25.1Q956.9 33 947.9 42.4L936.4 54.8L952.8 54.8Q955.1 54.8 956.4 53.9Q957.8 52.9 959.5 50.1L960.5 50.5ZM1050.5 69.4L991.6 69.4L991.6 62.8L1050.5 62.8L1050.5 69.4ZM1050.5 89.4L991.6 89.4L991.6 82.8L1050.5 82.8L1050.5 89.4ZM1090.6 78.9L1090.9 78.8Q1104.2 61.7 1113.8 57.8Q1115.1 57.3 1116.4 57.3Q1119 57.3 1120.4 58.6Q1121.8 60 1121.8 62Q1121.8 64.1 1120.5 65.3Q1119.2 66.6 1117.2 66.6Q1116 66.6 1114.4 65.6Q1112.8 64.7 1111.8 64.7Q1109.2 64.7 1106.4 66.9Q1103.6 69.2 1097.4 75.7L1107.2 92.9Q1109.7 97.3 1111.4 98.5Q1113.1 99.8 1116.3 99.8L1116.3 101.4Q1112.4 102.7 1109.4 102.7Q1103.2 102.7 1099.6 96.3L1090.3 80.3L1084.3 101.4L1076.7 101.4L1085.3 70.5Q1086.7 65.2 1086.7 63.8Q1086.7 61.4 1083.4 61.4L1080.6 61.4L1080.6 60Q1085.9 59.3 1095.7 57.3L1096 57.6L1090.6 78.9ZM1159 50.5L1155.2 60.1L1127.8 60.1L1127.8 59.2L1140.3 46Q1145.2 40.9 1147.3 36.6Q1149.4 32.4 1149.4 27.8Q1149.4 23.1 1146.8 20.5Q1144.2 17.9 1139.7 17.9Q1135.9 17.9 1133.7 19.9Q1131.5 21.9 1129.4 27L1127.9 26.7Q1129.1 20.2 1132.7 16.5Q1136.3 12.8 1142.5 12.8Q1148.3 12.8 1151.8 16.3Q1155.4 19.8 1155.4 25.1Q1155.4 33 1146.4 42.4L1134.9 54.8L1151.3 54.8Q1153.6 54.8 1154.9 53.9Q1156.3 52.9 1158 50.1L1159 50.5ZM1140.4 102.3L1140 104.6L1134.2 104.6L1128.1 127.5Q1127.9 128.1 1127.9 128.5Q1127.9 129.6 1129 129.6Q1129.8 129.6 1130.9 128.5Q1132.1 127.5 1134.7 124.1L1135.6 124.6Q1132.3 129.5 1130.3 131.3Q1128.2 133.1 1125.6 133.1Q1122.3 133.1 1122.3 130.5Q1122.3 129.8 1123.5 125.3L1128.9 104.6L1123.7 104.6L1123.6 104.1Q1123.6 102.9 1125.9 102.4Q1127.7 102 1130.5 99.7Q1133.4 97.4 1135.2 94.7Q1135.6 94.1 1136.2 94.1Q1136.8 94.1 1136.8 94.6Q1136.8 95 1136.8 95.1L1134.8 102.3L1140.4 102.3ZM1248.9 79.4L1222.8 79.4L1222.8 105.5L1216.2 105.5L1216.2 79.4L1190.1 79.4L1190.1 72.8L1216.2 72.8L1216.2 46.7L1222.8 46.7L1222.8 72.8L1248.9 72.8L1248.9 79.4ZM1289.1 78.9L1289.4 78.8Q1302.7 61.7 1312.3 57.8Q1313.6 57.3 1314.9 57.3Q1317.5 57.3 1318.9 58.6Q1320.3 60 1320.3 62Q1320.3 64.1 1319 65.3Q1317.7 66.6 1315.7 66.6Q1314.5 66.6 1312.9 65.6Q1311.3 64.7 1310.3 64.7Q1307.7 64.7 1304.9 66.9Q1302.1 69.2 1295.9 75.7L1305.7 92.9Q1308.2 97.3 1309.9 98.5Q1311.6 99.8 1314.8 99.8L1314.8 101.4Q1310.9 102.7 1307.9 102.7Q1301.7 102.7 1298.1 96.3L1288.8 80.3L1282.8 101.4L1275.2 101.4L1283.8 70.5Q1285.2 65.2 1285.2 63.8Q1285.2 61.4 1281.9 61.4L1279.1 61.4L1279.1 60Q1284.4 59.3 1294.2 57.3L1294.5 57.6L1289.1 78.9ZM1357.5 50.5L1353.7 60.1L1326.3 60.1L1326.3 59.2L1338.8 46Q1343.7 40.9 1345.8 36.6Q1347.9 32.4 1347.9 27.8Q1347.9 23.1 1345.3 20.5Q1342.7 17.9 1338.2 17.9Q1334.4 17.9 1332.2 19.9Q1330 21.9 1327.9 27L1326.4 26.7Q1327.6 20.2 1331.2 16.5Q1334.8 12.8 1341 12.8Q1346.8 12.8 1350.3 16.3Q1353.9 19.8 1353.9 25.1Q1353.9 33 1345 42.4L1333.4 54.8L1349.8 54.8Q1352.1 54.8 1353.5 53.9Q1354.8 52.9 1356.5 50.1L1357.5 50.5ZM1330.5 116.7L1331.6 114.2Q1334 109 1338.2 104.6Q1341.2 101.4 1343.7 101.4Q1345.2 101.4 1346.1 102.4Q1347 103.4 1347 105Q1347 106.6 1346.2 107.7Q1345.3 108.8 1343.7 108.8Q1342.4 108.8 1341.3 106.9Q1340.7 106 1340.2 106Q1338.3 106 1334.4 112.5Q1332.1 116.6 1330.6 120.2Q1329.2 123.8 1326.7 132.3L1321.3 132.3L1327 111.8Q1328.1 107.7 1328.1 106.1Q1328.1 104.3 1325.5 104.3Q1324.9 104.3 1323.3 104.5L1323.3 103.3L1334.2 101.4L1334.4 101.6L1330.5 116.7ZM385.4 79.5L385.4 73.3L725.5 73.3L725.5 79.5L385.4 79.5Z"/></svg></div>
+
+<h2 id="ceiling">The ceiling</h2>
+<p>As the transmit power grows, the noise term becomes negligible and the SNDR stops growing:</p>
+<div class="eq"><svg class="tex" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 648 155" style="width:6.480em;height:1.550em" role="img" aria-label="\lim_{P\to\infty}\mathrm{SNDR}=\frac{1}{\kappa^2}" focusable="false"><path fill="currentColor" d="M49.7 85.7L26.1 85.7L26.1 84.2Q30.8 83.8 32.3 82.2Q33.8 80.7 33.8 76.5L33.8 29.6Q33.8 26 32.9 24.6Q32 23.2 29.6 23.2Q27.5 23.2 25.9 23.4L25.9 21.8Q35.4 19.5 41.7 17.4L42.2 17.8L42.2 77Q42.2 81.2 43.6 82.6Q45 83.9 49.7 84.2L49.7 85.7ZM69.8 22.5Q69.8 24.7 68.3 26.1Q66.8 27.6 64.6 27.6Q62.5 27.6 61 26.1Q59.6 24.7 59.6 22.5Q59.6 20.4 61.1 18.9Q62.6 17.4 64.7 17.4Q66.9 17.4 68.3 18.9Q69.8 20.4 69.8 22.5ZM77.1 85.7L53.4 85.7L53.4 84.2Q58.6 83.9 59.9 82.4Q61.3 80.9 61.3 75.3L61.3 52.6Q61.3 49.1 60.6 47.7Q59.9 46.3 58 46.3Q55.6 46.3 53.8 46.8L53.8 45.2L69.3 39.7L69.7 40.1L69.7 75.2Q69.7 80.8 71 82.3Q72.2 83.8 77.1 84.2L77.1 85.7ZM157.1 85.7L135.3 85.7L135.3 84.2Q139.5 83.8 140.6 82.4Q141.8 81.1 141.8 76.7L141.8 56.1Q141.8 50.1 140.1 47.5Q138.3 44.9 134.1 44.9Q130.6 44.9 128.1 46.3Q125.7 47.7 123.4 51L123.4 76.2Q123.4 81 124.8 82.6Q126.3 84.1 130.6 84.2L130.6 85.7L108.2 85.7L108.2 84.2Q112.6 83.9 113.8 82.8Q115 81.6 115 77.1L115 56Q115 44.9 108.5 44.9Q105.7 44.9 102.5 46.1Q99.4 47.4 97.9 49.2Q96.6 50.7 96.6 50.9L96.6 78.7Q96.6 81.9 98 82.9Q99.4 84 103.4 84.2L103.4 85.7L81.2 85.7L81.2 84.2Q85.4 84.1 86.8 82.6Q88.2 81.2 88.2 76.9L88.2 52.1Q88.2 48.4 87.4 46.9Q86.6 45.5 84.7 45.5Q83.2 45.5 81.5 45.9L81.5 44.2Q88.3 42.3 95.4 39.7L96.2 40L96.2 47.4L96.4 47.4Q100.9 42.7 104.3 41.2Q107.8 39.7 111.7 39.7Q119.6 39.7 122.3 48.1Q130.1 39.7 138.6 39.7Q150.2 39.7 150.2 57.7L150.2 78Q150.2 81.3 151.2 82.5Q152.2 83.8 154.5 84L157.1 84.2L157.1 85.7ZM14.2 104.4L31.1 104.4Q46.3 104.4 46.3 114.8Q46.3 117.6 45 120.3Q43.8 123 41.6 124.8Q36.8 128.8 27.2 128.8Q23.4 128.8 20.9 128.2L17.2 141.7Q16.2 145.5 16.2 146.2Q16.2 147.4 17.3 148.1Q18.4 148.7 21.1 149L21.1 150.1L4 150.1L4 149Q7 148.6 7.9 147.7Q8.9 146.7 9.9 143.3L18 114.3Q19.2 110 19.2 108.5Q19.2 107.1 18.2 106.5Q17.2 105.9 14.2 105.6L14.2 104.4ZM26.4 108.7L21.6 125.9Q23.6 126.2 25.2 126.2Q31.3 126.2 34.2 124.5Q39.1 121.7 39.1 115.1Q39.1 106.5 30 106.5Q27 106.5 26.4 108.7ZM106.7 132.1L106.7 132.8Q98.6 136.2 90 146.2L88.6 144.8Q90.6 142 94.4 138.1Q95.4 137.1 95.4 136.1Q95.4 134.7 93.5 134.7L51.7 134.7L51.7 130.1L93.6 130.1Q94.2 130.1 94.8 129.6Q95.4 129.1 95.4 128.6Q95.4 127.8 94.4 126.8Q90.9 123.4 88.7 120.1L90.1 118.8Q98.8 128.8 106.7 132.1ZM171.4 134.6Q171.4 140.3 167.5 145.2Q163.7 150.1 157.5 150.1Q153.4 150.1 150.2 147.7Q146.9 145.2 143.4 140Q138.4 150.1 128.8 150.1Q123.8 150.1 120.2 146.6Q116.5 142.9 116.5 136.1Q116.5 132.5 117.5 129.6Q118.5 126.6 120 124.9Q121.5 123.2 123.4 122Q125.3 120.9 126.9 120.5Q128.5 120 129.9 120Q134.1 120 137.2 122Q140.4 124 145.1 130.3Q148 125.2 150.9 122.6Q153.8 120 158.6 120Q163.7 120 167.6 124Q171.4 128 171.4 134.6ZM146.5 133L146.5 133.2Q150.6 139.9 153.7 142.9Q156.7 146 160.2 146Q163.1 146 165.1 143.5Q167.2 141 167.2 137.7Q167.2 132.7 164.5 129.3Q161.9 125.9 157.4 125.9Q155.3 125.9 153.5 126.5Q151.7 127.1 150.3 128.4Q148.9 129.8 148.3 130.5Q147.6 131.3 146.5 133ZM141.9 137.5L141.9 137.3Q137.9 130.7 134.5 127.4Q131.1 124.2 127.7 124.2Q124.7 124.2 122.7 126.7Q120.7 129.1 120.7 132.5Q120.7 137.3 123.3 140.8Q126 144.3 130.4 144.3Q132.6 144.3 134.5 143.6Q136.4 143 137.8 141.8Q139.3 140.6 140.1 139.7Q140.9 138.8 141.9 137.5ZM240 39.4L237.5 39.4Q235.8 33.2 233.4 30Q227.3 22.2 218.9 22.2Q214.3 22.2 211.5 24.8Q208.8 27.5 208.8 31.7Q208.8 33.7 209.8 35.6Q210.8 37.5 211.9 38.8Q213.1 40.2 216 42.2Q218.9 44.2 220.7 45.2Q222.5 46.3 226.7 48.8Q234.8 53.5 238.5 58.1Q242.2 62.8 242.2 68.4Q242.2 76.7 236.4 81.9Q230.6 87.1 221.8 87.1Q215.3 87.1 210 84.8Q207.4 83.7 205.3 83.7Q204.1 83.7 203.3 84.6Q202.5 85.5 202.5 87L200.3 87L197.4 65.8L199.6 65.8Q206.3 83.5 220.2 83.5Q225.5 83.5 228.8 80.3Q232.1 77.2 232.1 72.3Q232.1 67.6 229.2 64.4Q224.4 59.2 212.4 52.8Q200.2 46.3 200.2 35.6Q200.2 27.6 205.1 22.8Q210 18.1 217.6 18.1Q222.9 18.1 228.1 20.3Q230.8 21.5 232.5 21.5Q235.1 21.5 235.7 18.1L237.8 18.1L240 39.4ZM319.4 19.5L319.4 21.4Q314.3 21.9 312.8 23.2Q311.2 24.6 310.5 27Q309.9 29.4 309.9 35L309.9 86.8L308.1 86.8L264 31.9L264 70.7Q264 78.3 265.7 80.6Q267.4 83 273.3 83.8L273.3 85.7L249.9 85.7L249.9 83.8Q256.1 83.1 257.8 80.8Q259.6 78.6 259.6 70.7L259.6 26.7Q257 23.5 255.2 22.4Q253.4 21.4 249.9 21.4L249.9 19.5L266.9 19.5L305.5 67.8L305.5 33.8Q305.5 26.2 303.6 24Q302.4 22.7 300.9 22.2Q299.5 21.8 295.7 21.4L295.7 19.5L319.4 19.5ZM322.5 19.5L349.5 19.5Q369 19.5 379.5 28.6Q389.4 37.1 389.4 52.3Q389.4 70.6 375.8 79.3Q365.9 85.7 350.6 85.7L322.5 85.7L322.5 83.8Q328.3 83.4 329.8 81.8Q331.3 80.1 331.3 74.2L331.3 30.7Q331.3 24.9 329.8 23.3Q328.3 21.8 322.5 21.4L322.5 19.5ZM341.5 27.4L341.5 77.3Q341.5 80 342.4 81Q343.4 82 346.3 82Q354.1 82 358.9 80.9Q363.7 79.8 368.1 76.8Q378.5 69.8 378.5 52.9Q378.5 38.4 369 30.1Q364.7 26.3 359.6 24.7Q354.5 23.2 346.8 23.2Q343.9 23.2 342.7 24.1Q341.5 25 341.5 27.4ZM459.1 85.7L442.9 85.7L419.1 54.9L413.5 55.1L413.5 74.5Q413.5 80.2 415 81.8Q416.6 83.4 422.4 83.8L422.4 85.7L394.8 85.7L394.8 83.8Q400.5 83.3 401.9 81.6Q403.3 79.9 403.3 73.3L403.3 30.6Q403.3 25 401.9 23.4Q400.5 21.8 394.8 21.4L394.8 19.5L422 19.5Q435.7 19.5 442.9 25.4Q447.8 29.4 447.8 37.4Q447.8 51 429.7 53.8L449.7 79.1Q451.8 81.7 453.7 82.6Q455.6 83.5 459.1 83.8L459.1 85.7ZM413.5 27.4L413.5 51.4Q420.7 51.3 424.2 50.6Q427.7 49.9 431.2 48Q436.9 44.8 436.9 36.6Q436.9 23.2 418.6 23.2Q415.9 23.2 414.7 24.1Q413.5 24.9 413.5 27.4ZM543.5 53.7L484.6 53.7L484.6 47.1L543.5 47.1L543.5 53.7ZM543.5 73.7L484.6 73.7L484.6 67.1L543.5 67.1L543.5 73.7ZM616.1 51.3L596.8 51.3L596.8 50.3Q600.6 50.1 602 48.8Q603.4 47.6 603.4 44.7L603.4 13.2Q603.4 9.8 601.3 9.8Q600.4 9.8 598.2 10.7L596.3 11.3L596.3 10.4L608.8 4L609.5 4.2L609.5 46Q609.5 48.3 610.9 49.3Q612.3 50.3 616.1 50.3L616.1 51.3ZM585.2 116.3L585.4 116.3Q594.8 104.3 601.5 101.6Q602.4 101.2 603.3 101.2Q605.1 101.2 606.1 102.2Q607.1 103.1 607.1 104.5Q607.1 106 606.2 106.9Q605.3 107.7 603.9 107.7Q603 107.7 601.9 107.1Q600.8 106.4 600.1 106.4Q598.3 106.4 596.3 108Q594.3 109.6 590 114.1L596.9 126.1Q598.6 129.2 599.8 130.1Q601 131 603.2 131L603.2 132.1Q600.5 133 598.4 133Q594.1 133 591.5 128.5L585 117.3L580.8 132.1L575.5 132.1L581.5 110.5Q582.5 106.8 582.5 105.8Q582.5 104.1 580.2 104.1L578.2 104.1L578.2 103.1Q581.9 102.6 588.8 101.2L589 101.4L585.2 116.3ZM633.1 96.5L630.5 103.2L611.3 103.2L611.3 102.6L620 93.3Q623.5 89.8 624.9 86.8Q626.4 83.8 626.4 80.6Q626.4 77.3 624.6 75.5Q622.8 73.7 619.6 73.7Q616.9 73.7 615.4 75.1Q613.8 76.4 612.4 80.1L611.4 79.8Q612.2 75.3 614.7 72.7Q617.2 70.1 621.5 70.1Q625.6 70.1 628.1 72.5Q630.6 75 630.6 78.7Q630.6 84.2 624.3 90.8L616.3 99.5L627.7 99.5Q629.3 99.5 630.3 98.8Q631.2 98.2 632.4 96.2L633.1 96.5ZM574.5 63.8L574.5 57.6L637.5 57.6L637.5 63.8L574.5 63.8Z"/></svg></div>
+<div class="callout">
+  <span class="label">Key idea</span>
+  <p>Capacity is capped at <svg class="tex" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 587 119" style="width:5.870em;height:1.190em;vertical-align:-0.260em" role="img" aria-label="\log_2(1+1/\kappa^2)" focusable="false"><path fill="currentColor" d="M29.7 92.6L6.1 92.6L6.1 91.1Q10.8 90.7 12.3 89.2Q13.8 87.6 13.8 83.4L13.8 36.5Q13.8 32.9 12.9 31.5Q12 30.1 9.6 30.1Q7.5 30.1 5.9 30.3L5.9 28.7Q15.4 26.4 21.7 24.3L22.2 24.7L22.2 83.9Q22.2 88.1 23.6 89.5Q25 90.8 29.7 91.1L29.7 92.6ZM78.8 69.5Q78.8 80 72.5 86.8Q66.3 93.6 56.3 93.6Q47.1 93.6 40.9 86.9Q34.7 80.1 34.7 69.8Q34.7 59.4 40.9 53Q47.1 46.6 57.2 46.6Q66.5 46.6 72.6 53Q78.8 59.3 78.8 69.5ZM69.8 72.2Q69.8 60.8 64.8 54.4Q60.8 49.4 55.3 49.4Q50.1 49.4 46.9 53.7Q43.7 57.9 43.7 65.3Q43.7 78.1 49 85.8Q52.4 90.8 58 90.8Q63.5 90.8 66.6 85.9Q69.8 80.9 69.8 72.2ZM128.8 53.8L120.5 53.8Q122.4 58.1 122.4 62.2Q122.4 69.9 117.2 73.8Q112 77.7 106.8 77.7Q105.7 77.7 103 77.4L101.1 77.2Q99.1 77.8 97.1 79.9Q95.1 82 95.1 83.5Q95.1 85.8 102.9 86.2L115.8 86.8Q121.3 87 124.6 89.9Q127.9 92.8 127.9 97.5Q127.9 103.3 121.9 108Q113.6 114.4 101.9 114.4Q94.7 114.4 89.6 111.6Q84.6 108.7 84.6 104.7Q84.6 101.9 86.8 99.2Q89 96.4 94.4 92.5Q91.2 91 90.1 89.9Q89.1 88.8 89.1 87.2Q89.1 84.3 93.7 80.3Q96 78.3 98 76.3Q93 73.8 90.8 70.7Q88.7 67.6 88.7 62.9Q88.7 56.1 93.5 51.4Q98.4 46.6 105.4 46.6Q109.4 46.6 113.4 48.1L115.6 48.9Q118.5 49.9 121.1 49.9L128.8 49.9L128.8 53.8ZM97 58.8L97 59.1Q97 66.3 99.8 70.8Q102.7 75.2 107.3 75.2Q110.7 75.2 112.7 72.8Q114.7 70.3 114.7 66.2Q114.7 59.6 111.7 54.1Q109.2 49.4 104.4 49.4Q100.9 49.4 98.9 51.9Q97 54.4 97 58.8ZM125.1 99Q125.1 96.2 122.3 95.2Q119.6 94.1 112.7 94.1Q102.8 94.1 96.5 92.8Q93.5 96.4 92.5 98.1Q91.6 99.7 91.6 101.4Q91.6 104.7 95.5 106.7Q99.5 108.7 106.1 108.7Q114.6 108.7 119.8 106.1Q125.1 103.4 125.1 99ZM166.6 98L162.8 107.6L135.4 107.6L135.4 106.8L147.9 93.5Q152.8 88.4 154.9 84.2Q157 79.9 157 75.3Q157 70.7 154.4 68.1Q151.8 65.5 147.2 65.5Q143.5 65.5 141.2 67.4Q139 69.4 136.9 74.6L135.5 74.2Q136.7 67.7 140.3 64Q143.9 60.3 150 60.3Q155.8 60.3 159.4 63.8Q163 67.3 163 72.6Q163 80.5 154 90L142.5 102.3L158.9 102.3Q161.2 102.3 162.5 101.4Q163.9 100.5 165.6 97.6L166.6 98ZM219.9 108.7L218.7 110.3Q207.1 103.7 200.7 92.1Q194.3 80.5 194.3 67.4Q194.3 39.7 219 25L219.9 26.6Q209.7 35.3 206.3 43.8Q202.9 52.2 202.9 67.1Q202.9 81.9 206.4 91.1Q209.9 100.3 219.9 108.7ZM262.2 92.6L234.6 92.6L234.6 91.1Q240.1 90.8 242.1 89.1Q244.1 87.3 244.1 83.1L244.1 38.2Q244.1 33.3 241.1 33.3Q239.7 33.3 236.6 34.5L233.9 35.5L233.9 34.1L251.8 25L252.7 25.3L252.7 85Q252.7 88.3 254.7 89.7Q256.7 91.1 262.2 91.1L262.2 92.6ZM356.4 70.6L330.3 70.6L330.3 96.7L323.7 96.7L323.7 70.6L297.6 70.6L297.6 64L323.7 64L323.7 37.9L330.3 37.9L330.3 64L356.4 64L356.4 70.6ZM420.7 92.6L393.1 92.6L393.1 91.1Q398.6 90.8 400.6 89.1Q402.6 87.3 402.6 83.1L402.6 38.2Q402.6 33.3 399.6 33.3Q398.2 33.3 395.1 34.5L392.4 35.5L392.4 34.1L410.3 25L411.2 25.3L411.2 85Q411.2 88.3 413.2 89.7Q415.2 91.1 420.7 91.1L420.7 92.6ZM460 25L437.2 94L430.4 94L453.3 25L460 25ZM474.4 70.1L474.7 70Q488 52.9 497.6 49Q498.9 48.5 500.2 48.5Q502.8 48.5 504.2 49.9Q505.6 51.2 505.6 53.2Q505.6 55.3 504.3 56.6Q503 57.8 501 57.8Q499.8 57.8 498.2 56.9Q496.6 55.9 495.6 55.9Q493 55.9 490.2 58.2Q487.4 60.4 481.2 66.9L491 84.1Q493.5 88.5 495.2 89.8Q496.9 91 500.1 91L500.1 92.6Q496.2 93.9 493.2 93.9Q487 93.9 483.4 87.5L474.1 71.5L468.1 92.6L460.5 92.6L469.1 61.7Q470.5 56.4 470.5 55Q470.5 52.6 467.2 52.6L464.4 52.6L464.4 51.2Q469.7 50.5 479.5 48.5L479.8 48.8L474.4 70.1ZM542.8 41.7L539.1 51.3L511.7 51.3L511.7 50.5L524.1 37.2Q529 32.1 531.1 27.9Q533.2 23.6 533.2 19Q533.2 14.4 530.7 11.8Q528.1 9.2 523.5 9.2Q519.7 9.2 517.5 11.1Q515.3 13.1 513.2 18.3L511.8 17.9Q512.9 11.4 516.5 7.7Q520.2 4 526.3 4Q532.1 4 535.7 7.5Q539.3 11 539.3 16.3Q539.3 24.2 530.3 33.7L518.8 46L535.1 46Q537.4 46 538.8 45.1Q540.2 44.2 541.9 41.3L542.8 41.7ZM552.1 26.6L553.2 25Q564.7 31.8 571.2 43.4Q577.7 55 577.7 67.9Q577.7 95.2 552.9 110.3L552.1 108.7Q562.4 100.2 565.7 91.8Q569.1 83.3 569.1 68.2Q569.1 53 565.7 43.9Q562.4 34.7 552.1 26.6Z"/></svg> bits per channel use, however strong the signal. With an EVM of 8%, the ceiling is 21.9 dB of SNDR, or 7.3 bit/s/Hz.</p>
+</div>
+<div class="demo" data-demo="hwi-ceiling"></div>
+<p class="demo-note">The presets are the transmitter EVM limits that 3GPP sets for each modulation: 17.5% for QPSK, 12.5% for 16-QAM, 8% for 64-QAM and 3.5% for 256-QAM.</p>
+<p>Things to try:</p>
+<ul>
+  <li>Choose the 256-QAM limit. The ceiling rises to about 9.7 bit/s/Hz, still well short of what an ideal receiver gets at high SNR.</li>
+  <li>Look at low SNR. Below about 10 dB the two curves are almost identical, because noise dominates and impairments hardly matter there.</li>
+</ul>
+
+<h2 id="consequences">What it means for new technologies</h2>
+<dl class="terms">
+  <dt>Massive MIMO</dt>
+  <dd>Arrays tolerate cheaper hardware than expected. Distortion from different antennas adds incoherently while the signal adds coherently, so an array can trade hardware quality for antenna count.</dd>
+  <dt>Relays and RIS</dt>
+  <dd>In a two-hop link, impairments from both hops accumulate. A <a href="ris.html">RIS</a> adds no amplifier, but phase errors and coarse phase resolution at its elements act like phase noise on every reflected path.</dd>
+  <dt>NOMA</dt>
+  <dd>Successive interference cancellation subtracts a reconstructed signal. Distortion makes the reconstruction imperfect, so residual interference remains and both users hit ceilings. See <a href="noma.html">NOMA</a>.</dd>
+  <dt>New waveforms</dt>
+  <dd>Windowed OFDM (WOLA) cuts out-of-band emission, but amplifier nonlinearity regrows it. Digital predistortion is needed to keep the benefit.</dd>
+</dl>
+<p>These effects are the subject of the PhD thesis <em>Performance Analysis of Future Wireless Communication Systems under Residual Hardware Impairments</em> (IIIT-Delhi, 2022) and the papers listed below.</p>
+
+<h2 id="design">What designers can do</h2>
+<ul>
+  <li><strong>Spend effort where it binds.</strong> At high SNR, better hardware (a lower <svg class="tex" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 53 55" style="width:0.530em;height:0.550em;vertical-align:-0.060em" role="img" aria-label="\kappa" focusable="false"><path fill="currentColor" d="M19.3 25.6L19.6 25.5Q32.9 8.4 42.5 4.5Q43.8 4 45.1 4Q47.7 4 49.1 5.3Q50.5 6.7 50.5 8.7Q50.5 10.8 49.2 12Q47.9 13.3 45.9 13.3Q44.7 13.3 43.1 12.3Q41.5 11.4 40.5 11.4Q37.9 11.4 35.1 13.6Q32.3 15.9 26.1 22.4L35.9 39.6Q38.4 44 40.1 45.2Q41.8 46.5 45 46.5L45 48.1Q41.1 49.4 38.1 49.4Q31.9 49.4 28.3 43L19 27L13 48.1L5.4 48.1L14 17.2Q15.4 11.9 15.4 10.5Q15.4 8.1 12.1 8.1L9.3 8.1L9.3 6.7Q14.6 6 24.4 4L24.7 4.3L19.3 25.6Z"/></svg>) helps more than more transmit power.</li>
+  <li><strong>Design with the model.</strong> Power allocation, phase optimisation and user scheduling should include the distortion terms.</li>
+  <li><strong>Compensate digitally.</strong> Predistortion, phase-noise tracking and IQ-imbalance estimation.</li>
+  <li><strong>Use arrays.</strong> Spreading the signal over many antennas dilutes the distortion of each one.</li>
+</ul>
+
+<div class="takeaways">
+  <span class="label">Key takeaways</span>
+  <ul>
+    <li>Residual impairments behave like noise proportional to the signal power, with a level <svg class="tex" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 53 55" style="width:0.530em;height:0.550em;vertical-align:-0.060em" role="img" aria-label="\kappa" focusable="false"><path fill="currentColor" d="M19.3 25.6L19.6 25.5Q32.9 8.4 42.5 4.5Q43.8 4 45.1 4Q47.7 4 49.1 5.3Q50.5 6.7 50.5 8.7Q50.5 10.8 49.2 12Q47.9 13.3 45.9 13.3Q44.7 13.3 43.1 12.3Q41.5 11.4 40.5 11.4Q37.9 11.4 35.1 13.6Q32.3 15.9 26.1 22.4L35.9 39.6Q38.4 44 40.1 45.2Q41.8 46.5 45 46.5L45 48.1Q41.1 49.4 38.1 49.4Q31.9 49.4 28.3 43L19 27L13 48.1L5.4 48.1L14 17.2Q15.4 11.9 15.4 10.5Q15.4 8.1 12.1 8.1L9.3 8.1L9.3 6.7Q14.6 6 24.4 4L24.7 4.3L19.3 25.6Z"/></svg> equal to the EVM.</li>
+    <li>SNDR saturates at <svg class="tex" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 176 99" style="width:1.760em;height:0.990em;vertical-align:-0.060em" role="img" aria-label="1/\kappa^2" focusable="false"><path fill="currentColor" d="M43.4 92.6L15.8 92.6L15.8 91.1Q21.3 90.8 23.3 89.1Q25.3 87.3 25.3 83.1L25.3 38.2Q25.3 33.3 22.3 33.3Q20.9 33.3 17.8 34.5L15.1 35.5L15.1 34.1L33 25L33.9 25.3L33.9 85Q33.9 88.3 35.9 89.7Q37.9 91.1 43.4 91.1L43.4 92.6ZM82.7 25L59.9 94L53.1 94L76 25L82.7 25ZM97.1 70.1L97.4 70Q110.7 52.9 120.3 49Q121.6 48.5 122.9 48.5Q125.5 48.5 126.9 49.9Q128.3 51.2 128.3 53.2Q128.3 55.3 127 56.6Q125.7 57.8 123.7 57.8Q122.5 57.8 120.9 56.9Q119.3 55.9 118.3 55.9Q115.7 55.9 112.9 58.2Q110.1 60.4 103.9 66.9L113.7 84.1Q116.2 88.5 117.9 89.8Q119.6 91 122.8 91L122.8 92.6Q118.9 93.9 115.9 93.9Q109.7 93.9 106.1 87.5L96.8 71.5L90.8 92.6L83.2 92.6L91.8 61.7Q93.2 56.4 93.2 55Q93.2 52.6 89.9 52.6L87.1 52.6L87.1 51.2Q92.4 50.5 102.2 48.5L102.5 48.8L97.1 70.1ZM165.5 41.7L161.7 51.3L134.3 51.3L134.3 50.5L146.8 37.2Q151.7 32.1 153.8 27.9Q155.9 23.6 155.9 19Q155.9 14.4 153.3 11.8Q150.7 9.2 146.2 9.2Q142.4 9.2 140.2 11.1Q138 13.1 135.9 18.3L134.4 17.9Q135.6 11.4 139.2 7.7Q142.8 4 149 4Q154.8 4 158.3 7.5Q161.9 11 161.9 16.3Q161.9 24.2 153 33.7L141.4 46L157.8 46Q160.1 46 161.5 45.1Q162.8 44.2 164.5 41.3L165.5 41.7Z"/></svg> and capacity at <svg class="tex" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 587 119" style="width:5.870em;height:1.190em;vertical-align:-0.260em" role="img" aria-label="\log_2(1+1/\kappa^2)" focusable="false"><path fill="currentColor" d="M29.7 92.6L6.1 92.6L6.1 91.1Q10.8 90.7 12.3 89.2Q13.8 87.6 13.8 83.4L13.8 36.5Q13.8 32.9 12.9 31.5Q12 30.1 9.6 30.1Q7.5 30.1 5.9 30.3L5.9 28.7Q15.4 26.4 21.7 24.3L22.2 24.7L22.2 83.9Q22.2 88.1 23.6 89.5Q25 90.8 29.7 91.1L29.7 92.6ZM78.8 69.5Q78.8 80 72.5 86.8Q66.3 93.6 56.3 93.6Q47.1 93.6 40.9 86.9Q34.7 80.1 34.7 69.8Q34.7 59.4 40.9 53Q47.1 46.6 57.2 46.6Q66.5 46.6 72.6 53Q78.8 59.3 78.8 69.5ZM69.8 72.2Q69.8 60.8 64.8 54.4Q60.8 49.4 55.3 49.4Q50.1 49.4 46.9 53.7Q43.7 57.9 43.7 65.3Q43.7 78.1 49 85.8Q52.4 90.8 58 90.8Q63.5 90.8 66.6 85.9Q69.8 80.9 69.8 72.2ZM128.8 53.8L120.5 53.8Q122.4 58.1 122.4 62.2Q122.4 69.9 117.2 73.8Q112 77.7 106.8 77.7Q105.7 77.7 103 77.4L101.1 77.2Q99.1 77.8 97.1 79.9Q95.1 82 95.1 83.5Q95.1 85.8 102.9 86.2L115.8 86.8Q121.3 87 124.6 89.9Q127.9 92.8 127.9 97.5Q127.9 103.3 121.9 108Q113.6 114.4 101.9 114.4Q94.7 114.4 89.6 111.6Q84.6 108.7 84.6 104.7Q84.6 101.9 86.8 99.2Q89 96.4 94.4 92.5Q91.2 91 90.1 89.9Q89.1 88.8 89.1 87.2Q89.1 84.3 93.7 80.3Q96 78.3 98 76.3Q93 73.8 90.8 70.7Q88.7 67.6 88.7 62.9Q88.7 56.1 93.5 51.4Q98.4 46.6 105.4 46.6Q109.4 46.6 113.4 48.1L115.6 48.9Q118.5 49.9 121.1 49.9L128.8 49.9L128.8 53.8ZM97 58.8L97 59.1Q97 66.3 99.8 70.8Q102.7 75.2 107.3 75.2Q110.7 75.2 112.7 72.8Q114.7 70.3 114.7 66.2Q114.7 59.6 111.7 54.1Q109.2 49.4 104.4 49.4Q100.9 49.4 98.9 51.9Q97 54.4 97 58.8ZM125.1 99Q125.1 96.2 122.3 95.2Q119.6 94.1 112.7 94.1Q102.8 94.1 96.5 92.8Q93.5 96.4 92.5 98.1Q91.6 99.7 91.6 101.4Q91.6 104.7 95.5 106.7Q99.5 108.7 106.1 108.7Q114.6 108.7 119.8 106.1Q125.1 103.4 125.1 99ZM166.6 98L162.8 107.6L135.4 107.6L135.4 106.8L147.9 93.5Q152.8 88.4 154.9 84.2Q157 79.9 157 75.3Q157 70.7 154.4 68.1Q151.8 65.5 147.2 65.5Q143.5 65.5 141.2 67.4Q139 69.4 136.9 74.6L135.5 74.2Q136.7 67.7 140.3 64Q143.9 60.3 150 60.3Q155.8 60.3 159.4 63.8Q163 67.3 163 72.6Q163 80.5 154 90L142.5 102.3L158.9 102.3Q161.2 102.3 162.5 101.4Q163.9 100.5 165.6 97.6L166.6 98ZM219.9 108.7L218.7 110.3Q207.1 103.7 200.7 92.1Q194.3 80.5 194.3 67.4Q194.3 39.7 219 25L219.9 26.6Q209.7 35.3 206.3 43.8Q202.9 52.2 202.9 67.1Q202.9 81.9 206.4 91.1Q209.9 100.3 219.9 108.7ZM262.2 92.6L234.6 92.6L234.6 91.1Q240.1 90.8 242.1 89.1Q244.1 87.3 244.1 83.1L244.1 38.2Q244.1 33.3 241.1 33.3Q239.7 33.3 236.6 34.5L233.9 35.5L233.9 34.1L251.8 25L252.7 25.3L252.7 85Q252.7 88.3 254.7 89.7Q256.7 91.1 262.2 91.1L262.2 92.6ZM356.4 70.6L330.3 70.6L330.3 96.7L323.7 96.7L323.7 70.6L297.6 70.6L297.6 64L323.7 64L323.7 37.9L330.3 37.9L330.3 64L356.4 64L356.4 70.6ZM420.7 92.6L393.1 92.6L393.1 91.1Q398.6 90.8 400.6 89.1Q402.6 87.3 402.6 83.1L402.6 38.2Q402.6 33.3 399.6 33.3Q398.2 33.3 395.1 34.5L392.4 35.5L392.4 34.1L410.3 25L411.2 25.3L411.2 85Q411.2 88.3 413.2 89.7Q415.2 91.1 420.7 91.1L420.7 92.6ZM460 25L437.2 94L430.4 94L453.3 25L460 25ZM474.4 70.1L474.7 70Q488 52.9 497.6 49Q498.9 48.5 500.2 48.5Q502.8 48.5 504.2 49.9Q505.6 51.2 505.6 53.2Q505.6 55.3 504.3 56.6Q503 57.8 501 57.8Q499.8 57.8 498.2 56.9Q496.6 55.9 495.6 55.9Q493 55.9 490.2 58.2Q487.4 60.4 481.2 66.9L491 84.1Q493.5 88.5 495.2 89.8Q496.9 91 500.1 91L500.1 92.6Q496.2 93.9 493.2 93.9Q487 93.9 483.4 87.5L474.1 71.5L468.1 92.6L460.5 92.6L469.1 61.7Q470.5 56.4 470.5 55Q470.5 52.6 467.2 52.6L464.4 52.6L464.4 51.2Q469.7 50.5 479.5 48.5L479.8 48.8L474.4 70.1ZM542.8 41.7L539.1 51.3L511.7 51.3L511.7 50.5L524.1 37.2Q529 32.1 531.1 27.9Q533.2 23.6 533.2 19Q533.2 14.4 530.7 11.8Q528.1 9.2 523.5 9.2Q519.7 9.2 517.5 11.1Q515.3 13.1 513.2 18.3L511.8 17.9Q512.9 11.4 516.5 7.7Q520.2 4 526.3 4Q532.1 4 535.7 7.5Q539.3 11 539.3 16.3Q539.3 24.2 530.3 33.7L518.8 46L535.1 46Q537.4 46 538.8 45.1Q540.2 44.2 541.9 41.3L542.8 41.7ZM552.1 26.6L553.2 25Q564.7 31.8 571.2 43.4Q577.7 55 577.7 67.9Q577.7 95.2 552.9 110.3L552.1 108.7Q562.4 100.2 565.7 91.8Q569.1 83.3 569.1 68.2Q569.1 53 565.7 43.9Q562.4 34.7 552.1 26.6Z"/></svg>.</li>
+    <li>At high SNR, better hardware beats more power.</li>
+    <li>Impairments accumulate across hops and limit relaying, RIS and NOMA.</li>
+  </ul>
+</div>
+
+<h2 id="check">Check your understanding</h2>
+<details class="qa"><summary>A link has <svg class="tex" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 286 81" style="width:2.860em;height:0.810em;vertical-align:-0.060em" role="img" aria-label="\kappa=5\%" focusable="false"><path fill="currentColor" d="M19.3 52.1L19.6 52Q32.9 34.9 42.5 31Q43.8 30.5 45.1 30.5Q47.7 30.5 49.1 31.8Q50.5 33.2 50.5 35.2Q50.5 37.3 49.2 38.5Q47.9 39.8 45.9 39.8Q44.7 39.8 43.1 38.8Q41.5 37.9 40.5 37.9Q37.9 37.9 35.1 40.1Q32.3 42.4 26.1 48.9L35.9 66.1Q38.4 70.5 40.1 71.8Q41.8 73 45 73L45 74.6Q41.1 75.9 38.1 75.9Q31.9 75.9 28.3 69.5L19 53.5L13 74.6L5.4 74.6L14 43.7Q15.4 38.4 15.4 37Q15.4 34.6 12.1 34.6L9.3 34.6L9.3 33.2Q14.6 32.5 24.4 30.5L24.7 30.8L19.3 52.1ZM132.1 42.6L73.2 42.6L73.2 36L132.1 36L132.1 42.6ZM132.1 62.6L73.2 62.6L73.2 56L132.1 56L132.1 62.6ZM200.7 6.5L197.1 15Q196.5 16.3 194.4 16.3L175 16.3L171 24.8Q182 26.9 186.9 29.3Q191.8 31.8 196 37.6Q199.5 42.4 199.5 50.3Q199.5 57.5 197.1 62.4Q194.8 67.3 189.7 71.1Q182.9 76 172.7 76Q167 76 163.5 74.3Q160 72.6 160 69.8Q160 66 164.5 66Q168.1 66 171.9 69.1Q175.8 72.3 179 72.3Q184.2 72.3 188.3 67.1Q192.5 61.9 192.5 55.4Q192.5 45.8 185.8 40.4Q177.1 33.4 164.5 33.4Q163.3 33.4 163.3 32.6L163.4 32.1L174.3 8.4L195 8.4Q196.7 8.4 197.6 7.9Q198.6 7.4 199.8 5.8L200.7 6.5ZM275.5 53.3Q275.5 62.4 270.5 69.5Q265.5 76.5 259.1 76.5Q254 76.5 250.5 72.5Q247 68.5 247 62.7Q247 54.7 252.8 48.1Q258.7 41.6 265.9 41.6Q270.5 41.6 273 44.6Q275.5 47.7 275.5 53.3ZM273.2 53.1Q273.2 49.2 271.4 46.8Q269.7 44.4 266.9 44.4Q264 44.4 262 46.7Q258.7 50.2 256.4 56Q254.2 61.9 254.2 67Q254.2 69.9 255.8 71.8Q257.4 73.8 259.8 73.8Q265 73.8 269.1 67.5Q273.2 61.1 273.2 53.1ZM269 4L226 76.4L221.3 76.4L260.7 10.6Q257.9 13.8 255.2 15Q252.6 16.3 248.6 16.3Q245.1 16.3 241 14.9Q241.4 17.2 241.4 19.3Q241.4 24.5 239.2 29.7Q237 34.9 233.4 38.3Q229.6 42 224.8 42Q219.8 42 216.4 38Q213 34.1 213 28.3Q213 19.8 218.8 13.4Q224.6 7 232.3 7Q234.9 7 238.3 9.8Q243 13.7 247.9 13.7Q252.5 13.7 255.1 12.2Q257.7 10.7 264.6 4L269 4ZM239 17.7Q239 15.5 238.5 14.7Q238.1 13.9 236.5 13.1Q234.2 12 232.1 9.7Q229 11.2 227.7 12.3Q226.4 13.5 224.9 16Q220.1 23.6 220.1 32.3Q220.1 35.4 221.6 37.3Q223.2 39.3 225.8 39.3Q231.1 39.3 235 32.8Q239 26.3 239 17.7Z"/></svg>. What is its maximum spectral efficiency?</summary><div class="ans"><p><svg class="tex" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 435 99" style="width:4.350em;height:0.990em;vertical-align:-0.060em" role="img" aria-label="1/\kappa^2=400" focusable="false"><path fill="currentColor" d="M43.4 92.6L15.8 92.6L15.8 91.1Q21.3 90.8 23.3 89.1Q25.3 87.3 25.3 83.1L25.3 38.2Q25.3 33.3 22.3 33.3Q20.9 33.3 17.8 34.5L15.1 35.5L15.1 34.1L33 25L33.9 25.3L33.9 85Q33.9 88.3 35.9 89.7Q37.9 91.1 43.4 91.1L43.4 92.6ZM82.7 25L59.9 94L53.1 94L76 25L82.7 25ZM97.1 70.1L97.4 70Q110.7 52.9 120.3 49Q121.6 48.5 122.9 48.5Q125.5 48.5 126.9 49.9Q128.3 51.2 128.3 53.2Q128.3 55.3 127 56.6Q125.7 57.8 123.7 57.8Q122.5 57.8 120.9 56.9Q119.3 55.9 118.3 55.9Q115.7 55.9 112.9 58.2Q110.1 60.4 103.9 66.9L113.7 84.1Q116.2 88.5 117.9 89.8Q119.6 91 122.8 91L122.8 92.6Q118.9 93.9 115.9 93.9Q109.7 93.9 106.1 87.5L96.8 71.5L90.8 92.6L83.2 92.6L91.8 61.7Q93.2 56.4 93.2 55Q93.2 52.6 89.9 52.6L87.1 52.6L87.1 51.2Q92.4 50.5 102.2 48.5L102.5 48.8L97.1 70.1ZM165.5 41.7L161.7 51.3L134.3 51.3L134.3 50.5L146.8 37.2Q151.7 32.1 153.8 27.9Q155.9 23.6 155.9 19Q155.9 14.4 153.3 11.8Q150.7 9.2 146.2 9.2Q142.4 9.2 140.2 11.1Q138 13.1 135.9 18.3L134.4 17.9Q135.6 11.4 139.2 7.7Q142.8 4 149 4Q154.8 4 158.3 7.5Q161.9 11 161.9 16.3Q161.9 24.2 153 33.7L141.4 46L157.8 46Q160.1 46 161.5 45.1Q162.8 44.2 164.5 41.3L165.5 41.7ZM255.5 60.6L196.6 60.6L196.6 54L255.5 54L255.5 60.6ZM255.5 80.6L196.6 80.6L196.6 74L255.5 74L255.5 80.6ZM327.6 75.9L317.3 75.9L317.3 92.6L309.5 92.6L309.5 75.9L281.5 75.9L281.5 69.5L312.9 25L317.3 25L317.3 69.5L327.6 69.5L327.6 75.9ZM309.5 69.5L309.5 35.2L285.5 69.5L309.5 69.5ZM377.9 59.6Q377.9 66.3 376.6 72.3Q375.3 78.2 372.8 83.2Q370.2 88.2 365.7 91.1Q361.2 94 355.3 94Q349.2 94 344.6 90.9Q340 87.8 337.5 82.6Q335 77.4 333.9 71.5Q332.7 65.6 332.7 59Q332.7 49.7 335 42.3Q337.3 34.8 342.7 29.9Q348 25 355.7 25Q365.5 25 371.7 34.6Q377.9 44.2 377.9 59.6ZM368.3 60.1Q368.3 44.3 365 36Q361.6 27.6 355.1 27.6Q348.9 27.6 345.6 36Q342.3 44.4 342.3 59.7Q342.3 75.1 345.6 83.3Q348.9 91.4 355.3 91.4Q361.6 91.4 365 83.3Q368.3 75.1 368.3 60.1ZM427.9 59.6Q427.9 66.3 426.6 72.3Q425.3 78.2 422.8 83.2Q420.2 88.2 415.7 91.1Q411.2 94 405.3 94Q399.2 94 394.6 90.9Q390 87.8 387.5 82.6Q385 77.4 383.9 71.5Q382.7 65.6 382.7 59Q382.7 49.7 385 42.3Q387.3 34.8 392.7 29.9Q398 25 405.7 25Q415.5 25 421.7 34.6Q427.9 44.2 427.9 59.6ZM418.3 60.1Q418.3 44.3 415 36Q411.6 27.6 405.1 27.6Q398.9 27.6 395.6 36Q392.3 44.4 392.3 59.7Q392.3 75.1 395.6 83.3Q398.9 91.4 405.3 91.4Q411.6 91.4 415 83.3Q418.3 75.1 418.3 60.1Z"/></svg>, or 26 dB, so the ceiling is <svg class="tex" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 694 99" style="width:6.940em;height:0.990em;vertical-align:-0.260em" role="img" aria-label="\log_2(401)\approx8.65" focusable="false"><path fill="currentColor" d="M29.7 72.8L6.1 72.8L6.1 71.3Q10.8 70.9 12.3 69.3Q13.8 67.8 13.8 63.6L13.8 16.7Q13.8 13.1 12.9 11.7Q12 10.3 9.6 10.3Q7.5 10.3 5.9 10.5L5.9 8.9Q15.4 6.6 21.7 4.5L22.2 4.9L22.2 64.1Q22.2 68.3 23.6 69.7Q25 71 29.7 71.3L29.7 72.8ZM78.8 49.7Q78.8 60.2 72.5 67Q66.3 73.8 56.3 73.8Q47.1 73.8 40.9 67Q34.7 60.3 34.7 50Q34.7 39.6 40.9 33.2Q47.1 26.8 57.2 26.8Q66.5 26.8 72.6 33.2Q78.8 39.5 78.8 49.7ZM69.8 52.4Q69.8 41 64.8 34.6Q60.8 29.6 55.3 29.6Q50.1 29.6 46.9 33.8Q43.7 38.1 43.7 45.5Q43.7 58.3 49 66Q52.4 71 58 71Q63.5 71 66.6 66Q69.8 61.1 69.8 52.4ZM128.8 34L120.5 34Q122.4 38.3 122.4 42.4Q122.4 50.1 117.2 54Q112 57.9 106.8 57.9Q105.7 57.9 103 57.6L101.1 57.4Q99.1 58 97.1 60.1Q95.1 62.2 95.1 63.7Q95.1 66 102.9 66.4L115.8 67Q121.3 67.2 124.6 70.1Q127.9 73 127.9 77.7Q127.9 83.5 121.9 88.2Q113.6 94.6 101.9 94.6Q94.7 94.6 89.6 91.7Q84.6 88.9 84.6 84.9Q84.6 82.1 86.8 79.3Q89 76.6 94.4 72.7Q91.2 71.2 90.1 70.1Q89.1 69 89.1 67.4Q89.1 64.5 93.7 60.5Q96 58.5 98 56.5Q93 54 90.8 50.9Q88.7 47.8 88.7 43.1Q88.7 36.3 93.5 31.5Q98.4 26.8 105.4 26.8Q109.4 26.8 113.4 28.3L115.6 29.1Q118.5 30.1 121.1 30.1L128.8 30.1L128.8 34ZM97 39L97 39.3Q97 46.5 99.8 51Q102.7 55.4 107.3 55.4Q110.7 55.4 112.7 53Q114.7 50.5 114.7 46.4Q114.7 39.8 111.7 34.3Q109.2 29.6 104.4 29.6Q100.9 29.6 98.9 32.1Q97 34.6 97 39ZM125.1 79.2Q125.1 76.4 122.3 75.3Q119.6 74.3 112.7 74.3Q102.8 74.3 96.5 73Q93.5 76.6 92.5 78.2Q91.6 79.9 91.6 81.6Q91.6 84.9 95.5 86.9Q99.5 88.9 106.1 88.9Q114.6 88.9 119.8 86.2Q125.1 83.6 125.1 79.2ZM166.6 78.2L162.8 87.8L135.4 87.8L135.4 87L147.9 73.7Q152.8 68.6 154.9 64.3Q157 60.1 157 55.5Q157 50.8 154.4 48.2Q151.8 45.7 147.2 45.7Q143.5 45.7 141.2 47.6Q139 49.6 136.9 54.8L135.5 54.4Q136.7 47.9 140.3 44.2Q143.9 40.5 150 40.5Q155.8 40.5 159.4 44Q163 47.5 163 52.8Q163 60.7 154 70.2L142.5 82.5L158.9 82.5Q161.2 82.5 162.5 81.6Q163.9 80.7 165.6 77.8L166.6 78.2ZM219.9 88.9L218.7 90.5Q207.1 83.9 200.7 72.3Q194.3 60.7 194.3 47.6Q194.3 19.9 219 5.2L219.9 6.8Q209.7 15.5 206.3 24Q202.9 32.4 202.9 47.3Q202.9 62.1 206.4 71.3Q209.9 80.5 219.9 88.9ZM270.1 56.1L259.8 56.1L259.8 72.8L252 72.8L252 56.1L224 56.1L224 49.7L255.4 5.2L259.8 5.2L259.8 49.7L270.1 49.7L270.1 56.1ZM252 49.7L252 15.4L228 49.7L252 49.7ZM320.4 39.8Q320.4 46.5 319.1 52.5Q317.8 58.4 315.3 63.4Q312.7 68.4 308.2 71.3Q303.7 74.2 297.8 74.2Q291.7 74.2 287.1 71.1Q282.5 68 280 62.8Q277.5 57.6 276.4 51.7Q275.2 45.8 275.2 39.2Q275.2 29.9 277.5 22.5Q279.8 15 285.2 10.1Q290.5 5.2 298.2 5.2Q308 5.2 314.2 14.8Q320.4 24.4 320.4 39.8ZM310.8 40.3Q310.8 24.5 307.5 16.2Q304.1 7.8 297.6 7.8Q291.4 7.8 288.1 16.2Q284.8 24.6 284.8 39.9Q284.8 55.3 288.1 63.5Q291.4 71.6 297.8 71.6Q304.1 71.6 307.5 63.5Q310.8 55.3 310.8 40.3ZM362.2 72.8L334.6 72.8L334.6 71.3Q340.1 71 342.1 69.2Q344.1 67.5 344.1 63.3L344.1 18.4Q344.1 13.5 341.1 13.5Q339.7 13.5 336.6 14.7L333.9 15.7L333.9 14.3L351.8 5.2L352.7 5.5L352.7 65.2Q352.7 68.5 354.7 69.9Q356.7 71.3 362.2 71.3L362.2 72.8ZM375.7 6.8L376.9 5.2Q388.3 12 394.8 23.6Q401.3 35.2 401.3 48.1Q401.3 75.4 376.6 90.5L375.7 88.9Q386 80.4 389.4 72Q392.7 63.5 392.7 48.4Q392.7 33.2 389.4 24Q386 14.9 375.7 6.8ZM486.5 25.3L489.8 25.3Q489.3 32.7 485 39.2Q480.7 45.7 474 45.7Q469.9 45.7 464.6 42.5Q459.2 39.3 454.3 36.1Q449.4 32.9 446.5 32.9Q441.6 32.9 438.6 36.8Q435.6 40.7 434.2 46.7L430.9 46.7Q431.3 38.6 435.8 32.5Q440.2 26.3 447.2 26.3Q451.3 26.3 456.7 29.5Q462 32.7 466.9 35.9Q471.8 39.1 474.8 39.1Q483.6 39.1 486.5 25.3ZM486.5 48.9L489.8 48.9Q489.3 56.3 485 62.8Q480.7 69.3 474 69.3Q469.9 69.3 464.6 66.1Q459.2 62.9 454.3 59.7Q449.4 56.5 446.5 56.5Q441.6 56.5 438.6 60.4Q435.6 64.3 434.2 70.3L430.9 70.3Q431.3 62.2 435.8 56Q440.2 49.9 447.2 49.9Q451.3 49.9 456.7 53.1Q462 56.3 466.9 59.5Q471.8 62.7 474.8 62.7Q483.6 62.7 486.5 48.9ZM559.1 57.3Q559.1 65 553.8 69.6Q548.4 74.2 539.4 74.2Q531 74.2 525.6 69.6Q520.2 65 520.2 57.9Q520.2 52.6 522.8 48.8Q525.4 45.1 533.2 39.6Q525.7 33.4 523.3 29.6Q520.8 25.8 520.8 20.8Q520.8 13.7 526.3 9.5Q531.7 5.2 540.2 5.2Q547.5 5.2 552.3 9.4Q557 13.5 557 19.5Q557 25 554.2 28.3Q551.3 31.6 543.6 35.7Q552.6 41.7 555.9 46.4Q559.1 51.1 559.1 57.3ZM550.1 19.5Q550.1 14.3 547.2 11.2Q544.3 8 539.2 8Q534.1 8 531.2 10.7Q528.2 13.3 528.2 17.9Q528.2 22.5 531.2 26.2Q534.1 30 540.7 33.9Q545.8 30.9 548 27.5Q550.1 24.2 550.1 19.5ZM541.7 45.6L535.8 41.6Q531.4 45.2 529.6 48.7Q527.8 52.1 527.8 57Q527.8 63.8 531.3 67.6Q534.7 71.4 540.5 71.4Q545.4 71.4 548.5 68.3Q551.5 65.3 551.5 60.4Q551.5 55.9 549.2 52.5Q546.9 49.1 541.7 45.6ZM582.7 68.5Q582.7 70.7 581.1 72.3Q579.4 73.9 577.1 73.9Q574.8 73.9 573.2 72.3Q571.6 70.7 571.6 68.4Q571.6 66.1 573.3 64.5Q574.9 62.8 577.2 62.8Q579.4 62.8 581.1 64.5Q582.7 66.2 582.7 68.5ZM634.2 4.4L634.4 6Q622.6 7.9 614.7 15.5Q606.8 23.2 604.8 34.5Q610.6 30 617.5 30Q626.3 30 631.4 35.6Q636.4 41.2 636.4 50.9Q636.4 60.7 631.3 66.9Q625.4 74.2 615.4 74.2Q603.2 74.2 597.7 64.1Q593 55.5 593 44.9Q593 28.5 603.9 17.3Q610.1 10.9 616.7 8.2Q623.2 5.6 634.2 4.4ZM627.4 54Q627.4 34.6 613.9 34.6Q608.9 34.6 605.6 37.2Q602.3 39.9 602.3 46.2Q602.3 57.9 606 64.6Q609.6 71.4 616.5 71.4Q621.8 71.4 624.6 66.6Q627.4 61.9 627.4 54ZM683.4 4.7L679.8 13.2Q679.2 14.5 677.1 14.5L657.7 14.5L653.7 23Q664.7 25.1 669.6 27.5Q674.5 30 678.7 35.8Q682.2 40.6 682.2 48.5Q682.2 55.7 679.9 60.6Q677.5 65.5 672.4 69.3Q665.6 74.2 655.4 74.2Q649.7 74.2 646.2 72.5Q642.7 70.8 642.7 68Q642.7 64.2 647.2 64.2Q650.8 64.2 654.6 67.3Q658.5 70.5 661.7 70.5Q666.9 70.5 671.1 65.3Q675.2 60.1 675.2 53.6Q675.2 44 668.5 38.6Q659.8 31.6 647.2 31.6Q646 31.6 646 30.8L646.1 30.3L657 6.6L677.7 6.6Q679.4 6.6 680.4 6.1Q681.3 5.6 682.5 4L683.4 4.7Z"/></svg> bit/s/Hz.</p></div></details>
+<details class="qa"><summary>Why does raising the transmit power not remove the distortion?</summary><div class="ans"><p>The distortion power grows with the signal power, so the ratio between the two stays fixed.</p></div></details>
+<details class="qa"><summary>Why can massive MIMO use lower-quality hardware?</summary><div class="ans"><p>Distortion from different antennas is largely uncorrelated and adds incoherently, while the wanted signal adds coherently. Its relative impact shrinks as the array grows.</p></div></details>
+
+<h2 id="papers">Related papers</h2>
+<p>Work on this topic by Hamza Shaikh and his co-authors.</p>
+<ul class="paper-list">
+<li><a class="t" href="https://ieeexplore.ieee.org/document/9388920" target="_blank" rel="noopener noreferrer">Performance Analysis of Intelligent Reflecting Surface-Assisted Wireless System With Non-Ideal Transceiver</a><span class="v">IEEE Open Journal of the Communications Society, 2021. Read on IEEE Xplore.</span></li>
+<li><a class="t" href="https://ieeexplore.ieee.org/document/9842326" target="_blank" rel="noopener noreferrer">A Downlink RIS-Aided NOMA System With Hardware Impairments: Performance Characterization and Analysis</a><span class="v">IEEE Open Journal of Signal Processing, 2022. Read on IEEE Xplore.</span></li>
+<li><a class="t" href="https://ieeexplore.ieee.org/document/9771831" target="_blank" rel="noopener noreferrer">On the Performance of RIS-Aided NOMA System with Non-Ideal Transceiver over Nakagami-<i>m</i> Fading</a><span class="v">IEEE Wireless Communications and Networking Conference (WCNC), 2022. Read on IEEE Xplore.</span></li>
+<li><a class="t" href="https://ieeexplore.ieee.org/document/10041338" target="_blank" rel="noopener noreferrer">IRS-Aided Communication System with Phase Noise and Hardware Impairments: Performance Analysis and Characterization</a><span class="v">International Conference on COMmunication Systems &amp; NETworkS (COMSNETS), 2023. Read on IEEE Xplore.</span></li>
+<li><a class="t" href="https://scholar.google.com/scholar?q=%22On%20the%20Performance%20of%20Dual%20IRS-Aided%20Communication%20System%20under%20Non-Ideal%20Transceiver%20over%20Nakagami-m%20Fading%20Channels%22" target="_blank" rel="noopener noreferrer">On the Performance of Dual IRS-Aided Communication System under Non-Ideal Transceiver over Nakagami-<i>m</i> Fading Channels</a><span class="v">Internet Technology Letters, 2023. Read on Google Scholar.</span></li>
+<li><a class="t" href="https://ieeexplore.ieee.org/document/9569598" target="_blank" rel="noopener noreferrer">Intelligent Reflecting Surfaces Versus Full-Duplex Relaying: Performance Comparison for Non-Ideal Transmitter Case</a><span class="v">IEEE International Symposium on Personal, Indoor and Mobile Radio Communications (PIMRC), 2021. Read on IEEE Xplore.</span></li>
+<li><a class="t" href="https://onlinelibrary.wiley.com/doi/abs/10.1002/itl2.380" target="_blank" rel="noopener noreferrer">On the Performance of IRS-Assisted OFDM System with Non-Ideal Oscillator and Amplifier</a><span class="v">Internet Technology Letters, 2022. Read on Wiley Online Library.</span></li>
+<li><a class="t" href="https://ieeexplore.ieee.org/document/9056066" target="_blank" rel="noopener noreferrer">Spectral Analysis of a Nonlinear WOLA-OFDM System with DPD</a><span class="v">National Conference on Communications (NCC), 2020. Read on IEEE Xplore.</span></li>
+</ul>
+<h2 id="reading">Further reading</h2>
+<ol class="refs">
+<li>E. Björnson, J. Hoydis, M. Kountouris, and M. Debbah, “Massive MIMO systems with non-ideal hardware: Energy efficiency, estimation, and capacity limits,” IEEE Trans. Inf. Theory, vol. 60, no. 11, pp. 7112–7139, 2014. <a href="https://scholar.google.com/scholar?q=Massive%20MIMO%20systems%20with%20non-ideal%20hardware%3A%20Energy%20efficiency%2C%20estimation%2C%20and%20capacity%20limits" target="_blank" rel="noopener noreferrer">Find on Google Scholar</a></li>
+<li>E. Björnson, M. Matthaiou, and M. Debbah, “A new look at dual-hop relaying: Performance limits with hardware impairments,” IEEE Trans. Commun., vol. 61, no. 11, pp. 4512–4525, 2013. <a href="https://scholar.google.com/scholar?q=A%20new%20look%20at%20dual-hop%20relaying%3A%20Performance%20limits%20with%20hardware%20impairments" target="_blank" rel="noopener noreferrer">Find on Google Scholar</a></li>
+<li>T. Schenk, RF Imperfections in High-Rate Wireless Systems: Impact and Digital Compensation. Springer, 2008. <a href="https://scholar.google.com/scholar?q=RF%20Imperfections%20in%20High-Rate%20Wireless%20Systems%3A%20Impact%20and%20Digital%20Compensation" target="_blank" rel="noopener noreferrer">Find on Google Scholar</a></li>
+<li>M. H. N. Shaikh, “Performance Analysis of Future Wireless Communication Systems under Residual Hardware Impairments,” PhD thesis, IIIT-Delhi, 2022. <a href="https://scholar.google.com/scholar?q=Performance%20Analysis%20of%20Future%20Wireless%20Communication%20Systems%20under%20Residual%20Hardware%20Impairments" target="_blank" rel="noopener noreferrer">Find on Google Scholar</a></li>
+</ol>
+<nav class="prevnext" aria-label="More tutorials"><a class="prev" href="fluid-antennas.html"><span class="dir">Previous</span><span class="nm">Fluid antenna systems</span></a><a class="next" href="optimization.html"><span class="dir">Next</span><span class="nm">Optimization for wireless networks</span></a></nav>
+    </article>
+  </div>
+</main>
+<footer class="site-footer">
+  <div class="wrap foot"><p>&copy; 2026 Mohd Hamza Naim Shaikh. Last updated October 2026.</p>
+    <nav aria-label="More pages"><a href="index.html">Tutorials</a><a href="../urdu.html">Urdu</a><a href="../places/index.html">Places</a></nav>
+  </div>
+</footer>
+<script>(function () {
+  const links = Array.from(document.querySelectorAll('.toc a[href^="#"]'));
+  if (!("IntersectionObserver" in window) || !links.length) return;
+  const byId = new Map(links.map(function (a) { return [a.getAttribute("href").slice(1), a]; }));
+  const io = new IntersectionObserver(function (entries) {
+    entries.forEach(function (e) {
+      if (!e.isIntersecting) return;
+      links.forEach(function (l) { l.removeAttribute("aria-current"); });
+      const a = byId.get(e.target.id); if (a) a.setAttribute("aria-current", "true");
+    });
+  }, { rootMargin: "-20% 0px -70% 0px" });
+  byId.forEach(function (_a, id) { const s = document.getElementById(id); if (s) io.observe(s); });
+})();</script>
+<script>/* Interactive models for the tutorials.
+   Each <div class="demo" data-demo="..."> is built here: controls, a canvas
+   plot with a hover read-out, and a row of computed values. */
+(function () {
+  "use strict";
+
+  /* ---------------------------------------------------------------- utils */
+  const C0 = 299792458;
+  const $ = (tag, attrs, kids) => {
+    const el = document.createElement(tag);
+    if (attrs) for (const k in attrs) {
+      if (k === "text") el.textContent = attrs[k];
+      else if (k === "html") el.innerHTML = attrs[k];
+      else el.setAttribute(k, attrs[k]);
+    }
+    (kids || []).forEach((c) => c && el.appendChild(c));
+    return el;
+  };
+  const token = (name) => getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+  const fmt = (v, d) => (Math.abs(v) < 1e-12 ? 0 : v).toFixed(d);
+  const db = (p) => 10 * Math.log10(Math.max(p, 1e-12));
+  function rng(seed) { // mulberry32
+    let a = seed >>> 0;
+    return function () {
+      a = (a + 0x6D2B79F5) >>> 0;
+      let t = a;
+      t = Math.imul(t ^ (t >>> 15), t | 1);
+      t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+      return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+    };
+  }
+  function niceMax(v) {
+    if (!(v > 0)) return 1;
+    const p = Math.pow(10, Math.floor(Math.log10(v)));
+    for (const m of [1, 1.2, 1.5, 2, 2.5, 3, 4, 5, 6, 8, 10]) if (m * p >= v) return m * p;
+    return 10 * p;
+  }
+  function ticks(min, max, n) {
+    const span = max - min, raw = span / n;
+    const p = Math.pow(10, Math.floor(Math.log10(raw)));
+    const step = [1, 2, 2.5, 5, 10].map((m) => m * p).find((s) => s >= raw) || raw;
+    const out = [];
+    for (let v = Math.ceil(min / step) * step; v <= max + step * 1e-6; v += step) out.push(+v.toFixed(10));
+    return out;
+  }
+  function frame(fn) { let q = false; return () => { if (q) return; q = true; requestAnimationFrame(() => { q = false; fn(); }); }; }
+
+  /* ----------------------------------------------------------------- Plot */
+  const plots = [];
+  function Plot(box, label) {
+    this.box = box;
+    this.canvas = $("canvas", { role: "img", "aria-label": label });
+    this.tip = $("div", { class: "tip", hidden: "" });
+    box.appendChild(this.canvas);
+    box.appendChild(this.tip);
+    this.ctx = this.canvas.getContext("2d");
+    this.cfg = null; this.hover = null; this.W = 0; this.H = 0;
+    const redraw = frame(() => this.draw());
+    this.redraw = redraw;
+    if ("ResizeObserver" in window) new ResizeObserver(redraw).observe(box);
+    else window.addEventListener("resize", redraw);
+    const move = (e) => {
+      const r = this.canvas.getBoundingClientRect();
+      this.hover = { px: e.clientX - r.left, py: e.clientY - r.top };
+      redraw();
+    };
+    this.canvas.addEventListener("pointermove", move);
+    this.canvas.addEventListener("pointerdown", move);
+    this.canvas.addEventListener("pointerleave", () => { this.hover = null; this.tip.hidden = true; redraw(); });
+    plots.push(this);
+  }
+  Plot.prototype.set = function (cfg) { this.cfg = cfg; this.redraw(); };
+  Plot.prototype.draw = function () {
+    const cfg = this.cfg; if (!cfg) return;
+    const r = this.box.getBoundingClientRect();
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    const W = Math.max(1, Math.round(r.width)), H = Math.max(1, Math.round(r.height));
+    if (this.canvas.width !== Math.round(W * dpr) || this.canvas.height !== Math.round(H * dpr)) {
+      this.canvas.width = Math.round(W * dpr); this.canvas.height = Math.round(H * dpr);
+    }
+    const ctx = this.ctx;
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    ctx.clearRect(0, 0, W, H);
+    const col = {
+      ink: token("--ink"), ink2: token("--ink-2"), muted: token("--muted"), line: token("--line"),
+      surface: token("--surface"), c1: token("--chart-1"), c2: token("--chart-2"), ref: token("--muted")
+    };
+    const font = (s, w) => (w || "400") + " " + s + 'px "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif';
+    const L = 50, R = 16, T = 28, B = 42;
+    const pw = W - L - R, ph = H - T - B;
+    const X = (v) => L + ((v - cfg.x.min) / (cfg.x.max - cfg.x.min)) * pw;
+    const Y = (v) => T + (1 - (v - cfg.y.min) / (cfg.y.max - cfg.y.min)) * ph;
+    this.X = X; this.Y = Y; this.L = L; this.T = T; this.pw = pw; this.ph = ph;
+
+    // grid and axes
+    ctx.lineWidth = 1; ctx.strokeStyle = col.line; ctx.fillStyle = col.muted;
+    ctx.font = font(12); ctx.textBaseline = "middle"; ctx.textAlign = "right";
+    (cfg.y.ticks || ticks(cfg.y.min, cfg.y.max, 5)).forEach((v) => {
+      const y = Math.round(Y(v)) + 0.5;
+      ctx.beginPath(); ctx.moveTo(L, y); ctx.lineTo(L + pw, y); ctx.stroke();
+      ctx.fillText((cfg.y.fmt || String)(v), L - 8, y);
+    });
+    ctx.textAlign = "center"; ctx.textBaseline = "top";
+    (cfg.x.ticks || ticks(cfg.x.min, cfg.x.max, 6)).forEach((v) => {
+      const x = Math.round(X(v)) + 0.5;
+      ctx.beginPath(); ctx.moveTo(x, T + ph); ctx.lineTo(x, T + ph + 5); ctx.stroke();
+      ctx.fillText((cfg.x.fmt || String)(v), x, T + ph + 9);
+    });
+    ctx.strokeStyle = col.muted;
+    ctx.beginPath(); ctx.moveTo(L, Math.round(T + ph) + 0.5); ctx.lineTo(L + pw, Math.round(T + ph) + 0.5); ctx.stroke();
+    ctx.fillStyle = col.ink2; ctx.font = font(12, "500");
+    ctx.textAlign = "left"; ctx.textBaseline = "alphabetic";
+    ctx.fillText(cfg.y.label, 4, 16);
+    ctx.textAlign = "center";
+    ctx.fillText(cfg.x.label, L + pw / 2, H - 6);
+
+    ctx.save();
+    ctx.beginPath(); ctx.rect(L, T - 2, pw, ph + 4); ctx.clip();
+    // reference lines
+    (cfg.hlines || []).forEach((h) => {
+      if (h.y < cfg.y.min || h.y > cfg.y.max) return;
+      ctx.strokeStyle = col[h.color || "c2"]; ctx.lineWidth = 1.5; ctx.setLineDash([5, 4]);
+      ctx.beginPath(); ctx.moveTo(L, Y(h.y)); ctx.lineTo(L + pw, Y(h.y)); ctx.stroke(); ctx.setLineDash([]);
+    });
+    (cfg.vlines || []).forEach((v) => {
+      ctx.strokeStyle = col[v.color || "c2"]; ctx.lineWidth = 1.5;
+      ctx.beginPath(); ctx.moveTo(X(v.x), T); ctx.lineTo(X(v.x), T + ph); ctx.stroke();
+    });
+    // series
+    cfg.series.forEach((s) => {
+      ctx.strokeStyle = col[s.color]; ctx.lineWidth = s.width || 2;
+      ctx.lineJoin = "round"; ctx.lineCap = "round";
+      ctx.setLineDash(s.dash || []);
+      ctx.beginPath();
+      s.data.forEach((p, i) => { const x = X(p[0]), y = Y(Math.max(cfg.y.min - 1, Math.min(cfg.y.max + 1, p[1]))); i ? ctx.lineTo(x, y) : ctx.moveTo(x, y); });
+      ctx.stroke(); ctx.setLineDash([]);
+    });
+    ctx.restore();
+
+    // labels for reference lines (text tokens, not series colours)
+    ctx.font = font(12, "500"); ctx.fillStyle = col.ink2; ctx.textBaseline = "alphabetic";
+    (cfg.hlines || []).forEach((h) => {
+      if (!h.label || h.y < cfg.y.min || h.y > cfg.y.max) return;
+      ctx.textAlign = "right"; ctx.fillText(h.label, L + pw - 4, Y(h.y) - 6);
+    });
+    (cfg.vlines || []).forEach((v) => {
+      if (!v.label) return;
+      const x = X(v.x), right = x < L + pw - 80;
+      ctx.textAlign = right ? "left" : "right";
+      ctx.fillText(v.label, x + (right ? 6 : -6), T + 12);
+    });
+    // points
+    const dot = (x, y, c, rad) => {
+      ctx.beginPath(); ctx.arc(x, y, rad + 2, 0, Math.PI * 2); ctx.fillStyle = col.surface; ctx.fill();
+      ctx.beginPath(); ctx.arc(x, y, rad, 0, Math.PI * 2); ctx.fillStyle = col[c]; ctx.fill();
+    };
+    (cfg.points || []).forEach((p) => {
+      if (p.x < cfg.x.min || p.x > cfg.x.max || p.y < cfg.y.min || p.y > cfg.y.max) return;
+      const x = X(p.x), y = Y(p.y);
+      dot(x, y, p.color || "c1", p.r || 4);
+      if (p.label) {
+        ctx.font = font(12, "500"); ctx.fillStyle = col.ink;
+        const right = x < L + pw - 110;
+        ctx.textAlign = right ? "left" : "right"; ctx.textBaseline = "alphabetic";
+        ctx.fillText(p.label, x + (right ? 10 : -10), y - 9);
+      }
+    });
+
+    // hover: crosshair and tooltip
+    const hv = this.hover;
+    if (!hv || hv.px < L || hv.px > L + pw || hv.py < T - 10 || hv.py > T + ph + 10) { this.tip.hidden = true; return; }
+    const xv = cfg.x.min + ((hv.px - L) / pw) * (cfg.x.max - cfg.x.min);
+    const rows = [];
+    let cx = null;
+    cfg.series.forEach((s) => {
+      if (s.hover === false || !s.data.length) return;
+      let lo = 0, hi = s.data.length - 1;
+      while (hi - lo > 1) { const m = (lo + hi) >> 1; if (s.data[m][0] < xv) lo = m; else hi = m; }
+      const p = Math.abs(s.data[lo][0] - xv) < Math.abs(s.data[hi][0] - xv) ? s.data[lo] : s.data[hi];
+      if (cx === null) cx = X(p[0]);
+      if (p[1] >= cfg.y.min && p[1] <= cfg.y.max) dot(X(p[0]), Y(p[1]), s.color, 4);
+      rows.push({ s: s, p: p });
+    });
+    if (cx === null) { this.tip.hidden = true; return; }
+    ctx.strokeStyle = col.muted; ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.moveTo(Math.round(cx) + 0.5, T); ctx.lineTo(Math.round(cx) + 0.5, T + ph); ctx.stroke();
+    rows.forEach((rw) => { if (rw.p[1] >= cfg.y.min && rw.p[1] <= cfg.y.max) dot(X(rw.p[0]), Y(rw.p[1]), rw.s.color, 4); });
+    const head = (cfg.x.hover || cfg.x.fmt || String)(rows[0].p[0]);
+    this.tip.innerHTML = '<p class="tip-h">' + head + "</p>" + rows.map((rw) =>
+      '<p><span class="key key-' + rw.s.color + (rw.s.dash ? " key-dash" : "") + '" aria-hidden="true"></span>' +
+      (rw.s.name ? rw.s.name + ": " : "") + "<b>" + (rw.s.fmt || cfg.y.hover || String)(rw.p[1]) + "</b></p>").join("");
+    this.tip.hidden = false;
+    const tw = this.tip.offsetWidth, th = this.tip.offsetHeight;
+    let tx = cx + 12; if (tx + tw > W - 4) tx = cx - 12 - tw;
+    let ty = Math.max(4, Math.min(hv.py - th / 2, H - th - 4));
+    this.tip.style.transform = "translate(" + Math.round(Math.max(4, tx)) + "px," + Math.round(ty) + "px)";
+  };
+
+  /* ------------------------------------------------------------- controls */
+  function slider(o) {
+    const input = $("input", { type: "range", id: o.id, min: o.min, max: o.max, step: o.step, value: o.value });
+    const out = $("output", { for: o.id });
+    const wrap = $("div", { class: "ctl" }, [$("label", { for: o.id, text: o.label }), input, out]);
+    const api = {
+      el: wrap, input: input,
+      get value() { return o.map ? o.map(+input.value) : +input.value; },
+      set: (v) => { input.value = v; api.show(); },
+      show: () => { out.textContent = o.fmt(api.value); }
+    };
+    input.addEventListener("input", api.show);
+    api.show();
+    return api;
+  }
+  function seg(o) {
+    let value = o.value;
+    const group = $("div", { class: "seg-mini", role: "radiogroup", "aria-labelledby": o.id + "-l" });
+    const btns = o.options.map((op) => {
+      const b = $("button", { type: "button", role: "radio", id: o.id + "-" + String(op.v).replace(/\W/g, ""), "aria-checked": String(op.v === value), text: op.t });
+      b.addEventListener("click", () => { value = op.v; btns.forEach((x, i) => x.setAttribute("aria-checked", String(o.options[i].v === value))); api.onchange && api.onchange(); });
+      group.appendChild(b);
+      return b;
+    });
+    const wrap = $("div", { class: "ctl ctl-seg" }, [$("span", { id: o.id + "-l", class: "ctl-l", text: o.label }), group]);
+    const api = { el: wrap, get value() { return value; }, onchange: null };
+    return api;
+  }
+  function button(id, text) { return $("button", { type: "button", class: "btn btn-quiet btn-small", id: id, text: text }); }
+  function legend(items) {
+    return $("ul", { class: "legend" }, items.map((it) => $("li", {}, [
+      $("span", { class: "key key-" + it[0] + (it[2] === true ? " key-dash" : it[2] === "dot" ? " key-dot" : ""), "aria-hidden": "true" }), document.createTextNode(it[1])
+    ])));
+  }
+  function readouts(defs) {
+    const dl = $("dl", { class: "demo-read" });
+    const vals = {};
+    defs.forEach((d) => {
+      const dd = $("dd", { text: "–" });
+      vals[d[0]] = dd;
+      dl.appendChild($("div", {}, [$("dt", { text: d[1] }), dd]));
+    });
+    return { el: dl, set: (k, v) => { vals[k].innerHTML = v; } };
+  }
+  function shell(root, parts) {
+    root.textContent = "";
+    const controls = $("div", { class: "demo-controls" }, parts.controls);
+    const plotBox = $("div", { class: "demo-plot" });
+    [controls, parts.legend, plotBox, parts.read && parts.read.el].forEach((x) => x && root.appendChild(x));
+    return new Plot(plotBox, parts.label);
+  }
+
+  /* ============================================================ the demos */
+  const DEMOS = {};
+
+  /* RIS: beam pattern of an N-element surface with b-bit phases */
+  DEMOS["ris-beam"] = function (root) {
+    const N = slider({ id: "ris-n", label: "Elements, N", min: 4, max: 64, step: 1, value: 16, fmt: (v) => String(v) });
+    const T = slider({ id: "ris-t", label: "Target angle", min: -60, max: 60, step: 1, value: 25, fmt: (v) => v + "°" });
+    const Bq = seg({ id: "ris-b", label: "Phase resolution", value: 2, options: [{ v: 1, t: "1 bit" }, { v: 2, t: "2 bits" }, { v: 3, t: "3 bits" }, { v: 0, t: "Continuous" }] });
+    const read = readouts([["g", "Gain toward target"], ["i", "Ideal, N²"], ["q", "Loss from quantized phases"], ["p", "Main beam at"]]);
+    const plot = shell(root, {
+      controls: [N.el, T.el, Bq.el], read: read,
+      legend: legend([["c1", "Configured surface"], ["ref", "Unconfigured surface (mirror)", true]]),
+      label: "Reflection gain of the surface against angle, with the target direction marked."
+    });
+    function af(phi, s) { let re = 0, im = 0; for (let i = 0; i < phi.length; i++) { const a = phi[i] + Math.PI * i * s; re += Math.cos(a); im += Math.sin(a); } return re * re + im * im; }
+    const run = frame(() => {
+      const n = N.value, th = T.value * Math.PI / 180, b = Bq.value;
+      const phi = [], zero = new Array(n).fill(0);
+      for (let i = 0; i < n; i++) {
+        let p = -Math.PI * i * Math.sin(th);
+        if (b) { const q = 2 * Math.PI / (1 << b); p = Math.round(p / q) * q; }
+        phi.push(p);
+      }
+      const cfgd = [], mirror = []; let best = -1, bestA = 0;
+      for (let a = -90; a <= 90.0001; a += 0.25) {
+        const s = Math.sin(a * Math.PI / 180), g = af(phi, s);
+        if (g > best) { best = g; bestA = a; }
+        cfgd.push([a, db(g)]); mirror.push([a, db(af(zero, s))]);
+      }
+      const gt = db(af(phi, Math.sin(th))), ideal = 20 * Math.log10(n);
+      plot.set({
+        x: { min: -90, max: 90, ticks: [-90, -60, -30, 0, 30, 60, 90], fmt: (v) => v + "°", label: "Reflection angle", hover: (v) => fmt(v, 1) + "°" },
+        y: { min: -10, max: 40, ticks: [-10, 0, 10, 20, 30, 40], label: "Gain over one element (dB)", hover: (v) => fmt(v, 1) + " dB" },
+        series: [{ name: "Configured", color: "c1", data: cfgd }, { name: "Mirror", color: "ref", data: mirror, dash: [6, 5], width: 1.5 }],
+        vlines: [{ x: T.value, label: "Target " + T.value + "°" }]
+      });
+      read.set("g", fmt(gt, 1) + " dB");
+      read.set("i", fmt(ideal, 1) + " dB");
+      read.set("q", fmt(Math.max(0, ideal - gt), 2) + " dB");
+      read.set("p", fmt(bestA, 1) + "°");
+    });
+    [N, T].forEach((s) => s.input.addEventListener("input", run));
+    Bq.onchange = run; run();
+  };
+
+  /* NOMA: two-user downlink rate region versus TDMA */
+  DEMOS["noma-region"] = function (root) {
+    const s1 = slider({ id: "noma-s1", label: "Near-user SNR", min: 0, max: 40, step: 1, value: 20, fmt: (v) => v + " dB" });
+    const s2 = slider({ id: "noma-s2", label: "Far-user SNR", min: -10, max: 30, step: 1, value: 5, fmt: (v) => v + " dB" });
+    const al = slider({ id: "noma-a", label: "Power to near user, α", min: 0.01, max: 0.5, step: 0.01, value: 0.2, fmt: (v) => v.toFixed(2) });
+    const read = readouts([["n", "NOMA rates (near, far)"], ["t", "TDMA, same near-user rate"], ["d", "Far user gains with NOMA"]]);
+    const plot = shell(root, {
+      controls: [s1.el, s2.el, al.el], read: read,
+      legend: legend([["c1", "NOMA (superposition and SIC)"], ["ref", "TDMA (time sharing)", true]]),
+      label: "Achievable rate pairs of the near and far user with NOMA and with TDMA."
+    });
+    const run = frame(() => {
+      if (s2.value > s1.value) s2.set(s1.value);
+      const S1 = Math.pow(10, s1.value / 10), S2 = Math.pow(10, s2.value / 10);
+      const C1 = Math.log2(1 + S1), C2 = Math.log2(1 + S2);
+      const R1 = (a) => Math.log2(1 + a * S1), R2 = (a) => Math.log2(1 + (1 - a) * S2 / (a * S2 + 1));
+      const noma = [], tdma = [];
+      for (let k = 0; k <= 400; k++) { const a = k / 400; noma.push([R1(a), R2(a)]); }
+      for (let k = 0; k <= 200; k++) { const t = k / 200; tdma.push([t * C1, (1 - t) * C2]); }
+      const a = al.value, r1 = R1(a), r2 = R2(a), r2t = (1 - r1 / C1) * C2;
+      const xm = niceMax(C1 * 1.04), ym = niceMax(C2 * 1.12);
+      plot.set({
+        x: { min: 0, max: xm, ticks: ticks(0, xm, 5), label: "Near-user rate R₁ (bit/s/Hz)", hover: (v) => "R₁ = " + fmt(v, 2) },
+        y: { min: 0, max: ym, ticks: ticks(0, ym, 4), label: "Far-user rate R₂ (bit/s/Hz)", fmt: (v) => String(+v.toFixed(2)), hover: (v) => fmt(v, 2) },
+        series: [{ name: "NOMA, R₂", color: "c1", data: noma }, { name: "TDMA, R₂", color: "ref", data: tdma, dash: [6, 5], width: 1.5 }],
+        points: [{ x: r1, y: r2, color: "c1", r: 5, label: "α = " + a.toFixed(2) }, { x: r1, y: r2t, color: "ref", r: 4 }]
+      });
+      read.set("n", fmt(r1, 2) + " and " + fmt(r2, 2) + " bit/s/Hz");
+      read.set("t", "far user " + fmt(r2t, 2) + " bit/s/Hz");
+      const gain = r2 - r2t;
+      read.set("d", (gain >= 0 ? "+" : "") + fmt(gain, 2) + " bit/s/Hz" + (r2t > 1e-6 ? " (" + (gain >= 0 ? "+" : "") + fmt(100 * gain / r2t, 0) + "%)" : ""));
+    });
+    [s1, s2, al].forEach((s) => s.input.addEventListener("input", run));
+    run();
+  };
+
+  /* ISAC: range profile of two equal targets after matched filtering */
+  DEMOS["isac-range"] = function (root) {
+    const BW = [[10e6, "10 MHz"], [20e6, "20 MHz, an LTE carrier"], [50e6, "50 MHz"], [100e6, "100 MHz, 5G NR in FR1"], [200e6, "200 MHz"],
+      [320e6, "320 MHz, Wi-Fi 7"], [400e6, "400 MHz, 5G NR in FR2"], [800e6, "800 MHz"], [1e9, "1 GHz"], [2e9, "2 GHz"], [4e9, "4 GHz, automotive radar"]];
+    const SEP = [0.05, 0.1, 0.2, 0.3, 0.5, 0.75, 1, 1.5, 2, 3, 5, 10];
+    const len = (m) => (m === 0 ? "0" : m < 1 ? +(m * 100).toPrecision(3) + " cm" : +m.toPrecision(3) + " m");
+    const b = slider({ id: "isac-b", label: "Bandwidth, B", min: 0, max: BW.length - 1, step: 1, value: 3, map: (i) => BW[i], fmt: (v) => v[1] });
+    const s = slider({ id: "isac-d", label: "Target separation", min: 0, max: SEP.length - 1, step: 1, value: 8, map: (i) => SEP[i], fmt: len });
+    const read = readouts([["r", "Range resolution, c/2B"], ["s", "Separation"], ["v", "Result"]]);
+    const plot = shell(root, {
+      controls: [b.el, s.el], read: read,
+      label: "Echo power against range for two equal targets, with their true positions marked."
+    });
+    const sinc2 = (x) => { if (Math.abs(x) < 1e-9) return 1; const v = Math.sin(Math.PI * x) / (Math.PI * x); return v * v; };
+    const run = frame(() => {
+      const B = b.value[0], d = s.value, dr = C0 / (2 * B);
+      const r1 = -d / 2, r2 = d / 2, span = 1.5 * d + 3 * dr;
+      const data = []; let mx = 0;
+      for (let k = 0; k <= 600; k++) {
+        const r = -span + (2 * span * k) / 600;
+        const p = sinc2(2 * B * (r - r1) / C0) + sinc2(2 * B * (r - r2) / C0);
+        mx = Math.max(mx, p); data.push([r, p]);
+      }
+      data.forEach((p) => { p[1] /= mx; });
+      const tk = ticks(-span, span, 6);
+      plot.set({
+        x: { min: -span, max: span, ticks: tk, label: "Range offset from the midpoint", fmt: (v) => (v < 0 ? "−" : "") + len(Math.abs(v)), hover: (v) => (v < 0 ? "−" : "") + len(Math.abs(v)) },
+        y: { min: 0, max: 1.05, ticks: [0, 0.25, 0.5, 0.75, 1], label: "Echo power (normalized)", fmt: (v) => v.toFixed(2), hover: (v) => v.toFixed(2) },
+        series: [{ name: "Echo", color: "c1", data: data }],
+        vlines: [{ x: r1 }, { x: r2 }]
+      });
+      read.set("r", len(dr));
+      read.set("s", len(d));
+      read.set("v", d >= dr ? '<span class="chip chip-ok">Two peaks: resolved</span>' : '<span class="chip chip-no">One peak: not resolved</span>');
+    });
+    [b, s].forEach((x) => x.input.addEventListener("input", run));
+    run();
+  };
+
+  /* V2X: Clarke fading envelope over time */
+  DEMOS["v2x-fading"] = function (root) {
+    const v = slider({ id: "v2x-v", label: "Speed", min: 0, max: 250, step: 5, value: 120, fmt: (x) => x + " km/h" });
+    const fc = seg({ id: "v2x-f", label: "Carrier frequency", value: 5.9, options: [{ v: 3.5, t: "3.5 GHz" }, { v: 5.9, t: "5.9 GHz" }, { v: 28, t: "28 GHz" }] });
+    const nb = button("v2x-new", "New channel");
+    const read = readouts([["d", "Maximum Doppler shift, f_D"], ["c", "Coherence time ≈ 0.423/f_D"], ["f", "Fades below −10 dB in 50 ms"]]);
+    const plot = shell(root, {
+      controls: [v.el, fc.el, $("div", { class: "ctl ctl-btn" }, [nb])], read: read,
+      label: "Received power of a mobile channel over 50 milliseconds."
+    });
+    let seed = 7;
+    const run = frame(() => {
+      const fD = (v.value / 3.6) * fc.value * 1e9 / C0, M = 32, rnd = rng(seed);
+      const ang = [], ph = [];
+      for (let m = 0; m < M; m++) { ang.push(2 * Math.PI * (m + rnd()) / M); ph.push(2 * Math.PI * rnd()); }
+      const data = []; let fades = 0, below = false;
+      for (let k = 0; k <= 1000; k++) {
+        const t = 0.05 * k / 1000; let re = 0, im = 0;
+        for (let m = 0; m < M; m++) { const a = 2 * Math.PI * fD * Math.cos(ang[m]) * t + ph[m]; re += Math.cos(a); im += Math.sin(a); }
+        const g = db((re * re + im * im) / M);
+        if (g < -10 && !below) fades++;
+        below = g < -10;
+        data.push([t * 1000, g]);
+      }
+      plot.set({
+        x: { min: 0, max: 50, ticks: [0, 10, 20, 30, 40, 50], label: "Time (ms)", hover: (x) => fmt(x, 2) + " ms" },
+        y: { min: -30, max: 10, ticks: [-30, -20, -10, 0, 10], label: "Received power (dB)", hover: (x) => fmt(x, 1) + " dB" },
+        series: [{ name: "Power", color: "c1", data: data }],
+        hlines: [{ y: -10, color: "ref", label: "−10 dB" }]
+      });
+      read.set("d", fD > 0 ? fmt(fD, fD < 100 ? 1 : 0) + " Hz" : "0 Hz");
+      const Tc = fD > 0 ? 0.423 / fD : Infinity;
+      read.set("c", isFinite(Tc) ? (Tc < 0.01 ? fmt(Tc * 1000, Tc < 0.001 ? 2 : 1) + " ms" : fmt(Tc, 2) + " s") : "unlimited (static channel)");
+      read.set("f", String(fades));
+    });
+    v.input.addEventListener("input", run);
+    fc.onchange = run;
+    nb.addEventListener("click", () => { seed = (seed * 9301 + 49297) % 233280; run(); });
+    run();
+  };
+
+  /* Fluid antenna: spatial fading along W wavelengths and port selection */
+  DEMOS["fas-ports"] = function (root) {
+    const w = slider({ id: "fas-w", label: "Antenna length, W", min: 0.5, max: 5, step: 0.5, value: 2, fmt: (x) => x + "λ" });
+    const n = slider({ id: "fas-n", label: "Ports, N", min: 2, max: 64, step: 1, value: 16, fmt: String });
+    const nb = button("fas-new", "New channel");
+    const read = readouts([["b", "Best port, this channel"], ["a", "Average gain of the best port"], ["o", "Outage below −10 dB"]]);
+    const plot = shell(root, {
+      controls: [w.el, n.el, $("div", { class: "ctl ctl-btn" }, [nb])], read: read,
+      legend: legend([["c1", "Channel gain along the antenna"], ["c2", "Best port", "dot"], ["ref", "Other ports", "dot"]]),
+      label: "Channel gain along a fluid antenna, with its ports and the best port marked."
+    });
+    let seed = 11;
+    function channel(rnd, M) {
+      const c = [], p = [];
+      for (let m = 0; m < M; m++) { c.push(2 * Math.PI * Math.cos(2 * Math.PI * rnd())); p.push(2 * Math.PI * rnd()); }
+      return (x) => { let re = 0, im = 0; for (let m = 0; m < M; m++) { const a = c[m] * x + p[m]; re += Math.cos(a); im += Math.sin(a); } return (re * re + im * im) / M; };
+    }
+    let mcKey = "", mcTimer = 0;
+    function monteCarlo(W, N) {
+      const key = W + ":" + N; if (key === mcKey) return; mcKey = key;
+      read.set("a", "computing…"); read.set("o", "computing…");
+      clearTimeout(mcTimer);
+      mcTimer = setTimeout(() => {
+        const rnd = rng(2024), trials = 1000; let sum = 0, out = 0;
+        for (let t = 0; t < trials; t++) {
+          const h = channel(rnd, 32); let best = 0;
+          for (let k = 0; k < N; k++) best = Math.max(best, h(k * W / (N - 1)));
+          sum += best; if (best < 0.1) out++;
+        }
+        read.set("a", "+" + fmt(db(sum / trials), 1) + " dB over a fixed antenna");
+        read.set("o", fmt(100 * out / trials, 1) + "% fluid, 9.5% fixed");
+      }, 140);
+    }
+    const run = frame(() => {
+      const W = w.value, N = n.value, h = channel(rng(seed), 64);
+      const data = [];
+      for (let k = 0; k <= 500; k++) { const x = W * k / 500; data.push([x, db(h(x))]); }
+      const ports = []; let bi = 0, bg = -1;
+      for (let k = 0; k < N; k++) { const x = k * W / (N - 1), g = h(x); ports.push([x, g]); if (g > bg) { bg = g; bi = k; } }
+      const pts = ports.map((p, k) => ({ x: p[0], y: Math.max(-30, db(p[1])), color: k === bi ? "c2" : "ref", r: k === bi ? 5.5 : 4 }));
+      pts.push(pts.splice(bi, 1)[0]);
+      pts[pts.length - 1].label = "Best port";
+      plot.set({
+        x: { min: 0, max: W, ticks: ticks(0, W, 5), label: "Position along the antenna (wavelengths)", fmt: (x) => String(+x.toFixed(2)), hover: (x) => fmt(x, 2) + "λ" },
+        y: { min: -30, max: 10, ticks: [-30, -20, -10, 0, 10], label: "Channel gain (dB)", hover: (x) => fmt(x, 1) + " dB" },
+        series: [{ name: "Gain", color: "c1", data: data }],
+        points: pts
+      });
+      read.set("b", "port " + (bi + 1) + ", " + (db(bg / ports[0][1]) >= 0 ? "+" : "") + fmt(db(bg / ports[0][1]), 1) + " dB over port 1");
+      monteCarlo(W, N);
+    });
+    [w, n].forEach((x) => x.input.addEventListener("input", run));
+    nb.addEventListener("click", () => { seed = (seed * 9301 + 49297) % 233280; run(); });
+    run();
+  };
+
+  /* Hardware impairments: spectral efficiency ceiling */
+  DEMOS["hwi-ceiling"] = function (root) {
+    const k = slider({ id: "hwi-k", label: "Impairment level κ (EVM)", min: 0, max: 25, step: 0.5, value: 8, fmt: (x) => x + "%" });
+    const presets = $("div", { class: "ctl ctl-presets" }, [$("span", { class: "ctl-l", text: "3GPP EVM limits" })]);
+    const row = $("div", { class: "seg-mini" });
+    [["QPSK", 17.5], ["16-QAM", 12.5], ["64-QAM", 8], ["256-QAM", 3.5]].forEach((p) => {
+      const bt = $("button", { type: "button", id: "hwi-" + p[0].replace(/\W/g, ""), text: p[0] + " " + p[1] + "%" });
+      bt.addEventListener("click", () => { k.set(p[1]); run(); });
+      row.appendChild(bt);
+    });
+    presets.appendChild(row);
+    const read = readouts([["s", "SNDR ceiling, 1/κ²"], ["c", "Capacity ceiling"], ["l", "Loss at 30 dB SNR"]]);
+    const plot = shell(root, {
+      controls: [k.el, presets], read: read,
+      legend: legend([["c1", "With impairments"], ["ref", "Ideal hardware", true]]),
+      label: "Spectral efficiency against SNR for ideal and impaired hardware."
+    });
+    const run = frame(() => {
+      const kk = k.value / 100, k2 = kk * kk;
+      const ideal = [], imp = [];
+      for (let s = -10; s <= 50.0001; s += 0.25) {
+        const S = Math.pow(10, s / 10);
+        ideal.push([s, Math.log2(1 + S)]);
+        imp.push([s, Math.log2(1 + S / (k2 * S + 1))]);
+      }
+      const ceil = k2 > 0 ? Math.log2(1 + 1 / k2) : null;
+      plot.set({
+        x: { min: -10, max: 50, ticks: [-10, 0, 10, 20, 30, 40, 50], label: "SNR (dB)", hover: (x) => "SNR " + fmt(x, 1) + " dB" },
+        y: { min: 0, max: 18, ticks: [0, 3, 6, 9, 12, 15, 18], label: "Spectral efficiency (bit/s/Hz)", hover: (x) => fmt(x, 2) + " bit/s/Hz" },
+        series: [{ name: "Impaired", color: "c1", data: imp }, { name: "Ideal", color: "ref", data: ideal, dash: [6, 5], width: 1.5 }],
+        hlines: ceil !== null ? [{ y: ceil, color: "c2", label: "Ceiling " + fmt(ceil, 2) + " bit/s/Hz" }] : []
+      });
+      read.set("s", ceil !== null ? fmt(db(1 / k2), 1) + " dB" : "none (ideal hardware)");
+      read.set("c", ceil !== null ? fmt(ceil, 2) + " bit/s/Hz" : "none");
+      const S30 = 1000;
+      read.set("l", fmt(Math.log2(1 + S30) - Math.log2(1 + S30 / (k2 * S30 + 1)), 2) + " bit/s/Hz");
+    });
+    k.input.addEventListener("input", run);
+    run();
+  };
+
+  /* ----------------------------------------------------------------- boot */
+  document.querySelectorAll(".demo[data-demo]").forEach((el) => {
+    const f = DEMOS[el.getAttribute("data-demo")];
+    if (f) f(el);
+  });
+  const redrawAll = () => plots.forEach((p) => p.redraw());
+  const mq = window.matchMedia("(prefers-color-scheme: dark)");
+  if (mq.addEventListener) mq.addEventListener("change", redrawAll);
+  new MutationObserver(redrawAll).observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
+})();
+</script>
+</body>
+</html>
