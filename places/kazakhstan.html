@@ -630,6 +630,17 @@ ol.refs a { font-family: var(--sans); font-size: 0.8125rem; white-space: nowrap;
 .place-photo .credit { display: block; font-size: 0.8125rem; }
 .place-photo .credit a { color: inherit; }
 </style>
+<style>
+.visit { padding-bottom: clamp(3rem, 7vw, 5rem); }
+.visit h2 { font-size: 1.6rem; margin: 0 0 0.4rem; }
+.visit .intro { color: var(--ink-2); max-width: 62ch; margin: 0 0 1.25rem; }
+.visit-list { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(16rem, 1fr)); gap: 0.9rem; }
+.visit-list li { border: 1px solid var(--line); border-radius: 10px; padding: 0.9rem 1rem 1rem; background: var(--surface); }
+.visit-list a { font-family: var(--sans); font-weight: 600; font-size: 1rem; }
+.visit-list .by { display: block; font-family: var(--sans); font-size: 0.8125rem; color: var(--muted); margin: 0.15rem 0 0.4rem; }
+.visit-list p { margin: 0; font-size: 0.9875rem; line-height: 1.5; color: var(--ink-2); }
+.visit .fine { font-family: var(--sans); font-size: 0.8125rem; color: var(--muted); margin: 1rem 0 0; }
+</style>
 </head>
 <body>
 <a class="skip" href="#main">Skip to content</a>
@@ -684,6 +695,12 @@ ol.refs a { font-family: var(--sans); font-size: 0.8125rem; white-space: nowrap;
       <p class="see-also"><span class="label">See also</span><a href="astana.html">Astana</a><a href="nazarbayev-university.html">Nazarbayev University</a><a href="index.html">All places</a></p>
     </section>
   </div>
+  <section class="wrap visit" aria-labelledby="visit-h">
+    <h2 id="visit-h">Plan a visit</h2>
+    <p class="intro">Official tourism and travel information for Kazakhstan, from government bodies and national tourism boards.</p>
+    <ul class="visit-list"><li><a href="https://kazakhstan.travel/" target="_blank" rel="noopener noreferrer">Kazakhstan.travel</a><span class="by">Official tourism portal of Kazakhstan</span><p>Destinations, routes, events and licensed tour operators across the country.</p></li><li><a href="https://www.gov.kz/memleket/entities/tsm?lang=en" target="_blank" rel="noopener noreferrer">Ministry of Tourism and Sports</a><span class="by">Government of the Republic of Kazakhstan</span><p>The ministry responsible for tourism policy, with news and official notices.</p></li><li><a href="https://whc.unesco.org/en/statesparties/kz" target="_blank" rel="noopener noreferrer">UNESCO World Heritage in Kazakhstan</a><span class="by">UNESCO</span><p>Sites such as the Mausoleum of Khoja Ahmed Yasawi and the petroglyphs of Tamgaly.</p></li></ul>
+    <p class="fine">Visa rules change; always check the official government page before you travel.</p>
+  </section>
 </main>
 <footer class="site-footer">
   <div class="wrap foot"><p>&copy; 2026 Mohd Hamza Naim Shaikh. Last updated October 2026.</p>
