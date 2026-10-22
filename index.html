@@ -360,6 +360,13 @@ h3 { font-weight: 600; font-size: 1.3125rem; line-height: 1.3; margin: 0 0 0.5re
   overflow-wrap: anywhere; margin-bottom: 1rem;
 }
 .contact-mail:hover { color: var(--accent); text-decoration-color: var(--accent); }
+.collab { max-width: 62ch; margin: 0 0 2.25rem; padding-bottom: 2rem; border-bottom: 1px solid var(--line); }
+.collab h3 { margin: 0 0 0.6rem; }
+.collab p { color: var(--ink-2); }
+.collab ul { margin: 0 0 1em; padding-left: 1.2rem; color: var(--ink-2); }
+.collab li { margin: 0.2rem 0; }
+.collab-note { font-family: var(--sans); font-size: 0.875rem; color: var(--muted) !important; margin: 0; }
+
 .contact-where { color: var(--ink-2); margin-bottom: 1.5rem; }
 
 .site-footer { border-top: 1px solid var(--line); padding-block: 2rem 2.5rem; font-family: var(--sans); font-size: 0.8125rem; color: var(--muted); }
@@ -988,6 +995,20 @@ ol.refs a { font-family: var(--sans); font-size: 0.8125rem; white-space: nowrap;
   <div class="wrap section-grid">
     <h2>Contact</h2>
     <div>
+      <div class="collab" id="collaborate">
+        <h3>Collaboration and supervision</h3>
+        <p>I welcome collaboration with researchers in academia and industry on the physical layer of 6G, especially:</p>
+        <ul>
+          <li>optimization and performance analysis of RIS, STAR-RIS, fluid-antenna and movable-antenna systems</li>
+          <li>UAV-enabled and aerial-RIS networks</li>
+          <li>non-orthogonal and rate-splitting multiple access</li>
+          <li>integrated sensing and communication, and physical-layer security</li>
+          <li>design that accounts for transceiver hardware impairments</li>
+          <li>learning-based methods for resource allocation, such as deep reinforcement learning</li>
+        </ul>
+        <p>I am glad to co-supervise PhD, master’s and undergraduate students, and to host visiting researchers and interns. If you are interested, email me your CV, a few lines on the topic you would like to work on, and, if you have one, a paper or report you have written.</p>
+        <p class="collab-note">Visiting researchers and interns usually need their own funding, for example a scholarship or an exchange programme.</p>
+      </div>
       <div class="mail-row"><a class="contact-mail" id="mail-text" href="mailto:h.shaikh@qub.ac.uk">h.shaikh@qub.ac.uk</a><button type="button" class="btn btn-quiet btn-small" id="copy-mail">Copy address</button><span class="copy-status" id="copy-status" aria-live="polite"></span></div>
       <p class="contact-where"><a href="places/qub.html">Queen's University Belfast</a>, <a href="places/belfast.html">Belfast</a>, Northern Ireland, United Kingdom</p>
       <ul class="profiles" aria-label="Research profiles">
