@@ -678,7 +678,45 @@ ol.refs a { font-family: var(--sans); font-size: 0.8125rem; white-space: nowrap;
 .place-index a { font-weight: 600; color: var(--ink); text-decoration: none; }
 .place-index a:hover { color: var(--accent); text-decoration: underline; text-decoration-thickness: 1px; }
 .place-index span { font-family: var(--sans); font-size: 0.8125rem; color: var(--muted); }
+
+/* multi-page additions */
+.section-grid > h1 { position: sticky; top: calc(env(safe-area-inset-top, 0px) + 5rem); align-self: start; margin: 0; font-size: 2.4rem; font-weight: 600; line-height: 1.1; }
+@media (max-width: 880px) { .section-grid > h1 { position: static; } }
+.section.first { border-top: 0; padding-top: clamp(2.5rem, 6vw, 4rem); }
+.page-lede { font-size: 1.1875rem; color: var(--ink-2); max-width: 60ch; margin: 0 0 1.75rem; }
+.sel-list .pub { grid-template-columns: minmax(0, 1fr); }
+.sel-list .pub-id { display: none; }
+.sel-tags { display: flex; flex-wrap: wrap; gap: 0.35rem; margin: 0.45rem 0 0; padding: 0; list-style: none; }
+.sel-tags li { font-family: var(--sans); font-size: 0.75rem; color: var(--ink-2); border: 1px solid var(--line); border-radius: 999px; padding: 0.1rem 0.6rem; }
+.more-row { display: flex; flex-wrap: wrap; gap: 0.75rem; margin-top: 1.5rem; }
+/* contact form */
+.cform { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1.1rem 1.25rem; max-width: 46rem; margin: 0 0 2.5rem; font-family: var(--sans); }
+.cform .full { grid-column: 1 / -1; }
+.cform label, .cform legend { display: block; font-size: 0.875rem; font-weight: 600; color: var(--ink); margin-bottom: 0.35rem; }
+.cform .req { color: var(--accent); }
+.cform .hint { font-weight: 400; color: var(--muted); }
+.cform input[type=text], .cform input[type=email], .cform input[type=url], .cform select, .cform textarea {
+  width: 100%; font: inherit; font-size: 0.9375rem; color: var(--ink); background: var(--surface);
+  border: 1px solid var(--line); border-radius: 6px; min-height: 2.6rem; padding: 0.45rem 0.7rem; }
+.cform textarea { min-height: 9rem; resize: vertical; line-height: 1.5; }
+.cform input:focus, .cform select:focus, .cform textarea:focus { outline: 2px solid var(--accent); outline-offset: 1px; border-color: var(--accent); }
+.cform fieldset { border: 0; margin: 0; padding: 0; }
+.cform .opts { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.4rem 1rem; }
+.cform .opts label { display: flex; gap: 0.5rem; align-items: flex-start; font-weight: 400; font-size: 0.9375rem; color: var(--ink-2); margin: 0; cursor: pointer; }
+.cform .opts input { margin-top: 0.25rem; accent-color: var(--accent); }
+.cform .actions-row { display: flex; flex-wrap: wrap; align-items: center; gap: 0.75rem 1.25rem; }
+.cform .note { font-size: 0.8125rem; color: var(--muted); margin: 0; }
+.cform .status { font-size: 0.9375rem; margin: 0; }
+.cform .status.ok { color: var(--ink); font-weight: 600; }
+.cform .status.err { color: #b42318; }
+.cform .hp { position: absolute; left: -9999px; }
+@media (max-width: 600px) { .cform { grid-template-columns: minmax(0, 1fr); } .cform .opts { grid-template-columns: minmax(0, 1fr); } }
+.form-intro { max-width: 62ch; color: var(--ink-2); }
 </style>
+<script>
+/* old links to sections that now have their own pages */
+(function () { var m = { "#publications": "publications.html", "#cv": "cv.html", "#contact-form": "contact.html", "#collaborate": "contact.html#collaborate" }; if (m[location.hash]) location.replace(m[location.hash]); })();
+</script>
 </head>
 <body>
 <a class="skip" href="#main">Skip to content</a>
@@ -689,11 +727,11 @@ ol.refs a { font-family: var(--sans); font-size: 0.8125rem; white-space: nowrap;
     <nav class="site-nav" aria-label="Site">
       <ul>
         <li><a href="#research">Research</a></li>
-        <li><a href="#publications">Publications</a></li>
+        <li><a href="publications.html">Publications</a></li>
         <li><a href="learn/index.html">Tutorials</a></li>
         <li><a href="urdu.html">Urdu</a></li>
-        <li><a href="#cv">CV</a></li>
-        <li><a href="#contact">Contact</a></li>
+        <li><a href="cv.html">CV</a></li>
+        <li><a href="contact.html">Contact</a></li>
       </ul>
     </nav>
   </div>
@@ -710,7 +748,7 @@ ol.refs a { font-family: var(--sans); font-size: 0.8125rem; white-space: nowrap;
       <p class="metrics">34 peer-reviewed papers, 25 as first author. 300+ citations, h-index 10.</p>
       <div class="actions">
         <a class="btn" href="mailto:h.shaikh@qub.ac.uk">Send an email</a>
-        <a class="btn btn-quiet" href="#cv">View CV</a>
+        <a class="btn btn-quiet" href="cv.html">View CV</a>
       </div>
       <ul class="profiles" aria-label="Research profiles">
         <li><a href="https://scholar.google.com/citations?user=wH9Q3RkAAAAJ&amp;hl=en" target="_blank" rel="noopener noreferrer">Google Scholar</a></li>
@@ -759,133 +797,31 @@ ol.refs a { font-family: var(--sans); font-size: 0.8125rem; white-space: nowrap;
     <div>
       <p class="intro">Seven threads run through the work. Each one links to the papers behind it.</p>
       <ul class="themes">
-        <li class="theme"><h3>Reconfigurable intelligent surfaces</h3><p>How to partition, assign and place RIS and STAR-RIS so that one surface can serve many users, from dual-IRS outdoor-to-indoor links to multi-STAR-RIS NOMA and UAV-mounted aerial RIS.</p><div class="theme-links"><button type="button" class="linkish" data-topic="ris">Show 24 papers</button><a href="learn/ris.html">Read the tutorial</a></div></li>
-        <li class="theme"><h3>Fluid and movable antennas</h3><p>Antennas and surfaces whose elements can change position: performance analysis and sum-rate optimization for fluid-RIS-enabled NOMA, and port selection for compact ultra-massive antenna arrays.</p><div class="theme-links"><button type="button" class="linkish" data-topic="fas">Show 5 papers</button><a href="learn/fluid-antennas.html">Read the tutorial</a></div></li>
-        <li class="theme"><h3>Next-generation multiple access</h3><p>Grant-free and cooperative NOMA, user clustering, RIS partitioning and power control, and rate-splitting multiple access for massive connectivity.</p><div class="theme-links"><button type="button" class="linkish" data-topic="ma">Show 16 papers</button><a href="learn/noma.html">Read the tutorial</a></div></li>
-        <li class="theme"><h3>Sensing and physical-layer security</h3><p>Using the sensing signal of an ISAC system to jam eavesdroppers whose location is uncertain, and using RIS to protect vehicular and indoor links.</p><div class="theme-links"><button type="button" class="linkish" data-topic="isac">Show 3 papers</button><a href="learn/isac.html">Read the tutorial</a></div></li>
-        <li class="theme"><h3>Hardware-impaired transceivers</h3><p>What residual hardware impairments, phase noise and amplifier nonlinearity do to RIS-aided, NOMA and OFDM systems. This was the subject of his PhD thesis.</p><div class="theme-links"><button type="button" class="linkish" data-topic="hwi">Show 12 papers</button><a href="learn/hardware-impairments.html">Read the tutorial</a></div></li>
-        <li class="theme"><h3>UAV and vehicular networks</h3><p>3D deployment and partitioning of aerial RIS, deep reinforcement learning for resource allocation, and V2I, V2V and D2D links under Nakagami-<i>m</i> fading.</p><div class="theme-links"><button type="button" class="linkish" data-topic="uav">Show 5 papers</button><a href="learn/v2x.html">Read the tutorial</a></div></li>
-        <li class="theme"><h3>Full-duplex relaying</h3><p>Antenna allocation and self-energy recycling for energy-efficient full-duplex MIMO relays, and the energy-spectral efficiency trade-off.</p><div class="theme-links"><button type="button" class="linkish" data-topic="fd">Show 7 papers</button></div></li>
+        <li class="theme"><h3>Reconfigurable intelligent surfaces</h3><p>How to partition, assign and place RIS and STAR-RIS so that one surface can serve many users, from dual-IRS outdoor-to-indoor links to multi-STAR-RIS NOMA and UAV-mounted aerial RIS.</p><div class="theme-links"><a href="publications.html?topic=ris">Show 24 papers</a><a href="learn/ris.html">Read the tutorial</a></div></li>
+        <li class="theme"><h3>Fluid and movable antennas</h3><p>Antennas and surfaces whose elements can change position: performance analysis and sum-rate optimization for fluid-RIS-enabled NOMA, and port selection for compact ultra-massive antenna arrays.</p><div class="theme-links"><a href="publications.html?topic=fas">Show 5 papers</a><a href="learn/fluid-antennas.html">Read the tutorial</a></div></li>
+        <li class="theme"><h3>Next-generation multiple access</h3><p>Grant-free and cooperative NOMA, user clustering, RIS partitioning and power control, and rate-splitting multiple access for massive connectivity.</p><div class="theme-links"><a href="publications.html?topic=ma">Show 16 papers</a><a href="learn/noma.html">Read the tutorial</a></div></li>
+        <li class="theme"><h3>Sensing and physical-layer security</h3><p>Using the sensing signal of an ISAC system to jam eavesdroppers whose location is uncertain, and using RIS to protect vehicular and indoor links.</p><div class="theme-links"><a href="publications.html?topic=isac">Show 3 papers</a><a href="learn/isac.html">Read the tutorial</a></div></li>
+        <li class="theme"><h3>Hardware-impaired transceivers</h3><p>What residual hardware impairments, phase noise and amplifier nonlinearity do to RIS-aided, NOMA and OFDM systems. This was the subject of his PhD thesis.</p><div class="theme-links"><a href="publications.html?topic=hwi">Show 12 papers</a><a href="learn/hardware-impairments.html">Read the tutorial</a></div></li>
+        <li class="theme"><h3>UAV and vehicular networks</h3><p>3D deployment and partitioning of aerial RIS, deep reinforcement learning for resource allocation, and V2I, V2V and D2D links under Nakagami-<i>m</i> fading.</p><div class="theme-links"><a href="publications.html?topic=uav">Show 5 papers</a><a href="learn/v2x.html">Read the tutorial</a></div></li>
+        <li class="theme"><h3>Full-duplex relaying</h3><p>Antenna allocation and self-energy recycling for energy-efficient full-duplex MIMO relays, and the energy-spectral efficiency trade-off.</p><div class="theme-links"><a href="publications.html?topic=fd">Show 7 papers</a></div></li>
       </ul>
     </div>
   </div>
 </section>
 
-<section class="section" id="publications">
+<section class="section" id="selected">
   <div class="wrap section-grid">
-    <h2>Publications</h2>
+    <h2>Selected papers</h2>
     <div>
-      <div class="pub-controls">
-        <div class="seg" role="radiogroup" aria-label="Publication type">
-          <button type="button" role="radio" aria-checked="true" data-type="all">All<span class="n">37</span></button>
-          <button type="button" role="radio" aria-checked="false" data-type="journal">Journal articles<span class="n">14</span></button>
-          <button type="button" role="radio" aria-checked="false" data-type="conference">Conference papers<span class="n">18</span></button>
-          <button type="button" role="radio" aria-checked="false" data-type="chapter">Book chapters<span class="n">2</span></button>
-          <button type="button" role="radio" aria-checked="false" data-type="preprint">Preprints<span class="n">3</span></button>
-        </div>
-        <label class="field">Topic
-          <select id="pub-topic">
-            <option value="">All topics</option>
-            <option value="ris">Reconfigurable intelligent surfaces</option>
-            <option value="fas">Fluid and movable antennas</option>
-            <option value="ma">Next-generation multiple access</option>
-            <option value="isac">Sensing and physical-layer security</option>
-            <option value="hwi">Hardware-impaired transceivers</option>
-            <option value="uav">UAV and vehicular networks</option>
-            <option value="fd">Full-duplex relaying</option>
-            <option value="bio">Biomedical signal processing (early work)</option>
-          </select>
-        </label>
-        <label class="check"><input type="checkbox" id="pub-first"> First-authored only</label>
-        <label class="search"><span class="visually-hidden" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap">Search publications</span>
-          <input type="search" id="pub-q" placeholder="Search titles, co-authors, venues" autocomplete="off">
-        </label>
-      </div>
-      <p class="pub-count" id="pub-count" aria-live="polite"></p>
-      <div class="pub-empty" id="pub-empty" hidden>No publications match these filters. <button type="button" class="linkish" id="pub-clear">Clear filters</button></div>
-      <div id="pubs">
-        <section class="pub-year" aria-label="2026"><h3>2026</h3>
-          <ol class="pub-list">
-            <li class="pub" data-type="journal" data-tags="fas ris ma" data-first="1" data-text="sum-rate maximization for fris-enabled noma communications m. h. n. shaikh k.-k. wong f. r. ghadi c.-b. chae y. zhang ieee wireless communications letters 2026 2026"><span class="pub-id">J14</span><div><a class="pub-title" href="https://ieeexplore.ieee.org/document/11414135" target="_blank" rel="noopener noreferrer">Sum-Rate Maximization for FRIS-Enabled NOMA Communications</a><p class="pub-authors"><strong>M. H. N. Shaikh</strong>, K.-K. Wong, F. R. Ghadi, C.-B. Chae, and Y. Zhang</p><p class="pub-venue"><em>IEEE Wireless Communications Letters</em>, 2026.</p><p class="pub-links"><a href="https://ieeexplore.ieee.org/document/11414135" target="_blank" rel="noopener noreferrer">IEEE Xplore</a></p></div></li>
-            <li class="pub" data-type="journal" data-tags="fas ris ma" data-first="1" data-text="on performance of fris-enabled uplink noma m. h. n. shaikh k.-k. wong f. r. ghadi ieee wireless communications letters 2026 2026"><span class="pub-id">J13</span><div><a class="pub-title" href="https://ieeexplore.ieee.org/document/11411785" target="_blank" rel="noopener noreferrer">On Performance of FRIS-Enabled Uplink NOMA</a><p class="pub-authors"><strong>M. H. N. Shaikh</strong>, K.-K. Wong, F. R. Ghadi, et al.</p><p class="pub-venue"><em>IEEE Wireless Communications Letters</em>, 2026.</p><p class="pub-links"><a href="https://ieeexplore.ieee.org/document/11411785" target="_blank" rel="noopener noreferrer">IEEE Xplore</a></p></div></li>
-            <li class="pub" data-type="journal" data-tags="ris ma uav" data-first="0" data-text="aerial ris-aided uplink noma: a drl-aided resource allocation framework t. altay m. h. n. shaikh a. celik a. m. eltawil g. nauryzbayev ieee transactions on cognitive communications and networking 2026 2026"><span class="pub-id">J12</span><div><a class="pub-title" href="https://scholar.google.com/scholar?q=%22Aerial%20RIS-Aided%20Uplink%20NOMA%3A%20A%20DRL-Aided%20Resource%20Allocation%20Framework%22" target="_blank" rel="noopener noreferrer">Aerial RIS-Aided Uplink NOMA: A DRL-Aided Resource Allocation Framework</a><p class="pub-authors">T. Altay, <strong>M. H. N. Shaikh</strong>, A. Çelik, A. M. Eltawil, and G. Nauryzbayev</p><p class="pub-venue"><em>IEEE Transactions on Cognitive Communications and Networking</em>, 2026.</p><p class="pub-links"><a href="https://scholar.google.com/scholar?q=%22Aerial%20RIS-Aided%20Uplink%20NOMA%3A%20A%20DRL-Aided%20Resource%20Allocation%20Framework%22" target="_blank" rel="noopener noreferrer">Find on Google Scholar</a></p></div></li>
-            <li class="pub" data-type="chapter" data-tags="ris uav" data-first="0" data-text="evolution of intelligent transportation systems for the next generation: irs enabled 6g s. rajak v. c. dodda lakshmi  2026 2026"><span class="pub-id">B2</span><div><a class="pub-title" href="https://www.researchgate.net/publication/410133583_Evolution_of_Intelligent_Transportation_Systems_for_the_Next_Generation_IRS_Enabled_6G" target="_blank" rel="noopener noreferrer">Evolution of Intelligent Transportation Systems for the Next Generation: IRS Enabled 6G</a><p class="pub-authors">S. Rajak, V. C. Dodda, Lakshmi, et al.</p><p class="pub-venue">Book chapter, 2026.</p><p class="pub-links"><a href="https://www.researchgate.net/publication/410133583_Evolution_of_Intelligent_Transportation_Systems_for_the_Next_Generation_IRS_Enabled_6G" target="_blank" rel="noopener noreferrer">ResearchGate</a></p></div></li>
-            <li class="pub" data-type="preprint" data-tags="ris fas ma" data-first="0" data-text="exploiting movable-element stars for rate splitting multiple access m. asif a. ihsan i. muhammad  2026 2026"><span class="pub-id">P3</span><div><a class="pub-title" href="https://www.researchgate.net/publication/412348893_Exploiting_Movable-Element_STARS_for_Rate_Splitting_Multiple_Access" target="_blank" rel="noopener noreferrer">Exploiting Movable-Element STARS for Rate Splitting Multiple Access</a><p class="pub-authors">M. Asif, A. Ihsan, I. Muhammad, et al.</p><p class="pub-venue">Preprint, 2026.</p><p class="pub-links"><a href="https://www.researchgate.net/publication/412348893_Exploiting_Movable-Element_STARS_for_Rate_Splitting_Multiple_Access" target="_blank" rel="noopener noreferrer">ResearchGate</a></p></div></li>
-            <li class="pub" data-type="preprint" data-tags="ris fas ma hwi" data-first="0" data-text="robust transmission design for ris-assisted rsma-swipt systems with movable antennas under hardware distortions m. asif a. ihsan i. muhammad  2026 2026"><span class="pub-id">P2</span><div><a class="pub-title" href="https://www.researchgate.net/publication/408406873_Robust_Transmission_Design_for_RIS-Assisted_RSMA-SWIPT_Systems_With_Movable_Antennas_Under_Hardware_Distortions" target="_blank" rel="noopener noreferrer">Robust Transmission Design for RIS-Assisted RSMA-SWIPT Systems With Movable Antennas Under Hardware Distortions</a><p class="pub-authors">M. Asif, A. Ihsan, I. Muhammad, et al.</p><p class="pub-venue">Preprint, 2026.</p><p class="pub-links"><a href="https://www.researchgate.net/publication/408406873_Robust_Transmission_Design_for_RIS-Assisted_RSMA-SWIPT_Systems_With_Movable_Antennas_Under_Hardware_Distortions" target="_blank" rel="noopener noreferrer">ResearchGate</a></p></div></li>
-          </ol>
-        </section>
-        <section class="pub-year" aria-label="2025"><h3>2025</h3>
-          <ol class="pub-list">
-            <li class="pub" data-type="journal" data-tags="ris ma" data-first="1" data-text="multi-star-ris noma: clustering, ris assignment and power optimization m. h. n. shaikh k. m. rabie t. y. elganimi x. li m. s. hashmi g. nauryzbayev ieee transactions on vehicular technology vol. 74, no. 4, pp. 63896405, 2025 2025"><span class="pub-id">J11</span><div><a class="pub-title" href="https://ieeexplore.ieee.org/document/10772059" target="_blank" rel="noopener noreferrer">Multi-STAR-RIS NOMA: Clustering, RIS Assignment and Power Optimization</a><p class="pub-authors"><strong>M. H. N. Shaikh</strong>, K. M. Rabie, T. Y. Elganimi, X. Li, M. S. Hashmi, and G. Nauryzbayev</p><p class="pub-venue"><em>IEEE Transactions on Vehicular Technology</em>, vol. 74, no. 4, pp. 6389–6405, 2025.</p><p class="pub-links"><a href="https://ieeexplore.ieee.org/document/10772059" target="_blank" rel="noopener noreferrer">IEEE Xplore</a></p></div></li>
-            <li class="pub" data-type="conference" data-tags="ris ma uav hwi" data-first="1" data-text="optimizing deployment and partitioning strategies for aerial ris-aided uplink noma under residual hardware impairments m. h. n. shaikh a. celik s. arzykulov  2025 2025"><span class="pub-id">C18</span><div><a class="pub-title" href="https://ieeexplore.ieee.org/document/11274767" target="_blank" rel="noopener noreferrer">Optimizing Deployment and Partitioning Strategies for Aerial RIS-Aided Uplink NOMA under Residual Hardware Impairments</a><p class="pub-authors"><strong>M. H. N. Shaikh</strong>, A. Çelik, S. Arzykulov, et al.</p><p class="pub-venue">Conference paper, 2025.</p><p class="pub-links"><a href="https://ieeexplore.ieee.org/document/11274767" target="_blank" rel="noopener noreferrer">IEEE Xplore</a></p></div></li>
-            <li class="pub" data-type="preprint" data-tags="fas ma" data-first="0" data-text="geometric port selection in cuma systems c. rao k.-k. wong m. h. n. shaikh h. hong h. shin y. zhang arxiv preprint arxiv:2509.20299 2025 2025"><span class="pub-id">P1</span><div><a class="pub-title" href="https://arxiv.org/abs/2509.20299" target="_blank" rel="noopener noreferrer">Geometric Port Selection in CUMA Systems</a><p class="pub-authors">C. Rao, K.-K. Wong, <strong>M. H. N. Shaikh</strong>, H. Hong, H. Shin, and Y. Zhang</p><p class="pub-venue">arXiv preprint arXiv:2509.20299, 2025.</p><p class="pub-links"><a href="https://arxiv.org/abs/2509.20299" target="_blank" rel="noopener noreferrer">arXiv</a></p></div></li>
-          </ol>
-        </section>
-        <section class="pub-year" aria-label="2024"><h3>2024</h3>
-          <ol class="pub-list">
-            <li class="pub" data-type="journal" data-tags="ris ma isac uav" data-first="0" data-text="enhancing vehicular noma communication security through reconfigurable intelligent surfaces a. serikov m. h. n. shaikh g. nauryzbayev vehicular communications vol. 50, art. no. 100841, 2024 2024"><span class="pub-id">J10</span><div><a class="pub-title" href="https://www.sciencedirect.com/science/article/pii/S2214209624001165" target="_blank" rel="noopener noreferrer">Enhancing Vehicular NOMA Communication Security through Reconfigurable Intelligent Surfaces</a><p class="pub-authors">A. Serikov, <strong>M. H. N. Shaikh</strong>, and G. Nauryzbayev</p><p class="pub-venue"><em>Vehicular Communications</em>, vol. 50, Art. no. 100841, 2024.</p><p class="pub-links"><a href="https://www.sciencedirect.com/science/article/pii/S2214209624001165" target="_blank" rel="noopener noreferrer">ScienceDirect</a></p></div></li>
-            <li class="pub" data-type="journal" data-tags="ris ma" data-first="1" data-text="grant-free noma through optimal partitioning and cluster assignment in star-ris networks m. h. n. shaikh a. celik a. m. eltawil g. nauryzbayev ieee transactions on wireless communications vol. 23, no. 8, pp. 1016610181, aug. 2024 2024"><span class="pub-id">J8</span><div><a class="pub-title" href="https://ieeexplore.ieee.org/document/10458024" target="_blank" rel="noopener noreferrer">Grant-Free NOMA Through Optimal Partitioning and Cluster Assignment in STAR-RIS Networks</a><p class="pub-authors"><strong>M. H. N. Shaikh</strong>, A. Çelik, A. M. Eltawil, and G. Nauryzbayev</p><p class="pub-venue"><em>IEEE Transactions on Wireless Communications</em>, vol. 23, no. 8, pp. 10166–10181, Aug. 2024.</p><p class="pub-links"><a href="https://ieeexplore.ieee.org/document/10458024" target="_blank" rel="noopener noreferrer">IEEE Xplore</a></p></div></li>
-            <li class="pub" data-type="journal" data-tags="ris ma" data-first="0" data-text="performance of star-ris-aided cooperative noma networks under nakagami-m fading t. toregozhin m. h. n. shaikh a. almagambetov g. nauryzbayev ad hoc networks vol. 156, art. no. 103399, 2024 2024"><span class="pub-id">J9</span><div><a class="pub-title" href="https://www.sciencedirect.com/science/article/abs/pii/S1570870524000106" target="_blank" rel="noopener noreferrer">Performance of STAR-RIS-Aided Cooperative NOMA Networks under Nakagami-<i>m</i> Fading</a><p class="pub-authors">T. Toregozhin, <strong>M. H. N. Shaikh</strong>, A. Almagambetov, and G. Nauryzbayev</p><p class="pub-venue"><em>Ad Hoc Networks</em>, vol. 156, Art. no. 103399, 2024.</p><p class="pub-links"><a href="https://www.sciencedirect.com/science/article/abs/pii/S1570870524000106" target="_blank" rel="noopener noreferrer">ScienceDirect</a></p></div></li>
-            <li class="pub" data-type="conference" data-tags="isac" data-first="1" data-text="sense and jam: isac-aided robust physical layer security m. h. n. shaikh a. celik a. m. eltawil g. nauryzbayev 58th asilomar conference on signals, systems, and computers pacific grove, ca, usa, oct. 2024, pp. 653657 2024"><span class="pub-id">C17</span><div><a class="pub-title" href="https://ieeexplore.ieee.org/document/10942975" target="_blank" rel="noopener noreferrer">Sense and Jam: ISAC-Aided Robust Physical Layer Security</a><p class="pub-authors"><strong>M. H. N. Shaikh</strong>, A. Çelik, A. M. Eltawil, and G. Nauryzbayev</p><p class="pub-venue">In <em>Proc. 58th Asilomar Conference on Signals, Systems, and Computers</em>, Pacific Grove, CA, USA, Oct. 2024, pp. 653–657.</p><p class="pub-links"><a href="https://ieeexplore.ieee.org/document/10942975" target="_blank" rel="noopener noreferrer">IEEE Xplore</a></p></div></li>
-          </ol>
-        </section>
-        <section class="pub-year" aria-label="2023"><h3>2023</h3>
-          <ol class="pub-list">
-            <li class="pub" data-type="journal" data-tags="ris" data-first="1" data-text="an energy efficient dual irs-aided outdoor-to-indoor communication system m. h. n. shaikh v. a. bohara a. srivastava g. ghatak ieee systems journal vol. 17, no. 3, pp. 37183729, 2023 2023"><span class="pub-id">J7</span><div><a class="pub-title" href="https://ieeexplore.ieee.org/document/10067242" target="_blank" rel="noopener noreferrer">An Energy Efficient Dual IRS-Aided Outdoor-to-Indoor Communication System</a><p class="pub-authors"><strong>M. H. N. Shaikh</strong>, V. A. Bohara, A. Srivastava, and G. Ghatak</p><p class="pub-venue"><em>IEEE Systems Journal</em>, vol. 17, no. 3, pp. 3718–3729, 2023.</p><p class="pub-links"><a href="https://ieeexplore.ieee.org/document/10067242" target="_blank" rel="noopener noreferrer">IEEE Xplore</a></p></div></li>
-            <li class="pub" data-type="journal" data-tags="ris hwi" data-first="1" data-text="on the performance of dual irs-aided communication system under non-ideal transceiver over nakagami-m fading channels m. h. n. shaikh v. a. bohara a. srivastava internet technology letters vol. 6, no. 3, 2023 2023"><span class="pub-id">J6</span><div><a class="pub-title" href="https://scholar.google.com/scholar?q=%22On%20the%20Performance%20of%20Dual%20IRS-Aided%20Communication%20System%20under%20Non-Ideal%20Transceiver%20over%20Nakagami-m%20Fading%20Channels%22" target="_blank" rel="noopener noreferrer">On the Performance of Dual IRS-Aided Communication System under Non-Ideal Transceiver over Nakagami-<i>m</i> Fading Channels</a><p class="pub-authors"><strong>M. H. N. Shaikh</strong>, V. A. Bohara, and A. Srivastava</p><p class="pub-venue"><em>Internet Technology Letters</em>, vol. 6, no. 3, 2023.</p><p class="pub-links"><a href="https://scholar.google.com/scholar?q=%22On%20the%20Performance%20of%20Dual%20IRS-Aided%20Communication%20System%20under%20Non-Ideal%20Transceiver%20over%20Nakagami-m%20Fading%20Channels%22" target="_blank" rel="noopener noreferrer">Find on Google Scholar</a></p></div></li>
-            <li class="pub" data-type="conference" data-tags="ris ma" data-first="1" data-text="on the optimization of virtual ris partitioning for grant-free non-orthogonal multiple access m. h. n. shaikh a. celik a. m. eltawil g. nauryzbayev ieee global communications conference (globecom) kuala lumpur, malaysia, dec. 2023, pp. 72197224 2023"><span class="pub-id">C16</span><div><a class="pub-title" href="https://ieeexplore.ieee.org/document/10437227" target="_blank" rel="noopener noreferrer">On the Optimization of Virtual RIS Partitioning for Grant-Free Non-Orthogonal Multiple Access</a><p class="pub-authors"><strong>M. H. N. Shaikh</strong>, A. Çelik, A. M. Eltawil, and G. Nauryzbayev</p><p class="pub-venue">In <em>Proc. IEEE Global Communications Conference (GLOBECOM)</em>, Kuala Lumpur, Malaysia, Dec. 2023, pp. 7219–7224.</p><p class="pub-links"><a href="https://ieeexplore.ieee.org/document/10437227" target="_blank" rel="noopener noreferrer">IEEE Xplore</a></p></div></li>
-            <li class="pub" data-type="conference" data-tags="ris ma" data-first="0" data-text="performance analysis and enhancement through cooperative noma in star-ris-aided systems t. toregozhin m. h. n. shaikh g. nauryzbayev international balkan conference on communications and networking (balkancom) 2023 2023"><span class="pub-id">C15</span><div><a class="pub-title" href="https://ieeexplore.ieee.org/document/10167959" target="_blank" rel="noopener noreferrer">Performance Analysis and Enhancement through Cooperative NOMA in STAR-RIS-Aided Systems</a><p class="pub-authors">T. Toregozhin, <strong>M. H. N. Shaikh</strong>, and G. Nauryzbayev</p><p class="pub-venue">In <em>Proc. International Balkan Conference on Communications and Networking (BalkanCom)</em>, 2023.</p><p class="pub-links"><a href="https://ieeexplore.ieee.org/document/10167959" target="_blank" rel="noopener noreferrer">IEEE Xplore</a></p></div></li>
-            <li class="pub" data-type="conference" data-tags="ris hwi" data-first="1" data-text="irs-aided communication system with phase noise and hardware impairments: performance analysis and characterization m. h. n. shaikh v. a. bohara a. srivastava international conference on communication systems &amp; networks (comsnets) bengaluru, india, jan. 2023, pp. 392396 2023"><span class="pub-id">C14</span><div><a class="pub-title" href="https://ieeexplore.ieee.org/document/10041338" target="_blank" rel="noopener noreferrer">IRS-Aided Communication System with Phase Noise and Hardware Impairments: Performance Analysis and Characterization</a><p class="pub-authors"><strong>M. H. N. Shaikh</strong>, V. A. Bohara, and A. Srivastava</p><p class="pub-venue">In <em>Proc. International Conference on COMmunication Systems &amp; NETworkS (COMSNETS)</em>, Bengaluru, India, Jan. 2023, pp. 392–396.</p><p class="pub-links"><a href="https://ieeexplore.ieee.org/document/10041338" target="_blank" rel="noopener noreferrer">IEEE Xplore</a></p></div></li>
-          </ol>
-        </section>
-        <section class="pub-year" aria-label="2022"><h3>2022</h3>
-          <ol class="pub-list">
-            <li class="pub" data-type="journal" data-tags="ris hwi" data-first="0" data-text="on the performance of irs-assisted ofdm system with non-ideal oscillator and amplifier k. joshi m. h. n. shaikh s. a. naqvi v. a. bohara internet technology letters vol. 5, no. 4, 2022 2022"><span class="pub-id">J5</span><div><a class="pub-title" href="https://onlinelibrary.wiley.com/doi/abs/10.1002/itl2.380" target="_blank" rel="noopener noreferrer">On the Performance of IRS-Assisted OFDM System with Non-Ideal Oscillator and Amplifier</a><p class="pub-authors">K. Joshi, <strong>M. H. N. Shaikh</strong>, S. A. Naqvi, and V. A. Bohara</p><p class="pub-venue"><em>Internet Technology Letters</em>, vol. 5, no. 4, 2022.</p><p class="pub-links"><a href="https://onlinelibrary.wiley.com/doi/abs/10.1002/itl2.380" target="_blank" rel="noopener noreferrer">Wiley Online Library</a> <span class="doi">doi:10.1002/itl2.380</span></p></div></li>
-            <li class="pub" data-type="journal" data-tags="ris ma hwi" data-first="1" data-text="a downlink ris-aided noma system with hardware impairments: performance characterization and analysis m. h. n. shaikh v. a. bohara a. srivastava g. ghatak ieee open journal of signal processing vol. 3, 2022 2022"><span class="pub-id">J4</span><div><a class="pub-title" href="https://ieeexplore.ieee.org/document/9842326" target="_blank" rel="noopener noreferrer">A Downlink RIS-Aided NOMA System With Hardware Impairments: Performance Characterization and Analysis</a><p class="pub-authors"><strong>M. H. N. Shaikh</strong>, V. A. Bohara, A. Srivastava, and G. Ghatak</p><p class="pub-venue"><em>IEEE Open Journal of Signal Processing</em>, vol. 3, 2022.</p><p class="pub-links"><a href="https://ieeexplore.ieee.org/document/9842326" target="_blank" rel="noopener noreferrer">IEEE Xplore</a></p></div></li>
-            <li class="pub" data-type="conference" data-tags="ris isac" data-first="0" data-text="intelligent reflecting surfaces versus optical mirrors: performance comparison for indoor physical layer security environments k. lata v. a. bohara a. srivastava m. h. n. shaikh ieee international conference on advanced networks and telecommunications systems (ants) dec. 2022, pp. 314319 2022"><span class="pub-id">C13</span><div><a class="pub-title" href="https://scholar.google.com/scholar?q=%22Intelligent%20Reflecting%20Surfaces%20Versus%20Optical%20Mirrors%3A%20Performance%20Comparison%20for%20Indoor%20Physical%20Layer%20Security%20Environments%22" target="_blank" rel="noopener noreferrer">Intelligent Reflecting Surfaces Versus Optical Mirrors: Performance Comparison for Indoor Physical Layer Security Environments</a><p class="pub-authors">K. Lata, V. A. Bohara, A. Srivastava, and <strong>M. H. N. Shaikh</strong></p><p class="pub-venue">In <em>Proc. IEEE International Conference on Advanced Networks and Telecommunications Systems (ANTS)</em>, Dec. 2022, pp. 314–319.</p><p class="pub-links"><a href="https://scholar.google.com/scholar?q=%22Intelligent%20Reflecting%20Surfaces%20Versus%20Optical%20Mirrors%3A%20Performance%20Comparison%20for%20Indoor%20Physical%20Layer%20Security%20Environments%22" target="_blank" rel="noopener noreferrer">Find on Google Scholar</a></p></div></li>
-            <li class="pub" data-type="conference" data-tags="ris ma" data-first="1" data-text="performance of ris-empowered noma-based d2d communication under nakagami-m fading m. h. n. shaikh s. arzykulov a. celik a. m. eltawil g. nauryzbayev ieee 96th vehicular technology conference (vtc2022-fall) london, uk, sep. 2022, pp. 15 2022"><span class="pub-id">C12</span><div><a class="pub-title" href="https://ieeexplore.ieee.org/document/10012767" target="_blank" rel="noopener noreferrer">Performance of RIS-Empowered NOMA-Based D2D Communication under Nakagami-<i>m</i> Fading</a><p class="pub-authors"><strong>M. H. N. Shaikh</strong>, S. Arzykulov, A. Çelik, A. M. Eltawil, and G. Nauryzbayev</p><p class="pub-venue">In <em>Proc. IEEE 96th Vehicular Technology Conference (VTC2022-Fall)</em>, London, UK, Sep. 2022, pp. 1–5.</p><p class="pub-links"><a href="https://ieeexplore.ieee.org/document/10012767" target="_blank" rel="noopener noreferrer">IEEE Xplore</a> <a href="https://arxiv.org/abs/2301.03973" target="_blank" rel="noopener noreferrer">arXiv</a></p></div></li>
-            <li class="pub" data-type="conference" data-tags="ris uav" data-first="1" data-text="on the performance of dual ris-assisted v2i communication under nakagami-m fading m. h. n. shaikh k. m. rabie x. li t. a. tsiftsis g. nauryzbayev ieee 96th vehicular technology conference (vtc2022-fall) london, uk, sep. 2022, pp. 15 2022"><span class="pub-id">C11</span><div><a class="pub-title" href="https://ieeexplore.ieee.org/document/10012862" target="_blank" rel="noopener noreferrer">On the Performance of Dual RIS-Assisted V2I Communication under Nakagami-<i>m</i> Fading</a><p class="pub-authors"><strong>M. H. N. Shaikh</strong>, K. M. Rabie, X. Li, T. A. Tsiftsis, and G. Nauryzbayev</p><p class="pub-venue">In <em>Proc. IEEE 96th Vehicular Technology Conference (VTC2022-Fall)</em>, London, UK, Sep. 2022, pp. 1–5.</p><p class="pub-links"><a href="https://ieeexplore.ieee.org/document/10012862" target="_blank" rel="noopener noreferrer">IEEE Xplore</a> <a href="https://arxiv.org/abs/2301.03983" target="_blank" rel="noopener noreferrer">arXiv</a></p></div></li>
-            <li class="pub" data-type="conference" data-tags="ris ma hwi" data-first="1" data-text="on the performance of ris-aided noma system with non-ideal transceiver over nakagami-m fading m. h. n. shaikh v. a. bohara a. srivastava g. ghatak ieee wireless communications and networking conference (wcnc) austin, tx, usa, apr. 2022, pp. 17371742 2022"><span class="pub-id">C10</span><div><a class="pub-title" href="https://ieeexplore.ieee.org/document/9771831" target="_blank" rel="noopener noreferrer">On the Performance of RIS-Aided NOMA System with Non-Ideal Transceiver over Nakagami-<i>m</i> Fading</a><p class="pub-authors"><strong>M. H. N. Shaikh</strong>, V. A. Bohara, A. Srivastava, and G. Ghatak</p><p class="pub-venue">In <em>Proc. IEEE Wireless Communications and Networking Conference (WCNC)</em>, Austin, TX, USA, Apr. 2022, pp. 1737–1742.</p><p class="pub-links"><a href="https://ieeexplore.ieee.org/document/9771831" target="_blank" rel="noopener noreferrer">IEEE Xplore</a></p></div></li>
-          </ol>
-        </section>
-        <section class="pub-year" aria-label="2021"><h3>2021</h3>
-          <ol class="pub-list">
-            <li class="pub" data-type="journal" data-tags="ris hwi" data-first="1" data-text="performance analysis of intelligent reflecting surface-assisted wireless system with non-ideal transceiver m. h. n. shaikh v. a. bohara a. srivastava g. ghatak ieee open journal of the communications society vol. 2, pp. 671686, 2021 2021"><span class="pub-id">J3</span><div><a class="pub-title" href="https://ieeexplore.ieee.org/document/9388920" target="_blank" rel="noopener noreferrer">Performance Analysis of Intelligent Reflecting Surface-Assisted Wireless System With Non-Ideal Transceiver</a><p class="pub-authors"><strong>M. H. N. Shaikh</strong>, V. A. Bohara, A. Srivastava, and G. Ghatak</p><p class="pub-venue"><em>IEEE Open Journal of the Communications Society</em>, vol. 2, pp. 671–686, 2021.</p><p class="pub-links"><a href="https://ieeexplore.ieee.org/document/9388920" target="_blank" rel="noopener noreferrer">IEEE Xplore</a></p></div></li>
-            <li class="pub" data-type="conference" data-tags="ris fd hwi" data-first="1" data-text="intelligent reflecting surfaces versus full-duplex relaying: performance comparison for non-ideal transmitter case m. h. n. shaikh v. a. bohara a. srivastava g. ghatak ieee international symposium on personal, indoor and mobile radio communications (pimrc) sep. 2021, pp. 513518 2021"><span class="pub-id">C9</span><div><a class="pub-title" href="https://ieeexplore.ieee.org/document/9569598" target="_blank" rel="noopener noreferrer">Intelligent Reflecting Surfaces Versus Full-Duplex Relaying: Performance Comparison for Non-Ideal Transmitter Case</a><p class="pub-authors"><strong>M. H. N. Shaikh</strong>, V. A. Bohara, A. Srivastava, and G. Ghatak</p><p class="pub-venue">In <em>Proc. IEEE International Symposium on Personal, Indoor and Mobile Radio Communications (PIMRC)</em>, Sep. 2021, pp. 513–518.</p><p class="pub-links"><a href="https://ieeexplore.ieee.org/document/9569598" target="_blank" rel="noopener noreferrer">IEEE Xplore</a></p></div></li>
-          </ol>
-        </section>
-        <section class="pub-year" aria-label="2020"><h3>2020</h3>
-          <ol class="pub-list">
-            <li class="pub" data-type="journal" data-tags="fd" data-first="1" data-text="performance analysis of a full-duplex mimo decode-and-forward relay system with self-energy recycling m. h. n. shaikh v. a. bohara a. srivastava ieee access vol. 8, pp. 226248226266, 2020 2020"><span class="pub-id">J2</span><div><a class="pub-title" href="https://ieeexplore.ieee.org/document/9298754" target="_blank" rel="noopener noreferrer">Performance Analysis of a Full-Duplex MIMO Decode-and-Forward Relay System With Self-Energy Recycling</a><p class="pub-authors"><strong>M. H. N. Shaikh</strong>, V. A. Bohara, and A. Srivastava</p><p class="pub-venue"><em>IEEE Access</em>, vol. 8, pp. 226248–226266, 2020.</p><p class="pub-links"><a href="https://ieeexplore.ieee.org/document/9298754" target="_blank" rel="noopener noreferrer">IEEE Xplore</a></p></div></li>
-            <li class="pub" data-type="journal" data-tags="fd hwi" data-first="1" data-text="energy efficiency evaluation for downlink full-duplex nonlinear mu-mimo-ofdm system with self-energy recycling m. h. n. shaikh v. a. bohara p. aggarwal a. srivastava ieee systems journal vol. 14, no. 3, pp. 33133324, 2020 2020"><span class="pub-id">J1</span><div><a class="pub-title" href="https://ieeexplore.ieee.org/document/8966489" target="_blank" rel="noopener noreferrer">Energy Efficiency Evaluation for Downlink Full-Duplex Nonlinear MU-MIMO-OFDM System With Self-Energy Recycling</a><p class="pub-authors"><strong>M. H. N. Shaikh</strong>, V. A. Bohara, P. Aggarwal, and A. Srivastava</p><p class="pub-venue"><em>IEEE Systems Journal</em>, vol. 14, no. 3, pp. 3313–3324, 2020.</p><p class="pub-links"><a href="https://ieeexplore.ieee.org/document/8966489" target="_blank" rel="noopener noreferrer">IEEE Xplore</a></p></div></li>
-            <li class="pub" data-type="conference" data-tags="fd" data-first="1" data-text="performance enhancement in full-duplex af relay system through smart antenna allocation m. h. n. shaikh v. a. bohara a. srivastava ieee 3rd 5g world forum (5gwf) sep. 2020, pp. 303308 2020"><span class="pub-id">C8</span><div><a class="pub-title" href="https://ieeexplore.ieee.org/document/9221287" target="_blank" rel="noopener noreferrer">Performance Enhancement in Full-Duplex AF Relay System through Smart Antenna Allocation</a><p class="pub-authors"><strong>M. H. N. Shaikh</strong>, V. A. Bohara, and A. Srivastava</p><p class="pub-venue">In <em>Proc. IEEE 3rd 5G World Forum (5GWF)</em>, Sep. 2020, pp. 303–308.</p><p class="pub-links"><a href="https://ieeexplore.ieee.org/document/9221287" target="_blank" rel="noopener noreferrer">IEEE Xplore</a></p></div></li>
-            <li class="pub" data-type="conference" data-tags="fd" data-first="1" data-text="ee enhancement in fd mimo relay system through adaptive antenna allocation and self-energy recycling m. h. n. shaikh v. a. bohara a. srivastava g. ghatak ieee international conference on communications workshops (icc workshops) jun. 2020, pp. 17 2020"><span class="pub-id">C7</span><div><a class="pub-title" href="https://ieeexplore.ieee.org/document/9145112" target="_blank" rel="noopener noreferrer">EE Enhancement in FD MIMO Relay System through Adaptive Antenna Allocation and Self-Energy Recycling</a><p class="pub-authors"><strong>M. H. N. Shaikh</strong>, V. A. Bohara, A. Srivastava, and G. Ghatak</p><p class="pub-venue">In <em>Proc. IEEE International Conference on Communications Workshops (ICC Workshops)</em>, Jun. 2020, pp. 1–7.</p><p class="pub-links"><a href="https://ieeexplore.ieee.org/document/9145112" target="_blank" rel="noopener noreferrer">IEEE Xplore</a></p></div></li>
-            <li class="pub" data-type="conference" data-tags="hwi" data-first="1" data-text="spectral analysis of a nonlinear wola-ofdm system with dpd m. h. n. shaikh v. a. bohara a. srivastava national conference on communications (ncc) feb. 2020, pp. 14 2020"><span class="pub-id">C6</span><div><a class="pub-title" href="https://ieeexplore.ieee.org/document/9056066" target="_blank" rel="noopener noreferrer">Spectral Analysis of a Nonlinear WOLA-OFDM System with DPD</a><p class="pub-authors"><strong>M. H. N. Shaikh</strong>, V. A. Bohara, and A. Srivastava</p><p class="pub-venue">In <em>Proc. National Conference on Communications (NCC)</em>, Feb. 2020, pp. 1–4.</p><p class="pub-links"><a href="https://ieeexplore.ieee.org/document/9056066" target="_blank" rel="noopener noreferrer">IEEE Xplore</a> <span class="doi">doi:10.1109/NCC48643.2020.9056066</span></p></div></li>
-          </ol>
-        </section>
-        <section class="pub-year" aria-label="2019"><h3>2019</h3>
-          <ol class="pub-list">
-            <li class="pub" data-type="conference" data-tags="fd" data-first="1" data-text="energy efficiency enhancement in full-duplex relay system through adaptive antenna allocation m. h. n. shaikh v. a. bohara a. srivastava ieee international conference on advanced networks and telecommunications systems (ants) dec. 2019, pp. 16 2019"><span class="pub-id">C5</span><div><a class="pub-title" href="https://ieeexplore.ieee.org/document/9117956" target="_blank" rel="noopener noreferrer">Energy Efficiency Enhancement in Full-Duplex Relay System through Adaptive Antenna Allocation</a><p class="pub-authors"><strong>M. H. N. Shaikh</strong>, V. A. Bohara, and A. Srivastava</p><p class="pub-venue">In <em>Proc. IEEE International Conference on Advanced Networks and Telecommunications Systems (ANTS)</em>, Dec. 2019, pp. 1–6.</p><p class="pub-links"><a href="https://ieeexplore.ieee.org/document/9117956" target="_blank" rel="noopener noreferrer">IEEE Xplore</a></p></div></li>
-            <li class="pub" data-type="conference" data-tags="fd" data-first="1" data-text="on ee-se trade-off for downlink full duplex miso systems with self-energy recycling m. h. n. shaikh v. a. bohara p. aggarwal a. srivastava ieee 89th vehicular technology conference (vtc2019-spring) apr. 2019, pp. 15 2019"><span class="pub-id">C4</span><div><a class="pub-title" href="https://ieeexplore.ieee.org/document/8746392" target="_blank" rel="noopener noreferrer">On EE-SE Trade-Off for Downlink Full Duplex MISO Systems with Self-Energy Recycling</a><p class="pub-authors"><strong>M. H. N. Shaikh</strong>, V. A. Bohara, P. Aggarwal, and A. Srivastava</p><p class="pub-venue">In <em>Proc. IEEE 89th Vehicular Technology Conference (VTC2019-Spring)</em>, Apr. 2019, pp. 1–5.</p><p class="pub-links"><a href="https://ieeexplore.ieee.org/document/8746392" target="_blank" rel="noopener noreferrer">IEEE Xplore</a></p></div></li>
-          </ol>
-        </section>
-        <section class="pub-year" aria-label="2018"><h3>2018</h3>
-          <ol class="pub-list">
-            <li class="pub" data-type="conference" data-tags="hwi" data-first="1" data-text="on the spectral content of nonlinear carrier aggregated windowed ofdm systems m. h. n. shaikh a. agarwal p. aggarwal v. a. bohara ieee international conference on advanced networks and telecommunications systems (ants) dec. 2018, pp. 15 2018"><span class="pub-id">C3</span><div><a class="pub-title" href="https://ieeexplore.ieee.org/document/8710162" target="_blank" rel="noopener noreferrer">On the Spectral Content of Nonlinear Carrier Aggregated Windowed OFDM Systems</a><p class="pub-authors"><strong>M. H. N. Shaikh</strong>, A. Agarwal, P. Aggarwal, and V. A. Bohara</p><p class="pub-venue">In <em>Proc. IEEE International Conference on Advanced Networks and Telecommunications Systems (ANTS)</em>, Dec. 2018, pp. 1–5.</p><p class="pub-links"><a href="https://ieeexplore.ieee.org/document/8710162" target="_blank" rel="noopener noreferrer">IEEE Xplore</a></p></div></li>
-            <li class="pub" data-type="chapter" data-tags="bio" data-first="1" data-text="emd analysis of eeg signals for seizure detection m. h. n. shaikh o. farooq g. chandel advances in system optimization and control, lecture notes in electrical engineering springer, 2018, pp. 189196 2018"><span class="pub-id">B1</span><div><a class="pub-title" href="https://link.springer.com/chapter/10.1007/978-981-13-0665-5_16" target="_blank" rel="noopener noreferrer">EMD Analysis of EEG Signals for Seizure Detection</a><p class="pub-authors"><strong>M. H. N. Shaikh</strong>, O. Farooq, and G. Chandel</p><p class="pub-venue">In <em>Advances in System Optimization and Control, Lecture Notes in Electrical Engineering</em>, Springer, 2018, pp. 189–196.</p><p class="pub-links"><a href="https://link.springer.com/chapter/10.1007/978-981-13-0665-5_16" target="_blank" rel="noopener noreferrer">SpringerLink</a> <span class="doi">doi:10.1007/978-981-13-0665-5_16</span></p></div></li>
-          </ol>
-        </section>
-        <section class="pub-year" aria-label="2017"><h3>2017</h3>
-          <ol class="pub-list">
-            <li class="pub" data-type="conference" data-tags="bio" data-first="0" data-text="seizure detection in neonatal eeg signals using emd based features g. chandel o. farooq m. h. n. shaikh m. shanir p. p.  2017 2017"><span class="pub-id">C2</span><div><a class="pub-title" href="https://ieeexplore.ieee.org/document/8363980" target="_blank" rel="noopener noreferrer">Seizure Detection in Neonatal EEG Signals Using EMD Based Features</a><p class="pub-authors">G. Chandel, O. Farooq, <strong>M. H. N. Shaikh</strong>, and M. Shanir P. P.</p><p class="pub-venue">Conference paper, 2017.</p><p class="pub-links"><a href="https://ieeexplore.ieee.org/document/8363980" target="_blank" rel="noopener noreferrer">IEEE Xplore</a></p></div></li>
-          </ol>
-        </section>
-        <section class="pub-year" aria-label="2016"><h3>2016</h3>
-          <ol class="pub-list">
-            <li class="pub" data-type="conference" data-tags="bio" data-first="0" data-text="a simple approach of ecg beat classification a. mohammad f. azeem m. noman m. h. n. shaikh  2016 2016"><span class="pub-id">C1</span><div><a class="pub-title" href="https://scholar.google.com/scholar?q=%22A%20Simple%20Approach%20of%20ECG%20Beat%20Classification%22" target="_blank" rel="noopener noreferrer">A Simple Approach of ECG Beat Classification</a><p class="pub-authors">A. Mohammad, F. Azeem, M. Noman, and <strong>M. H. N. Shaikh</strong></p><p class="pub-venue">Conference paper, 2016.</p><p class="pub-links"><a href="https://scholar.google.com/scholar?q=%22A%20Simple%20Approach%20of%20ECG%20Beat%20Classification%22" target="_blank" rel="noopener noreferrer">Find on Google Scholar</a></p></div></li>
-          </ol>
-        </section>
-      </div>
+      <p class="intro">Five recent journal papers that show the main threads of the work. All 37 publications, with filters by type and topic, are on the <a href="publications.html">Publications</a> page.</p>
+      <ol class="pub-list sel-list">
+            <li class="pub" data-type="journal" data-tags="fas ris ma" data-first="1" data-text="sum-rate maximization for fris-enabled noma communications m. h. n. shaikh k.-k. wong f. r. ghadi c.-b. chae y. zhang ieee wireless communications letters 2026 2026"><span class="pub-id">J14</span><div><a class="pub-title" href="https://ieeexplore.ieee.org/document/11414135" target="_blank" rel="noopener noreferrer">Sum-Rate Maximization for FRIS-Enabled NOMA Communications</a><p class="pub-authors"><strong>M. H. N. Shaikh</strong>, K.-K. Wong, F. R. Ghadi, C.-B. Chae, and Y. Zhang</p><p class="pub-venue"><em>IEEE Wireless Communications Letters</em>, 2026.</p><p class="pub-links"><a href="https://ieeexplore.ieee.org/document/11414135" target="_blank" rel="noopener noreferrer">IEEE Xplore</a></p><ul class="sel-tags"><li>Fluid RIS</li><li>NOMA</li><li>Optimization</li></ul></div></li>
+            <li class="pub" data-type="journal" data-tags="fas ris ma" data-first="1" data-text="on performance of fris-enabled uplink noma m. h. n. shaikh k.-k. wong f. r. ghadi ieee wireless communications letters 2026 2026"><span class="pub-id">J13</span><div><a class="pub-title" href="https://ieeexplore.ieee.org/document/11411785" target="_blank" rel="noopener noreferrer">On Performance of FRIS-Enabled Uplink NOMA</a><p class="pub-authors"><strong>M. H. N. Shaikh</strong>, K.-K. Wong, F. R. Ghadi, et al.</p><p class="pub-venue"><em>IEEE Wireless Communications Letters</em>, 2026.</p><p class="pub-links"><a href="https://ieeexplore.ieee.org/document/11411785" target="_blank" rel="noopener noreferrer">IEEE Xplore</a></p><ul class="sel-tags"><li>Fluid RIS</li><li>Uplink NOMA</li><li>Performance analysis</li></ul></div></li>
+            <li class="pub" data-type="journal" data-tags="ris ma uav" data-first="0" data-text="aerial ris-aided uplink noma: a drl-aided resource allocation framework t. altay m. h. n. shaikh a. celik a. m. eltawil g. nauryzbayev ieee transactions on cognitive communications and networking 2026 2026"><span class="pub-id">J12</span><div><a class="pub-title" href="https://scholar.google.com/scholar?q=%22Aerial%20RIS-Aided%20Uplink%20NOMA%3A%20A%20DRL-Aided%20Resource%20Allocation%20Framework%22" target="_blank" rel="noopener noreferrer">Aerial RIS-Aided Uplink NOMA: A DRL-Aided Resource Allocation Framework</a><p class="pub-authors">T. Altay, <strong>M. H. N. Shaikh</strong>, A. Çelik, A. M. Eltawil, and G. Nauryzbayev</p><p class="pub-venue"><em>IEEE Transactions on Cognitive Communications and Networking</em>, 2026.</p><p class="pub-links"><a href="https://scholar.google.com/scholar?q=%22Aerial%20RIS-Aided%20Uplink%20NOMA%3A%20A%20DRL-Aided%20Resource%20Allocation%20Framework%22" target="_blank" rel="noopener noreferrer">Find on Google Scholar</a></p><ul class="sel-tags"><li>Aerial RIS</li><li>Deep reinforcement learning</li><li>Uplink NOMA</li></ul></div></li>
+            <li class="pub" data-type="journal" data-tags="ris ma" data-first="1" data-text="multi-star-ris noma: clustering, ris assignment and power optimization m. h. n. shaikh k. m. rabie t. y. elganimi x. li m. s. hashmi g. nauryzbayev ieee transactions on vehicular technology vol. 74, no. 4, pp. 63896405, 2025 2025"><span class="pub-id">J11</span><div><a class="pub-title" href="https://ieeexplore.ieee.org/document/10772059" target="_blank" rel="noopener noreferrer">Multi-STAR-RIS NOMA: Clustering, RIS Assignment and Power Optimization</a><p class="pub-authors"><strong>M. H. N. Shaikh</strong>, K. M. Rabie, T. Y. Elganimi, X. Li, M. S. Hashmi, and G. Nauryzbayev</p><p class="pub-venue"><em>IEEE Transactions on Vehicular Technology</em>, vol. 74, no. 4, pp. 6389–6405, 2025.</p><p class="pub-links"><a href="https://ieeexplore.ieee.org/document/10772059" target="_blank" rel="noopener noreferrer">IEEE Xplore</a></p><ul class="sel-tags"><li>STAR-RIS</li><li>Clustering</li><li>Power optimization</li></ul></div></li>
+            <li class="pub" data-type="journal" data-tags="ris ma" data-first="1" data-text="grant-free noma through optimal partitioning and cluster assignment in star-ris networks m. h. n. shaikh a. celik a. m. eltawil g. nauryzbayev ieee transactions on wireless communications vol. 23, no. 8, pp. 1016610181, aug. 2024 2024"><span class="pub-id">J8</span><div><a class="pub-title" href="https://ieeexplore.ieee.org/document/10458024" target="_blank" rel="noopener noreferrer">Grant-Free NOMA Through Optimal Partitioning and Cluster Assignment in STAR-RIS Networks</a><p class="pub-authors"><strong>M. H. N. Shaikh</strong>, A. Çelik, A. M. Eltawil, and G. Nauryzbayev</p><p class="pub-venue"><em>IEEE Transactions on Wireless Communications</em>, vol. 23, no. 8, pp. 10166–10181, Aug. 2024.</p><p class="pub-links"><a href="https://ieeexplore.ieee.org/document/10458024" target="_blank" rel="noopener noreferrer">IEEE Xplore</a></p><ul class="sel-tags"><li>STAR-RIS</li><li>Grant-free NOMA</li><li>Partitioning</li></ul></div></li>
+      </ol>
+      <div class="more-row"><a class="btn" href="publications.html">All publications</a><a class="btn btn-quiet" href="https://scholar.google.com/citations?user=wH9Q3RkAAAAJ&amp;hl=en" target="_blank" rel="noopener noreferrer">Google Scholar</a></div>
     </div>
   </div>
 </section>
@@ -905,117 +841,14 @@ ol.refs a { font-family: var(--sans); font-size: 0.8125rem; white-space: nowrap;
   </div>
 </section>
 
-<section class="section" id="cv">
-  <div class="wrap section-grid">
-    <h2>CV</h2>
-    <div>
-      <div class="cv-head">
-        <p>The short version. Every publication is listed above, and the full CV is available as a PDF.</p>
-        <a class="btn btn-quiet" data-cv-pdf hidden href="#" target="_blank" rel="noopener">Full CV with all publications (PDF)</a>
-      </div>
-      <div class="cv-grid">
-        <div>
-          <div class="cv-block">
-            <h3>Appointments</h3>
-            <ul class="timeline">
-              <li><span class="when"><span class="now" aria-hidden="true"></span>2026&ndash;now</span><span class="what"><strong>Research Fellow</strong><span class="where"><a href="places/qub.html">Queen's University Belfast</a>, <a href="places/belfast.html">Belfast</a>, United Kingdom</span><span class="note">RIS-enabled and fluid-antenna-assisted wireless networks: analytical modelling, optimization and performance evaluation.</span></span></li>
-              <li><span class="when">2025&ndash;2026</span><span class="what"><strong>Research Fellow</strong><span class="where"><a href="places/ucl.html">University College London</a>, <a href="places/london.html">London</a>, United Kingdom</span><span class="note">Fluid reconfigurable intelligent surfaces for NOMA, and port selection for fluid-antenna multiple access.</span></span></li>
-              <li><span class="when">2022&ndash;2025</span><span class="what"><strong>Postdoctoral Research Assistant</strong><span class="where"><a href="places/nazarbayev-university.html">Nazarbayev University</a>, <a href="places/astana.html">Astana</a>, <a href="places/kazakhstan.html">Kazakhstan</a></span><span class="note">RIS-assisted and UAV-enabled networks, ISAC and mmWave communications. Co-supervised undergraduate researchers, whose work led to Q1 journal publications.</span></span></li>
-              <li><span class="when">2016&ndash;2020</span><span class="what"><strong>Teaching Assistant</strong><span class="where"><a href="places/iiit-delhi.html">IIIT-Delhi</a>, <a href="places/delhi.html">New Delhi</a>, India</span><span class="note">Teaching and laboratory support for communication engineering courses. Teaching Assistant Award, Mobile Communication.</span></span></li>
-            </ul>
-          </div>
-          <div class="cv-block">
-            <h3>Education</h3>
-            <ul class="timeline">
-              <li><span class="when">2016&ndash;2022</span><span class="what"><strong>PhD, Communication Engineering</strong><span class="where"><a href="places/iiit-delhi.html">IIIT-Delhi</a>, <a href="places/delhi.html">New Delhi</a>, India</span><span class="note">Thesis: <em>Performance Analysis of Future Wireless Communication Systems under Residual Hardware Impairments</em>. Advisors: Prof. Vivek Ashok Bohara and Prof. Anand Srivastava. Best PhD Dissertation Award, 2023.</span></span></li>
-              <li><span class="when">2014&ndash;2016</span><span class="what"><strong>M.Tech, Communication and Information Systems</strong><span class="where"><a href="places/amu.html">Aligarh Muslim University</a>, <a href="places/aligarh.html">Aligarh</a>, India</span></span></li>
-              <li><span class="when">2010&ndash;2014</span><span class="what"><strong>B.Tech, Electronics Engineering</strong><span class="where"><a href="places/amu.html">Aligarh Muslim University</a>, <a href="places/aligarh.html">Aligarh</a>, India</span></span></li>
-            </ul>
-          </div>
-          <div class="cv-block">
-            <h3>Awards and fellowships</h3>
-            <ul class="ruled">
-              <li>Best PhD Dissertation Award, IIIT-Delhi <span class="yr">2023</span></li>
-              <li>Visvesvaraya PhD Fellowship, MeitY, Government of India <span class="yr">2017&ndash;2022</span></li>
-              <li>Teaching Assistant Award, Mobile Communication, IIIT-Delhi <span class="yr">2018&ndash;2019</span></li>
-              <li>Institute Teaching Fellowship, IIIT-Delhi <span class="yr">2016&ndash;2017</span></li>
-              <li>GATE Scholarship, AICTE, Government of India <span class="yr">2014&ndash;2016</span></li>
-              <li>UGC-NET qualified, Electronic Science <span class="yr">2017</span></li>
-              <li>GATE qualified, Electronics and Communication Engineering <span class="yr">2014, 2015</span></li>
-            </ul>
-          </div>
-        </div>
-        <div>
-          <div class="cv-block">
-            <h3>Service</h3>
-            <dl class="dl">
-              <dt>Journal reviewer</dt>
-              <dd>IEEE Transactions on Wireless Communications, IEEE Transactions on Vehicular Technology, IEEE Internet of Things Journal, IEEE Systems Journal, IEEE Communications Letters, IEEE Wireless Communications Letters, IEEE Access, Vehicular Communications, Wireless Networks.</dd>
-              <dt>Technical program committees</dt>
-              <dd>IEEE ICC 2025; IEEE ANTS 2020 and 2023&ndash;2026; IEEE Vehicular Technology Conference; IEEE Future Networks World Forum; IEEE World Forum on Internet of Things; ICCSPA 2026.</dd>
-              <dt>Session chair</dt>
-              <dd>WI-NOW 2025 International Workshop, University College London; IEEE ANTS 2020.</dd>
-              <dt>Memberships</dt>
-              <dd>IEEE; IEEE Communications Society; IEEE Vehicular Technology Society.</dd>
-            </dl>
-          </div>
-          <div class="cv-block">
-            <h3>Teaching</h3>
-            <p>Wireless, digital and mobile communication; communication theory; signals and systems; probability and random processes; digital signal processing; engineering mathematics; machine learning; 5G and 6G wireless networks.</p>
-          </div>
-          <div class="cv-block">
-            <h3>Collaborations</h3>
-            <p>University College London; Nazarbayev University; King Abdullah University of Science and Technology (KAUST); King Fahd University of Petroleum and Minerals (KFUPM); University of Southampton; IIIT-Delhi.</p>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<section class="section" id="urdu">
-  <div class="wrap section-grid">
-    <h2>Urdu</h2>
-    <div class="urdu-teaser">
-      <p class="ur" lang="ur"><span>ہزاروں خواہشیں ایسی کہ ہر خواہش پہ دم نکلے</span><span>بہت نکلے مرے ارمان لیکن پھر بھی کم نکلے</span></p>
-      <div>
-        <p class="en"><span>A thousand desires, each one enough to take my breath away;</span><span>many of my hopes came true, and still they were too few.</span></p>
-        <p class="who">Mirza Ghalib (1797–1869)</p>
-        <a class="btn btn-quiet" href="urdu.html">Urdu poetry and novels</a>
-      </div>
-    </div>
-  </div>
-</section>
-
 <section class="section" id="contact">
   <div class="wrap section-grid">
     <h2>Contact</h2>
     <div>
-      <div class="collab" id="collaborate">
-        <h3>Collaboration and supervision</h3>
-        <p>I welcome collaboration with researchers in academia and industry on the physical layer of 6G, especially:</p>
-        <ul>
-          <li>optimization and performance analysis of RIS, STAR-RIS, fluid-antenna and movable-antenna systems</li>
-          <li>UAV-enabled and aerial-RIS networks</li>
-          <li>non-orthogonal and rate-splitting multiple access</li>
-          <li>integrated sensing and communication, and physical-layer security</li>
-          <li>design that accounts for transceiver hardware impairments</li>
-          <li>learning-based methods for resource allocation, such as deep reinforcement learning</li>
-        </ul>
-        <p>I am glad to co-supervise PhD, master’s and undergraduate students, and to host visiting researchers and interns. If you are interested, email me your CV, a few lines on the topic you would like to work on, and, if you have one, a paper or report you have written.</p>
-        <p class="collab-note">Visiting researchers and interns usually need their own funding, for example a scholarship or an exchange programme.</p>
-      </div>
+      <p class="intro">For questions, collaboration, or PhD and visiting positions, send an email or use the <a href="contact.html">contact form</a>.</p>
       <div class="mail-row"><a class="contact-mail" id="mail-text" href="mailto:h.shaikh@qub.ac.uk">h.shaikh@qub.ac.uk</a><button type="button" class="btn btn-quiet btn-small" id="copy-mail">Copy address</button><span class="copy-status" id="copy-status" aria-live="polite"></span></div>
       <p class="contact-where"><a href="places/qub.html">Queen's University Belfast</a>, <a href="places/belfast.html">Belfast</a>, Northern Ireland, United Kingdom</p>
-      <ul class="profiles" aria-label="Research profiles">
-        <li><a href="https://scholar.google.com/citations?user=wH9Q3RkAAAAJ&amp;hl=en" target="_blank" rel="noopener noreferrer">Google Scholar</a></li>
-        <li><a href="https://www.scopus.com/authid/detail.uri?authorId=58252818800" target="_blank" rel="noopener noreferrer">Scopus</a></li>
-        <li><a href="https://ieeexplore.ieee.org/author/37089381874" target="_blank" rel="noopener noreferrer">IEEE Xplore</a></li>
-        <li><a href="https://orcid.org/0000-0002-1869-0009" target="_blank" rel="noopener noreferrer">ORCID</a></li>
-        <li><a href="https://dblp.org/pid/240/7499.html" target="_blank" rel="noopener noreferrer">DBLP</a></li>
-        <li><a href="https://www.researchgate.net/profile/Mohd-Hamza-Shaikh" target="_blank" rel="noopener noreferrer">ResearchGate</a></li>
-        <li><a href="https://www.linkedin.com/in/hamza1322/" target="_blank" rel="noopener noreferrer">LinkedIn</a></li>
-      </ul>
+      <div class="more-row"><a class="btn" href="contact.html">Contact form</a><a class="btn btn-quiet" href="cv.html">CV</a></div>
     </div>
   </div>
 </section>
@@ -1024,7 +857,7 @@ ol.refs a { font-family: var(--sans); font-size: 0.8125rem; white-space: nowrap;
 
 <footer class="site-footer">
   <div class="wrap foot"><p>&copy; 2026 Mohd Hamza Naim Shaikh. Last updated October 2026.</p>
-    <nav aria-label="More pages"><a href="learn/index.html">Tutorials</a><a href="urdu.html">Urdu</a><a href="places/index.html">Places</a></nav>
+    <nav aria-label="More pages"><a href="publications.html">Publications</a><a href="cv.html">CV</a><a href="contact.html">Contact</a><a href="learn/index.html">Tutorials</a><a href="urdu.html">Urdu</a><a href="places/index.html">Places</a></nav>
   </div>
 </footer>
 <script type="application/ld+json">{"@context": "https://schema.org", "@type": "Person", "name": "Mohd Hamza Naim Shaikh", "image": "https://hamza-qub.github.io/photo.jpg", "honorificPrefix": "Dr", "jobTitle": "Research Fellow", "affiliation": {"@type": "CollegeOrUniversity", "name": "Queen's University Belfast"}, "alumniOf": [{"@type": "CollegeOrUniversity", "name": "Indraprastha Institute of Information Technology Delhi"}, {"@type": "CollegeOrUniversity", "name": "Aligarh Muslim University"}], "email": "mailto:h.shaikh@qub.ac.uk", "knowsAbout": ["Reconfigurable intelligent surfaces", "Fluid antenna systems", "NOMA", "Integrated sensing and communication", "6G wireless networks"], "sameAs": ["https://scholar.google.com/citations?user=wH9Q3RkAAAAJ", "https://www.scopus.com/authid/detail.uri?authorId=58252818800", "https://ieeexplore.ieee.org/author/37089381874", "https://orcid.org/0000-0002-1869-0009", "https://dblp.org/pid/240/7499.html", "https://www.researchgate.net/profile/Mohd-Hamza-Shaikh", "https://www.linkedin.com/in/hamza1322/"]}</script>
@@ -1043,12 +876,14 @@ const SITE = {
 (function settings() {
   if (SITE.photo) {
     const slot = document.getElementById("portrait");
+    if (slot) {
     const img = new Image();
     img.src = SITE.photo;
     img.alt = "Portrait of Mohd Hamza Naim Shaikh";
     img.loading = "lazy";
     slot.appendChild(img);
     slot.hidden = false;
+    }
   }
   if (SITE.cvPdf) {
     document.querySelectorAll("[data-cv-pdf]").forEach(function (a) {
@@ -1227,6 +1062,10 @@ const SITE = {
       document.getElementById("publications").scrollIntoView({ behavior: reduce.matches ? "auto" : "smooth" });
     });
   });
+  try {
+    const t = new URLSearchParams(location.search).get("topic");
+    if (t && topic.querySelector('option[value="' + t + '"]')) topic.value = t;
+  } catch (e) {}
   apply();
 })();
 
@@ -1248,5 +1087,5 @@ const SITE = {
   });
 })();
 </script>
-
-</body></html>
+</body>
+</html>
