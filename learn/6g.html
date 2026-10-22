@@ -808,6 +808,13 @@ a.tchip { display: inline-flex; align-items: center; gap: 0.35rem; font-family: 
 a.tchip::before { content: ""; width: 0.55rem; height: 0.55rem; border-radius: 50%; background: var(--c); }
 a.tchip:hover { color: var(--accent); }
 
+/* code blocks */
+figure.code { margin: 1.5rem 0; border: 1px solid var(--line); border-radius: 10px; background: var(--surface); overflow: hidden; }
+figure.code .code-h { display: flex; justify-content: space-between; align-items: center; padding: 0.45rem 0.9rem; border-bottom: 1px solid var(--line); font-family: var(--sans); font-size: 0.8125rem; color: var(--muted); background: var(--tint); }
+figure.code pre { margin: 0; padding: 0.9rem 1rem; overflow-x: auto; font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace; font-size: 0.8125rem; line-height: 1.6; color: var(--ink); tab-size: 4; }
+figure.code pre .c { color: var(--muted); font-style: italic; }
+figure.code pre .k { color: var(--t-deep); font-weight: 600; }
+figure.code figcaption { padding: 0 1rem 0.8rem; font-family: var(--sans); font-size: 0.875rem; color: var(--ink-2); }
 /* takeaways in colour */
 .takeaways { border-top-color: var(--t); }
 .takeaways ul { list-style: none; padding-left: 0; }

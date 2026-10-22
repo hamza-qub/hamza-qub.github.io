@@ -2,14 +2,28 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url><loc>https://hamza-qub.github.io/</loc><lastmod>2026-10-22</lastmod><priority>1.0</priority></url>
   <url><loc>https://hamza-qub.github.io/learn/</loc><lastmod>2026-10-22</lastmod><priority>0.8</priority></url>
-  <url><loc>https://hamza-qub.github.io/learn/6g.html</loc><lastmod>2026-10-22</lastmod><priority>0.7</priority></url>
+  <url><loc>https://hamza-qub.github.io/learn/6g.html</loc><lastmod>2026-10-22</lastmod><priority>0.8</priority></url>
+  <url><loc>https://hamza-qub.github.io/learn/antennas.html</loc><lastmod>2026-10-22</lastmod><priority>0.7</priority></url>
+  <url><loc>https://hamza-qub.github.io/learn/communication-model.html</loc><lastmod>2026-10-22</lastmod><priority>0.7</priority></url>
   <url><loc>https://hamza-qub.github.io/learn/fluid-antennas.html</loc><lastmod>2026-10-22</lastmod><priority>0.7</priority></url>
+  <url><loc>https://hamza-qub.github.io/learn/foundations.html</loc><lastmod>2026-10-22</lastmod><priority>0.8</priority></url>
+  <url><loc>https://hamza-qub.github.io/learn/full-duplex.html</loc><lastmod>2026-10-22</lastmod><priority>0.7</priority></url>
   <url><loc>https://hamza-qub.github.io/learn/hardware-impairments.html</loc><lastmod>2026-10-22</lastmod><priority>0.7</priority></url>
   <url><loc>https://hamza-qub.github.io/learn/isac.html</loc><lastmod>2026-10-22</lastmod><priority>0.7</priority></url>
+  <url><loc>https://hamza-qub.github.io/learn/link-budget.html</loc><lastmod>2026-10-22</lastmod><priority>0.7</priority></url>
+  <url><loc>https://hamza-qub.github.io/learn/machine-learning.html</loc><lastmod>2026-10-22</lastmod><priority>0.7</priority></url>
+  <url><loc>https://hamza-qub.github.io/learn/metrics.html</loc><lastmod>2026-10-22</lastmod><priority>0.7</priority></url>
   <url><loc>https://hamza-qub.github.io/learn/noma.html</loc><lastmod>2026-10-22</lastmod><priority>0.7</priority></url>
   <url><loc>https://hamza-qub.github.io/learn/optimization.html</loc><lastmod>2026-10-22</lastmod><priority>0.7</priority></url>
+  <url><loc>https://hamza-qub.github.io/learn/performance-analysis.html</loc><lastmod>2026-10-22</lastmod><priority>0.7</priority></url>
+  <url><loc>https://hamza-qub.github.io/learn/propagation.html</loc><lastmod>2026-10-22</lastmod><priority>0.7</priority></url>
+  <url><loc>https://hamza-qub.github.io/learn/radar.html</loc><lastmod>2026-10-22</lastmod><priority>0.7</priority></url>
   <url><loc>https://hamza-qub.github.io/learn/ris.html</loc><lastmod>2026-10-22</lastmod><priority>0.7</priority></url>
+  <url><loc>https://hamza-qub.github.io/learn/simulation.html</loc><lastmod>2026-10-22</lastmod><priority>0.7</priority></url>
+  <url><loc>https://hamza-qub.github.io/learn/thz.html</loc><lastmod>2026-10-22</lastmod><priority>0.7</priority></url>
+  <url><loc>https://hamza-qub.github.io/learn/tools.html</loc><lastmod>2026-10-22</lastmod><priority>0.8</priority></url>
   <url><loc>https://hamza-qub.github.io/learn/v2x.html</loc><lastmod>2026-10-22</lastmod><priority>0.7</priority></url>
+  <url><loc>https://hamza-qub.github.io/learn/vlc.html</loc><lastmod>2026-10-22</lastmod><priority>0.7</priority></url>
   <url><loc>https://hamza-qub.github.io/places/aligarh.html</loc><lastmod>2026-10-22</lastmod><priority>0.5</priority></url>
   <url><loc>https://hamza-qub.github.io/places/amu.html</loc><lastmod>2026-10-22</lastmod><priority>0.5</priority></url>
   <url><loc>https://hamza-qub.github.io/places/astana.html</loc><lastmod>2026-10-22</lastmod><priority>0.5</priority></url>

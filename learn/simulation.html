@@ -1,0 +1,1643 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="How to simulate wireless systems: link, system and network level, the Monte Carlo recipe with Python code, how many samples you need, common bugs, noise power, tools such as Sionna and ns-3, and reproducibility.">
+<meta name="author" content="Mohd Hamza Naim Shaikh">
+<meta name="theme-color" content="#F5F7FA" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0A1524" media="(prefers-color-scheme: dark)">
+<title>Simulation for wireless research | Wireless tutorials</title>
+<!-- share-meta -->
+<link rel="canonical" href="https://hamza-qub.github.io/learn/simulation.html">
+<link rel="icon" href="../favicon.svg" type="image/svg+xml">
+<link rel="icon" href="../favicon-32.png" type="image/png" sizes="32x32">
+<link rel="apple-touch-icon" href="../apple-touch-icon.png">
+<meta property="og:site_name" content="Hamza Shaikh">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Simulation for wireless research | Wireless tutorials">
+<meta property="og:description" content="How to simulate wireless systems: link, system and network level, the Monte Carlo recipe with Python code, how many samples you need, common bugs, noise power, tools such as Sionna and ns-3, and reproducibility.">
+<meta property="og:url" content="https://hamza-qub.github.io/learn/simulation.html">
+<meta property="og:image" content="https://hamza-qub.github.io/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Mohd Hamza Naim Shaikh, Research Fellow at Queen’s University Belfast, beside the phase pattern of a reconfigurable intelligent surface.">
+<meta property="og:locale" content="en_GB">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Simulation for wireless research | Wireless tutorials">
+<meta name="twitter:description" content="How to simulate wireless systems: link, system and network level, the Monte Carlo recipe with Python code, how many samples you need, common bugs, noise power, tools such as Sionna and ns-3, and reproducibility.">
+<meta name="twitter:image" content="https://hamza-qub.github.io/og-image.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&amp;family=STIX+Two+Text:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&amp;display=swap">
+<style>
+:root {
+  --bg: #F5F7FA;
+  --surface: #FFFFFF;
+  --ink: #0E1A2B;
+  --ink-2: #2C3B50;
+  --muted: #5A6779;
+  --line: #D8DFE8;
+  --accent: #00468C;
+  --accent-hover: #003468;
+  --on-accent: #FFFFFF;
+  --signal: #C98200;
+  --tile-lo: #0A2B57;
+  --tile-hi: #EAF0F7;
+  --serif: "STIX Two Text", "STIX Two", "Times New Roman", Times, serif;
+  --sans: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  color-scheme: light;
+  box-sizing: border-box;
+  padding-top: env(safe-area-inset-top, 0px);
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0A1524;
+    --surface: #0F1E31;
+    --ink: #E6ECF4;
+    --ink-2: #C4CEDB;
+    --muted: #94A2B5;
+    --line: #22344A;
+    --accent: #8DB9F2;
+    --accent-hover: #B7D3F8;
+    --on-accent: #06182E;
+    --signal: #F2B544;
+    --tile-lo: #0E2443;
+    --tile-hi: #A8C9F3;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0A1524;
+  --surface: #0F1E31;
+  --ink: #E6ECF4;
+  --ink-2: #C4CEDB;
+  --muted: #94A2B5;
+  --line: #22344A;
+  --accent: #8DB9F2;
+  --accent-hover: #B7D3F8;
+  --on-accent: #06182E;
+  --signal: #F2B544;
+  --tile-lo: #0E2443;
+  --tile-hi: #A8C9F3;
+  color-scheme: dark;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+html {
+  scroll-padding-top: calc(env(safe-area-inset-top, 0px) + 4.5rem);
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+@media (prefers-reduced-motion: no-preference) { html { scroll-behavior: smooth; } }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--serif);
+  font-size: 1.125rem;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+img { max-width: 100%; height: auto; }
+a { color: var(--accent); text-underline-offset: 0.18em; }
+a:hover { color: var(--accent-hover); }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 2px; }
+p { margin: 0 0 1em; }
+h1, h2, h3 { font-family: var(--serif); color: var(--ink); text-wrap: balance; }
+
+.wrap { max-width: 72rem; margin-inline: auto; padding-inline: clamp(1.25rem, 4vw, 2.5rem); }
+
+.skip {
+  position: absolute; left: 1rem; top: -4rem; z-index: 50;
+  background: var(--ink); color: var(--bg);
+  font-family: var(--sans); font-size: 0.875rem; padding: 0.6rem 0.9rem; text-decoration: none;
+}
+.skip:focus { top: calc(env(safe-area-inset-top, 0px) + 0.75rem); color: var(--bg); }
+
+/* Header */
+.site-header {
+  position: sticky;
+  top: env(safe-area-inset-top, 0px);
+  z-index: 20;
+  background: var(--bg);
+  background: color-mix(in srgb, var(--bg) 88%, transparent);
+  -webkit-backdrop-filter: saturate(1.4) blur(12px);
+  backdrop-filter: saturate(1.4) blur(12px);
+  border-bottom: 1px solid var(--line);
+}
+.header-inner { display: flex; align-items: center; justify-content: space-between; gap: 1.5rem; min-height: 3.5rem; }
+.brand { font-family: var(--serif); font-weight: 600; font-size: 1.125rem; color: var(--ink); text-decoration: none; white-space: nowrap; }
+.brand:hover { color: var(--ink); }
+.site-nav { min-width: 0; }
+.site-nav ul {
+  display: flex; gap: clamp(0.9rem, 2.4vw, 1.9rem);
+  list-style: none; margin: 0; padding: 0;
+  overflow-x: auto; scrollbar-width: none;
+}
+.site-nav ul::-webkit-scrollbar { display: none; }
+.site-nav a {
+  display: inline-block; padding: 1rem 0 0.9rem;
+  font-family: var(--sans); font-size: 0.9375rem; color: var(--muted);
+  text-decoration: none; white-space: nowrap;
+  border-bottom: 2px solid transparent;
+}
+.site-nav a:hover { color: var(--ink); }
+.site-nav a[aria-current="true"] { color: var(--ink); border-bottom-color: var(--accent); }
+@media (max-width: 560px) {
+  .brand { display: none; }
+  .site-nav { width: 100%; }
+  .site-nav ul { justify-content: space-between; }
+}
+
+/* Hero */
+.hero { padding-block: clamp(3rem, 8vw, 6.5rem) clamp(3rem, 7vw, 5.5rem); }
+.hero-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.12fr) minmax(0, 0.88fr);
+  gap: clamp(2.5rem, 6vw, 5rem);
+  align-items: center;
+}
+.hero h1 {
+  font-weight: 600;
+  font-size: clamp(2.6rem, 6.4vw, 4.6rem);
+  line-height: 1.02;
+  letter-spacing: -0.018em;
+  margin: 0 0 1.1rem;
+}
+.role { font-family: var(--sans); font-weight: 500; font-size: 1.0625rem; color: var(--ink-2); margin: 0 0 1.75rem; }
+.lede { font-size: clamp(1.25rem, 2.3vw, 1.5rem); line-height: 1.45; max-width: 31ch; margin: 0 0 1.25rem; }
+.metrics { font-family: var(--sans); font-size: 0.9375rem; color: var(--muted); margin: 0 0 2rem; }
+.actions { display: flex; flex-wrap: wrap; gap: 0.75rem; margin: 0 0 1.75rem; }
+.btn {
+  display: inline-flex; align-items: center; justify-content: center;
+  min-height: 2.75rem; padding: 0 1.2rem;
+  font-family: var(--sans); font-weight: 500; font-size: 0.9375rem;
+  background: var(--accent); color: var(--on-accent);
+  border: 1px solid var(--accent); border-radius: 3px; text-decoration: none;
+}
+.btn:hover { background: var(--accent-hover); border-color: var(--accent-hover); color: var(--on-accent); }
+.btn-quiet { background: transparent; color: var(--ink); border-color: var(--line); }
+.btn-quiet:hover { background: transparent; color: var(--ink); border-color: var(--ink-2); }
+.profiles {
+  list-style: none; margin: 0; padding: 0;
+  display: flex; flex-wrap: wrap; gap: 0.4rem 1.15rem;
+  font-family: var(--sans); font-size: 0.9375rem;
+}
+.profiles a { color: var(--ink-2); text-decoration: underline; text-decoration-color: var(--line); text-decoration-thickness: 1px; }
+.profiles a:hover { color: var(--accent); text-decoration-color: var(--accent); }
+
+.ris { margin: 0; width: 100%; max-width: 30rem; justify-self: end; }
+.ris canvas { display: block; width: 100%; aspect-ratio: 1 / 1; cursor: crosshair; touch-action: pan-y; }
+.ris figcaption { font-family: var(--sans); font-size: 0.8125rem; line-height: 1.55; color: var(--muted); margin-top: 0.9rem; max-width: 46ch; }
+@media (max-width: 880px) {
+  .hero-grid { grid-template-columns: minmax(0, 1fr); }
+  .ris { justify-self: start; max-width: 26rem; }
+}
+
+/* Sections */
+.section { padding-block: clamp(3.5rem, 8vw, 6rem); border-top: 1px solid var(--line); }
+.section-grid { display: grid; grid-template-columns: 11.5rem minmax(0, 1fr); gap: 2.5rem; }
+.section-grid > h2 {
+  position: sticky; top: calc(env(safe-area-inset-top, 0px) + 5rem); align-self: start;
+  margin: 0; font-size: 2rem; font-weight: 600; line-height: 1.15;
+}
+@media (max-width: 880px) {
+  .section-grid { grid-template-columns: minmax(0, 1fr); gap: 1.5rem; }
+  .section-grid > h2 { position: static; }
+}
+h3 { font-weight: 600; font-size: 1.3125rem; line-height: 1.3; margin: 0 0 0.5rem; }
+.intro { color: var(--ink-2); max-width: 62ch; margin-bottom: 1.75rem; }
+
+/* About */
+.about-grid { display: grid; grid-template-columns: minmax(0, 1fr) 17rem; gap: 3.5rem; }
+.prose p { max-width: 66ch; }
+.side h3 { font-family: var(--sans); font-size: 0.9375rem; font-weight: 600; margin: 0 0 0.6rem; }
+.side ul { list-style: none; margin: 0; padding: 0; }
+.side li { padding: 0.8rem 0; border-top: 1px solid var(--line); font-size: 1rem; line-height: 1.45; }
+.side .date { display: block; font-family: var(--sans); font-size: 0.8125rem; color: var(--muted); margin-bottom: 0.15rem; }
+.portrait { margin: 0 0 1.75rem; }
+.portrait img { display: block; width: 100%; max-width: 15rem; aspect-ratio: 4 / 5; object-fit: cover; border-radius: 2px; }
+@media (max-width: 1060px) { .about-grid { grid-template-columns: minmax(0, 1fr); gap: 2.5rem; } }
+
+/* Research */
+.themes { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 2.75rem; }
+.theme { border-top: 1px solid var(--line); padding: 1.3rem 0 1.6rem; }
+.theme p { font-size: 1.0625rem; color: var(--ink-2); margin: 0 0 0.7rem; max-width: 52ch; }
+@media (max-width: 720px) { .themes { grid-template-columns: minmax(0, 1fr); } }
+.linkish {
+  font-family: var(--sans); font-size: 0.875rem; font-weight: 500; color: var(--accent);
+  background: none; border: 0; padding: 0.3rem 0; cursor: pointer;
+  text-decoration: underline; text-underline-offset: 0.2em; text-decoration-thickness: 1px;
+}
+.linkish:hover { color: var(--accent-hover); }
+
+/* Publications */
+.pub-controls {
+  display: flex; flex-wrap: wrap; align-items: center; gap: 0.85rem 1.25rem;
+  font-family: var(--sans); font-size: 0.9375rem;
+  padding-bottom: 1.25rem; border-bottom: 1px solid var(--line);
+}
+.seg { display: flex; flex-wrap: wrap; gap: 0.4rem; width: 100%; }
+.seg button {
+  font-family: var(--sans); font-size: 0.875rem; color: var(--ink-2);
+  background: transparent; border: 1px solid var(--line); border-radius: 3px;
+  min-height: 2.25rem; padding: 0 0.75rem; cursor: pointer;
+}
+.seg button:hover { border-color: var(--ink-2); }
+.seg button[aria-checked="true"] { background: var(--ink); border-color: var(--ink); color: var(--bg); }
+.seg .n { margin-left: 0.35rem; opacity: 0.68; font-variant-numeric: tabular-nums; }
+.field { display: inline-flex; align-items: center; gap: 0.5rem; color: var(--ink-2); }
+.field select, .search input {
+  font-family: var(--sans); font-size: 0.875rem; color: var(--ink);
+  background: var(--surface); border: 1px solid var(--line); border-radius: 3px;
+  min-height: 2.25rem; padding: 0 0.6rem;
+}
+.field select { max-width: 15rem; }
+.check { display: inline-flex; align-items: center; gap: 0.45rem; color: var(--ink-2); cursor: pointer; }
+.check input { width: 1rem; height: 1rem; accent-color: var(--accent); margin: 0; }
+.search { flex: 1 1 13rem; min-width: 0; }
+.search input { width: 100%; }
+.pub-count { font-family: var(--sans); font-size: 0.8125rem; color: var(--muted); margin: 0.85rem 0 0; }
+.pub-empty { font-family: var(--sans); font-size: 0.9375rem; color: var(--ink-2); padding: 1.5rem 0; }
+.pub-empty[hidden] { display: none; }
+
+.pub-year { display: grid; grid-template-columns: 4.25rem minmax(0, 1fr); gap: 1rem; padding-top: 1.4rem; }
+.pub-year[hidden] { display: none; }
+.pub-year > h3 { font-family: var(--sans); font-size: 0.9375rem; font-weight: 600; color: var(--muted); margin: 1rem 0 0; font-variant-numeric: tabular-nums; }
+.pub-list { list-style: none; margin: 0; padding: 0; }
+.pub { display: grid; grid-template-columns: 2.6rem minmax(0, 1fr); gap: 0.6rem; padding: 0.95rem 0 1.05rem; border-bottom: 1px solid var(--line); }
+.pub:last-child { border-bottom: 0; }
+.pub[hidden] { display: none; }
+.pub-id { font-family: var(--sans); font-size: 0.8125rem; color: var(--muted); padding-top: 0.22rem; font-variant-numeric: tabular-nums; }
+.pub-title { font-size: 1.0625rem; font-weight: 600; line-height: 1.4; color: var(--ink); text-decoration: none; }
+.pub-title:hover { color: var(--accent); text-decoration: underline; text-decoration-thickness: 1px; }
+.pub-authors { font-size: 1rem; line-height: 1.5; color: var(--ink-2); margin: 0.3rem 0 0; }
+.pub-authors strong { color: var(--ink); font-weight: 600; }
+.pub-venue { font-size: 1rem; line-height: 1.5; color: var(--muted); margin: 0.1rem 0 0; }
+.pub-links { display: flex; flex-wrap: wrap; gap: 0.25rem 1.1rem; font-family: var(--sans); font-size: 0.8125rem; margin: 0.4rem 0 0; }
+@media (max-width: 600px) {
+  .pub-year { grid-template-columns: minmax(0, 1fr); gap: 0; }
+  .pub-year > h3 { margin-top: 0.5rem; }
+}
+
+/* CV */
+.cv-head { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 1rem; margin-bottom: 1.5rem; }
+.cv-head p { margin: 0; color: var(--ink-2); max-width: 54ch; }
+.cv-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 3.5rem; }
+@media (max-width: 980px) { .cv-grid { grid-template-columns: minmax(0, 1fr); } }
+.cv-block { margin-bottom: 2.5rem; }
+.timeline { list-style: none; margin: 0.4rem 0 0; padding: 0; }
+.timeline li { display: grid; grid-template-columns: 7rem minmax(0, 1fr); gap: 1rem; padding: 0.9rem 0; border-top: 1px solid var(--line); }
+.when { font-family: var(--sans); font-size: 0.875rem; color: var(--muted); padding-top: 0.2rem; font-variant-numeric: tabular-nums; }
+.when .now { display: inline-block; width: 0.5rem; height: 0.5rem; border-radius: 50%; background: var(--signal); margin-right: 0.4rem; vertical-align: 0.06em; }
+.what strong { display: block; font-weight: 600; }
+.what .where { display: block; color: var(--ink-2); }
+.what .note { display: block; color: var(--muted); font-size: 1rem; line-height: 1.5; margin-top: 0.25rem; }
+@media (max-width: 480px) { .timeline li { grid-template-columns: minmax(0, 1fr); gap: 0.2rem; } }
+.ruled { list-style: none; margin: 0.4rem 0 0; padding: 0; }
+.ruled li { padding: 0.65rem 0; border-top: 1px solid var(--line); line-height: 1.5; }
+.ruled .yr { font-family: var(--sans); font-size: 0.875rem; color: var(--muted); white-space: nowrap; }
+.dl { margin: 0.4rem 0 0; }
+.dl dt { font-family: var(--sans); font-size: 0.875rem; font-weight: 600; color: var(--ink); padding-top: 0.7rem; border-top: 1px solid var(--line); }
+.dl dd { margin: 0.2rem 0 0.8rem; color: var(--ink-2); line-height: 1.55; }
+[data-cv-pdf][hidden] { display: none; }
+
+/* Contact */
+.contact-mail {
+  display: inline-block; font-size: clamp(1.5rem, 3.6vw, 2.25rem); font-weight: 500; line-height: 1.2;
+  color: var(--ink); text-decoration: underline; text-decoration-color: var(--line); text-decoration-thickness: 2px;
+  overflow-wrap: anywhere; margin-bottom: 1rem;
+}
+.contact-mail:hover { color: var(--accent); text-decoration-color: var(--accent); }
+.contact-where { color: var(--ink-2); margin-bottom: 1.5rem; }
+
+.site-footer { border-top: 1px solid var(--line); padding-block: 2rem 2.5rem; font-family: var(--sans); font-size: 0.8125rem; color: var(--muted); }
+.site-footer p { margin: 0; }
+
+@media print {
+  .site-header, .skip, .ris, .actions, .pub-controls, .pub-count, .linkish, .pub-links { display: none !important; }
+  body { background: #fff; color: #000; font-size: 10.5pt; }
+  .section { border-top: 0; padding-block: 1rem; }
+  .section-grid { grid-template-columns: 1fr; gap: 0.5rem; }
+  .section-grid > h2 { position: static; }
+  .pub[hidden], .pub-year[hidden] { display: grid !important; }
+  a { color: inherit; text-decoration: none; }
+}
+/* ---- additions: tutorials, interactive models, diagrams, Urdu ---- */
+/* Chart colours validated for colour-vision deficiency on both surfaces. */
+:root {
+  --chart-1: #1F62AE;
+  --chart-2: #C98200;
+  --tint: #EAF0F7;
+  --ok-bg: #E3F1E8;
+  --ok-ink: #1D5B34;
+  --no-bg: #F7E8E2;
+  --no-ink: #7A2E14;
+  --urdu: "Noto Nastaliq Urdu", "Jameel Noori Nastaleeq", "Alvi Nastaleeq", "Urdu Typesetting", serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --chart-1: #4A8EE2;
+    --chart-2: #C4851E;
+    --tint: #12253D;
+    --ok-bg: #163524;
+    --ok-ink: #A9DDBA;
+    --no-bg: #3A2117;
+    --no-ink: #F2BBA4;
+  }
+}
+:root[data-theme="dark"] {
+  --chart-1: #4A8EE2;
+  --chart-2: #C4851E;
+  --tint: #12253D;
+  --ok-bg: #163524;
+  --ok-ink: #A9DDBA;
+  --no-bg: #3A2117;
+  --no-ink: #F2BBA4;
+}
+
+[hidden] { display: none !important; }
+.site-nav a[aria-current="page"] { color: var(--ink); border-bottom-color: var(--accent); }
+
+/* Shared page head for inner pages */
+.page-head { padding-block: clamp(2.5rem, 6vw, 4.5rem) clamp(1.5rem, 4vw, 2.5rem); }
+.crumbs { font-family: var(--sans); font-size: 0.875rem; color: var(--muted); margin: 0 0 1.25rem; display: flex; flex-wrap: wrap; gap: 0.4rem; }
+.crumbs a { color: var(--ink-2); }
+.page-head h1 { font-weight: 600; font-size: clamp(2.2rem, 5.2vw, 3.6rem); line-height: 1.05; letter-spacing: -0.015em; margin: 0 0 1rem; max-width: 22ch; }
+.page-head .lede { max-width: 40ch; }
+.meta-row { display: flex; flex-wrap: wrap; gap: 0.5rem 1.25rem; font-family: var(--sans); font-size: 0.875rem; color: var(--muted); margin: 0; padding: 0; list-style: none; }
+.meta-row li { display: inline-flex; align-items: center; gap: 0.4rem; }
+.meta-row .level { color: var(--ink-2); font-weight: 500; }
+
+/* Tutorial layout */
+.tut-grid { display: grid; grid-template-columns: 12.5rem minmax(0, 1fr); gap: 3.5rem; padding-bottom: clamp(3rem, 8vw, 5rem); border-top: 1px solid var(--line); padding-top: 2.5rem; }
+.toc { position: sticky; top: calc(env(safe-area-inset-top, 0px) + 5rem); align-self: start; font-family: var(--sans); font-size: 0.875rem; }
+.toc h2 { font-family: var(--sans); font-size: 0.75rem; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); margin: 0 0 0.75rem; }
+.toc ol { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.15rem; }
+.toc a { display: block; padding: 0.3rem 0 0.3rem 0.75rem; color: var(--ink-2); text-decoration: none; border-left: 2px solid var(--line); line-height: 1.35; }
+.toc a:hover { color: var(--ink); border-left-color: var(--ink-2); }
+.toc a[aria-current="true"] { color: var(--ink); border-left-color: var(--accent); }
+@media (max-width: 1000px) {
+  .tut-grid { grid-template-columns: minmax(0, 1fr); gap: 1.5rem; }
+  .toc { display: none; }
+}
+
+.prose { min-width: 0; max-width: 44rem; }
+.prose > * { max-width: 100%; }
+.prose h2 { font-size: 1.625rem; font-weight: 600; line-height: 1.2; margin: 3rem 0 0.9rem; scroll-margin-top: 5rem; }
+.prose > h2:first-child { margin-top: 0; }
+.prose h3 { font-size: 1.1875rem; margin: 1.75rem 0 0.5rem; }
+.prose p, .prose li { line-height: 1.65; }
+.prose ul, .prose ol { padding-left: 1.3rem; margin: 0 0 1.1em; }
+.prose li { margin-bottom: 0.4em; }
+.prose li::marker { color: var(--muted); }
+.prose strong { font-weight: 600; }
+.prose a { text-decoration-thickness: 1px; }
+.prose dl.terms { margin: 0 0 1.2em; display: grid; gap: 0.9rem; }
+.prose dl.terms dt { font-weight: 600; }
+.prose dl.terms dd { margin: 0.15rem 0 0; color: var(--ink-2); }
+
+/* Equations rendered to SVG at build time */
+svg.tex { display: inline-block; overflow: visible; }
+.eq { overflow-x: auto; overflow-y: hidden; text-align: center; margin: 1.25rem 0 1.4rem; padding-block: 0.2rem; font-size: 1.12em; }
+.eq svg.tex { margin-inline: auto; }
+
+.callout { background: var(--tint); border-radius: 4px; padding: 1.1rem 1.25rem; margin: 1.5rem 0; }
+.callout p:last-child, .callout ul:last-child { margin-bottom: 0; }
+.label { display: block; font-family: var(--sans); font-size: 0.75rem; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink-2); margin-bottom: 0.45rem; }
+
+/* Diagrams */
+figure.diagram { margin: 1.75rem 0; }
+.fig-scroll { overflow-x: auto; }
+.fig-scroll svg { display: block; width: 100%; height: auto; min-width: 34rem; }
+figure.diagram figcaption, figure.table-fig figcaption { font-family: var(--sans); font-size: 0.875rem; line-height: 1.55; color: var(--muted); margin-top: 0.6rem; }
+.dg { color: var(--ink); }
+.dg text { fill: currentColor; font-family: var(--sans); font-size: 13px; }
+.dg .sm { font-size: 11.5px; fill: var(--muted); }
+.dg .lbl { font-weight: 500; }
+.dg .stroke { stroke: currentColor; fill: none; stroke-width: 1.5; }
+.dg .thin { stroke: var(--muted); fill: none; stroke-width: 1; }
+.dg .c1 { stroke: var(--chart-1); fill: none; stroke-width: 2; }
+.dg .c2 { stroke: var(--chart-2); fill: none; stroke-width: 2; }
+.dg .ref { stroke: var(--muted); fill: none; stroke-width: 1.5; stroke-dasharray: 6 5; }
+.dg .fill-c1 { fill: var(--chart-1); }
+.dg .fill-c2 { fill: var(--chart-2); }
+.dg .fill-ink { fill: currentColor; }
+.dg .fill-muted { fill: var(--muted); }
+.dg .fill-line { fill: var(--line); }
+.dg .box { fill: var(--surface); stroke: var(--muted); stroke-width: 1; }
+.dg .box-tint { fill: var(--tint); stroke: none; }
+.dg .surf { fill: var(--surface); }
+
+/* Tables */
+figure.table-fig { margin: 1.5rem 0; }
+.table-scroll { overflow-x: auto; }
+table.cmp { width: 100%; border-collapse: collapse; font-family: var(--sans); font-size: 0.9375rem; min-width: 32rem; }
+table.cmp th, table.cmp td { text-align: left; padding: 0.6rem 0.75rem 0.6rem 0; border-bottom: 1px solid var(--line); vertical-align: top; }
+table.cmp thead th { font-size: 0.8125rem; font-weight: 600; color: var(--ink-2); border-bottom-color: var(--ink-2); }
+table.cmp td { font-variant-numeric: tabular-nums; color: var(--ink-2); }
+table.cmp td:first-child { color: var(--ink); font-weight: 500; }
+table.cmp td.new { color: var(--ink); }
+
+/* Interactive models */
+.demo { background: var(--surface); border: 1px solid var(--line); border-radius: 4px; padding: 1.1rem 1.1rem 1rem; margin: 1.5rem 0; font-family: var(--sans); }
+.demo-controls { display: grid; grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr)); gap: 0.9rem 1.5rem; margin-bottom: 0.9rem; }
+.ctl { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 0.25rem 0.75rem; min-width: 0; }
+.ctl label, .ctl .ctl-l { font-size: 0.8125rem; color: var(--ink-2); grid-column: 1; }
+.ctl output { grid-column: 2; grid-row: 1; font-size: 0.875rem; font-weight: 600; color: var(--ink); font-variant-numeric: tabular-nums; text-align: right; }
+.ctl input[type="range"] { grid-column: 1 / -1; width: 100%; margin: 0; accent-color: var(--chart-1); height: 1.75rem; }
+.ctl-seg, .ctl-presets { grid-template-columns: minmax(0, 1fr); }
+.ctl-btn { grid-template-columns: minmax(0, 1fr); align-content: end; }
+.seg-mini { display: flex; flex-wrap: wrap; gap: 0.35rem; }
+.seg-mini button { font: inherit; font-size: 0.8125rem; color: var(--ink-2); background: transparent; border: 1px solid var(--line); border-radius: 3px; min-height: 2rem; padding: 0 0.6rem; cursor: pointer; }
+.seg-mini button:hover { border-color: var(--ink-2); }
+.seg-mini button[aria-checked="true"] { background: var(--ink); border-color: var(--ink); color: var(--bg); }
+.btn-small { min-height: 2.1rem; font-size: 0.8125rem; padding: 0 0.85rem; justify-self: start; cursor: pointer; }
+.legend { list-style: none; margin: 0 0 0.5rem; padding: 0; display: flex; flex-wrap: wrap; gap: 0.3rem 1.25rem; font-size: 0.8125rem; color: var(--ink-2); }
+.legend li { display: inline-flex; align-items: center; gap: 0.45rem; }
+.key { display: inline-block; width: 1.1rem; height: 0; border-top: 2px solid var(--chart-1); flex: none; }
+.key-c1 { border-top-color: var(--chart-1); }
+.key-c2 { border-top-color: var(--chart-2); }
+.key-ref { border-top-color: var(--muted); }
+.key-dash { border-top-style: dashed; }
+.key-dot { width: 0.55rem; height: 0.55rem; border: 0; border-radius: 50%; background: var(--chart-1); }
+.key-dot.key-c2 { background: var(--chart-2); }
+.key-dot.key-ref { background: var(--muted); }
+.demo-plot { position: relative; width: 100%; aspect-ratio: 16 / 9; max-width: 100%; }
+.demo-plot canvas { display: block; width: 100%; height: 100%; touch-action: pan-y; cursor: crosshair; }
+@media (max-width: 600px) { .demo-plot { aspect-ratio: 4 / 3.4; } }
+.tip { position: absolute; left: 0; top: 0; pointer-events: none; background: var(--surface); border: 1px solid var(--line); border-radius: 3px; padding: 0.45rem 0.6rem; font-size: 0.8125rem; line-height: 1.45; color: var(--ink-2); box-shadow: 0 4px 14px rgba(10, 21, 36, 0.12); white-space: nowrap; z-index: 2; }
+.tip p { margin: 0; display: flex; align-items: center; gap: 0.4rem; }
+.tip .tip-h { color: var(--ink); font-weight: 600; margin-bottom: 0.15rem; }
+.tip b { color: var(--ink); font-weight: 600; font-variant-numeric: tabular-nums; }
+.demo-read { display: grid; grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr)); gap: 0.75rem 1.5rem; margin: 0.9rem 0 0; padding-top: 0.85rem; border-top: 1px solid var(--line); }
+.demo-read dt { font-size: 0.75rem; color: var(--muted); margin-bottom: 0.15rem; }
+.demo-read dd { margin: 0; font-size: 0.9375rem; font-weight: 600; color: var(--ink); font-variant-numeric: tabular-nums; }
+.chip { display: inline-block; font-size: 0.8125rem; font-weight: 600; border-radius: 999px; padding: 0.1rem 0.6rem; }
+.chip-ok { background: var(--ok-bg); color: var(--ok-ink); }
+.chip-no { background: var(--no-bg); color: var(--no-ink); }
+.demo-note { font-family: var(--sans); font-size: 0.875rem; color: var(--muted); margin-top: -0.6rem; }
+
+/* Takeaways, self-check, references, papers */
+.takeaways { border-top: 2px solid var(--ink); padding-top: 1rem; margin-top: 3rem; }
+.takeaways ul { margin-bottom: 0; }
+details.qa { border-bottom: 1px solid var(--line); padding: 0.85rem 0; }
+details.qa:first-of-type { border-top: 1px solid var(--line); }
+details.qa summary { cursor: pointer; font-weight: 600; line-height: 1.5; list-style-position: outside; margin-left: 1.1rem; }
+details.qa summary::marker { color: var(--muted); }
+details.qa .ans { margin: 0.6rem 0 0 1.1rem; color: var(--ink-2); }
+details.qa .ans p:last-child { margin-bottom: 0; }
+ol.refs { padding-left: 1.5rem; }
+ol.refs li { font-size: 1rem; line-height: 1.55; color: var(--ink-2); margin-bottom: 0.7rem; }
+ol.refs a { font-family: var(--sans); font-size: 0.8125rem; white-space: nowrap; }
+.paper-list { list-style: none; margin: 0; padding: 0; }
+.paper-list li { padding: 0.8rem 0; border-bottom: 1px solid var(--line); }
+.paper-list li:first-child { border-top: 1px solid var(--line); }
+.paper-list a.t { font-weight: 600; color: var(--ink); text-decoration: none; line-height: 1.4; }
+.paper-list a.t:hover { color: var(--accent); text-decoration: underline; text-decoration-thickness: 1px; }
+.paper-list .v { display: block; font-size: 0.9375rem; color: var(--muted); margin-top: 0.2rem; }
+.prevnext { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; margin-top: 3.5rem; font-family: var(--sans); }
+.prevnext a { display: block; padding: 0.9rem 1rem; border: 1px solid var(--line); border-radius: 4px; text-decoration: none; color: var(--ink); }
+.prevnext a:hover { border-color: var(--ink-2); color: var(--ink); }
+.prevnext .dir { display: block; font-size: 0.75rem; color: var(--muted); margin-bottom: 0.2rem; }
+.prevnext .nm { font-weight: 600; font-size: 0.9375rem; }
+.prevnext .next { text-align: right; grid-column: 2; }
+@media (max-width: 560px) { .prevnext { grid-template-columns: minmax(0, 1fr); } .prevnext .next { grid-column: 1; } }
+
+/* Tutorial hub */
+.hub-list { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--line); }
+.hub-item a { display: grid; grid-template-columns: 2.5rem minmax(0, 1fr) auto; gap: 0.25rem 1.25rem; align-items: baseline; padding: 1.35rem 0; border-bottom: 1px solid var(--line); text-decoration: none; color: var(--ink); }
+.hub-item a:hover .nm { color: var(--accent); text-decoration: underline; text-decoration-thickness: 1px; }
+.hub-item .no { font-family: var(--sans); font-size: 0.875rem; color: var(--muted); font-variant-numeric: tabular-nums; }
+.hub-item .nm { font-size: 1.375rem; font-weight: 600; line-height: 1.25; }
+.hub-item .sm { grid-column: 2; color: var(--ink-2); font-size: 1.0625rem; max-width: 52ch; }
+.hub-item .mt { grid-column: 3; grid-row: 1; font-family: var(--sans); font-size: 0.8125rem; color: var(--muted); white-space: nowrap; text-align: right; }
+.hub-item .dm { grid-column: 2; font-family: var(--sans); font-size: 0.8125rem; color: var(--muted); }
+@media (max-width: 640px) {
+  .hub-item a { grid-template-columns: 2rem minmax(0, 1fr); }
+  .hub-item .mt { grid-column: 2; grid-row: auto; text-align: left; }
+}
+.hub-note { font-family: var(--sans); font-size: 0.875rem; color: var(--muted); margin-top: 1.5rem; max-width: 60ch; }
+
+/* Home page teasers */
+.tut-teaser { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 2.75rem; }
+.tut-teaser li { border-top: 1px solid var(--line); padding: 1rem 0 1.15rem; }
+.tut-teaser a { font-weight: 600; font-size: 1.125rem; color: var(--ink); text-decoration: none; }
+.tut-teaser a:hover { color: var(--accent); text-decoration: underline; text-decoration-thickness: 1px; }
+.tut-teaser p { margin: 0.25rem 0 0; font-size: 1rem; color: var(--ink-2); }
+@media (max-width: 720px) { .tut-teaser { grid-template-columns: minmax(0, 1fr); } }
+.more { font-family: var(--sans); font-size: 0.9375rem; margin-top: 1.5rem; }
+.theme .theme-links { display: flex; flex-wrap: wrap; gap: 0.25rem 1.25rem; align-items: baseline; }
+.theme .theme-links a { font-family: var(--sans); font-size: 0.875rem; font-weight: 500; }
+
+/* Urdu */
+.ur { font-family: var(--urdu); direction: rtl; unicode-bidi: isolate; line-height: 2.3; font-weight: 400; }
+.urdu-teaser { display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); gap: 2.5rem; align-items: center; }
+.urdu-teaser .ur { font-size: clamp(1.2rem, 2vw, 1.4rem); margin: 0; text-align: right; }
+.urdu-teaser .ur span, .urdu-teaser .en span { display: block; }
+.urdu-teaser .en { color: var(--ink-2); font-style: italic; margin: 0 0 0.5rem; }
+.urdu-teaser .who { font-family: var(--sans); font-size: 0.875rem; color: var(--muted); margin: 0 0 1rem; }
+@media (max-width: 820px) { .urdu-teaser { grid-template-columns: minmax(0, 1fr); gap: 1rem; } }
+
+.urdu-head h1 .ur { display: block; font-size: clamp(2.4rem, 6vw, 3.6rem); line-height: 1.9; font-weight: 400; margin-bottom: 0.2rem; letter-spacing: 0; }
+.urdu-head h1 .en-t { display: block; font-size: clamp(1.6rem, 3.6vw, 2.25rem); }
+.urdu-sec { padding-block: clamp(2.5rem, 6vw, 4rem); border-top: 1px solid var(--line); }
+.urdu-sec > .wrap > h2 { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.25rem 1rem; font-size: 2rem; font-weight: 600; margin: 0 0 0.5rem; }
+.urdu-sec > .wrap > h2 .ur { font-size: 1.6rem; font-weight: 400; line-height: 1.8; color: var(--ink-2); }
+.urdu-sec .intro { margin-bottom: 1.25rem; }
+.toggles { display: flex; flex-wrap: wrap; gap: 0.5rem 1.5rem; font-family: var(--sans); font-size: 0.9375rem; color: var(--ink-2); margin: 0 0 1.75rem; }
+.toggles label { display: inline-flex; align-items: center; gap: 0.45rem; cursor: pointer; }
+.toggles input { width: 1rem; height: 1rem; accent-color: var(--accent); margin: 0; }
+.couplets { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 22rem), 1fr)); gap: 1.25rem; }
+.couplet { background: var(--surface); border: 1px solid var(--line); border-radius: 4px; padding: 1.25rem 1.4rem 1.1rem; display: grid; gap: 0.75rem; align-content: start; }
+.couplet .ur { font-size: clamp(1.25rem, 2.2vw, 1.5rem); margin: 0; text-align: right; color: var(--ink); }
+.couplet .ur span, .couplet .ro span, .couplet .en span { display: block; }
+.couplet .ro { font-family: var(--sans); font-size: 0.9375rem; color: var(--ink-2); margin: 0; line-height: 1.6; }
+.couplet .en { font-style: italic; color: var(--ink-2); margin: 0; line-height: 1.55; }
+.couplet .who { font-family: var(--sans); font-size: 0.8125rem; color: var(--muted); margin: 0.25rem 0 0; display: flex; justify-content: space-between; gap: 1rem; border-top: 1px solid var(--line); padding-top: 0.65rem; }
+.couplet .who .ur { font-size: 1rem; line-height: 1.6; color: var(--muted); text-align: left; }
+.hide-roman .ro, .hide-en .en { display: none; }
+.books { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 16rem), 1fr)); gap: 0 2.25rem; }
+.book { border-top: 1px solid var(--line); padding: 1.1rem 0 1.4rem; }
+.book .ur { font-size: 1.5rem; margin: 0; text-align: right; }
+.book h3 { font-size: 1.125rem; margin: 0.1rem 0 0.15rem; }
+.book .by { font-family: var(--sans); font-size: 0.875rem; color: var(--muted); margin: 0 0 0.6rem; }
+.book p.nt { font-size: 1rem; color: var(--ink-2); margin: 0; }
+
+/* Contact copy button */
+.mail-row { display: flex; flex-wrap: wrap; align-items: center; gap: 0.75rem 1rem; margin-bottom: 1rem; }
+.mail-row .contact-mail { margin-bottom: 0; }
+.copy-status { font-family: var(--sans); font-size: 0.875rem; color: var(--muted); }
+.prose dl.terms dt .tag { font-family: var(--sans); font-size: 0.8125rem; font-weight: 500; color: var(--muted); margin-left: 0.5rem; }
+@media (max-width: 560px) { .site-nav ul { gap: 0.7rem; } .site-nav a { font-size: 0.8125rem; } }
+
+/* Footer links */
+.foot { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 0.75rem 2rem; }
+.foot nav { display: flex; flex-wrap: wrap; gap: 0.5rem 1.25rem; }
+.foot a { color: var(--ink-2); }
+
+/* Places */
+.place-head .local { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.25rem 1.5rem; margin: -0.35rem 0 0.6rem; color: var(--ink-2); font-size: 1.375rem; }
+.place-head .local .ur { font-size: 1.375rem; line-height: 2; }
+.place-head .local .hi { font-family: "Noto Serif Devanagari", var(--serif); }
+.place-head .local .en-full { font-size: 1.125rem; font-style: italic; }
+.place-head .where { font-family: var(--sans); font-size: 0.9375rem; color: var(--muted); margin: 0 0 1.25rem; }
+.conn { background: var(--tint); border-radius: 4px; padding: 0.9rem 1.15rem; max-width: 44rem; margin: 1.5rem 0 0; color: var(--ink); }
+.conn .label { margin-bottom: 0.25rem; }
+.place-grid { display: grid; grid-template-columns: minmax(0, 19rem) minmax(0, 1fr); gap: 3.5rem; padding-block: 2.5rem clamp(3rem, 8vw, 5rem); border-top: 1px solid var(--line); }
+.place-grid h2 { font-size: 1.375rem; margin: 0 0 0.9rem; }
+.fact-list { margin: 0; }
+.fact-list div { padding: 0.7rem 0; border-top: 1px solid var(--line); }
+.fact-list dt { font-family: var(--sans); font-size: 0.75rem; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; color: var(--muted); }
+.fact-list dd { margin: 0.2rem 0 0; font-size: 1.0625rem; line-height: 1.45; color: var(--ink); font-variant-numeric: tabular-nums; }
+.ext-links { display: flex; flex-wrap: wrap; gap: 0.5rem 1.25rem; font-family: var(--sans); font-size: 0.9375rem; margin: 1.25rem 0 0; }
+.notes ul { list-style: none; margin: 0; padding: 0; max-width: 44rem; }
+.notes li { padding: 0.9rem 0; border-top: 1px solid var(--line); line-height: 1.6; }
+.see-also { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.5rem 1.25rem; font-family: var(--sans); font-size: 0.9375rem; margin-top: 1.75rem; }
+.see-also .label { margin: 0; }
+@media (max-width: 860px) { .place-grid { grid-template-columns: minmax(0, 1fr); gap: 2.5rem; } }
+
+.places-wrap { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr); gap: 3.5rem; padding-block: 2.5rem clamp(3rem, 8vw, 5rem); border-top: 1px solid var(--line); }
+.places-wrap h2 { font-size: 1.625rem; margin: 0 0 0.6rem; }
+.places-wrap h3 { font-family: var(--sans); font-size: 0.75rem; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); margin: 1.5rem 0 0.25rem; }
+@media (max-width: 900px) { .places-wrap { grid-template-columns: minmax(0, 1fr); } }
+.route { list-style: none; margin: 1.25rem 0 0; padding: 0; }
+.route .stop { display: grid; grid-template-columns: 1.4rem minmax(0, 1fr) auto; gap: 0 0.9rem; align-items: start; }
+.route .dot { width: 0.85rem; height: 0.85rem; border-radius: 50%; border: 2px solid var(--ink); background: var(--bg); margin-top: 0.5rem; justify-self: center; }
+.route .stop.now .dot { background: var(--signal); border-color: var(--signal); }
+.route .stop-body { display: grid; gap: 0.1rem; min-width: 0; }
+.route .city { font-size: 1.375rem; font-weight: 600; color: var(--ink); text-decoration: none; line-height: 1.35; }
+.route .city:hover { color: var(--accent); text-decoration: underline; text-decoration-thickness: 1px; }
+.route .sub { font-family: var(--sans); font-size: 0.875rem; color: var(--muted); }
+.route .role { font-size: 1rem; color: var(--ink-2); }
+.route .yrs { font-family: var(--sans); font-size: 0.875rem; color: var(--ink-2); font-variant-numeric: tabular-nums; padding-top: 0.35rem; white-space: nowrap; }
+.route .leg { display: grid; grid-template-columns: 1.4rem minmax(0, 1fr); gap: 0 0.9rem; min-height: 2.6rem; }
+.route .leg .line { justify-self: center; width: 0; border-left: 2px dashed var(--line); }
+.route .leg .km { align-self: center; font-family: var(--sans); font-size: 0.8125rem; color: var(--muted); font-variant-numeric: tabular-nums; }
+.place-index { list-style: none; margin: 0; padding: 0; }
+.place-index li { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 0.15rem 1rem; padding: 0.6rem 0; border-top: 1px solid var(--line); }
+.place-index a { font-weight: 600; color: var(--ink); text-decoration: none; }
+.place-index a:hover { color: var(--accent); text-decoration: underline; text-decoration-thickness: 1px; }
+.place-index span { font-family: var(--sans); font-size: 0.8125rem; color: var(--muted); }
+</style>
+<style>
+:root { --k1: #2a78d6; --k2: #eb6834; --k3: #1baf7a; --k4: #eda100; --k5: #e87ba4; --k6: #008300; --k7: #6250d6; --k8: #e34948; --t: #2a78d6; --t-deep: #1c5cab; }
+body.t-found { --t: #1baf7a; --t-deep: #0d7550; }
+body.t-tech { --t: #2a78d6; --t-deep: #1c5cab; }
+body.t-tools { --t: #eb6834; --t-deep: #b4461b; }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) { --k1: #3987e5; --k2: #d95926; --k3: #199e70; --k4: #c98500; --k5: #d55181; --k6: #2f9e2f; --k7: #9085e9; --k8: #e66767; }
+  :root:not([data-theme="light"]) body.t-found { --t: #22b383; --t-deep: #7fdcb6; }
+:root:not([data-theme="light"]) body.t-tech { --t: #3987e5; --t-deep: #9ec5f4; }
+:root:not([data-theme="light"]) body.t-tools { --t: #e0682f; --t-deep: #f5a983; }
+}
+:root[data-theme="dark"] { --k1: #3987e5; --k2: #d95926; --k3: #199e70; --k4: #c98500; --k5: #d55181; --k6: #2f9e2f; --k7: #9085e9; --k8: #e66767; }
+:root[data-theme="dark"] body.t-found { --t: #22b383; --t-deep: #7fdcb6; }
+:root[data-theme="dark"] body.t-tech { --t: #3987e5; --t-deep: #9ec5f4; }
+:root[data-theme="dark"] body.t-tools { --t: #e0682f; --t-deep: #f5a983; }
+
+/* ================= picture-first tutorials ================= */
+body { --t-soft: color-mix(in srgb, var(--t) 11%, var(--surface)); --t-soft2: color-mix(in srgb, var(--t) 22%, var(--surface)); --t-line: color-mix(in srgb, var(--t) 40%, var(--line)); }
+.site-header { border-bottom-color: var(--line); }
+.t-band { height: 6px; background: linear-gradient(90deg, var(--t), color-mix(in srgb, var(--t) 45%, var(--k4))); }
+
+/* page head with hero illustration */
+.page-head.hero2 { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 25rem); gap: clamp(1.5rem, 4vw, 3.5rem); align-items: center; }
+.page-head.hero2 .hero-art { margin: 0; }
+.page-head.hero2 .hero-art svg { display: block; width: 100%; height: auto; }
+.page-head .kicker { display: inline-flex; align-items: center; gap: 0.5rem; font-family: var(--sans); font-size: 0.8125rem; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; color: var(--t-deep); margin: 0 0 0.75rem; }
+.page-head .kicker::before { content: ""; width: 0.65rem; height: 0.65rem; border-radius: 50%; background: var(--t); }
+.meta-row .pill { background: var(--t-soft); color: var(--ink); border-radius: 999px; padding: 0.15rem 0.7rem; font-weight: 500; }
+@media (max-width: 880px) { .page-head.hero2 { grid-template-columns: minmax(0, 1fr); } .page-head.hero2 .hero-art { max-width: 26rem; } }
+
+/* at a glance */
+.glance { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 12.5rem), 1fr)); gap: 0.9rem; margin: 0 0 2.75rem; }
+.glance .g { background: var(--surface); border: 1px solid var(--line); border-top: 4px solid var(--gc, var(--t)); border-radius: 6px; padding: 0.95rem 1rem 1rem; }
+.glance .g svg { width: 2.4rem; height: 2.4rem; display: block; margin-bottom: 0.55rem; }
+.glance .g b { display: block; font-family: var(--sans); font-size: 0.9375rem; font-weight: 600; color: var(--ink); margin-bottom: 0.2rem; }
+.glance .g span { display: block; font-size: 0.975rem; line-height: 1.45; color: var(--ink-2); }
+.glance-h { font-family: var(--sans); font-size: 0.75rem; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); margin: 0 0 0.75rem; }
+
+/* numbered section headings */
+.prose { counter-reset: sec; }
+.prose h2.sec { counter-increment: sec; display: flex; align-items: baseline; gap: 0.75rem; }
+.prose h2.sec::before { content: counter(sec); flex: none; display: inline-grid; place-items: center; width: 2rem; height: 2rem; border-radius: 50%; background: var(--t-deep); color: var(--surface); font-family: var(--sans); font-size: 0.95rem; font-weight: 600; transform: translateY(-0.12rem); }
+.prose .lead { font-size: 1.125rem; color: var(--ink); }
+.toc a[aria-current="true"] { border-left-color: var(--t); }
+
+/* figures */
+figure.viz { margin: 1.5rem 0 1.75rem; background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 1rem 1rem 0.85rem; }
+figure.viz .fig-scroll { overflow-x: auto; }
+figure.viz svg { display: block; width: 100%; height: auto; }
+figure.viz .fig-scroll svg { min-width: 0; }
+figure.viz.wide .fig-scroll svg { min-width: 34rem; }
+figure.viz figcaption { font-family: var(--sans); font-size: 0.875rem; line-height: 1.55; color: var(--ink-2); margin-top: 0.7rem; }
+figure.viz figcaption b { color: var(--ink); font-weight: 600; }
+figure.viz .legend2 { list-style: none; display: flex; flex-wrap: wrap; gap: 0.3rem 1.1rem; margin: 0 0 0.4rem; padding: 0; font-family: var(--sans); font-size: 0.8125rem; color: var(--ink-2); }
+figure.viz .legend2 li { display: inline-flex; align-items: center; gap: 0.4rem; margin: 0; }
+figure.viz .legend2 i { width: 1rem; height: 0; border-top: 3px solid var(--c); border-radius: 2px; }
+figure.viz .legend2 i.sq { width: 0.7rem; height: 0.7rem; border: 0; background: var(--c); border-radius: 2px; }
+figure.viz .legend2 i.dash { border-top-style: dashed; }
+.fig-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 15rem), 1fr)); gap: 1rem; margin: 1.5rem 0 1.75rem; }
+.fig-row figure.viz { margin: 0; }
+
+/* photos */
+figure.photo { margin: 1.5rem 0 1.75rem; }
+figure.photo img { display: block; width: 100%; height: auto; border-radius: 8px; background: var(--tint); }
+figure.photo figcaption { font-family: var(--sans); font-size: 0.875rem; line-height: 1.55; color: var(--ink-2); margin-top: 0.55rem; }
+figure.photo .credit { display: block; font-size: 0.75rem; color: var(--muted); margin-top: 0.2rem; }
+figure.photo .credit a { color: var(--muted); }
+.photo-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 13rem), 1fr)); gap: 1rem; margin: 1.5rem 0 1.75rem; }
+.photo-row figure.photo { margin: 0; }
+.photo-row figure.photo img { aspect-ratio: 4 / 3; object-fit: cover; }
+
+figure.photo.tall img { max-width: 21rem; }
+.photo-row figure.photo.tall img { max-width: none; }
+/* key idea */
+.keyidea { position: relative; background: var(--t-soft); border-left: 4px solid var(--t); border-radius: 0 6px 6px 0; padding: 0.95rem 1.15rem 1rem; margin: 1.5rem 0; }
+.keyidea .label { display: block; font-family: var(--sans); font-size: 0.75rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--t-deep); margin-bottom: 0.3rem; }
+.keyidea p { margin: 0 0 0.5rem; color: var(--ink); }
+.keyidea p:last-child { margin-bottom: 0; }
+.keyidea .eq { margin: 0.6rem 0 0.2rem; }
+
+/* more detail */
+details.more { border: 1px solid var(--t-line); border-radius: 6px; margin: 1.25rem 0 1.5rem; background: var(--surface); }
+details.more > summary { cursor: pointer; list-style: none; display: flex; align-items: center; gap: 0.6rem; padding: 0.7rem 1rem; font-family: var(--sans); font-size: 0.9375rem; font-weight: 600; color: var(--ink); }
+details.more > summary::-webkit-details-marker { display: none; }
+details.more > summary::before { content: "+"; display: inline-grid; place-items: center; width: 1.35rem; height: 1.35rem; border-radius: 50%; background: var(--t-soft2); color: var(--t-deep); font-weight: 700; flex: none; }
+details.more[open] > summary::before { content: "\2212"; }
+details.more > summary .hint { font-weight: 400; color: var(--muted); font-size: 0.8125rem; }
+details.more > .body { padding: 0.25rem 1.1rem 1rem; border-top: 1px dashed var(--line); }
+details.more > .body > :first-child { margin-top: 0.75rem; }
+
+/* concept cards */
+.prose ul.cards, .prose ul.learn, .prose ul.tcards { padding-left: 0; }
+.cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 13rem), 1fr)); gap: 0.85rem; margin: 1.25rem 0 1.75rem; padding: 0; list-style: none; }
+.cards > li, .cards > a, .cards > div { margin: 0; background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 0.9rem 1rem 1rem; position: relative; overflow: hidden; }
+.cards > li::before, .cards > a::before, .cards > div::before { content: ""; position: absolute; inset: 0 0 auto 0; height: 4px; background: var(--c, var(--t)); }
+.cards svg.ic { width: 2.6rem; height: 2.6rem; display: block; margin: 0.15rem 0 0.5rem; }
+.cards b { display: block; font-family: var(--sans); font-size: 0.9375rem; font-weight: 600; color: var(--ink); margin-bottom: 0.2rem; }
+.cards span { display: block; font-size: 0.975rem; line-height: 1.45; color: var(--ink-2); }
+.cards .tag { font-style: normal; display: inline-block; font-family: var(--sans); font-size: 0.6875rem; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; color: var(--ink); background: color-mix(in srgb, var(--c, var(--t)) 18%, var(--surface)); border-radius: 999px; padding: 0.1rem 0.5rem; margin-bottom: 0.4rem; }
+.cards > a { text-decoration: none; color: inherit; transition: border-color .15s; }
+.cards > a:hover { border-color: var(--c, var(--t)); }
+.cards > a:hover b { color: var(--accent); }
+
+.cards.c4 { grid-template-columns: repeat(auto-fit, minmax(min(100%, 9.5rem), 1fr)); }
+/* learn more */
+.learn { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 15.5rem), 1fr)); gap: 0.85rem; margin: 1rem 0 0; padding: 0; list-style: none; }
+.learn li { margin: 0; }
+.learn a { display: grid; grid-template-columns: 2.4rem minmax(0, 1fr); gap: 0.15rem 0.8rem; height: 100%; box-sizing: border-box; padding: 0.85rem 1rem; background: var(--surface); border: 1px solid var(--line); border-radius: 8px; text-decoration: none; color: var(--ink); }
+.learn a:hover { border-color: var(--c); }
+.learn .av { grid-row: 1 / span 3; width: 2.4rem; height: 2.4rem; border-radius: 8px; display: grid; place-items: center; background: color-mix(in srgb, var(--c) 18%, var(--surface)); color: var(--ink); font-family: var(--sans); font-weight: 700; font-size: 0.875rem; }
+.learn .ty { font-family: var(--sans); font-size: 0.6875rem; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; color: var(--ink-2); }
+.learn .nm { font-family: var(--sans); font-weight: 600; font-size: 0.9375rem; line-height: 1.35; }
+.learn .ds { font-size: 0.9375rem; line-height: 1.45; color: var(--ink-2); }
+.learn .dm { font-family: var(--sans); font-size: 0.75rem; color: var(--muted); margin-top: 0.15rem; }
+
+/* compact further reading */
+details.reading > summary { cursor: pointer; font-family: var(--sans); font-weight: 600; font-size: 0.9375rem; color: var(--ink-2); padding: 0.4rem 0; }
+
+/* diagram styling (inline SVG) */
+.viz svg { color: var(--ink); overflow: visible; }
+.viz text { fill: currentColor; font-family: var(--sans); font-size: 13px; }
+.viz text.s { font-size: 11.5px; fill: var(--ink-2); }
+.viz text.xs { font-size: 10.5px; fill: var(--muted); }
+.viz text.b { font-weight: 600; }
+.viz text.h { font-weight: 600; font-size: 14px; }
+.viz text.w { fill: #fff; font-weight: 600; }
+.viz text.m { fill: var(--muted); }
+.viz text.ser { font-family: var(--serif); font-style: italic; font-size: 15px; }
+.viz .ink { fill: var(--ink); } .viz .ink2 { fill: var(--ink-2); } .viz .mut { fill: var(--muted); }
+.viz .srf { fill: var(--surface); } .viz .bg { fill: var(--bg); } .viz .lnf { fill: var(--line); } .viz .tnt { fill: var(--tint); }
+.viz .st { stroke: currentColor; fill: none; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+.viz .st-m { stroke: var(--muted); fill: none; stroke-width: 1.3; stroke-linecap: round; }
+.viz .st-l { stroke: var(--line); fill: none; stroke-width: 1; }
+.viz .grid { stroke: var(--line); stroke-width: 1; fill: none; }
+.viz .axis { stroke: var(--muted); stroke-width: 1.2; fill: none; }
+.viz .dash { stroke-dasharray: 5 4; }
+.viz .dot { stroke-dasharray: 1.5 4; }
+.viz .f1 { fill: var(--k1); } .viz .s1 { stroke: var(--k1); fill: none; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; } .viz .l1 { fill: color-mix(in srgb, var(--k1) 20%, var(--surface)); } .viz .ll1 { fill: color-mix(in srgb, var(--k1) 10%, var(--surface)); } .viz .tx1 { fill: color-mix(in srgb, var(--k1) 70%, var(--ink)); }
+.viz .f2 { fill: var(--k2); } .viz .s2 { stroke: var(--k2); fill: none; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; } .viz .l2 { fill: color-mix(in srgb, var(--k2) 20%, var(--surface)); } .viz .ll2 { fill: color-mix(in srgb, var(--k2) 10%, var(--surface)); } .viz .tx2 { fill: color-mix(in srgb, var(--k2) 70%, var(--ink)); }
+.viz .f3 { fill: var(--k3); } .viz .s3 { stroke: var(--k3); fill: none; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; } .viz .l3 { fill: color-mix(in srgb, var(--k3) 20%, var(--surface)); } .viz .ll3 { fill: color-mix(in srgb, var(--k3) 10%, var(--surface)); } .viz .tx3 { fill: color-mix(in srgb, var(--k3) 70%, var(--ink)); }
+.viz .f4 { fill: var(--k4); } .viz .s4 { stroke: var(--k4); fill: none; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; } .viz .l4 { fill: color-mix(in srgb, var(--k4) 20%, var(--surface)); } .viz .ll4 { fill: color-mix(in srgb, var(--k4) 10%, var(--surface)); } .viz .tx4 { fill: color-mix(in srgb, var(--k4) 70%, var(--ink)); }
+.viz .f5 { fill: var(--k5); } .viz .s5 { stroke: var(--k5); fill: none; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; } .viz .l5 { fill: color-mix(in srgb, var(--k5) 20%, var(--surface)); } .viz .ll5 { fill: color-mix(in srgb, var(--k5) 10%, var(--surface)); } .viz .tx5 { fill: color-mix(in srgb, var(--k5) 70%, var(--ink)); }
+.viz .f6 { fill: var(--k6); } .viz .s6 { stroke: var(--k6); fill: none; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; } .viz .l6 { fill: color-mix(in srgb, var(--k6) 20%, var(--surface)); } .viz .ll6 { fill: color-mix(in srgb, var(--k6) 10%, var(--surface)); } .viz .tx6 { fill: color-mix(in srgb, var(--k6) 70%, var(--ink)); }
+.viz .f7 { fill: var(--k7); } .viz .s7 { stroke: var(--k7); fill: none; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; } .viz .l7 { fill: color-mix(in srgb, var(--k7) 20%, var(--surface)); } .viz .ll7 { fill: color-mix(in srgb, var(--k7) 10%, var(--surface)); } .viz .tx7 { fill: color-mix(in srgb, var(--k7) 70%, var(--ink)); }
+.viz .f8 { fill: var(--k8); } .viz .s8 { stroke: var(--k8); fill: none; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; } .viz .l8 { fill: color-mix(in srgb, var(--k8) 20%, var(--surface)); } .viz .ll8 { fill: color-mix(in srgb, var(--k8) 10%, var(--surface)); } .viz .tx8 { fill: color-mix(in srgb, var(--k8) 70%, var(--ink)); }
+.viz .ft { fill: var(--t); } .viz .st-t { stroke: var(--t); fill: none; stroke-width: 2.2; } .viz .lt { fill: var(--t-soft2); } .viz .llt { fill: var(--t-soft); }
+.viz .hov { cursor: help; }
+.viz .hov:hover { opacity: 0.85; }
+
+/* plot hover */
+.ptip { position: absolute; left: 0; top: 0; pointer-events: none; background: var(--surface); border: 1px solid var(--line); border-radius: 4px; padding: 0.4rem 0.55rem; font-family: var(--sans); font-size: 0.8125rem; line-height: 1.45; color: var(--ink-2); box-shadow: 0 2px 10px rgba(0,0,0,.08); z-index: 3; white-space: nowrap; }
+.ptip b { color: var(--ink); font-variant-numeric: tabular-nums; }
+.ptip i { display: inline-block; width: 0.6rem; height: 0.6rem; border-radius: 50%; background: var(--c); margin-right: 0.35rem; vertical-align: -0.02rem; }
+figure.viz { position: relative; }
+
+/* track tab bar */
+.tabs { border-bottom: 1px solid var(--line); background: var(--bg); position: sticky; top: calc(env(safe-area-inset-top, 0px) + 3.5rem); z-index: 15; }
+.tabs .wrap { display: flex; align-items: stretch; gap: 0.25rem; overflow-x: auto; scrollbar-width: thin; }
+.tabs .trk { flex: none; display: inline-flex; align-items: center; gap: 0.45rem; padding: 0.65rem 0.9rem 0.65rem 0; margin-right: 0.4rem; border-right: 1px solid var(--line); font-family: var(--sans); font-size: 0.8125rem; font-weight: 700; color: var(--t-deep); text-decoration: none; white-space: nowrap; }
+.tabs .trk::before { content: ""; width: 0.6rem; height: 0.6rem; border-radius: 50%; background: var(--t); }
+.tabs a.tab { flex: none; display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.65rem 0.75rem; font-family: var(--sans); font-size: 0.875rem; color: var(--ink-2); text-decoration: none; white-space: nowrap; border-bottom: 3px solid transparent; }
+.tabs a.tab .n { font-size: 0.75rem; color: var(--muted); font-variant-numeric: tabular-nums; }
+.tabs a.tab:hover { color: var(--ink); background: var(--t-soft); }
+.tabs a.tab[aria-current="page"] { color: var(--ink); font-weight: 600; border-bottom-color: var(--t); }
+@media (max-width: 880px) { .tabs { position: static; } }
+
+/* track landing cards */
+.tcards { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 17rem), 1fr)); gap: 1.1rem; list-style: none; margin: 1.5rem 0 0; padding: 0; }
+.tcards li { margin: 0; }
+.tcards a { display: flex; flex-direction: column; height: 100%; box-sizing: border-box; background: var(--surface); border: 1px solid var(--line); border-radius: 10px; overflow: hidden; text-decoration: none; color: var(--ink); transition: border-color .15s, transform .15s; }
+.tcards a:hover { border-color: var(--t); transform: translateY(-2px); }
+.tcards .art { background: var(--t-soft); border-bottom: 1px solid var(--line); padding: 0.6rem; }
+.tcards .art { height: 11.5rem; box-sizing: border-box; overflow: hidden; }
+.tcards .art svg { display: block; width: 100%; height: 100%; }
+.tcards .txt { padding: 0.85rem 1rem 1rem; display: flex; flex-direction: column; gap: 0.3rem; flex: 1; }
+.tcards .tg { align-self: flex-start; font-family: var(--sans); font-size: 0.6875rem; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; color: var(--ink); background: var(--t-soft2); border-radius: 999px; padding: 0.1rem 0.55rem; }
+.tcards b { font-family: var(--serif); font-size: 1.1875rem; font-weight: 600; line-height: 1.25; }
+.tcards span.d { font-size: 0.975rem; line-height: 1.45; color: var(--ink-2); }
+.tcards span.m { margin-top: auto; padding-top: 0.4rem; font-family: var(--sans); font-size: 0.75rem; color: var(--muted); }
+
+/* tutorial-to-tutorial chips */
+a.tchip { display: inline-flex; align-items: center; gap: 0.35rem; font-family: var(--sans); font-size: 0.8125rem; font-weight: 600; text-decoration: none; color: var(--ink); background: color-mix(in srgb, var(--c) 16%, var(--surface)); border-radius: 999px; padding: 0.12rem 0.6rem 0.12rem 0.45rem; white-space: nowrap; }
+a.tchip::before { content: ""; width: 0.55rem; height: 0.55rem; border-radius: 50%; background: var(--c); }
+a.tchip:hover { color: var(--accent); }
+
+/* code blocks */
+figure.code { margin: 1.5rem 0; border: 1px solid var(--line); border-radius: 10px; background: var(--surface); overflow: hidden; }
+figure.code .code-h { display: flex; justify-content: space-between; align-items: center; padding: 0.45rem 0.9rem; border-bottom: 1px solid var(--line); font-family: var(--sans); font-size: 0.8125rem; color: var(--muted); background: var(--tint); }
+figure.code pre { margin: 0; padding: 0.9rem 1rem; overflow-x: auto; font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace; font-size: 0.8125rem; line-height: 1.6; color: var(--ink); tab-size: 4; }
+figure.code pre .c { color: var(--muted); font-style: italic; }
+figure.code pre .k { color: var(--t-deep); font-weight: 600; }
+figure.code figcaption { padding: 0 1rem 0.8rem; font-family: var(--sans); font-size: 0.875rem; color: var(--ink-2); }
+/* takeaways in colour */
+.takeaways { border-top-color: var(--t); }
+.takeaways ul { list-style: none; padding-left: 0; }
+.takeaways li { position: relative; padding-left: 1.6rem; }
+.takeaways li::before { content: ""; position: absolute; left: 0.1rem; top: 0.55em; width: 0.7rem; height: 0.7rem; border-radius: 3px; background: var(--t); }
+details.qa summary::marker { color: var(--t); }
+.prevnext a:hover { border-color: var(--t); }
+
+.hubtrack { --t-soft: color-mix(in srgb, var(--t) 11%, var(--surface)); --t-soft2: color-mix(in srgb, var(--t) 22%, var(--surface)); }
+.hubtrack { border-top: 1px solid var(--line); padding: 2.25rem 0 0.5rem; }
+.hubtrack .hub-h { display: flex; gap: 1rem; align-items: flex-start; }
+.hubtrack .hub-h .num { flex: none; display: grid; place-items: center; width: 2.4rem; height: 2.4rem; border-radius: 50%; background: var(--t); color: #fff; font-family: var(--sans); font-weight: 700; }
+.hubtrack h2 { margin: 0 0 0.3rem; font-size: 1.75rem; }
+.hubtrack h2 a { color: var(--ink); text-decoration: none; }
+.hubtrack h2 a:hover { color: var(--accent); }
+.hubtrack .hub-h p { margin: 0; color: var(--ink-2); max-width: 62ch; }
+</style>
+</head>
+<body class="t-tools">
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="site-header">
+  <div class="wrap header-inner">
+    <a class="brand" href="../index.html">Hamza Shaikh</a>
+    <nav class="site-nav" aria-label="Site">
+      <ul>
+        <li><a href="../index.html#research">Research</a></li>
+        <li><a href="../index.html#publications">Publications</a></li>
+        <li><a href="index.html" aria-current="page">Tutorials</a></li>
+        <li><a href="../urdu.html">Urdu</a></li>
+        <li><a href="../index.html#cv">CV</a></li>
+        <li><a href="../index.html#contact">Contact</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+<div class="t-band" aria-hidden="true"></div>
+<nav class="tabs" aria-label="Tools tutorials"><div class="wrap"><a class="trk" href="tools.html">Tools</a><a class="tab" href="optimization.html"><span class="n">1</span>Optimization</a><a class="tab" href="performance-analysis.html"><span class="n">2</span>Performance analysis</a><a class="tab" href="machine-learning.html"><span class="n">3</span>Machine learning</a><a class="tab" href="simulation.html" aria-current="page"><span class="n">4</span>Simulation</a></div></nav>
+<main id="main">
+  <div class="wrap page-head hero2">
+    <div>
+      <p class="kicker">Tools · 4 of 4</p>
+      <h1>Simulation for wireless research</h1>
+      <p class="lede">Generate random bits, send them through a model of the world, count what goes wrong. Done carefully, simulation checks your analysis and goes where formulas cannot.</p>
+      <ul class="meta-row"><li class="pill">Research tool</li><li>10 min</li><li>Interactive model: Find the bug</li></ul>
+    </div>
+    <figure class="hero-art viz" aria-hidden="false"><svg viewBox="0 0 712 262" role="img" aria-label="Three levels of simulation: link level for one link in full detail, system level for many cells and users with abstracted links, and network level for protocols and traffic." class="" xmlns="http://www.w3.org/2000/svg"><rect x="10.0" y="10.0" width="220.0" height="210.0" rx="10" class="ll1"/><text x="120.0" y="36.0" text-anchor="middle" class="h">Link level</text><text x="120.0" y="54.0" text-anchor="middle" class="s">one link, every bit</text><g transform="translate(60.0,160.0) scale(0.8)"><path d="M-14 0 L-3 -62 L3 -62 L14 0" class="st" style="stroke-width:2"/><path d="M-11 -16 L9 -30 M11 -16 L-9 -30 M-8 -34 L6 -46 M8 -34 L-6 -46 M-5 -50 L4 -58 M5 -50 L-4 -58" class="st-m"/><rect x="-9" y="-74" width="5" height="16" rx="1.5" class="f1"/><rect x="4" y="-74" width="5" height="16" rx="1.5" class="f1"/><rect x="-2.5" y="-77" width="5" height="17" rx="1.5" class="f1"/></g><g transform="translate(180.0,150.0) scale(0.8)"><rect x="-9" y="-30" width="18" height="30" rx="3.5" class="f1"/><rect x="-6.5" y="-26.5" width="13" height="21" rx="1.5" class="srf"/><circle cx="0" cy="-2.7" r="1.4" class="srf"/></g><path d="M76 124.0 L80 131.8 L84 133.7 L88 128.3 L92 119.6 L96 114.2 L100 116.3 L104 124.2 L108 131.9 L112 133.7 L116 128.1 L120 119.4 L124 114.2 L128 116.4 L132 124.3 L136 132.0 L140 133.7 L144 128.0 L148 119.3 L152 114.2 L156 116.5 L160 124.5 L164 132.1 L168 133.6" class="s1" style="stroke-width:1.8;fill:none"/><text x="120.0" y="204.0" text-anchor="middle" class="xs b">waveforms, coding, channel estimation</text><rect x="246.0" y="10.0" width="220.0" height="210.0" rx="10" class="ll3"/><text x="356.0" y="36.0" text-anchor="middle" class="h">System level</text><text x="356.0" y="54.0" text-anchor="middle" class="s">many cells and users</text><polygon points="320.0,124.0 308.0,144.8 284.0,144.8 272.0,124.0 284.0,103.2 308.0,103.2" class="s3" style="fill:none;stroke-width:1.4"/><circle cx="296.0" cy="124.0" r="3.5" class="f3"/><polygon points="380.0,98.0 368.0,118.8 344.0,118.8 332.0,98.0 344.0,77.2 368.0,77.2" class="s3" style="fill:none;stroke-width:1.4"/><circle cx="356.0" cy="98.0" r="3.5" class="f3"/><polygon points="440.0,124.0 428.0,144.8 404.0,144.8 392.0,124.0 404.0,103.2 428.0,103.2" class="s3" style="fill:none;stroke-width:1.4"/><circle cx="416.0" cy="124.0" r="3.5" class="f3"/><polygon points="350.0,164.0 338.0,184.8 314.0,184.8 302.0,164.0 314.0,143.2 338.0,143.2" class="s3" style="fill:none;stroke-width:1.4"/><circle cx="326.0" cy="164.0" r="3.5" class="f3"/><polygon points="410.0,164.0 398.0,184.8 374.0,184.8 362.0,164.0 374.0,143.2 398.0,143.2" class="s3" style="fill:none;stroke-width:1.4"/><circle cx="386.0" cy="164.0" r="3.5" class="f3"/><text x="356.0" y="204.0" text-anchor="middle" class="xs b">SINR maps, scheduling, link abstraction</text><rect x="482.0" y="10.0" width="220.0" height="210.0" rx="10" class="ll8"/><text x="592.0" y="36.0" text-anchor="middle" class="h">Network level</text><text x="592.0" y="54.0" text-anchor="middle" class="s">protocols and traffic</text><rect x="522.0" y="88.0" width="140.0" height="20.0" rx="4" class="srf"/><text x="592.0" y="102.0" text-anchor="middle" class="xs b">application</text><rect x="522.0" y="116.0" width="140.0" height="20.0" rx="4" class="srf"/><text x="592.0" y="130.0" text-anchor="middle" class="xs b">transport, IP</text><rect x="522.0" y="144.0" width="140.0" height="20.0" rx="4" class="srf"/><text x="592.0" y="158.0" text-anchor="middle" class="xs b">MAC, PHY (abstracted)</text><text x="592.0" y="204.0" text-anchor="middle" class="xs b">latency, queues, handover (ns-3)</text><defs><marker id="ah7" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" class="f7"/></marker></defs><line x1="30.0" y1="238.0" x2="682.0" y2="238.0" class="s7" style="stroke-width:1.4" marker-end="url(#ah7)"/><text x="356.0" y="256.0" text-anchor="middle" class="xs">more detail, slower ← → bigger picture, more abstraction</text></svg></figure>
+  </div>
+  <div class="wrap tut-grid">
+    <nav class="toc" aria-labelledby="toc-h"><h2 id="toc-h">On this page</h2><ol><li><a href="#why">Why simulate</a></li><li><a href="#recipe">The Monte Carlo recipe</a></li><li><a href="#ci">How many samples?</a></li><li><a href="#bugs">Try it: three lines that break a simulation</a></li><li><a href="#noise">Getting the numbers right</a></li><li><a href="#tools">Tools</a></li><li><a href="#repro">Make it reproducible</a></li><li><a href="#check">Check your understanding</a></li><li><a href="#learn">Learn more</a></li><li><a href="#reading">Further reading</a></li></ol></nav>
+    <article class="prose">
+<p class="glance-h">The idea in 30 seconds</p><div class="glance viz"><div class="g" style="--gc:var(--k1)"><svg class="ic" viewBox="0 0 48 48" aria-hidden="true"><path d="M24 26 L42 34 L24 42 L6 34 Z" class="l1" style="opacity:0.6"/><path d="M24 17 L42 25 L24 33 L6 25 Z" class="l1" style="opacity:0.8"/><path d="M24 8 L42 16 L24 24 L6 16 Z" class="f1" style="opacity:1.0"/></svg><b>Pick the level</b><span>Link, system or network: match it to the question.</span></div><div class="g" style="--gc:var(--k3)"><svg class="ic" viewBox="0 0 48 48" aria-hidden="true"><circle cx="24.0" cy="24.0" r="18.0" class="l3"/><circle cx="24.0" cy="24.0" r="11.0" class="srf"/><circle cx="24.0" cy="24.0" r="11.0" class="s3"/><circle cx="24.0" cy="24.0" r="4.5" class="f3"/></svg><b>Count errors, not bits</b><span>About 100 errors per point for ±20%.</span></div><div class="g" style="--gc:var(--k8)"><svg class="ic" viewBox="0 0 48 48" aria-hidden="true"><path d="M4 24 Q24 6 44 24 Q24 42 4 24 Z" class="l8"/><path d="M4 24 Q24 6 44 24 Q24 42 4 24 Z" class="s8"/><circle cx="24.0" cy="24.0" r="7.0" class="f8"/></svg><b>Check against theory</b><span>A known closed form catches most bugs.</span></div></div>
+<h2 class="sec" id="why">Why simulate</h2>
+<p class="lead">Analysis needs simplifying assumptions; simulation can include whatever the model omits. Most papers use both: a formula for insight, a simulation to check it and to go where the formula cannot.</p><figure class="viz wide "><div class="fig-scroll"><svg viewBox="0 0 712 262" role="img" aria-label="Three levels of simulation: link level for one link in full detail, system level for many cells and users with abstracted links, and network level for protocols and traffic." class="" xmlns="http://www.w3.org/2000/svg"><rect x="10.0" y="10.0" width="220.0" height="210.0" rx="10" class="ll1"/><text x="120.0" y="36.0" text-anchor="middle" class="h">Link level</text><text x="120.0" y="54.0" text-anchor="middle" class="s">one link, every bit</text><g transform="translate(60.0,160.0) scale(0.8)"><path d="M-14 0 L-3 -62 L3 -62 L14 0" class="st" style="stroke-width:2"/><path d="M-11 -16 L9 -30 M11 -16 L-9 -30 M-8 -34 L6 -46 M8 -34 L-6 -46 M-5 -50 L4 -58 M5 -50 L-4 -58" class="st-m"/><rect x="-9" y="-74" width="5" height="16" rx="1.5" class="f1"/><rect x="4" y="-74" width="5" height="16" rx="1.5" class="f1"/><rect x="-2.5" y="-77" width="5" height="17" rx="1.5" class="f1"/></g><g transform="translate(180.0,150.0) scale(0.8)"><rect x="-9" y="-30" width="18" height="30" rx="3.5" class="f1"/><rect x="-6.5" y="-26.5" width="13" height="21" rx="1.5" class="srf"/><circle cx="0" cy="-2.7" r="1.4" class="srf"/></g><path d="M76 124.0 L80 131.8 L84 133.7 L88 128.3 L92 119.6 L96 114.2 L100 116.3 L104 124.2 L108 131.9 L112 133.7 L116 128.1 L120 119.4 L124 114.2 L128 116.4 L132 124.3 L136 132.0 L140 133.7 L144 128.0 L148 119.3 L152 114.2 L156 116.5 L160 124.5 L164 132.1 L168 133.6" class="s1" style="stroke-width:1.8;fill:none"/><text x="120.0" y="204.0" text-anchor="middle" class="xs b">waveforms, coding, channel estimation</text><rect x="246.0" y="10.0" width="220.0" height="210.0" rx="10" class="ll3"/><text x="356.0" y="36.0" text-anchor="middle" class="h">System level</text><text x="356.0" y="54.0" text-anchor="middle" class="s">many cells and users</text><polygon points="320.0,124.0 308.0,144.8 284.0,144.8 272.0,124.0 284.0,103.2 308.0,103.2" class="s3" style="fill:none;stroke-width:1.4"/><circle cx="296.0" cy="124.0" r="3.5" class="f3"/><polygon points="380.0,98.0 368.0,118.8 344.0,118.8 332.0,98.0 344.0,77.2 368.0,77.2" class="s3" style="fill:none;stroke-width:1.4"/><circle cx="356.0" cy="98.0" r="3.5" class="f3"/><polygon points="440.0,124.0 428.0,144.8 404.0,144.8 392.0,124.0 404.0,103.2 428.0,103.2" class="s3" style="fill:none;stroke-width:1.4"/><circle cx="416.0" cy="124.0" r="3.5" class="f3"/><polygon points="350.0,164.0 338.0,184.8 314.0,184.8 302.0,164.0 314.0,143.2 338.0,143.2" class="s3" style="fill:none;stroke-width:1.4"/><circle cx="326.0" cy="164.0" r="3.5" class="f3"/><polygon points="410.0,164.0 398.0,184.8 374.0,184.8 362.0,164.0 374.0,143.2 398.0,143.2" class="s3" style="fill:none;stroke-width:1.4"/><circle cx="386.0" cy="164.0" r="3.5" class="f3"/><text x="356.0" y="204.0" text-anchor="middle" class="xs b">SINR maps, scheduling, link abstraction</text><rect x="482.0" y="10.0" width="220.0" height="210.0" rx="10" class="ll8"/><text x="592.0" y="36.0" text-anchor="middle" class="h">Network level</text><text x="592.0" y="54.0" text-anchor="middle" class="s">protocols and traffic</text><rect x="522.0" y="88.0" width="140.0" height="20.0" rx="4" class="srf"/><text x="592.0" y="102.0" text-anchor="middle" class="xs b">application</text><rect x="522.0" y="116.0" width="140.0" height="20.0" rx="4" class="srf"/><text x="592.0" y="130.0" text-anchor="middle" class="xs b">transport, IP</text><rect x="522.0" y="144.0" width="140.0" height="20.0" rx="4" class="srf"/><text x="592.0" y="158.0" text-anchor="middle" class="xs b">MAC, PHY (abstracted)</text><text x="592.0" y="204.0" text-anchor="middle" class="xs b">latency, queues, handover (ns-3)</text><defs><marker id="ah1" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" class="f7"/></marker></defs><line x1="30.0" y1="238.0" x2="682.0" y2="238.0" class="s7" style="stroke-width:1.4" marker-end="url(#ah1)"/><text x="356.0" y="256.0" text-anchor="middle" class="xs">more detail, slower ← → bigger picture, more abstraction</text></svg></div><figcaption>Choose the level to match the question. A new receiver needs link level; a scheduling idea needs system level.</figcaption></figure>
+<h2 class="sec" id="recipe">The Monte Carlo recipe</h2>
+<p class="lead">Generate random data, push it through the system, count what goes wrong, and repeat until the count is trustworthy.</p><figure class="viz wide "><div class="fig-scroll"><svg viewBox="0 0 712 130" role="img" aria-label="Monte Carlo link simulation: generate bits, modulate, pass through a channel, add noise, detect, count errors, and repeat." class="" xmlns="http://www.w3.org/2000/svg"><rect x="10.0" y="20.0" width="104.0" height="52.0" rx="6" class="l7"/><rect x="10.0" y="20.0" width="104.0" height="52.0" rx="6" class="s7" style="stroke-width:1.4"/><text x="62.0" y="43.0" text-anchor="middle" class="b">Bits</text><text x="62.0" y="58.0" text-anchor="middle" class="s">random</text><defs><marker id="ah2" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" class="ink"/></marker></defs><line x1="115.0" y1="46.0" x2="127.0" y2="46.0" class="st" style="stroke-width:1.6" marker-end="url(#ah2)"/><rect x="128.0" y="20.0" width="104.0" height="52.0" rx="6" class="l1"/><rect x="128.0" y="20.0" width="104.0" height="52.0" rx="6" class="s1" style="stroke-width:1.4"/><text x="180.0" y="43.0" text-anchor="middle" class="b">Modulate</text><text x="180.0" y="58.0" text-anchor="middle" class="s">BPSK, QAM</text><defs><marker id="ah3" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" class="ink"/></marker></defs><line x1="233.0" y1="46.0" x2="245.0" y2="46.0" class="st" style="stroke-width:1.6" marker-end="url(#ah3)"/><rect x="246.0" y="20.0" width="104.0" height="52.0" rx="6" class="l4"/><rect x="246.0" y="20.0" width="104.0" height="52.0" rx="6" class="s4" style="stroke-width:1.4"/><text x="298.0" y="43.0" text-anchor="middle" class="b">Channel</text><text x="298.0" y="58.0" text-anchor="middle" class="s">fading h</text><defs><marker id="ah4" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" class="ink"/></marker></defs><line x1="351.0" y1="46.0" x2="363.0" y2="46.0" class="st" style="stroke-width:1.6" marker-end="url(#ah4)"/><rect x="364.0" y="20.0" width="104.0" height="52.0" rx="6" class="l8"/><rect x="364.0" y="20.0" width="104.0" height="52.0" rx="6" class="s8" style="stroke-width:1.4"/><text x="416.0" y="43.0" text-anchor="middle" class="b">Noise</text><text x="416.0" y="58.0" text-anchor="middle" class="s">variance N₀</text><defs><marker id="ah5" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" class="ink"/></marker></defs><line x1="469.0" y1="46.0" x2="481.0" y2="46.0" class="st" style="stroke-width:1.6" marker-end="url(#ah5)"/><rect x="482.0" y="20.0" width="104.0" height="52.0" rx="6" class="l3"/><rect x="482.0" y="20.0" width="104.0" height="52.0" rx="6" class="s3" style="stroke-width:1.4"/><text x="534.0" y="43.0" text-anchor="middle" class="b">Detect</text><text x="534.0" y="58.0" text-anchor="middle" class="s">decide</text><defs><marker id="ah6" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" class="ink"/></marker></defs><line x1="587.0" y1="46.0" x2="599.0" y2="46.0" class="st" style="stroke-width:1.6" marker-end="url(#ah6)"/><rect x="600.0" y="20.0" width="104.0" height="52.0" rx="6" class="l2"/><rect x="600.0" y="20.0" width="104.0" height="52.0" rx="6" class="s2" style="stroke-width:1.4"/><text x="652.0" y="43.0" text-anchor="middle" class="b">Count</text><text x="652.0" y="58.0" text-anchor="middle" class="s">errors</text><path d="M 650 74 C 650 110, 62 110, 62 76" class="s7 dash" style="stroke-width:1.4;fill:none"/><text x="356.0" y="120.0" text-anchor="middle" class="s b">repeat until about 100 errors, then move to the next SNR</text></svg></div></figure><figure class="code"><div class="code-h"><span>ber.py: BPSK over an AWGN channel</span><span>Python · NumPy</span></div><pre><code><span class="k">import</span> numpy as np
+<span class="k">from</span> scipy.special <span class="k">import</span> erfc
+
+rng = np.random.default_rng(1)              <span class="c"># fixed seed: reproducible</span>
+EbN0_dB = np.arange(0, 11)
+N = 10**6                                   <span class="c"># bits per point</span>
+
+ber = []
+<span class="k">for</span> e_db <span class="k">in</span> EbN0_dB:
+    EbN0 = 10**(e_db / 10)                  <span class="c"># dB to linear: 10, not 20</span>
+    bits = rng.integers(0, 2, N)
+    x = 2 * bits - 1                        <span class="c"># BPSK, Eb = 1</span>
+    noise = rng.normal(0, np.sqrt(1 / (2 * EbN0)), N)   <span class="c"># variance N0/2</span>
+    y = x + noise
+    ber.append(np.mean((y &gt; 0) != bits))
+
+theory = 0.5 * erfc(np.sqrt(10**(EbN0_dB / 10)))
+<span class="k">for</span> e, b, t <span class="k">in</span> zip(EbN0_dB, ber, theory):
+    print(f&quot;{e:2d} dB  sim {b:.2e}  theory {t:.2e}&quot;)</code></pre><figcaption>About twenty lines: a fixed seed, explicit dB conversion and the right noise variance. It runs in a few seconds.</figcaption></figure><figure class="viz "><ul class="legend2"><li><i class="" style="--c:var(--k1)"></i>Theory</li><li><i class="sq" style="--c:var(--k2)"></i>Simulation</li></ul><div class="fig-scroll"><svg data-plot='{&quot;x0&quot;:56,&quot;x1&quot;:618,&quot;y0&quot;:26,&quot;y1&quot;:234,&quot;xmin&quot;:0,&quot;xmax&quot;:10.5,&quot;ymin&quot;:-6,&quot;ymax&quot;:-0.8,&quot;xlog&quot;:false,&quot;series&quot;:[{&quot;n&quot;:&quot;Theory&quot;,&quot;k&quot;:1,&quot;p&quot;:[[0.0,-1.104],[0.0528,-1.111],[0.1055,-1.118],[0.1583,-1.126],[0.2111,-1.133],[0.2638,-1.14],[0.3166,-1.147],[0.3693,-1.155],[0.4221,-1.162],[0.4749,-1.17],[0.5276,-1.178],[0.5804,-1.185],[0.6332,-1.193],[0.6859,-1.201],[0.7387,-1.209],[0.7915,-1.217],[0.8442,-1.225],[0.897,-1.233],[0.9497,-1.242],[1.0025,-1.25],[1.0553,-1.259],[1.108,-1.267],[1.1608,-1.276],[1.2136,-1.284],[1.2663,-1.293],[1.3191,-1.302],[1.3719,-1.311],[1.4246,-1.32],[1.4774,-1.329],[1.5302,-1.339],[1.5829,-1.348],[1.6357,-1.358],[1.6884,-1.367],[1.7412,-1.377],[1.794,-1.387],[1.8467,-1.397],[1.8995,-1.407],[1.9523,-1.417],[2.005,-1.427],[2.0578,-1.437],[2.1106,-1.448],[2.1633,-1.458],[2.2161,-1.469],[2.2688,-1.479],[2.3216,-1.49],[2.3744,-1.501],[2.4271,-1.512],[2.4799,-1.524],[2.5327,-1.535],[2.5854,-1.546],[2.6382,-1.558],[2.691,-1.57],[2.7437,-1.581],[2.7965,-1.593],[2.8492,-1.605],[2.902,-1.618],[2.9548,-1.63],[3.0075,-1.642],[3.0603,-1.655],[3.1131,-1.668],[3.1658,-1.681],[3.2186,-1.693],[3.2714,-1.707],[3.3241,-1.72],[3.3769,-1.733],[3.4296,-1.747],[3.4824,-1.761],[3.5352,-1.774],[3.5879,-1.788],[3.6407,-1.803],[3.6935,-1.817],[3.7462,-1.831],[3.799,-1.846],[3.8518,-1.861],[3.9045,-1.876],[3.9573,-1.891],[4.0101,-1.906],[4.0628,-1.921],[4.1156,-1.937],[4.1683,-1.953],[4.2211,-1.969],[4.2739,-1.985],[4.3266,-2.001],[4.3794,-2.018],[4.4322,-2.034],[4.4849,-2.051],[4.5377,-2.068],[4.5905,-2.085],[4.6432,-2.103],[4.696,-2.12],[4.7487,-2.138],[4.8015,-2.156],[4.8543,-2.174],[4.907,-2.192],[4.9598,-2.211],[5.0126,-2.23],[5.0653,-2.249],[5.1181,-2.268],[5.1709,-2.287],[5.2236,-2.307],[5.2764,-2.327],[5.3291,-2.347],[5.3819,-2.367],[5.4347,-2.387],[5.4874,-2.408],[5.5402,-2.429],[5.593,-2.45],[5.6457,-2.472],[5.6985,-2.493],[5.7513,-2.515],[5.804,-2.537],[5.8568,-2.56],[5.9095,-2.583],[5.9623,-2.605],[6.0151,-2.629],[6.0678,-2.652],[6.1206,-2.676],[6.1734,-2.7],[6.2261,-2.724],[6.2789,-2.748],[6.3317,-2.773],[6.3844,-2.798],[6.4372,-2.823],[6.4899,-2.849],[6.5427,-2.875],[6.5955,-2.901],[6.6482,-2.928],[6.701,-2.954],[6.7538,-2.981],[6.8065,-3.009],[6.8593,-3.037],[6.9121,-3.065],[6.9648,-3.093],[7.0176,-3.122],[7.0704,-3.151],[7.1231,-3.18],[7.1759,-3.21],[7.2286,-3.24],[7.2814,-3.27],[7.3342,-3.301],[7.3869,-3.332],[7.4397,-3.363],[7.4925,-3.395],[7.5452,-3.427],[7.598,-3.459],[7.6508,-3.492],[7.7035,-3.525],[7.7563,-3.559],[7.809,-3.593],[7.8618,-3.627],[7.9146,-3.662],[7.9673,-3.697],[8.0201,-3.733],[8.0729,-3.769],[8.1256,-3.805],[8.1784,-3.842],[8.2312,-3.879],[8.2839,-3.917],[8.3367,-3.955],[8.3894,-3.994],[8.4422,-4.033],[8.495,-4.072],[8.5477,-4.112],[8.6005,-4.152],[8.6533,-4.193],[8.706,-4.234],[8.7588,-4.276],[8.8116,-4.318],[8.8643,-4.361],[8.9171,-4.404],[8.9698,-4.448],[9.0226,-4.492],[9.0754,-4.537],[9.1281,-4.582],[9.1809,-4.628],[9.2337,-4.675],[9.2864,-4.721],[9.3392,-4.769],[9.392,-4.817],[9.4447,-4.865],[9.4975,-4.915],[9.5503,-4.964],[9.603,-5.014],[9.6558,-5.065],[9.7085,-5.117],[9.7613,-5.169],[9.8141,-5.222],[9.8668,-5.275],[9.9196,-5.329],[9.9724,-5.383],[10.0251,-5.438],[10.0779,-5.494],[10.1307,-5.551],[10.1834,-5.608],[10.2362,-5.666],[10.2889,-5.724],[10.3417,-5.783],[10.3945,-5.843],[10.4472,-5.904],[10.5,-5.965]]}],&quot;xl&quot;:&quot;Eb/N0&quot;,&quot;xu&quot;:&quot; dB&quot;,&quot;xd&quot;:1,&quot;yd&quot;:2,&quot;yu&quot;:&quot; (log\u2081\u2080)&quot;}' viewBox="0 0 640 280" role="img" aria-label="Output of the code: simulated BPSK bit error rates sit on the theoretical curve, except at 10 dB where only 9 errors were counted." class="" xmlns="http://www.w3.org/2000/svg"><line x1="56.0" y1="234.0" x2="618.0" y2="234.0" class="grid"/><text x="48.0" y="238.0" text-anchor="end" class="xs">10⁻⁶</text><line x1="56.0" y1="194.0" x2="618.0" y2="194.0" class="grid"/><text x="48.0" y="198.0" text-anchor="end" class="xs">10⁻⁵</text><line x1="56.0" y1="154.0" x2="618.0" y2="154.0" class="grid"/><text x="48.0" y="158.0" text-anchor="end" class="xs">10⁻⁴</text><line x1="56.0" y1="114.0" x2="618.0" y2="114.0" class="grid"/><text x="48.0" y="118.0" text-anchor="end" class="xs">10⁻³</text><line x1="56.0" y1="74.0" x2="618.0" y2="74.0" class="grid"/><text x="48.0" y="78.0" text-anchor="end" class="xs">10⁻²</text><line x1="56.0" y1="34.0" x2="618.0" y2="34.0" class="grid"/><text x="48.0" y="38.0" text-anchor="end" class="xs">10⁻¹</text><line x1="56.0" y1="234.0" x2="56.0" y2="239.0" class="axis"/><text x="56.0" y="252.0" text-anchor="middle" class="xs">0</text><line x1="163.0" y1="234.0" x2="163.0" y2="239.0" class="axis"/><text x="163.0" y="252.0" text-anchor="middle" class="xs">2</text><line x1="270.1" y1="234.0" x2="270.1" y2="239.0" class="axis"/><text x="270.1" y="252.0" text-anchor="middle" class="xs">4</text><line x1="377.1" y1="234.0" x2="377.1" y2="239.0" class="axis"/><text x="377.1" y="252.0" text-anchor="middle" class="xs">6</text><line x1="484.2" y1="234.0" x2="484.2" y2="239.0" class="axis"/><text x="484.2" y="252.0" text-anchor="middle" class="xs">8</text><line x1="591.2" y1="234.0" x2="591.2" y2="239.0" class="axis"/><text x="591.2" y="252.0" text-anchor="middle" class="xs">10</text><line x1="56.0" y1="234.0" x2="618.0" y2="234.0" class="axis"/><text x="12.0" y="16.0" class="s b">Bit error rate</text><text x="337.0" y="272.0" text-anchor="middle" class="s b">Eb/N0 (dB)</text><clipPath id="cp139765231832000"><rect x="56" y="23" width="562" height="214"/></clipPath><g clip-path="url(#cp139765231832000)"><path d="M56.0 38.2 L58.8 38.5 L61.6 38.7 L64.5 39.0 L67.3 39.3 L70.1 39.6 L72.9 39.9 L75.8 40.2 L78.6 40.5 L81.4 40.8 L84.2 41.1 L87.1 41.4 L89.9 41.7 L92.7 42.0 L95.5 42.4 L98.4 42.7 L101.2 43.0 L104.0 43.3 L106.8 43.7 L109.7 44.0 L112.5 44.3 L115.3 44.7 L118.1 45.0 L121.0 45.4 L123.8 45.7 L126.6 46.1 L129.4 46.4 L132.3 46.8 L135.1 47.2 L137.9 47.6 L140.7 47.9 L143.5 48.3 L146.4 48.7 L149.2 49.1 L152.0 49.5 L154.8 49.9 L157.7 50.3 L160.5 50.7 L163.3 51.1 L166.1 51.5 L169.0 51.9 L171.8 52.3 L174.6 52.7 L177.4 53.2 L180.3 53.6 L183.1 54.1 L185.9 54.5 L188.7 54.9 L191.6 55.4 L194.4 55.9 L197.2 56.3 L200.0 56.8 L202.9 57.3 L205.7 57.7 L208.5 58.2 L211.3 58.7 L214.2 59.2 L217.0 59.7 L219.8 60.2 L222.6 60.7 L225.4 61.2 L228.3 61.7 L231.1 62.3 L233.9 62.8 L236.7 63.3 L239.6 63.9 L242.4 64.4 L245.2 65.0 L248.0 65.5 L250.9 66.1 L253.7 66.7 L256.5 67.3 L259.3 67.8 L262.2 68.4 L265.0 69.0 L267.8 69.6 L270.6 70.2 L273.5 70.9 L276.3 71.5 L279.1 72.1 L281.9 72.7 L284.8 73.4 L287.6 74.0 L290.4 74.7 L293.2 75.4 L296.1 76.0 L298.9 76.7 L301.7 77.4 L304.5 78.1 L307.3 78.8 L310.2 79.5 L313.0 80.2 L315.8 81.0 L318.6 81.7 L321.5 82.4 L324.3 83.2 L327.1 83.9 L329.9 84.7 L332.8 85.5 L335.6 86.3 L338.4 87.1 L341.2 87.9 L344.1 88.7 L346.9 89.5 L349.7 90.3 L352.5 91.2 L355.4 92.0 L358.2 92.9 L361.0 93.7 L363.8 94.6 L366.7 95.5 L369.5 96.4 L372.3 97.3 L375.1 98.2 L377.9 99.1 L380.8 100.1 L383.6 101.0 L386.4 102.0 L389.2 103.0 L392.1 103.9 L394.9 104.9 L397.7 105.9 L400.5 106.9 L403.4 108.0 L406.2 109.0 L409.0 110.0 L411.8 111.1 L414.7 112.2 L417.5 113.3 L420.3 114.4 L423.1 115.5 L426.0 116.6 L428.8 117.7 L431.6 118.9 L434.4 120.0 L437.3 121.2 L440.1 122.4 L442.9 123.6 L445.7 124.8 L448.6 126.0 L451.4 127.3 L454.2 128.5 L457.0 129.8 L459.8 131.1 L462.7 132.4 L465.5 133.7 L468.3 135.0 L471.1 136.4 L474.0 137.7 L476.8 139.1 L479.6 140.5 L482.4 141.9 L485.3 143.3 L488.1 144.8 L490.9 146.2 L493.7 147.7 L496.6 149.2 L499.4 150.7 L502.2 152.2 L505.0 153.7 L507.9 155.3 L510.7 156.9 L513.5 158.5 L516.3 160.1 L519.2 161.7 L522.0 163.4 L524.8 165.0 L527.6 166.7 L530.5 168.4 L533.3 170.2 L536.1 171.9 L538.9 173.7 L541.7 175.5 L544.6 177.3 L547.4 179.1 L550.2 181.0 L553.0 182.9 L555.9 184.8 L558.7 186.7 L561.5 188.6 L564.3 190.6 L567.2 192.6 L570.0 194.6 L572.8 196.6 L575.6 198.7 L578.5 200.8 L581.3 202.9 L584.1 205.0 L586.9 207.1 L589.8 209.3 L592.6 211.5 L595.4 213.8 L598.2 216.0 L601.1 218.3 L603.9 220.6 L606.7 223.0 L609.5 225.3 L612.4 227.7 L615.2 230.1 L618.0 232.6" class="s1" style="stroke-width:2.2"/></g><circle cx="56.0" cy="38.3" r="5.0" class="f2" style="stroke:var(--surface);stroke-width:1.5"/><circle cx="109.5" cy="43.9" r="5.0" class="f2" style="stroke:var(--surface);stroke-width:1.5"/><circle cx="163.0" cy="51.0" r="5.0" class="f2" style="stroke:var(--surface);stroke-width:1.5"/><circle cx="216.6" cy="59.6" r="5.0" class="f2" style="stroke:var(--surface);stroke-width:1.5"/><circle cx="270.1" cy="69.9" r="5.0" class="f2" style="stroke:var(--surface);stroke-width:1.5"/><circle cx="323.6" cy="83.0" r="5.0" class="f2" style="stroke:var(--surface);stroke-width:1.5"/><circle cx="377.1" cy="98.8" r="5.0" class="f2" style="stroke:var(--surface);stroke-width:1.5"/><circle cx="430.7" cy="118.2" r="5.0" class="f2" style="stroke:var(--surface);stroke-width:1.5"/><circle cx="484.2" cy="142.7" r="5.0" class="f2" style="stroke:var(--surface);stroke-width:1.5"/><circle cx="537.7" cy="173.3" r="5.0" class="f2" style="stroke:var(--surface);stroke-width:1.5"/><circle cx="591.2" cy="195.8" r="5.0" class="f2" style="stroke:var(--surface);stroke-width:1.5"/><text x="575.2" y="220.0" text-anchor="end" class="s b tx2">only 9 errors: off by ×2.3</text></svg></div><figcaption>What the code prints, plotted. Every point but the last sits on the theory curve.</figcaption></figure>
+<h2 class="sec" id="ci">How many samples?</h2>
+<p class="lead">A Monte Carlo estimate is itself random. Its accuracy depends on the number of errors counted, not the number of bits sent.</p><figure class="viz "><div class="fig-scroll"><svg data-plot='{&quot;x0&quot;:56,&quot;x1&quot;:618,&quot;y0&quot;:26,&quot;y1&quot;:204,&quot;xmin&quot;:1,&quot;xmax&quot;:10000,&quot;ymin&quot;:0,&quot;ymax&quot;:100,&quot;xlog&quot;:true,&quot;series&quot;:[{&quot;n&quot;:&quot;95% interval&quot;,&quot;k&quot;:3,&quot;p&quot;:[[1.0,196.0],[1.0471,191.538],[1.0965,187.179],[1.1482,182.918],[1.2023,178.754],[1.2589,174.685],[1.3183,170.709],[1.3804,166.823],[1.4454,163.026],[1.5136,159.315],[1.5849,155.688],[1.6596,152.144],[1.7378,148.681],[1.8197,145.297],[1.9055,141.989],[1.9953,138.757],[2.0893,135.599],[2.1878,132.512],[2.2909,129.496],[2.3988,126.548],[2.5119,123.668],[2.6303,120.853],[2.7542,118.102],[2.884,115.413],[3.02,112.786],[3.1623,110.219],[3.3113,107.71],[3.4674,105.258],[3.6308,102.862],[3.8019,100.521],[3.9811,98.233],[4.1687,95.997],[4.3652,93.811],[4.5709,91.676],[4.7863,89.589],[5.0119,87.55],[5.2481,85.557],[5.4954,83.61],[5.7544,81.706],[6.0256,79.847],[6.3096,78.029],[6.6069,76.253],[6.9183,74.517],[7.2444,72.821],[7.5858,71.163],[7.9433,69.543],[8.3176,67.96],[8.7096,66.413],[9.1201,64.902],[9.5499,63.424],[10.0,61.981],[10.4713,60.57],[10.9648,59.191],[11.4815,57.844],[12.0226,56.527],[12.5893,55.24],[13.1826,53.983],[13.8038,52.754],[14.4544,51.553],[15.1356,50.38],[15.8489,49.233],[16.5959,48.112],[17.378,47.017],[18.197,45.947],[19.0546,44.901],[19.9526,43.879],[20.893,42.88],[21.8776,41.904],[22.9087,40.95],[23.9883,40.018],[25.1189,39.107],[26.3027,38.217],[27.5423,37.347],[28.8403,36.497],[30.1995,35.666],[31.6228,34.854],[33.1131,34.061],[34.6737,33.286],[36.3078,32.528],[38.0189,31.787],[39.8107,31.064],[41.6869,30.357],[43.6516,29.666],[45.7088,28.991],[47.863,28.331],[50.1187,27.686],[52.4807,27.056],[54.9541,26.44],[57.544,25.838],[60.256,25.25],[63.0957,24.675],[66.0693,24.113],[69.1831,23.564],[72.4436,23.028],[75.8578,22.504],[79.4328,21.992],[83.1764,21.491],[87.0964,21.002],[91.2011,20.524],[95.4993,20.057],[100.0,19.6],[104.7129,19.154],[109.6478,18.718],[114.8154,18.292],[120.2264,17.875],[125.8925,17.469],[131.8257,17.071],[138.0384,16.682],[144.544,16.303],[151.3561,15.931],[158.4893,15.569],[165.9587,15.214],[173.7801,14.868],[181.9701,14.53],[190.5461,14.199],[199.5262,13.876],[208.9296,13.56],[218.7762,13.251],[229.0868,12.95],[239.8833,12.655],[251.1886,12.367],[263.0268,12.085],[275.4229,11.81],[288.4032,11.541],[301.9952,11.279],[316.2278,11.022],[331.1311,10.771],[346.7369,10.526],[363.0781,10.286],[380.1894,10.052],[398.1072,9.823],[416.8694,9.6],[436.5158,9.381],[457.0882,9.168],[478.6301,8.959],[501.1872,8.755],[524.8075,8.556],[549.5409,8.361],[575.4399,8.171],[602.5596,7.985],[630.9573,7.803],[660.6934,7.625],[691.831,7.452],[724.436,7.282],[758.5776,7.116],[794.3282,6.954],[831.7638,6.796],[870.9636,6.641],[912.0108,6.49],[954.9926,6.342],[1000.0,6.198],[1047.1285,6.057],[1096.4782,5.919],[1148.1536,5.784],[1202.2644,5.653],[1258.9254,5.524],[1318.2567,5.398],[1380.3843,5.275],[1445.4398,5.155],[1513.5612,5.038],[1584.8932,4.923],[1659.5869,4.811],[1737.8008,4.702],[1819.7009,4.595],[1905.4607,4.49],[1995.2623,4.388],[2089.2961,4.288],[2187.7616,4.19],[2290.8677,4.095],[2398.8329,4.002],[2511.8864,3.911],[2630.268,3.822],[2754.2287,3.735],[2884.0315,3.65],[3019.9517,3.567],[3162.2777,3.485],[3311.3112,3.406],[3467.3685,3.329],[3630.7805,3.253],[3801.894,3.179],[3981.0717,3.106],[4168.6938,3.036],[4365.1583,2.967],[4570.8819,2.899],[4786.3009,2.833],[5011.8723,2.769],[5248.0746,2.706],[5495.4087,2.644],[5754.3994,2.584],[6025.5959,2.525],[6309.5734,2.467],[6606.9345,2.411],[6918.3097,2.356],[7244.3596,2.303],[7585.7758,2.25],[7943.2823,2.199],[8317.6377,2.149],[8709.6359,2.1],[9120.1084,2.052],[9549.9259,2.006],[10000.0,1.96]]}],&quot;xl&quot;:&quot;errors&quot;,&quot;xu&quot;:&quot;&quot;,&quot;xd&quot;:0,&quot;yd&quot;:1,&quot;yu&quot;:&quot;%&quot;}' viewBox="0 0 640 250" role="img" aria-label="The 95 percent confidence interval of a Monte Carlo error-rate estimate shrinks as one over the square root of the number of errors: about plus or minus 20 percent at 100 errors." class="" xmlns="http://www.w3.org/2000/svg"><line x1="56.0" y1="204.0" x2="618.0" y2="204.0" class="grid"/><text x="48.0" y="208.0" text-anchor="end" class="xs">0</text><line x1="56.0" y1="159.5" x2="618.0" y2="159.5" class="grid"/><text x="48.0" y="163.5" text-anchor="end" class="xs">25</text><line x1="56.0" y1="115.0" x2="618.0" y2="115.0" class="grid"/><text x="48.0" y="119.0" text-anchor="end" class="xs">50</text><line x1="56.0" y1="70.5" x2="618.0" y2="70.5" class="grid"/><text x="48.0" y="74.5" text-anchor="end" class="xs">75</text><line x1="56.0" y1="26.0" x2="618.0" y2="26.0" class="grid"/><text x="48.0" y="30.0" text-anchor="end" class="xs">100</text><line x1="56.0" y1="204.0" x2="56.0" y2="209.0" class="axis"/><text x="56.0" y="222.0" text-anchor="middle" class="xs">1</text><line x1="196.5" y1="204.0" x2="196.5" y2="209.0" class="axis"/><text x="196.5" y="222.0" text-anchor="middle" class="xs">10</text><line x1="337.0" y1="204.0" x2="337.0" y2="209.0" class="axis"/><text x="337.0" y="222.0" text-anchor="middle" class="xs">100</text><line x1="477.5" y1="204.0" x2="477.5" y2="209.0" class="axis"/><text x="477.5" y="222.0" text-anchor="middle" class="xs">1,000</text><line x1="618.0" y1="204.0" x2="618.0" y2="209.0" class="axis"/><text x="618.0" y="222.0" text-anchor="middle" class="xs">10,000</text><line x1="56.0" y1="204.0" x2="618.0" y2="204.0" class="axis"/><text x="12.0" y="16.0" class="s b">Uncertainty in the estimate (±%)</text><text x="337.0" y="242.0" text-anchor="middle" class="s b">Number of errors counted</text><clipPath id="cp139765227604224"><rect x="56" y="23" width="562" height="184"/></clipPath><g clip-path="url(#cp139765227604224)"><path d="M56.0 -144.9 L58.8 -136.9 L61.6 -129.2 L64.4 -121.6 L67.2 -114.2 L70.0 -106.9 L72.9 -99.9 L75.7 -92.9 L78.5 -86.2 L81.3 -79.6 L84.1 -73.1 L86.9 -66.8 L89.7 -60.7 L92.5 -54.6 L95.3 -48.7 L98.1 -43.0 L101.0 -37.4 L103.8 -31.9 L106.6 -26.5 L109.4 -21.3 L112.2 -16.1 L115.0 -11.1 L117.8 -6.2 L120.6 -1.4 L123.4 3.2 L126.2 7.8 L129.1 12.3 L131.9 16.6 L134.7 20.9 L137.5 25.1 L140.3 29.1 L143.1 33.1 L145.9 37.0 L148.7 40.8 L151.5 44.5 L154.3 48.2 L157.2 51.7 L160.0 55.2 L162.8 58.6 L165.6 61.9 L168.4 65.1 L171.2 68.3 L174.0 71.4 L176.8 74.4 L179.6 77.3 L182.4 80.2 L185.3 83.0 L188.1 85.8 L190.9 88.5 L193.7 91.1 L196.5 93.7 L199.3 96.2 L202.1 98.6 L204.9 101.0 L207.7 103.4 L210.6 105.7 L213.4 107.9 L216.2 110.1 L219.0 112.2 L221.8 114.3 L224.6 116.4 L227.4 118.4 L230.2 120.3 L233.0 122.2 L235.8 124.1 L238.7 125.9 L241.5 127.7 L244.3 129.4 L247.1 131.1 L249.9 132.8 L252.7 134.4 L255.5 136.0 L258.3 137.5 L261.1 139.0 L263.9 140.5 L266.8 142.0 L269.6 143.4 L272.4 144.8 L275.2 146.1 L278.0 147.4 L280.8 148.7 L283.6 150.0 L286.4 151.2 L289.2 152.4 L292.0 153.6 L294.9 154.7 L297.7 155.8 L300.5 156.9 L303.3 158.0 L306.1 159.1 L308.9 160.1 L311.7 161.1 L314.5 162.1 L317.3 163.0 L320.1 163.9 L322.9 164.9 L325.8 165.7 L328.6 166.6 L331.4 167.5 L334.2 168.3 L337.0 169.1 L339.8 169.9 L342.6 170.7 L345.4 171.4 L348.2 172.2 L351.1 172.9 L353.9 173.6 L356.7 174.3 L359.5 175.0 L362.3 175.6 L365.1 176.3 L367.9 176.9 L370.7 177.5 L373.5 178.1 L376.3 178.7 L379.1 179.3 L382.0 179.9 L384.8 180.4 L387.6 180.9 L390.4 181.5 L393.2 182.0 L396.0 182.5 L398.8 183.0 L401.6 183.5 L404.4 183.9 L407.2 184.4 L410.1 184.8 L412.9 185.3 L415.7 185.7 L418.5 186.1 L421.3 186.5 L424.1 186.9 L426.9 187.3 L429.7 187.7 L432.5 188.1 L435.4 188.4 L438.2 188.8 L441.0 189.1 L443.8 189.5 L446.6 189.8 L449.4 190.1 L452.2 190.4 L455.0 190.7 L457.8 191.0 L460.6 191.3 L463.4 191.6 L466.3 191.9 L469.1 192.2 L471.9 192.4 L474.7 192.7 L477.5 193.0 L480.3 193.2 L483.1 193.5 L485.9 193.7 L488.7 193.9 L491.6 194.2 L494.4 194.4 L497.2 194.6 L500.0 194.8 L502.8 195.0 L505.6 195.2 L508.4 195.4 L511.2 195.6 L514.0 195.8 L516.8 196.0 L519.6 196.2 L522.5 196.4 L525.3 196.5 L528.1 196.7 L530.9 196.9 L533.7 197.0 L536.5 197.2 L539.3 197.4 L542.1 197.5 L544.9 197.7 L547.8 197.8 L550.6 197.9 L553.4 198.1 L556.2 198.2 L559.0 198.3 L561.8 198.5 L564.6 198.6 L567.4 198.7 L570.2 198.8 L573.0 199.0 L575.9 199.1 L578.7 199.2 L581.5 199.3 L584.3 199.4 L587.1 199.5 L589.9 199.6 L592.7 199.7 L595.5 199.8 L598.3 199.9 L601.1 200.0 L603.9 200.1 L606.8 200.2 L609.6 200.3 L612.4 200.3 L615.2 200.4 L618.0 200.5" class="s3" style="stroke-width:2.2"/></g><circle cx="337.0" cy="169.1" r="5.5" class="f3"/><text x="347.0" y="161.1" class="s b tx3">100 errors: ±20%</text><circle cx="196.5" cy="93.6" r="5.0" class="f8"/><text x="206.5" y="87.6" class="s b tx8">10 errors: ±62%</text></svg></div><figcaption>Rule of thumb: collect at least 100 errors per point. For a bit error rate of 10⁻⁶, that means 10⁸ bits.</figcaption></figure><details class="more"><summary>More detail: <span class="hint">confidence intervals</span></summary><div class="body"><p>If <svg class="tex" xmlns="http://www.w3.org/2000/svg" viewBox="-5 -75 57 81" style="width:0.567em;height:0.814em;vertical-align:-0.064em" role="img" aria-label="k" focusable="false"><path fill="currentColor" d="M46.1 -43.5L46.1 -41.9Q42.5 -41.7 38.5 -39.0Q34.5 -36.2 23.6 -26.5L27.3 -17.7Q32.8 -4.8 35.4 -4.8Q37.5 -4.8 39.9 -9.0Q40.4 -9.8 41.4 -11.6L42.9 -10.5Q39.4 -4.2 37.1 -1.9Q34.8 0.4 31.8 0.4Q29.6 0.4 27.8 -1.4Q26.1 -3.1 23.7 -7.8Q20.7 -13.6 17.7 -21.9L13.7 -18.7L8.9 -0.7L1.4 -0.7L15.5 -53.5Q16.9 -58.5 17.3 -62.3Q17.0 -64.7 12.2 -64.7L10.4 -64.7L10.4 -66.3Q17.9 -67.2 26.1 -69.0L26.7 -68.4L14.7 -22.8L19.0 -26.1Q33.3 -37.1 33.3 -40.1Q33.3 -41.9 29.6 -41.9L28.2 -41.9L28.2 -43.5L46.1 -43.5Z"/></svg> errors are counted in <svg class="tex" xmlns="http://www.w3.org/2000/svg" viewBox="-8 -72 87 79" style="width:0.867em;height:0.788em;vertical-align:-0.068em" role="img" aria-label="N" focusable="false"><path fill="currentColor" d="M72.7 -66.0L72.7 -64.4Q70.0 -63.8 69.0 -63.5Q67.9 -63.1 66.7 -61.4Q65.4 -59.6 64.8 -57.5Q64.1 -55.4 62.5 -49.9L47.9 0.8L46.1 0.8L23.1 -54.2L11.7 -12.0Q10.8 -8.9 10.8 -6.6Q10.8 -4.5 12.3 -3.5Q13.9 -2.6 17.8 -2.3L17.8 -0.7L-2.0 -0.7L-2.0 -2.3Q2.3 -2.9 4.1 -5.5Q5.9 -8.0 8.6 -17.5L20.3 -59.0Q18.0 -64.4 11.7 -64.4L11.7 -66.0L27.7 -66.0L48.4 -16.1L59.0 -54.9Q59.8 -57.7 59.8 -59.3Q59.8 -62.0 58.4 -63.0Q57.1 -64.0 52.9 -64.4L52.9 -66.0L72.7 -66.0Z"/></svg> trials, the estimate <svg class="tex" xmlns="http://www.w3.org/2000/svg" viewBox="-14 -80 328 106" style="width:3.276em;height:1.058em;vertical-align:-0.258em" role="img" aria-label="\hat p=k/N" focusable="false"><path fill="currentColor" d="M49.8 -57.3L46.4 -57.3L34.2 -67.6L22.1 -57.3L18.7 -57.3L31.1 -74.0L37.3 -74.0L49.8 -57.3ZM21.5 -43.5L18.6 -33.5Q26.1 -44.8 35.7 -44.8Q41.2 -44.8 44.2 -41.5Q47.2 -38.2 47.2 -32.3Q47.2 -20.0 37.8 -9.8Q28.5 0.4 17.5 0.4Q13.9 0.4 10.6 -1.3Q6.6 15.2 6.6 15.3Q6.6 16.9 7.9 17.5Q9.3 18.2 12.8 18.2L12.8 19.8L-7.5 19.8L-7.5 18.2Q-4.3 18.1 -2.9 16.8Q-1.6 15.5 -0.7 11.9L10.8 -31.3Q12.4 -37.1 12.4 -38.4Q12.4 -41.1 8.0 -41.1L5.8 -41.1L5.6 -42.6L21.2 -44.8Q21.7 -44.8 21.7 -44.4Q21.6 -43.9 21.5 -43.5ZM38.2 -32.0Q38.2 -36.4 36.8 -38.5Q35.3 -40.5 32.0 -40.5Q28.1 -40.5 24.2 -37.1Q20.3 -33.7 18.5 -29.1Q16.3 -23.4 14.1 -15.6Q12.0 -7.8 12.0 -5.3Q12.0 -3.6 13.3 -2.5Q14.7 -1.5 16.8 -1.5Q24.6 -1.5 31.3 -11.0Q38.2 -20.6 38.2 -32.0ZM138.4 -32.7L79.5 -32.7L79.5 -39.3L138.4 -39.3L138.4 -32.7ZM138.4 -12.7L79.5 -12.7L79.5 -19.3L138.4 -19.3L138.4 -12.7ZM209.3 -43.5L209.3 -41.9Q205.7 -41.7 201.7 -39.0Q197.7 -36.2 186.8 -26.5L190.5 -17.7Q196.0 -4.8 198.6 -4.8Q200.7 -4.8 203.1 -9.0Q203.6 -9.8 204.6 -11.6L206.1 -10.5Q202.6 -4.2 200.3 -1.9Q198.0 0.4 195.0 0.4Q192.8 0.4 191.0 -1.4Q189.3 -3.1 186.9 -7.8Q183.9 -13.6 180.9 -21.9L176.9 -18.7L172.1 -0.7L164.6 -0.7L178.7 -53.5Q180.1 -58.5 180.5 -62.3Q180.2 -64.7 175.4 -64.7L173.6 -64.7L173.6 -66.3Q181.1 -67.2 189.3 -69.0L189.9 -68.4L177.9 -22.8L182.2 -26.1Q196.5 -37.1 196.5 -40.1Q196.5 -41.9 192.8 -41.9L191.4 -41.9L191.4 -43.5L209.3 -43.5ZM236.3 -68.3L213.5 0.7L206.7 0.7L229.6 -68.3L236.3 -68.3ZM308.1 -66.0L308.1 -64.4Q305.4 -63.8 304.4 -63.5Q303.3 -63.1 302.1 -61.4Q300.8 -59.6 300.2 -57.5Q299.5 -55.4 297.9 -49.9L283.3 0.8L281.5 0.8L258.5 -54.2L247.1 -12.0Q246.2 -8.9 246.2 -6.6Q246.2 -4.5 247.7 -3.5Q249.3 -2.6 253.2 -2.3L253.2 -0.7L233.4 -0.7L233.4 -2.3Q237.7 -2.9 239.5 -5.5Q241.3 -8.0 244.0 -17.5L255.7 -59.0Q253.4 -64.4 247.1 -64.4L247.1 -66.0L263.1 -66.0L283.8 -16.1L294.4 -54.9Q295.2 -57.7 295.2 -59.3Q295.2 -62.0 293.8 -63.0Q292.5 -64.0 288.3 -64.4L288.3 -66.0L308.1 -66.0Z"/></svg> has relative standard deviation about <svg class="tex" xmlns="http://www.w3.org/2000/svg" viewBox="5 -110 241 141" style="width:2.409em;height:1.412em;vertical-align:-0.312em" role="img" aria-label="1/\sqrt{k}" focusable="false"><path fill="currentColor" d="M39.4 -0.7L11.8 -0.7L11.8 -2.2Q17.3 -2.5 19.3 -4.2Q21.3 -6.0 21.3 -10.2L21.3 -55.1Q21.3 -60.0 18.3 -60.0Q16.9 -60.0 13.8 -58.8L11.1 -57.8L11.1 -59.2L29.0 -68.3L29.9 -68.0L29.9 -8.3Q29.9 -5.0 31.9 -3.6Q33.9 -2.2 39.4 -2.2L39.4 -0.7ZM78.7 -68.3L55.9 0.7L49.1 0.7L72.0 -68.3L78.7 -68.3ZM174.1 -98.0L126.3 25.2L123.1 25.2L102.9 -27.8Q100.7 -33.7 96.7 -33.7Q93.6 -33.7 90.2 -30.6L89.0 -32.6L104.6 -45.0L106.5 -45.0L126.9 8.6L127.3 8.6L168.7 -98.0L174.1 -98.0ZM229.2 -43.2L229.2 -41.7Q225.6 -41.5 221.6 -38.7Q217.6 -36.0 206.7 -26.2L210.4 -17.5Q215.9 -4.5 218.5 -4.5Q220.6 -4.5 223.0 -8.8Q223.5 -9.5 224.5 -11.4L226.0 -10.2Q222.5 -4.0 220.2 -1.7Q217.9 0.6 214.9 0.6Q212.7 0.6 210.9 -1.1Q209.2 -2.9 206.8 -7.5Q203.8 -13.4 200.8 -21.7L196.8 -18.5L192.0 -0.5L184.5 -0.5L198.6 -53.2Q200.0 -58.2 200.4 -62.0Q200.1 -64.5 195.3 -64.5L193.5 -64.5L193.5 -66.0Q201.0 -67.0 209.2 -68.8L209.8 -68.2L197.8 -22.5L202.1 -25.9Q216.4 -36.9 216.4 -39.9Q216.4 -41.7 212.7 -41.7L211.3 -41.7L211.3 -43.2L229.2 -43.2ZM170.6 -97.8L170.6 -104.0L240.0 -104.0L240.0 -97.8L170.6 -97.8Z"/></svg> when <svg class="tex" xmlns="http://www.w3.org/2000/svg" viewBox="-14 -51 67 77" style="width:0.667em;height:0.766em;vertical-align:-0.256em" role="img" aria-label="p" focusable="false"><path fill="currentColor" d="M21.5 -43.7L18.6 -33.7Q26.1 -45.0 35.7 -45.0Q41.2 -45.0 44.2 -41.7Q47.2 -38.4 47.2 -32.5Q47.2 -20.2 37.8 -10.0Q28.5 0.2 17.5 0.2Q13.9 0.2 10.6 -1.5Q6.6 15.0 6.6 15.1Q6.6 16.7 7.9 17.3Q9.3 18.0 12.8 18.0L12.8 19.6L-7.5 19.6L-7.5 18.0Q-4.3 17.9 -2.9 16.6Q-1.6 15.3 -0.7 11.7L10.8 -31.5Q12.4 -37.3 12.4 -38.6Q12.4 -41.3 8.0 -41.3L5.8 -41.3L5.6 -42.8L21.2 -45.0Q21.7 -45.0 21.7 -44.6Q21.6 -44.1 21.5 -43.7ZM38.2 -32.2Q38.2 -36.6 36.8 -38.7Q35.3 -40.7 32.0 -40.7Q28.1 -40.7 24.2 -37.3Q20.3 -33.9 18.5 -29.3Q16.3 -23.6 14.1 -15.8Q12.0 -8.0 12.0 -5.5Q12.0 -3.8 13.3 -2.8Q14.7 -1.7 16.8 -1.7Q24.6 -1.7 31.3 -11.2Q38.2 -20.8 38.2 -32.2Z"/></svg> is small, so a 95% interval is roughly</p><div class="eq"><svg class="tex" xmlns="http://www.w3.org/2000/svg" viewBox="-14 -90 459 171" style="width:4.594em;height:1.706em" role="img" aria-label="p hat times 1 plus or minus 1.96 over square root of k" focusable="false"><path fill="currentColor" d="M49.8 -56.8L46.4 -56.8L34.2 -67.1L22.1 -56.8L18.7 -56.8L31.1 -73.5L37.3 -73.5L49.8 -56.8ZM21.5 -43.0L18.6 -33.0Q26.1 -44.3 35.7 -44.3Q41.2 -44.3 44.2 -41.0Q47.2 -37.7 47.2 -31.8Q47.2 -19.5 37.8 -9.3Q28.5 0.9 17.5 0.9Q13.9 0.9 10.6 -0.8Q6.6 15.7 6.6 15.8Q6.6 17.4 7.9 18.1Q9.3 18.7 12.8 18.7L12.8 20.3L-7.5 20.3L-7.5 18.7Q-4.3 18.6 -2.9 17.3Q-1.6 16.0 -0.7 12.4L10.8 -30.8Q12.4 -36.6 12.4 -37.9Q12.4 -40.6 8.0 -40.6L5.8 -40.6L5.6 -42.1L21.2 -44.3Q21.7 -44.3 21.7 -43.9Q21.6 -43.4 21.5 -43.0ZM38.2 -31.5Q38.2 -35.9 36.8 -37.9Q35.3 -40.0 32.0 -40.0Q28.1 -40.0 24.2 -36.6Q20.3 -33.2 18.5 -28.6Q16.3 -22.9 14.1 -15.1Q12.0 -7.3 12.0 -4.8Q12.0 -3.1 13.3 -2.0Q14.7 -1.0 16.8 -1.0Q24.6 -1.0 31.3 -10.5Q38.2 -20.1 38.2 -31.5ZM97.9 71.5L97.9 74.6Q83.5 61.0 75.1 40.8Q66.7 20.6 66.7 -4.6Q66.7 -30.0 75.3 -51.4Q83.9 -72.7 97.9 -84.0L97.9 -81.2Q88.2 -71.1 81.5 -51.5Q74.8 -32.0 74.8 -4.6Q74.8 43.1 97.9 71.5ZM144.7 -0.2L117.1 -0.2L117.1 -1.7Q122.6 -2.0 124.6 -3.7Q126.6 -5.5 126.6 -9.7L126.6 -54.6Q126.6 -59.5 123.6 -59.5Q122.2 -59.5 119.1 -58.3L116.4 -57.3L116.4 -58.7L134.3 -67.8L135.2 -67.5L135.2 -7.8Q135.2 -4.5 137.2 -3.1Q139.2 -1.7 144.7 -1.7L144.7 -0.2ZM239.0 -24.4L212.8 -24.4L212.8 -3.5L206.2 -3.5L206.2 -24.4L180.1 -24.4L180.1 -31.0L206.2 -31.0L206.2 -50.4L212.8 -50.4L212.8 -31.0L239.0 -31.0L239.0 -24.4ZM239.0 8.5L180.1 8.5L180.1 1.9L239.0 1.9L239.0 8.5ZM297.7 -36.1L278.3 -36.1L278.3 -37.2Q282.2 -37.4 283.6 -38.6Q285.0 -39.8 285.0 -42.8L285.0 -74.2Q285.0 -77.6 282.9 -77.6Q281.9 -77.6 279.7 -76.8L277.9 -76.1L277.9 -77.1L290.4 -83.4L291.0 -83.2L291.0 -41.4Q291.0 -39.1 292.4 -38.1Q293.8 -37.2 297.7 -37.2L297.7 -36.1ZM317.8 -39.1Q317.8 -37.6 316.6 -36.5Q315.4 -35.4 313.8 -35.4Q312.2 -35.4 311.1 -36.5Q310.0 -37.6 310.0 -39.2Q310.0 -40.8 311.1 -42.0Q312.3 -43.1 313.9 -43.1Q315.4 -43.1 316.6 -41.9Q317.8 -40.7 317.8 -39.1ZM326.7 -34.6L326.5 -36.0Q334.6 -37.4 340.1 -42.8Q345.7 -48.2 347.8 -56.7Q343.7 -52.7 337.3 -52.7Q331.6 -52.7 328.2 -56.6Q324.7 -60.5 324.7 -66.9Q324.7 -74.0 328.9 -78.7Q333.0 -83.4 339.2 -83.4Q345.9 -83.4 350.2 -78.1Q354.7 -72.5 354.7 -63.7Q354.7 -57.5 352.6 -52.1Q350.4 -46.7 346.3 -42.9Q342.0 -39.0 337.8 -37.3Q333.7 -35.6 326.7 -34.6ZM347.9 -61.0L347.9 -63.7Q347.9 -81.5 338.7 -81.5Q335.4 -81.5 333.6 -79.1Q332.5 -77.7 331.8 -74.9Q331.1 -72.1 331.1 -69.3Q331.1 -63.1 333.5 -59.4Q335.8 -55.7 339.7 -55.7Q342.5 -55.7 345.2 -57.1Q347.9 -58.5 347.9 -61.0ZM388.8 -84.0L388.9 -82.9Q380.7 -81.5 375.2 -76.2Q369.6 -70.8 368.2 -62.9Q372.3 -66.1 377.1 -66.1Q383.3 -66.1 386.8 -62.1Q390.3 -58.2 390.3 -51.5Q390.3 -44.6 386.8 -40.2Q382.6 -35.1 375.6 -35.1Q367.1 -35.1 363.3 -42.2Q360.0 -48.2 360.0 -55.6Q360.0 -67.1 367.6 -75.0Q371.9 -79.4 376.5 -81.3Q381.1 -83.2 388.8 -84.0ZM384.0 -49.3Q384.0 -62.9 374.6 -62.9Q371.1 -62.9 368.8 -61.0Q366.5 -59.1 366.5 -54.7Q366.5 -46.5 369.0 -41.8Q371.6 -37.1 376.4 -37.1Q380.1 -37.1 382.1 -40.4Q384.0 -43.8 384.0 -49.3ZM341.5 -11.6L308.0 74.6L305.8 74.6L291.7 37.5Q290.1 33.4 287.3 33.4Q285.1 33.4 282.8 35.5L281.9 34.2L292.8 25.5L294.2 25.5L308.5 63.0L308.7 63.0L337.7 -11.6L341.5 -11.6ZM380.1 26.4L380.1 27.5Q377.5 27.7 374.7 29.6Q371.9 31.5 364.3 38.3L366.9 44.5Q370.8 53.5 372.6 53.5Q374.0 53.5 375.7 50.6Q376.1 50.0 376.8 48.7L377.8 49.5Q375.4 53.9 373.8 55.5Q372.2 57.1 370.1 57.1Q368.5 57.1 367.3 55.9Q366.1 54.7 364.4 51.4Q362.3 47.3 360.2 41.5L357.4 43.8L354.0 56.4L348.8 56.4L358.6 19.4Q359.6 15.9 359.9 13.2Q359.7 11.6 356.3 11.6L355.1 11.6L355.1 10.4Q360.3 9.8 366.1 8.6L366.5 9.0L358.1 40.9L361.1 38.6Q371.1 30.9 371.1 28.8Q371.1 27.5 368.5 27.5L367.5 27.5L367.5 26.4L380.1 26.4ZM408.6 -80.9L408.6 -84.0Q423.1 -70.4 431.5 -50.2Q439.9 -30.0 439.9 -4.6Q439.9 20.6 431.3 42.0Q422.7 63.4 408.6 74.6L408.6 71.8Q418.4 61.7 425.1 42.1Q431.8 22.5 431.8 -4.6Q431.8 -52.5 408.6 -80.9ZM270.1 -22.1L270.1 -28.3L392.6 -28.3L392.6 -22.1L270.1 -22.1ZM339.0 -11.4L339.0 -15.8L387.6 -15.8L387.6 -11.4L339.0 -11.4Z"/></svg></div><p>Stopping each SNR point after a fixed number of errors, rather than a fixed number of bits, keeps the accuracy even across the curve.</p></div></details>
+<h2 class="sec" id="bugs">Try it: three lines that break a simulation</h2>
+<p class="lead">Most wrong curves in papers come from a handful of mistakes. Switch them on and watch the points leave the theory curve.</p><div class="demo" data-demo="sim-bug"></div><p>Things to try:</p><ul><li>Choose ‘Noise not split over I and Q’. Complex noise of variance N₀ has N₀/2 per real dimension; forgetting the split costs exactly 3 dB.</li><li>Choose ‘20 log₁₀ for power’. Powers convert with 10 log₁₀; amplitudes with 20. The error stretches the SNR axis by a factor of two.</li><li>Switch to Rayleigh fading. The curve falls only one decade per 10 dB: diversity order 1.</li></ul><div class="keyidea"><span class="label">Key idea</span><p>Always plot your simulation on top of a known closed form, such as BPSK in AWGN, before trusting it on a new system.</p></div>
+<h2 class="sec" id="noise">Getting the numbers right</h2>
+<p class="lead">Simulations in papers are judged on their parameters as much as their code. The noise power is the first thing a reviewer checks.</p><figure class="viz wide "><div class="fig-scroll"><svg viewBox="0 0 712 76" role="img" aria-label="Noise power: minus 174 dBm per hertz plus 10 log10 of the bandwidth plus the noise figure; for 100 MHz and a 7 dB noise figure, minus 87 dBm." class="" xmlns="http://www.w3.org/2000/svg"><rect x="10.0" y="14.0" width="160.0" height="52.0" rx="6" class="l7"/><rect x="10.0" y="14.0" width="160.0" height="52.0" rx="6" class="s7" style="stroke-width:1.4"/><text x="90.0" y="37.0" text-anchor="middle" class="b">−174 dBm/Hz</text><text x="90.0" y="52.0" text-anchor="middle" class="s">thermal noise density</text><rect x="186.0" y="14.0" width="160.0" height="52.0" rx="6" class="l1"/><rect x="186.0" y="14.0" width="160.0" height="52.0" rx="6" class="s1" style="stroke-width:1.4"/><text x="266.0" y="37.0" text-anchor="middle" class="b">+ 10 log₁₀ B</text><text x="266.0" y="52.0" text-anchor="middle" class="s">+80 dB for 100 MHz</text><rect x="362.0" y="14.0" width="160.0" height="52.0" rx="6" class="l8"/><rect x="362.0" y="14.0" width="160.0" height="52.0" rx="6" class="s8" style="stroke-width:1.4"/><text x="442.0" y="37.0" text-anchor="middle" class="b">+ NF</text><text x="442.0" y="52.0" text-anchor="middle" class="s">+7 dB noise figure</text><rect x="538.0" y="14.0" width="160.0" height="52.0" rx="6" class="f3"/><text x="618.0" y="37.0" text-anchor="middle" class="w">= −87 dBm</text><text x="618.0" y="52.0" text-anchor="middle" class="w">noise power</text></svg></div></figure><p>The <a href="link-budget.html">link budget</a> tutorial puts this together with path loss and antenna gains. Be explicit about whether an SNR is per bit (E<sub>b</sub>/N<sub>0</sub>) or per symbol, and in which bandwidth.</p>
+<h2 class="sec" id="tools">Tools</h2>
+<p class="lead">Start with your own NumPy or MATLAB code; it teaches you the most. Move to a library when you need standard-compliant detail or scale.</p><figure class="table-fig"><div class="table-scroll"><table class="cmp"><thead><tr><th scope="col">Tool</th><th scope="col">What it is</th><th scope="col">Good for</th></tr></thead><tbody><tr><td>NumPy / SciPy, MATLAB</td><td>Your own Monte Carlo code</td><td>Analysis checks, new ideas, most papers</td></tr><tr><td>NVIDIA Sionna</td><td>Differentiable link-level library on GPUs, with ray tracing (Sionna RT)</td><td>5G/6G PHY, learning end to end</td></tr><tr><td>MATLAB 5G Toolbox</td><td>Standard-compliant NR waveforms and channels</td><td>Realistic 5G link-level results</td></tr><tr><td>QuaDRiGa</td><td>Geometry-based stochastic channel model</td><td>3GPP-like channels for MIMO studies</td></tr><tr><td>ns-3</td><td>Packet-level network simulator</td><td>Protocols, latency, system studies</td></tr></tbody></table></div></figure>
+<h2 class="sec" id="repro">Make it reproducible</h2>
+<ul class="cards viz c4"><li style="--c:var(--k1)"><svg class="ic" viewBox="0 0 48 48" aria-hidden="true"><rect x="11.0" y="21.0" width="26.0" height="21.0" rx="3" class="f1"/><path d="M16 21 V15 Q16 7 24 7 Q32 7 32 15 V21" class="s1" style="stroke-width:3.2"/><circle cx="24.0" cy="31.0" r="3.0" class="srf"/></svg><b>Fix the seeds</b><span>Record the random seeds so that every figure can be regenerated exactly.</span></li><li style="--c:var(--k3)"><svg class="ic" viewBox="0 0 48 48" aria-hidden="true"><rect x="6.0" y="6.0" width="10.0" height="10.0" rx="2" class="l3"/><rect x="6.0" y="19.0" width="10.0" height="10.0" rx="2" class="f3"/><rect x="6.0" y="32.0" width="10.0" height="10.0" rx="2" class="l3"/><rect x="19.0" y="6.0" width="10.0" height="10.0" rx="2" class="f3"/><rect x="19.0" y="19.0" width="10.0" height="10.0" rx="2" class="l3"/><rect x="19.0" y="32.0" width="10.0" height="10.0" rx="2" class="f3"/><rect x="32.0" y="6.0" width="10.0" height="10.0" rx="2" class="l3"/><rect x="32.0" y="19.0" width="10.0" height="10.0" rx="2" class="f3"/><rect x="32.0" y="32.0" width="10.0" height="10.0" rx="2" class="l3"/></svg><b>Parameter table</b><span>List every value: bandwidth, noise figure, path-loss model, antenna counts, number of trials.</span></li><li style="--c:var(--k7)"><svg class="ic" viewBox="0 0 48 48" aria-hidden="true"><rect x="6.0" y="28.0" width="8.0" height="14.0" rx="1.5" class="l7"/><rect x="18.0" y="18.0" width="8.0" height="24.0" rx="1.5" class="f7"/><rect x="30.0" y="8.0" width="8.0" height="34.0" rx="1.5" class="l7"/><line x1="4.0" y1="43.0" x2="44.0" y2="43.0" class="axis"/></svg><b>Show the check</b><span>Include a curve where simulation and closed form meet.</span></li><li style="--c:var(--k8)"><svg class="ic" viewBox="0 0 48 48" aria-hidden="true"><path d="M24 26 L42 34 L24 42 L6 34 Z" class="l8" style="opacity:0.6"/><path d="M24 17 L42 25 L24 33 L6 25 Z" class="l8" style="opacity:0.8"/><path d="M24 8 L42 16 L24 24 L6 16 Z" class="f8" style="opacity:1.0"/></svg><b>Share the code</b><span>A public repository answers most reviewer questions before they are asked.</span></li></ul>
+<div class="takeaways"><span class="label">Key takeaways</span><ul><li>Simulate at the level that matches the question: link, system or network.</li><li>Monte Carlo accuracy depends on the number of errors counted; aim for at least 100 per point.</li><li>Most bugs are in noise variance, dB conversion or SNR definitions; validate against a closed form.</li><li>Fix seeds, list every parameter and share the code.</li></ul></div>
+<h2 id="check">Check your understanding</h2><details class="qa"><summary>You simulate BPSK and your curve is exactly 3 dB worse than theory. What is the likely bug?</summary><div class="ans"><p>The noise variance per real dimension was set to N₀ instead of N₀/2.</p></div></details><details class="qa"><summary>How many bits do you need to estimate a BER of 10⁻⁵ to about ±20%?</summary><div class="ans"><p>About 100 errors, so around 10⁷ bits.</p></div></details><details class="qa"><summary>What is the noise power in a 20 MHz channel with a 9 dB noise figure?</summary><div class="ans"><p>−174 + 73 + 9 = −92 dBm.</p></div></details>
+<h2 id="learn">Learn more</h2><p>Trusted places to go further, outside this site.</p><ul class="learn"><li><a href="https://pysdr.org" target="_blank" rel="noopener noreferrer" style="--c:var(--k7)"><span class="av">P</span><span class="ty">Free book</span><span class="nm">PySDR</span><span class="ds">Wireless and DSP simulation in Python, chapter by chapter.</span><span class="dm">pysdr.org</span></a></li><li><a href="https://developer.nvidia.com/sionna" target="_blank" rel="noopener noreferrer" style="--c:var(--k6)"><span class="av">NS</span><span class="ty">Tool</span><span class="nm">NVIDIA Sionna</span><span class="ds">GPU-accelerated 5G/6G link-level simulation in Python.</span><span class="dm">developer.nvidia.com</span></a></li><li><a href="https://www.mathworks.com/products/5g.html" target="_blank" rel="noopener noreferrer" style="--c:var(--k6)"><span class="av">M5</span><span class="ty">Tool</span><span class="nm">MATLAB 5G Toolbox</span><span class="ds">Standard-compliant 5G NR waveforms, channels and receivers.</span><span class="dm">mathworks.com</span></a></li><li><a href="https://www.nsnam.org/" target="_blank" rel="noopener noreferrer" style="--c:var(--k6)"><span class="av">N3</span><span class="ty">Tool</span><span class="nm">ns-3</span><span class="ds">Open-source network simulator for system-level studies.</span><span class="dm">nsnam.org</span></a></li></ul>
+<h2 id="reading">Further reading</h2><ol class="refs"><li>M. C. Jeruchim, P. Balaban, and K. S. Shanmugan, <i>Simulation of Communication Systems</i>, 2nd ed. Springer, 2000.</li><li>W. H. Tranter, K. S. Shanmugan, T. S. Rappaport, and K. L. Kosbar, <i>Principles of Communication Systems Simulation with Wireless Applications</i>. Prentice Hall, 2004.</li><li>J. Hoydis et al., “Sionna: An open-source library for next-generation physical layer research,” arXiv:2203.11854, 2022.</li></ol>
+<nav class="prevnext" aria-label="More tutorials"><a class="prev" href="machine-learning.html"><span class="dir">Previous</span><span class="nm">Machine learning</span></a></nav>
+    </article>
+  </div>
+</main>
+<footer class="site-footer">
+  <div class="wrap foot"><p>&copy; 2026 Mohd Hamza Naim Shaikh. Last updated October 2026.</p>
+    <nav aria-label="More pages"><a href="index.html">Tutorials</a><a href="../urdu.html">Urdu</a><a href="../places/index.html">Places</a></nav>
+  </div>
+</footer>
+<script>(function () {
+  const links = Array.from(document.querySelectorAll('.toc a[href^="#"]'));
+  if (!("IntersectionObserver" in window) || !links.length) return;
+  const byId = new Map(links.map(function (a) { return [a.getAttribute("href").slice(1), a]; }));
+  const io = new IntersectionObserver(function (entries) {
+    entries.forEach(function (e) {
+      if (!e.isIntersecting) return;
+      links.forEach(function (l) { l.removeAttribute("aria-current"); });
+      const a = byId.get(e.target.id); if (a) a.setAttribute("aria-current", "true");
+    });
+  }, { rootMargin: "-20% 0px -70% 0px" });
+  byId.forEach(function (_a, id) { const s = document.getElementById(id); if (s) io.observe(s); });
+})();</script>
+<script>/* Interactive models for the tutorials.
+   Each <div class="demo" data-demo="..."> is built here: controls, a canvas
+   plot with a hover read-out, and a row of computed values. */
+(function () {
+  "use strict";
+
+  /* ---------------------------------------------------------------- utils */
+  const C0 = 299792458;
+  const $ = (tag, attrs, kids) => {
+    const el = document.createElement(tag);
+    if (attrs) for (const k in attrs) {
+      if (k === "text") el.textContent = attrs[k];
+      else if (k === "html") el.innerHTML = attrs[k];
+      else el.setAttribute(k, attrs[k]);
+    }
+    (kids || []).forEach((c) => c && el.appendChild(c));
+    return el;
+  };
+  const token = (name) => getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+  const fmt = (v, d) => (Math.abs(v) < 1e-12 ? 0 : v).toFixed(d);
+  const db = (p) => 10 * Math.log10(Math.max(p, 1e-12));
+  function rng(seed) { // mulberry32
+    let a = seed >>> 0;
+    return function () {
+      a = (a + 0x6D2B79F5) >>> 0;
+      let t = a;
+      t = Math.imul(t ^ (t >>> 15), t | 1);
+      t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+      return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+    };
+  }
+  function niceMax(v) {
+    if (!(v > 0)) return 1;
+    const p = Math.pow(10, Math.floor(Math.log10(v)));
+    for (const m of [1, 1.2, 1.5, 2, 2.5, 3, 4, 5, 6, 8, 10]) if (m * p >= v) return m * p;
+    return 10 * p;
+  }
+  function ticks(min, max, n) {
+    const span = max - min, raw = span / n;
+    const p = Math.pow(10, Math.floor(Math.log10(raw)));
+    const step = [1, 2, 2.5, 5, 10].map((m) => m * p).find((s) => s >= raw) || raw;
+    const out = [];
+    for (let v = Math.ceil(min / step) * step; v <= max + step * 1e-6; v += step) out.push(+v.toFixed(10));
+    return out;
+  }
+  function frame(fn) { let q = false; return () => { if (q) return; q = true; requestAnimationFrame(() => { q = false; fn(); }); }; }
+
+  /* ----------------------------------------------------------------- Plot */
+  const plots = [];
+  function Plot(box, label) {
+    this.box = box;
+    this.canvas = $("canvas", { role: "img", "aria-label": label });
+    this.tip = $("div", { class: "tip", hidden: "" });
+    box.appendChild(this.canvas);
+    box.appendChild(this.tip);
+    this.ctx = this.canvas.getContext("2d");
+    this.cfg = null; this.hover = null; this.W = 0; this.H = 0;
+    const redraw = frame(() => this.draw());
+    this.redraw = redraw;
+    if ("ResizeObserver" in window) new ResizeObserver(redraw).observe(box);
+    else window.addEventListener("resize", redraw);
+    const move = (e) => {
+      const r = this.canvas.getBoundingClientRect();
+      this.hover = { px: e.clientX - r.left, py: e.clientY - r.top };
+      redraw();
+    };
+    this.canvas.addEventListener("pointermove", move);
+    this.canvas.addEventListener("pointerdown", move);
+    this.canvas.addEventListener("pointerleave", () => { this.hover = null; this.tip.hidden = true; redraw(); });
+    plots.push(this);
+  }
+  Plot.prototype.set = function (cfg) { this.cfg = cfg; this.redraw(); };
+  Plot.prototype.draw = function () {
+    const cfg = this.cfg; if (!cfg) return;
+    const r = this.box.getBoundingClientRect();
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    const W = Math.max(1, Math.round(r.width)), H = Math.max(1, Math.round(r.height));
+    if (this.canvas.width !== Math.round(W * dpr) || this.canvas.height !== Math.round(H * dpr)) {
+      this.canvas.width = Math.round(W * dpr); this.canvas.height = Math.round(H * dpr);
+    }
+    const ctx = this.ctx;
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    ctx.clearRect(0, 0, W, H);
+    const col = {
+      ink: token("--ink"), ink2: token("--ink-2"), muted: token("--muted"), line: token("--line"),
+      surface: token("--surface"), c1: token("--chart-1"), c2: token("--chart-2"), ref: token("--muted")
+    };
+    const font = (s, w) => (w || "400") + " " + s + 'px "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif';
+    const L = 50, R = 16, T = 28, B = 42;
+    const pw = W - L - R, ph = H - T - B;
+    const X = (v) => L + ((v - cfg.x.min) / (cfg.x.max - cfg.x.min)) * pw;
+    const Y = (v) => T + (1 - (v - cfg.y.min) / (cfg.y.max - cfg.y.min)) * ph;
+    this.X = X; this.Y = Y; this.L = L; this.T = T; this.pw = pw; this.ph = ph;
+
+    // grid and axes
+    ctx.lineWidth = 1; ctx.strokeStyle = col.line; ctx.fillStyle = col.muted;
+    ctx.font = font(12); ctx.textBaseline = "middle"; ctx.textAlign = "right";
+    (cfg.y.ticks || ticks(cfg.y.min, cfg.y.max, 5)).forEach((v) => {
+      const y = Math.round(Y(v)) + 0.5;
+      ctx.beginPath(); ctx.moveTo(L, y); ctx.lineTo(L + pw, y); ctx.stroke();
+      ctx.fillText((cfg.y.fmt || String)(v), L - 8, y);
+    });
+    ctx.textAlign = "center"; ctx.textBaseline = "top";
+    (cfg.x.ticks || ticks(cfg.x.min, cfg.x.max, 6)).forEach((v) => {
+      const x = Math.round(X(v)) + 0.5;
+      ctx.beginPath(); ctx.moveTo(x, T + ph); ctx.lineTo(x, T + ph + 5); ctx.stroke();
+      ctx.fillText((cfg.x.fmt || String)(v), x, T + ph + 9);
+    });
+    ctx.strokeStyle = col.muted;
+    ctx.beginPath(); ctx.moveTo(L, Math.round(T + ph) + 0.5); ctx.lineTo(L + pw, Math.round(T + ph) + 0.5); ctx.stroke();
+    ctx.fillStyle = col.ink2; ctx.font = font(12, "500");
+    ctx.textAlign = "left"; ctx.textBaseline = "alphabetic";
+    ctx.fillText(cfg.y.label, 4, 16);
+    ctx.textAlign = "center";
+    ctx.fillText(cfg.x.label, L + pw / 2, H - 6);
+
+    ctx.save();
+    ctx.beginPath(); ctx.rect(L, T - 2, pw, ph + 4); ctx.clip();
+    // reference lines
+    (cfg.hlines || []).forEach((h) => {
+      if (h.y < cfg.y.min || h.y > cfg.y.max) return;
+      ctx.strokeStyle = col[h.color || "c2"]; ctx.lineWidth = 1.5; ctx.setLineDash([5, 4]);
+      ctx.beginPath(); ctx.moveTo(L, Y(h.y)); ctx.lineTo(L + pw, Y(h.y)); ctx.stroke(); ctx.setLineDash([]);
+    });
+    (cfg.vlines || []).forEach((v) => {
+      ctx.strokeStyle = col[v.color || "c2"]; ctx.lineWidth = 1.5;
+      ctx.beginPath(); ctx.moveTo(X(v.x), T); ctx.lineTo(X(v.x), T + ph); ctx.stroke();
+    });
+    // series
+    cfg.series.forEach((s) => {
+      ctx.strokeStyle = col[s.color]; ctx.lineWidth = s.width || 2;
+      ctx.lineJoin = "round"; ctx.lineCap = "round";
+      ctx.setLineDash(s.dash || []);
+      ctx.beginPath();
+      s.data.forEach((p, i) => { const x = X(p[0]), y = Y(Math.max(cfg.y.min - 1, Math.min(cfg.y.max + 1, p[1]))); i ? ctx.lineTo(x, y) : ctx.moveTo(x, y); });
+      ctx.stroke(); ctx.setLineDash([]);
+    });
+    ctx.restore();
+
+    // labels for reference lines (text tokens, not series colours)
+    ctx.font = font(12, "500"); ctx.fillStyle = col.ink2; ctx.textBaseline = "alphabetic";
+    (cfg.hlines || []).forEach((h) => {
+      if (!h.label || h.y < cfg.y.min || h.y > cfg.y.max) return;
+      ctx.textAlign = "right"; ctx.fillText(h.label, L + pw - 4, Y(h.y) - 6);
+    });
+    (cfg.vlines || []).forEach((v) => {
+      if (!v.label) return;
+      const x = X(v.x), right = x < L + pw - 80;
+      ctx.textAlign = right ? "left" : "right";
+      ctx.fillText(v.label, x + (right ? 6 : -6), T + 12);
+    });
+    // points
+    const dot = (x, y, c, rad) => {
+      ctx.beginPath(); ctx.arc(x, y, rad + 2, 0, Math.PI * 2); ctx.fillStyle = col.surface; ctx.fill();
+      ctx.beginPath(); ctx.arc(x, y, rad, 0, Math.PI * 2); ctx.fillStyle = col[c]; ctx.fill();
+    };
+    (cfg.points || []).forEach((p) => {
+      if (p.x < cfg.x.min || p.x > cfg.x.max || p.y < cfg.y.min || p.y > cfg.y.max) return;
+      const x = X(p.x), y = Y(p.y);
+      dot(x, y, p.color || "c1", p.r || 4);
+      if (p.label) {
+        ctx.font = font(12, "500"); ctx.fillStyle = col.ink;
+        const right = x < L + pw - 110;
+        ctx.textAlign = right ? "left" : "right"; ctx.textBaseline = "alphabetic";
+        ctx.fillText(p.label, x + (right ? 10 : -10), y - 9);
+      }
+    });
+
+    // hover: crosshair and tooltip
+    const hv = this.hover;
+    if (!hv || hv.px < L || hv.px > L + pw || hv.py < T - 10 || hv.py > T + ph + 10) { this.tip.hidden = true; return; }
+    const xv = cfg.x.min + ((hv.px - L) / pw) * (cfg.x.max - cfg.x.min);
+    const rows = [];
+    let cx = null;
+    cfg.series.forEach((s) => {
+      if (s.hover === false || !s.data.length) return;
+      let lo = 0, hi = s.data.length - 1;
+      while (hi - lo > 1) { const m = (lo + hi) >> 1; if (s.data[m][0] < xv) lo = m; else hi = m; }
+      const p = Math.abs(s.data[lo][0] - xv) < Math.abs(s.data[hi][0] - xv) ? s.data[lo] : s.data[hi];
+      if (cx === null) cx = X(p[0]);
+      if (p[1] >= cfg.y.min && p[1] <= cfg.y.max) dot(X(p[0]), Y(p[1]), s.color, 4);
+      rows.push({ s: s, p: p });
+    });
+    if (cx === null) { this.tip.hidden = true; return; }
+    ctx.strokeStyle = col.muted; ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.moveTo(Math.round(cx) + 0.5, T); ctx.lineTo(Math.round(cx) + 0.5, T + ph); ctx.stroke();
+    rows.forEach((rw) => { if (rw.p[1] >= cfg.y.min && rw.p[1] <= cfg.y.max) dot(X(rw.p[0]), Y(rw.p[1]), rw.s.color, 4); });
+    const head = (cfg.x.hover || cfg.x.fmt || String)(rows[0].p[0]);
+    this.tip.innerHTML = '<p class="tip-h">' + head + "</p>" + rows.map((rw) =>
+      '<p><span class="key key-' + rw.s.color + (rw.s.dash ? " key-dash" : "") + '" aria-hidden="true"></span>' +
+      (rw.s.name ? rw.s.name + ": " : "") + "<b>" + (rw.s.fmt || cfg.y.hover || String)(rw.p[1]) + "</b></p>").join("");
+    this.tip.hidden = false;
+    const tw = this.tip.offsetWidth, th = this.tip.offsetHeight;
+    let tx = cx + 12; if (tx + tw > W - 4) tx = cx - 12 - tw;
+    let ty = Math.max(4, Math.min(hv.py - th / 2, H - th - 4));
+    this.tip.style.transform = "translate(" + Math.round(Math.max(4, tx)) + "px," + Math.round(ty) + "px)";
+  };
+
+  /* ------------------------------------------------------------- controls */
+  function slider(o) {
+    const input = $("input", { type: "range", id: o.id, min: o.min, max: o.max, step: o.step, value: o.value });
+    const out = $("output", { for: o.id });
+    const wrap = $("div", { class: "ctl" }, [$("label", { for: o.id, text: o.label }), input, out]);
+    const api = {
+      el: wrap, input: input,
+      get value() { return o.map ? o.map(+input.value) : +input.value; },
+      set: (v) => { input.value = v; api.show(); },
+      show: () => { out.textContent = o.fmt(api.value); }
+    };
+    input.addEventListener("input", api.show);
+    api.show();
+    return api;
+  }
+  function seg(o) {
+    let value = o.value;
+    const group = $("div", { class: "seg-mini", role: "radiogroup", "aria-labelledby": o.id + "-l" });
+    const btns = o.options.map((op) => {
+      const b = $("button", { type: "button", role: "radio", id: o.id + "-" + String(op.v).replace(/\W/g, ""), "aria-checked": String(op.v === value), text: op.t });
+      b.addEventListener("click", () => { value = op.v; btns.forEach((x, i) => x.setAttribute("aria-checked", String(o.options[i].v === value))); api.onchange && api.onchange(); });
+      group.appendChild(b);
+      return b;
+    });
+    const wrap = $("div", { class: "ctl ctl-seg" }, [$("span", { id: o.id + "-l", class: "ctl-l", text: o.label }), group]);
+    const api = { el: wrap, get value() { return value; }, onchange: null };
+    return api;
+  }
+  function button(id, text) { return $("button", { type: "button", class: "btn btn-quiet btn-small", id: id, text: text }); }
+  function legend(items) {
+    return $("ul", { class: "legend" }, items.map((it) => $("li", {}, [
+      $("span", { class: "key key-" + it[0] + (it[2] === true ? " key-dash" : it[2] === "dot" ? " key-dot" : ""), "aria-hidden": "true" }), document.createTextNode(it[1])
+    ])));
+  }
+  function readouts(defs) {
+    const dl = $("dl", { class: "demo-read" });
+    const vals = {};
+    defs.forEach((d) => {
+      const dd = $("dd", { text: "–" });
+      vals[d[0]] = dd;
+      dl.appendChild($("div", {}, [$("dt", { text: d[1] }), dd]));
+    });
+    return { el: dl, set: (k, v) => { vals[k].innerHTML = v; } };
+  }
+  function shell(root, parts) {
+    root.textContent = "";
+    const controls = $("div", { class: "demo-controls" }, parts.controls);
+    const plotBox = $("div", { class: "demo-plot" });
+    [controls, parts.legend, plotBox, parts.read && parts.read.el].forEach((x) => x && root.appendChild(x));
+    return new Plot(plotBox, parts.label);
+  }
+
+  /* ============================================================ the demos */
+  const DEMOS = {};
+
+  /* RIS: beam pattern of an N-element surface with b-bit phases */
+  DEMOS["ris-beam"] = function (root) {
+    const N = slider({ id: "ris-n", label: "Elements, N", min: 4, max: 64, step: 1, value: 16, fmt: (v) => String(v) });
+    const T = slider({ id: "ris-t", label: "Target angle", min: -60, max: 60, step: 1, value: 25, fmt: (v) => v + "°" });
+    const Bq = seg({ id: "ris-b", label: "Phase resolution", value: 2, options: [{ v: 1, t: "1 bit" }, { v: 2, t: "2 bits" }, { v: 3, t: "3 bits" }, { v: 0, t: "Continuous" }] });
+    const read = readouts([["g", "Gain toward target"], ["i", "Ideal, N²"], ["q", "Loss from quantized phases"], ["p", "Main beam at"]]);
+    const plot = shell(root, {
+      controls: [N.el, T.el, Bq.el], read: read,
+      legend: legend([["c1", "Configured surface"], ["ref", "Unconfigured surface (mirror)", true]]),
+      label: "Reflection gain of the surface against angle, with the target direction marked."
+    });
+    function af(phi, s) { let re = 0, im = 0; for (let i = 0; i < phi.length; i++) { const a = phi[i] + Math.PI * i * s; re += Math.cos(a); im += Math.sin(a); } return re * re + im * im; }
+    const run = frame(() => {
+      const n = N.value, th = T.value * Math.PI / 180, b = Bq.value;
+      const phi = [], zero = new Array(n).fill(0);
+      for (let i = 0; i < n; i++) {
+        let p = -Math.PI * i * Math.sin(th);
+        if (b) { const q = 2 * Math.PI / (1 << b); p = Math.round(p / q) * q; }
+        phi.push(p);
+      }
+      const cfgd = [], mirror = []; let best = -1, bestA = 0;
+      for (let a = -90; a <= 90.0001; a += 0.25) {
+        const s = Math.sin(a * Math.PI / 180), g = af(phi, s);
+        if (g > best) { best = g; bestA = a; }
+        cfgd.push([a, db(g)]); mirror.push([a, db(af(zero, s))]);
+      }
+      const gt = db(af(phi, Math.sin(th))), ideal = 20 * Math.log10(n);
+      plot.set({
+        x: { min: -90, max: 90, ticks: [-90, -60, -30, 0, 30, 60, 90], fmt: (v) => v + "°", label: "Reflection angle", hover: (v) => fmt(v, 1) + "°" },
+        y: { min: -10, max: 40, ticks: [-10, 0, 10, 20, 30, 40], label: "Gain over one element (dB)", hover: (v) => fmt(v, 1) + " dB" },
+        series: [{ name: "Configured", color: "c1", data: cfgd }, { name: "Mirror", color: "ref", data: mirror, dash: [6, 5], width: 1.5 }],
+        vlines: [{ x: T.value, label: "Target " + T.value + "°" }]
+      });
+      read.set("g", fmt(gt, 1) + " dB");
+      read.set("i", fmt(ideal, 1) + " dB");
+      read.set("q", fmt(Math.max(0, ideal - gt), 2) + " dB");
+      read.set("p", fmt(bestA, 1) + "°");
+    });
+    [N, T].forEach((s) => s.input.addEventListener("input", run));
+    Bq.onchange = run; run();
+  };
+
+  /* NOMA: two-user downlink rate region versus TDMA */
+  DEMOS["noma-region"] = function (root) {
+    const s1 = slider({ id: "noma-s1", label: "Near-user SNR", min: 0, max: 40, step: 1, value: 20, fmt: (v) => v + " dB" });
+    const s2 = slider({ id: "noma-s2", label: "Far-user SNR", min: -10, max: 30, step: 1, value: 5, fmt: (v) => v + " dB" });
+    const al = slider({ id: "noma-a", label: "Power to near user, α", min: 0.01, max: 0.5, step: 0.01, value: 0.2, fmt: (v) => v.toFixed(2) });
+    const read = readouts([["n", "NOMA rates (near, far)"], ["t", "TDMA, same near-user rate"], ["d", "Far user gains with NOMA"]]);
+    const plot = shell(root, {
+      controls: [s1.el, s2.el, al.el], read: read,
+      legend: legend([["c1", "NOMA (superposition and SIC)"], ["ref", "TDMA (time sharing)", true]]),
+      label: "Achievable rate pairs of the near and far user with NOMA and with TDMA."
+    });
+    const run = frame(() => {
+      if (s2.value > s1.value) s2.set(s1.value);
+      const S1 = Math.pow(10, s1.value / 10), S2 = Math.pow(10, s2.value / 10);
+      const C1 = Math.log2(1 + S1), C2 = Math.log2(1 + S2);
+      const R1 = (a) => Math.log2(1 + a * S1), R2 = (a) => Math.log2(1 + (1 - a) * S2 / (a * S2 + 1));
+      const noma = [], tdma = [];
+      for (let k = 0; k <= 400; k++) { const a = k / 400; noma.push([R1(a), R2(a)]); }
+      for (let k = 0; k <= 200; k++) { const t = k / 200; tdma.push([t * C1, (1 - t) * C2]); }
+      const a = al.value, r1 = R1(a), r2 = R2(a), r2t = (1 - r1 / C1) * C2;
+      const xm = niceMax(C1 * 1.04), ym = niceMax(C2 * 1.12);
+      plot.set({
+        x: { min: 0, max: xm, ticks: ticks(0, xm, 5), label: "Near-user rate R₁ (bit/s/Hz)", hover: (v) => "R₁ = " + fmt(v, 2) },
+        y: { min: 0, max: ym, ticks: ticks(0, ym, 4), label: "Far-user rate R₂ (bit/s/Hz)", fmt: (v) => String(+v.toFixed(2)), hover: (v) => fmt(v, 2) },
+        series: [{ name: "NOMA, R₂", color: "c1", data: noma }, { name: "TDMA, R₂", color: "ref", data: tdma, dash: [6, 5], width: 1.5 }],
+        points: [{ x: r1, y: r2, color: "c1", r: 5, label: "α = " + a.toFixed(2) }, { x: r1, y: r2t, color: "ref", r: 4 }]
+      });
+      read.set("n", fmt(r1, 2) + " and " + fmt(r2, 2) + " bit/s/Hz");
+      read.set("t", "far user " + fmt(r2t, 2) + " bit/s/Hz");
+      const gain = r2 - r2t;
+      read.set("d", (gain >= 0 ? "+" : "") + fmt(gain, 2) + " bit/s/Hz" + (r2t > 1e-6 ? " (" + (gain >= 0 ? "+" : "") + fmt(100 * gain / r2t, 0) + "%)" : ""));
+    });
+    [s1, s2, al].forEach((s) => s.input.addEventListener("input", run));
+    run();
+  };
+
+  /* ISAC: range profile of two equal targets after matched filtering */
+  DEMOS["isac-range"] = function (root) {
+    const BW = [[10e6, "10 MHz"], [20e6, "20 MHz, an LTE carrier"], [50e6, "50 MHz"], [100e6, "100 MHz, 5G NR in FR1"], [200e6, "200 MHz"],
+      [320e6, "320 MHz, Wi-Fi 7"], [400e6, "400 MHz, 5G NR in FR2"], [800e6, "800 MHz"], [1e9, "1 GHz"], [2e9, "2 GHz"], [4e9, "4 GHz, automotive radar"]];
+    const SEP = [0.05, 0.1, 0.2, 0.3, 0.5, 0.75, 1, 1.5, 2, 3, 5, 10];
+    const len = (m) => (m === 0 ? "0" : m < 1 ? +(m * 100).toPrecision(3) + " cm" : +m.toPrecision(3) + " m");
+    const b = slider({ id: "isac-b", label: "Bandwidth, B", min: 0, max: BW.length - 1, step: 1, value: 3, map: (i) => BW[i], fmt: (v) => v[1] });
+    const s = slider({ id: "isac-d", label: "Target separation", min: 0, max: SEP.length - 1, step: 1, value: 8, map: (i) => SEP[i], fmt: len });
+    const read = readouts([["r", "Range resolution, c/2B"], ["s", "Separation"], ["v", "Result"]]);
+    const plot = shell(root, {
+      controls: [b.el, s.el], read: read,
+      label: "Echo power against range for two equal targets, with their true positions marked."
+    });
+    const sinc2 = (x) => { if (Math.abs(x) < 1e-9) return 1; const v = Math.sin(Math.PI * x) / (Math.PI * x); return v * v; };
+    const run = frame(() => {
+      const B = b.value[0], d = s.value, dr = C0 / (2 * B);
+      const r1 = -d / 2, r2 = d / 2, span = 1.5 * d + 3 * dr;
+      const data = []; let mx = 0;
+      for (let k = 0; k <= 600; k++) {
+        const r = -span + (2 * span * k) / 600;
+        const p = sinc2(2 * B * (r - r1) / C0) + sinc2(2 * B * (r - r2) / C0);
+        mx = Math.max(mx, p); data.push([r, p]);
+      }
+      data.forEach((p) => { p[1] /= mx; });
+      const tk = ticks(-span, span, 6);
+      plot.set({
+        x: { min: -span, max: span, ticks: tk, label: "Range offset from the midpoint", fmt: (v) => (v < 0 ? "−" : "") + len(Math.abs(v)), hover: (v) => (v < 0 ? "−" : "") + len(Math.abs(v)) },
+        y: { min: 0, max: 1.05, ticks: [0, 0.25, 0.5, 0.75, 1], label: "Echo power (normalized)", fmt: (v) => v.toFixed(2), hover: (v) => v.toFixed(2) },
+        series: [{ name: "Echo", color: "c1", data: data }],
+        vlines: [{ x: r1 }, { x: r2 }]
+      });
+      read.set("r", len(dr));
+      read.set("s", len(d));
+      read.set("v", d >= dr ? '<span class="chip chip-ok">Two peaks: resolved</span>' : '<span class="chip chip-no">One peak: not resolved</span>');
+    });
+    [b, s].forEach((x) => x.input.addEventListener("input", run));
+    run();
+  };
+
+  /* V2X: Clarke fading envelope over time */
+  DEMOS["v2x-fading"] = function (root) {
+    const v = slider({ id: "v2x-v", label: "Speed", min: 0, max: 250, step: 5, value: 120, fmt: (x) => x + " km/h" });
+    const fc = seg({ id: "v2x-f", label: "Carrier frequency", value: 5.9, options: [{ v: 3.5, t: "3.5 GHz" }, { v: 5.9, t: "5.9 GHz" }, { v: 28, t: "28 GHz" }] });
+    const nb = button("v2x-new", "New channel");
+    const read = readouts([["d", "Maximum Doppler shift, f_D"], ["c", "Coherence time ≈ 0.423/f_D"], ["f", "Fades below −10 dB in 50 ms"]]);
+    const plot = shell(root, {
+      controls: [v.el, fc.el, $("div", { class: "ctl ctl-btn" }, [nb])], read: read,
+      label: "Received power of a mobile channel over 50 milliseconds."
+    });
+    let seed = 7;
+    const run = frame(() => {
+      const fD = (v.value / 3.6) * fc.value * 1e9 / C0, M = 32, rnd = rng(seed);
+      const ang = [], ph = [];
+      for (let m = 0; m < M; m++) { ang.push(2 * Math.PI * (m + rnd()) / M); ph.push(2 * Math.PI * rnd()); }
+      const data = []; let fades = 0, below = false;
+      for (let k = 0; k <= 1000; k++) {
+        const t = 0.05 * k / 1000; let re = 0, im = 0;
+        for (let m = 0; m < M; m++) { const a = 2 * Math.PI * fD * Math.cos(ang[m]) * t + ph[m]; re += Math.cos(a); im += Math.sin(a); }
+        const g = db((re * re + im * im) / M);
+        if (g < -10 && !below) fades++;
+        below = g < -10;
+        data.push([t * 1000, g]);
+      }
+      plot.set({
+        x: { min: 0, max: 50, ticks: [0, 10, 20, 30, 40, 50], label: "Time (ms)", hover: (x) => fmt(x, 2) + " ms" },
+        y: { min: -30, max: 10, ticks: [-30, -20, -10, 0, 10], label: "Received power (dB)", hover: (x) => fmt(x, 1) + " dB" },
+        series: [{ name: "Power", color: "c1", data: data }],
+        hlines: [{ y: -10, color: "ref", label: "−10 dB" }]
+      });
+      read.set("d", fD > 0 ? fmt(fD, fD < 100 ? 1 : 0) + " Hz" : "0 Hz");
+      const Tc = fD > 0 ? 0.423 / fD : Infinity;
+      read.set("c", isFinite(Tc) ? (Tc < 0.01 ? fmt(Tc * 1000, Tc < 0.001 ? 2 : 1) + " ms" : fmt(Tc, 2) + " s") : "unlimited (static channel)");
+      read.set("f", String(fades));
+    });
+    v.input.addEventListener("input", run);
+    fc.onchange = run;
+    nb.addEventListener("click", () => { seed = (seed * 9301 + 49297) % 233280; run(); });
+    run();
+  };
+
+  /* Fluid antenna: spatial fading along W wavelengths and port selection */
+  DEMOS["fas-ports"] = function (root) {
+    const w = slider({ id: "fas-w", label: "Antenna length, W", min: 0.5, max: 5, step: 0.5, value: 2, fmt: (x) => x + "λ" });
+    const n = slider({ id: "fas-n", label: "Ports, N", min: 2, max: 64, step: 1, value: 16, fmt: String });
+    const nb = button("fas-new", "New channel");
+    const read = readouts([["b", "Best port, this channel"], ["a", "Average gain of the best port"], ["o", "Outage below −10 dB"]]);
+    const plot = shell(root, {
+      controls: [w.el, n.el, $("div", { class: "ctl ctl-btn" }, [nb])], read: read,
+      legend: legend([["c1", "Channel gain along the antenna"], ["c2", "Best port", "dot"], ["ref", "Other ports", "dot"]]),
+      label: "Channel gain along a fluid antenna, with its ports and the best port marked."
+    });
+    let seed = 11;
+    function channel(rnd, M) {
+      const c = [], p = [];
+      for (let m = 0; m < M; m++) { c.push(2 * Math.PI * Math.cos(2 * Math.PI * rnd())); p.push(2 * Math.PI * rnd()); }
+      return (x) => { let re = 0, im = 0; for (let m = 0; m < M; m++) { const a = c[m] * x + p[m]; re += Math.cos(a); im += Math.sin(a); } return (re * re + im * im) / M; };
+    }
+    let mcKey = "", mcTimer = 0;
+    function monteCarlo(W, N) {
+      const key = W + ":" + N; if (key === mcKey) return; mcKey = key;
+      read.set("a", "computing…"); read.set("o", "computing…");
+      clearTimeout(mcTimer);
+      mcTimer = setTimeout(() => {
+        const rnd = rng(2024), trials = 1000; let sum = 0, out = 0;
+        for (let t = 0; t < trials; t++) {
+          const h = channel(rnd, 32); let best = 0;
+          for (let k = 0; k < N; k++) best = Math.max(best, h(k * W / (N - 1)));
+          sum += best; if (best < 0.1) out++;
+        }
+        read.set("a", "+" + fmt(db(sum / trials), 1) + " dB over a fixed antenna");
+        read.set("o", fmt(100 * out / trials, 1) + "% fluid, 9.5% fixed");
+      }, 140);
+    }
+    const run = frame(() => {
+      const W = w.value, N = n.value, h = channel(rng(seed), 64);
+      const data = [];
+      for (let k = 0; k <= 500; k++) { const x = W * k / 500; data.push([x, db(h(x))]); }
+      const ports = []; let bi = 0, bg = -1;
+      for (let k = 0; k < N; k++) { const x = k * W / (N - 1), g = h(x); ports.push([x, g]); if (g > bg) { bg = g; bi = k; } }
+      const pts = ports.map((p, k) => ({ x: p[0], y: Math.max(-30, db(p[1])), color: k === bi ? "c2" : "ref", r: k === bi ? 5.5 : 4 }));
+      pts.push(pts.splice(bi, 1)[0]);
+      pts[pts.length - 1].label = "Best port";
+      plot.set({
+        x: { min: 0, max: W, ticks: ticks(0, W, 5), label: "Position along the antenna (wavelengths)", fmt: (x) => String(+x.toFixed(2)), hover: (x) => fmt(x, 2) + "λ" },
+        y: { min: -30, max: 10, ticks: [-30, -20, -10, 0, 10], label: "Channel gain (dB)", hover: (x) => fmt(x, 1) + " dB" },
+        series: [{ name: "Gain", color: "c1", data: data }],
+        points: pts
+      });
+      read.set("b", "port " + (bi + 1) + ", " + (db(bg / ports[0][1]) >= 0 ? "+" : "") + fmt(db(bg / ports[0][1]), 1) + " dB over port 1");
+      monteCarlo(W, N);
+    });
+    [w, n].forEach((x) => x.input.addEventListener("input", run));
+    nb.addEventListener("click", () => { seed = (seed * 9301 + 49297) % 233280; run(); });
+    run();
+  };
+
+  /* Hardware impairments: spectral efficiency ceiling */
+  DEMOS["hwi-ceiling"] = function (root) {
+    const k = slider({ id: "hwi-k", label: "Impairment level κ (EVM)", min: 0, max: 25, step: 0.5, value: 8, fmt: (x) => x + "%" });
+    const presets = $("div", { class: "ctl ctl-presets" }, [$("span", { class: "ctl-l", text: "3GPP EVM limits" })]);
+    const row = $("div", { class: "seg-mini" });
+    [["QPSK", 17.5], ["16-QAM", 12.5], ["64-QAM", 8], ["256-QAM", 3.5]].forEach((p) => {
+      const bt = $("button", { type: "button", id: "hwi-" + p[0].replace(/\W/g, ""), text: p[0] + " " + p[1] + "%" });
+      bt.addEventListener("click", () => { k.set(p[1]); run(); });
+      row.appendChild(bt);
+    });
+    presets.appendChild(row);
+    const read = readouts([["s", "SNDR ceiling, 1/κ²"], ["c", "Capacity ceiling"], ["l", "Loss at 30 dB SNR"]]);
+    const plot = shell(root, {
+      controls: [k.el, presets], read: read,
+      legend: legend([["c1", "With impairments"], ["ref", "Ideal hardware", true]]),
+      label: "Spectral efficiency against SNR for ideal and impaired hardware."
+    });
+    const run = frame(() => {
+      const kk = k.value / 100, k2 = kk * kk;
+      const ideal = [], imp = [];
+      for (let s = -10; s <= 50.0001; s += 0.25) {
+        const S = Math.pow(10, s / 10);
+        ideal.push([s, Math.log2(1 + S)]);
+        imp.push([s, Math.log2(1 + S / (k2 * S + 1))]);
+      }
+      const ceil = k2 > 0 ? Math.log2(1 + 1 / k2) : null;
+      plot.set({
+        x: { min: -10, max: 50, ticks: [-10, 0, 10, 20, 30, 40, 50], label: "SNR (dB)", hover: (x) => "SNR " + fmt(x, 1) + " dB" },
+        y: { min: 0, max: 18, ticks: [0, 3, 6, 9, 12, 15, 18], label: "Spectral efficiency (bit/s/Hz)", hover: (x) => fmt(x, 2) + " bit/s/Hz" },
+        series: [{ name: "Impaired", color: "c1", data: imp }, { name: "Ideal", color: "ref", data: ideal, dash: [6, 5], width: 1.5 }],
+        hlines: ceil !== null ? [{ y: ceil, color: "c2", label: "Ceiling " + fmt(ceil, 2) + " bit/s/Hz" }] : []
+      });
+      read.set("s", ceil !== null ? fmt(db(1 / k2), 1) + " dB" : "none (ideal hardware)");
+      read.set("c", ceil !== null ? fmt(ceil, 2) + " bit/s/Hz" : "none");
+      const S30 = 1000;
+      read.set("l", fmt(Math.log2(1 + S30) - Math.log2(1 + S30 / (k2 * S30 + 1)), 2) + " bit/s/Hz");
+    });
+    k.input.addEventListener("input", run);
+    run();
+  };
+
+
+  /* Optimization: successive convex approximation on two-user power control */
+  DEMOS["opt-sca"] = function (root) {
+    const P = 100, a1 = 1, a2 = 0.4, LN2 = Math.LN2;
+    const bS = slider({ id: "sca-b", label: "Interference, cross-link gain", min: 0, max: 1, step: 0.01, value: 0.02, fmt: (v) => v.toFixed(2) });
+    const xS = slider({ id: "sca-x", label: "Starting point, power to user 1", min: 0, max: 1, step: 0.01, value: 0.05, fmt: (v) => Math.round(v * 100) + "%" });
+    const stepB = button("sca-step", "Next iteration"), runB = button("sca-run", "Run to convergence"), resetB = button("sca-reset", "Restart");
+    const btnRow = $("div", { class: "ctl ctl-btn" }, [$("div", { style: "display:flex;flex-wrap:wrap;gap:0.5rem" }, [stepB, runB, resetB])]);
+    const read = readouts([["t", "Iteration"], ["r", "Sum rate now"], ["g", "Best possible (grid search)"], ["s", "Status"]]);
+    const plot = shell(root, {
+      controls: [bS.el, xS.el, btnRow], read: read,
+      legend: legend([["c1", "Sum rate R(p)"], ["c2", "Concave surrogate at the current point"], ["ref", "Earlier iterates", "dot"]]),
+      label: "Sum rate of two interfering users against the share of power given to user 1, with the SCA surrogate and its iterates."
+    });
+    let x = 0.05, t = 0, trail = [], done = false;
+    const model = () => {
+      const b = bS.value;
+      const f = (u) => Math.log2(1 + P * (u * a1 + (1 - u) * b)) + Math.log2(1 + P * ((1 - u) * a2 + u * b));
+      const g = (u) => Math.log2(1 + P * (1 - u) * b) + Math.log2(1 + P * u * b);
+      const gp = (u) => (-P * b / (1 + P * (1 - u) * b) + P * b / (1 + P * u * b)) / LN2;
+      return { f: f, g: g, gp: gp, R: (u) => f(u) - g(u) };
+    };
+    function argmaxSurrogate(m, xk) {
+      const S = (u) => m.f(u) - m.g(xk) - m.gp(xk) * (u - xk);
+      let lo = 0, hi = 1;
+      for (let i = 0; i < 70; i++) {
+        const m1 = lo + (hi - lo) * 0.382, m2 = lo + (hi - lo) * 0.618;
+        if (S(m1) < S(m2)) lo = m1; else hi = m2;
+      }
+      const c = (lo + hi) / 2, cands = [0, 1, c];
+      return cands.reduce((best, u) => (S(u) > S(best) ? u : best), c);
+    }
+    function restart() { x = xS.value; t = 0; trail = []; done = false; draw(); }
+    function step() {
+      if (done) return;
+      const m = model(), xn = argmaxSurrogate(m, x);
+      trail.push(x); t++;
+      if (Math.abs(xn - x) < 1e-4) done = true;
+      x = xn;
+    }
+    const draw = frame(() => {
+      const m = model(), cur = [], sur = [];
+      let rmin = Infinity, rmax = -Infinity, xbest = 0;
+      for (let k = 0; k <= 400; k++) {
+        const u = k / 400, r = m.R(u);
+        cur.push([u, r]);
+        sur.push([u, m.f(u) - m.g(x) - m.gp(x) * (u - x)]);
+        if (r < rmin) rmin = r;
+        if (r > rmax) { rmax = r; xbest = u; }
+      }
+      const ymin = Math.max(0, Math.floor(rmin - 1)), ymax = Math.ceil(rmax + 0.6);
+      const pts = trail.slice(-8).map((u) => ({ x: u, y: m.R(u), color: "ref", r: 3.5 }));
+      pts.push({ x: x, y: m.R(x), color: "c1", r: 5.5, label: t ? "p after " + t + (t === 1 ? " step" : " steps") : "Start" });
+      plot.set({
+        x: { min: 0, max: 1, ticks: [0, 0.25, 0.5, 0.75, 1], fmt: (v) => Math.round(v * 100) + "%", label: "Share of total power given to user 1", hover: (v) => fmt(v * 100, 1) + "% to user 1" },
+        y: { min: ymin, max: ymax, ticks: ticks(ymin, ymax, 4), label: "Sum rate (bit/s/Hz)", fmt: (v) => String(+v.toFixed(1)), hover: (v) => fmt(v, 2) + " bit/s/Hz" },
+        series: [{ name: "Sum rate", color: "c1", data: cur }, { name: "Surrogate", color: "c2", data: sur, width: 1.75 }],
+        points: pts
+      });
+      const r = m.R(x), gap = rmax - r;
+      read.set("t", String(t));
+      read.set("r", fmt(r, 2) + " bit/s/Hz");
+      read.set("g", fmt(rmax, 2) + " bit/s/Hz at " + Math.round(xbest * 100) + "%");
+      read.set("s", !done ? (t ? "Improving" : "Press Next iteration")
+        : gap < 0.01 ? "Converged, global optimum"
+        : "Stuck at a local optimum, " + fmt(gap, 2) + " bit/s/Hz below best");
+    });
+    stepB.addEventListener("click", () => { step(); draw(); });
+    runB.addEventListener("click", () => { for (let i = 0; i < 60 && !done; i++) step(); draw(); });
+    resetB.addEventListener("click", restart);
+    bS.input.addEventListener("input", restart);
+    xS.input.addEventListener("input", restart);
+    restart();
+  };
+
+  /* Simulation: BPSK Monte Carlo, and what common bugs do to the curve */
+  DEMOS["sim-bug"] = function (root) {
+    const ch = seg({ id: "sb-c", label: "Channel", value: "awgn", options: [{ v: "awgn", t: "AWGN" }, { v: "ray", t: "Rayleigh fading" }] });
+    const bug = seg({ id: "sb-b", label: "Simulation code", value: "ok", options: [{ v: "ok", t: "Correct" }, { v: "half", t: "Noise not split over I and Q" }, { v: "db", t: "20 log₁₀ for power" }] });
+    const nb = button("sb-new", "New run");
+    const read = readouts([["s", "Shift from theory at BER 10⁻³"], ["n", "Bits per point"], ["w", "What went wrong"]]);
+    const plot = shell(root, {
+      controls: [ch.el, bug.el, $("div", { class: "ctl ctl-btn" }, [nb])], read: read,
+      legend: legend([["c1", "Theory"], ["c2", "Simulation", "dot"]]),
+      label: "Bit error rate of BPSK against Eb/N0: the theoretical curve and Monte Carlo points, with or without a common coding bug."
+    });
+    const sup = { "-": "⁻", "0": "⁰", "1": "¹", "2": "²", "3": "³", "4": "⁴", "5": "⁵", "6": "⁶" };
+    const pw = (v) => "10" + String(Math.round(v)).split("").map((c) => sup[c] || c).join("");
+    const Q = (x) => 0.5 * erfc(x / Math.SQRT2);
+    function erfc(x) { const t = 1 / (1 + 0.5 * Math.abs(x)); const y = t * Math.exp(-x * x - 1.26551223 + t * (1.00002368 + t * (0.37409196 + t * (0.09678418 + t * (-0.18628806 + t * (0.27886807 + t * (-1.13520398 + t * (1.48851587 + t * (-0.82215223 + t * 0.17087277))))))))); return x >= 0 ? y : 2 - y; }
+    const theory = (e, ray) => ray ? 0.5 * (1 - Math.sqrt(e / (1 + e))) : Q(Math.sqrt(2 * e));
+    let seed = 11;
+    const run = frame(() => {
+      const ray = ch.value === "ray", b = bug.value, r = rng(seed), N = 200000;
+      const gn = () => { const u = Math.max(r(), 1e-12), v = r(); return Math.sqrt(-2 * Math.log(u)) * Math.cos(2 * Math.PI * v); };
+      const xmax = ray ? 30 : 16;
+      const data = []; for (let k = 0; k <= 240; k++) { const s = xmax * k / 240; data.push([s, Math.max(Math.log10(theory(Math.pow(10, s / 10), ray)), -6.2)]); }
+      const pts = []; const sim = [];
+      for (let s = 0; s <= xmax; s += ray ? 3 : 1) {
+        const e = b === "db" ? Math.pow(10, s / 20) : Math.pow(10, s / 10);
+        const sigma = b === "half" ? Math.sqrt(1 / e) : Math.sqrt(1 / (2 * e));   // per real dimension, Eb = 1
+        let err = 0;
+        for (let n = 0; n < N; n++) {
+          const x = r() < 0.5 ? 1 : -1;
+          let y;
+          if (ray) { const hr = gn() / Math.SQRT2, hi = gn() / Math.SQRT2; const yr = hr * x + sigma * gn(), yi = hi * x + sigma * gn(); y = hr * yr + hi * yi; }
+          else y = x + sigma * gn();
+          if ((y >= 0 ? 1 : -1) !== x) err++;
+        }
+        if (err > 0) { pts.push({ x: s, y: Math.log10(err / N), color: "c2", r: 5 }); sim.push([s, Math.log10(err / N)]); }
+      }
+      plot.set({
+        x: { min: 0, max: xmax, ticks: ray ? [0, 5, 10, 15, 20, 25, 30] : [0, 4, 8, 12, 16], label: "Eb/N0 (dB)", hover: (v) => fmt(v, 1) + " dB" },
+        y: { min: -6, max: 0, ticks: [-6, -5, -4, -3, -2, -1, 0], fmt: pw, label: "Bit error rate (log scale)", hover: (v) => Math.pow(10, v).toExponential(1) },
+        series: [{ name: "Theory", color: "c1", data: data }],
+        points: pts
+      });
+      // shift at 1e-3: interpolate simulation and theory
+      const at = (arr) => { for (let k = 1; k < arr.length; k++) if (arr[k][1] <= -3 && arr[k - 1][1] > -3) { const a = arr[k - 1], c = arr[k]; return a[0] + (c[0] - a[0]) * (-3 - a[1]) / (c[1] - a[1]); } return null; };
+      const st = at(data), ss = at(sim);
+      read.set("s", st !== null && ss !== null ? (Math.abs(ss - st) < 0.25 ? "none (within noise)" : fmt(ss - st, 1) + " dB") : "beyond the plotted range");
+      read.set("n", N.toLocaleString());
+      read.set("w", b === "ok" ? "nothing: points sit on the curve" : b === "half" ? "noise variance doubled: 3 dB too pessimistic" : "dB converted as amplitude: the SNR axis is stretched");
+    });
+    ch.onchange = run; bug.onchange = run;
+    nb.addEventListener("click", () => { seed = (seed * 9301 + 49297) % 233280; run(); });
+    run();
+  };
+
+  /* ----------------------------------------------------------------- boot */
+  document.querySelectorAll(".demo[data-demo]").forEach((el) => {
+    const f = DEMOS[el.getAttribute("data-demo")];
+    if (f) f(el);
+  });
+  const redrawAll = () => plots.forEach((p) => p.redraw());
+  const mq = window.matchMedia("(prefers-color-scheme: dark)");
+  if (mq.addEventListener) mq.addEventListener("change", redrawAll);
+  new MutationObserver(redrawAll).observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
+})();
+</script>
+<script>
+(function () {
+  function tipFor(fig) {
+    let t = fig.querySelector(".ptip");
+    if (!t) { t = document.createElement("div"); t.className = "ptip"; t.hidden = true; fig.appendChild(t); }
+    return t;
+  }
+  function place(fig, tip, cx, cy) {
+    const fr = fig.getBoundingClientRect();
+    let x = cx - fr.left + 14, y = cy - fr.top + 14;
+    tip.hidden = false;
+    const w = tip.offsetWidth, h = tip.offsetHeight;
+    if (x + w > fr.width - 6) x = cx - fr.left - w - 14;
+    if (y + h > fr.height - 6) y = cy - fr.top - h - 14;
+    tip.style.transform = "translate(" + Math.max(4, x) + "px," + Math.max(4, y) + "px)";
+  }
+  // marks carrying their own tooltip
+  document.querySelectorAll("figure.viz").forEach(function (fig) {
+    const marks = fig.querySelectorAll("[data-tip]");
+    if (!marks.length) return;
+    const tip = tipFor(fig);
+    marks.forEach(function (m) {
+      m.classList.add("hov");
+      const show = function (e) { tip.innerHTML = m.getAttribute("data-tip"); place(fig, tip, e.clientX, e.clientY); };
+      m.addEventListener("pointermove", show);
+      m.addEventListener("pointerleave", function () { tip.hidden = true; });
+    });
+  });
+  // line plots: crosshair readout
+  document.querySelectorAll("figure.viz svg[data-plot]").forEach(function (svg) {
+    const fig = svg.closest("figure"), cfg = JSON.parse(svg.getAttribute("data-plot"));
+    const tip = tipFor(fig), ns = "http://www.w3.org/2000/svg";
+    const xh = document.createElementNS(ns, "line"); xh.setAttribute("class", "axis"); xh.setAttribute("y1", cfg.y0); xh.setAttribute("y2", cfg.y1); xh.style.display = "none";
+    svg.appendChild(xh);
+    const dots = cfg.series.map(function (s) { const c = document.createElementNS(ns, "circle"); c.setAttribute("r", 4.5); c.setAttribute("class", "f" + s.k); c.setAttribute("stroke", "var(--surface)"); c.setAttribute("stroke-width", 2); c.style.display = "none"; svg.appendChild(c); return c; });
+    const SUP = { "-": "⁻", "0": "⁰", "1": "¹", "2": "²", "3": "³", "4": "⁴", "5": "⁵", "6": "⁶", "7": "⁷", "8": "⁸", "9": "⁹" };
+    function fv(v) {
+      if (cfg.ypow) { const e = Math.pow(10, v).toExponential(1).split("e"); return e[0] + "×10" + String(+e[1]).split("").map(function (c) { return SUP[c] || c; }).join(""); }
+      return String(+v.toFixed(cfg.yd));
+    }
+    function sx(v) { return cfg.xlog ? Math.log10(v) : v; }
+    function px(v) { return cfg.x0 + (sx(v) - sx(cfg.xmin)) / (sx(cfg.xmax) - sx(cfg.xmin)) * (cfg.x1 - cfg.x0); }
+    function py(v) { return cfg.y1 - (v - cfg.ymin) / (cfg.ymax - cfg.ymin) * (cfg.y1 - cfg.y0); }
+    svg.addEventListener("pointermove", function (e) {
+      const pt = svg.createSVGPoint(); pt.x = e.clientX; pt.y = e.clientY;
+      const p = pt.matrixTransform(svg.getScreenCTM().inverse());
+      if (p.x < cfg.x0 - 4 || p.x > cfg.x1 + 4) { xh.style.display = "none"; dots.forEach(function (d) { d.style.display = "none"; }); tip.hidden = true; return; }
+      let rows = [], gx = null;
+      cfg.series.forEach(function (s, i) {
+        let best = null, bd = 1e9;
+        s.p.forEach(function (q) { const d = Math.abs(px(q[0]) - p.x); if (d < bd) { bd = d; best = q; } });
+        if (!best) return;
+        if (gx === null) gx = best;
+        const yy = py(best[1]);
+        if (yy >= cfg.y0 - 2 && yy <= cfg.y1 + 2) { dots[i].setAttribute("cx", px(best[0])); dots[i].setAttribute("cy", yy); dots[i].style.display = ""; } else dots[i].style.display = "none";
+        rows.push('<div><i style="--c:var(--k' + s.k + ')"></i>' + s.n + ": <b>" + fv(best[1]) + (cfg.yu || "") + "</b></div>");
+      });
+      if (gx === null) return;
+      xh.setAttribute("x1", px(gx[0])); xh.setAttribute("x2", px(gx[0])); xh.style.display = "";
+      tip.innerHTML = '<div><b>' + cfg.xl + " " + (+gx[0].toFixed(cfg.xd)) + (cfg.xu || "") + "</b></div>" + rows.join("");
+      place(fig, tip, e.clientX, e.clientY);
+    });
+    svg.addEventListener("pointerleave", function () { xh.style.display = "none"; dots.forEach(function (d) { d.style.display = "none"; }); tip.hidden = true; });
+  });
+})();
+</script>
+</body>
+</html>
