@@ -1,0 +1,1562 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="Why 6G looks above 100 GHz: the sub-terahertz and terahertz spectrum, bandwidth and data rate, losses and absorption, antenna aperture, pencil beams and blockage.">
+<meta name="author" content="Mohd Hamza Naim Shaikh">
+<meta name="theme-color" content="#F5F7FA" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0A1524" media="(prefers-color-scheme: dark)">
+<title>Terahertz communication | Wireless tutorials</title>
+<!-- share-meta -->
+<link rel="canonical" href="https://hamza-qub.github.io/learn/thz.html">
+<link rel="icon" href="../favicon.svg" type="image/svg+xml">
+<link rel="icon" href="../favicon-32.png" type="image/png" sizes="32x32">
+<link rel="apple-touch-icon" href="../apple-touch-icon.png">
+<meta property="og:site_name" content="Hamza Shaikh">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Terahertz communication | Wireless tutorials">
+<meta property="og:description" content="Why 6G looks above 100 GHz: the sub-terahertz and terahertz spectrum, bandwidth and data rate, losses and absorption, antenna aperture, pencil beams and blockage.">
+<meta property="og:url" content="https://hamza-qub.github.io/learn/thz.html">
+<meta property="og:image" content="https://hamza-qub.github.io/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Mohd Hamza Naim Shaikh, Research Fellow at Queen’s University Belfast, beside the phase pattern of a reconfigurable intelligent surface.">
+<meta property="og:locale" content="en_GB">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Terahertz communication | Wireless tutorials">
+<meta name="twitter:description" content="Why 6G looks above 100 GHz: the sub-terahertz and terahertz spectrum, bandwidth and data rate, losses and absorption, antenna aperture, pencil beams and blockage.">
+<meta name="twitter:image" content="https://hamza-qub.github.io/og-image.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&amp;family=STIX+Two+Text:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&amp;display=swap">
+<style>
+:root {
+  --bg: #F5F7FA;
+  --surface: #FFFFFF;
+  --ink: #0E1A2B;
+  --ink-2: #2C3B50;
+  --muted: #5A6779;
+  --line: #D8DFE8;
+  --accent: #00468C;
+  --accent-hover: #003468;
+  --on-accent: #FFFFFF;
+  --signal: #C98200;
+  --tile-lo: #0A2B57;
+  --tile-hi: #EAF0F7;
+  --serif: "STIX Two Text", "STIX Two", "Times New Roman", Times, serif;
+  --sans: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  color-scheme: light;
+  box-sizing: border-box;
+  padding-top: env(safe-area-inset-top, 0px);
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0A1524;
+    --surface: #0F1E31;
+    --ink: #E6ECF4;
+    --ink-2: #C4CEDB;
+    --muted: #94A2B5;
+    --line: #22344A;
+    --accent: #8DB9F2;
+    --accent-hover: #B7D3F8;
+    --on-accent: #06182E;
+    --signal: #F2B544;
+    --tile-lo: #0E2443;
+    --tile-hi: #A8C9F3;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0A1524;
+  --surface: #0F1E31;
+  --ink: #E6ECF4;
+  --ink-2: #C4CEDB;
+  --muted: #94A2B5;
+  --line: #22344A;
+  --accent: #8DB9F2;
+  --accent-hover: #B7D3F8;
+  --on-accent: #06182E;
+  --signal: #F2B544;
+  --tile-lo: #0E2443;
+  --tile-hi: #A8C9F3;
+  color-scheme: dark;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+html {
+  scroll-padding-top: calc(env(safe-area-inset-top, 0px) + 4.5rem);
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+@media (prefers-reduced-motion: no-preference) { html { scroll-behavior: smooth; } }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--serif);
+  font-size: 1.125rem;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+img { max-width: 100%; height: auto; }
+a { color: var(--accent); text-underline-offset: 0.18em; }
+a:hover { color: var(--accent-hover); }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 2px; }
+p { margin: 0 0 1em; }
+h1, h2, h3 { font-family: var(--serif); color: var(--ink); text-wrap: balance; }
+
+.wrap { max-width: 72rem; margin-inline: auto; padding-inline: clamp(1.25rem, 4vw, 2.5rem); }
+
+.skip {
+  position: absolute; left: 1rem; top: -4rem; z-index: 50;
+  background: var(--ink); color: var(--bg);
+  font-family: var(--sans); font-size: 0.875rem; padding: 0.6rem 0.9rem; text-decoration: none;
+}
+.skip:focus { top: calc(env(safe-area-inset-top, 0px) + 0.75rem); color: var(--bg); }
+
+/* Header */
+.site-header {
+  position: sticky;
+  top: env(safe-area-inset-top, 0px);
+  z-index: 20;
+  background: var(--bg);
+  background: color-mix(in srgb, var(--bg) 88%, transparent);
+  -webkit-backdrop-filter: saturate(1.4) blur(12px);
+  backdrop-filter: saturate(1.4) blur(12px);
+  border-bottom: 1px solid var(--line);
+}
+.header-inner { display: flex; align-items: center; justify-content: space-between; gap: 1.5rem; min-height: 3.5rem; }
+.brand { font-family: var(--serif); font-weight: 600; font-size: 1.125rem; color: var(--ink); text-decoration: none; white-space: nowrap; }
+.brand:hover { color: var(--ink); }
+.site-nav { min-width: 0; }
+.site-nav ul {
+  display: flex; gap: clamp(0.9rem, 2.4vw, 1.9rem);
+  list-style: none; margin: 0; padding: 0;
+  overflow-x: auto; scrollbar-width: none;
+}
+.site-nav ul::-webkit-scrollbar { display: none; }
+.site-nav a {
+  display: inline-block; padding: 1rem 0 0.9rem;
+  font-family: var(--sans); font-size: 0.9375rem; color: var(--muted);
+  text-decoration: none; white-space: nowrap;
+  border-bottom: 2px solid transparent;
+}
+.site-nav a:hover { color: var(--ink); }
+.site-nav a[aria-current="true"] { color: var(--ink); border-bottom-color: var(--accent); }
+@media (max-width: 560px) {
+  .brand { display: none; }
+  .site-nav { width: 100%; }
+  .site-nav ul { justify-content: space-between; }
+}
+
+/* Hero */
+.hero { padding-block: clamp(3rem, 8vw, 6.5rem) clamp(3rem, 7vw, 5.5rem); }
+.hero-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.12fr) minmax(0, 0.88fr);
+  gap: clamp(2.5rem, 6vw, 5rem);
+  align-items: center;
+}
+.hero h1 {
+  font-weight: 600;
+  font-size: clamp(2.6rem, 6.4vw, 4.6rem);
+  line-height: 1.02;
+  letter-spacing: -0.018em;
+  margin: 0 0 1.1rem;
+}
+.role { font-family: var(--sans); font-weight: 500; font-size: 1.0625rem; color: var(--ink-2); margin: 0 0 1.75rem; }
+.lede { font-size: clamp(1.25rem, 2.3vw, 1.5rem); line-height: 1.45; max-width: 31ch; margin: 0 0 1.25rem; }
+.metrics { font-family: var(--sans); font-size: 0.9375rem; color: var(--muted); margin: 0 0 2rem; }
+.actions { display: flex; flex-wrap: wrap; gap: 0.75rem; margin: 0 0 1.75rem; }
+.btn {
+  display: inline-flex; align-items: center; justify-content: center;
+  min-height: 2.75rem; padding: 0 1.2rem;
+  font-family: var(--sans); font-weight: 500; font-size: 0.9375rem;
+  background: var(--accent); color: var(--on-accent);
+  border: 1px solid var(--accent); border-radius: 3px; text-decoration: none;
+}
+.btn:hover { background: var(--accent-hover); border-color: var(--accent-hover); color: var(--on-accent); }
+.btn-quiet { background: transparent; color: var(--ink); border-color: var(--line); }
+.btn-quiet:hover { background: transparent; color: var(--ink); border-color: var(--ink-2); }
+.profiles {
+  list-style: none; margin: 0; padding: 0;
+  display: flex; flex-wrap: wrap; gap: 0.4rem 1.15rem;
+  font-family: var(--sans); font-size: 0.9375rem;
+}
+.profiles a { color: var(--ink-2); text-decoration: underline; text-decoration-color: var(--line); text-decoration-thickness: 1px; }
+.profiles a:hover { color: var(--accent); text-decoration-color: var(--accent); }
+
+.ris { margin: 0; width: 100%; max-width: 30rem; justify-self: end; }
+.ris canvas { display: block; width: 100%; aspect-ratio: 1 / 1; cursor: crosshair; touch-action: pan-y; }
+.ris figcaption { font-family: var(--sans); font-size: 0.8125rem; line-height: 1.55; color: var(--muted); margin-top: 0.9rem; max-width: 46ch; }
+@media (max-width: 880px) {
+  .hero-grid { grid-template-columns: minmax(0, 1fr); }
+  .ris { justify-self: start; max-width: 26rem; }
+}
+
+/* Sections */
+.section { padding-block: clamp(3.5rem, 8vw, 6rem); border-top: 1px solid var(--line); }
+.section-grid { display: grid; grid-template-columns: 11.5rem minmax(0, 1fr); gap: 2.5rem; }
+.section-grid > h2 {
+  position: sticky; top: calc(env(safe-area-inset-top, 0px) + 5rem); align-self: start;
+  margin: 0; font-size: 2rem; font-weight: 600; line-height: 1.15;
+}
+@media (max-width: 880px) {
+  .section-grid { grid-template-columns: minmax(0, 1fr); gap: 1.5rem; }
+  .section-grid > h2 { position: static; }
+}
+h3 { font-weight: 600; font-size: 1.3125rem; line-height: 1.3; margin: 0 0 0.5rem; }
+.intro { color: var(--ink-2); max-width: 62ch; margin-bottom: 1.75rem; }
+
+/* About */
+.about-grid { display: grid; grid-template-columns: minmax(0, 1fr) 17rem; gap: 3.5rem; }
+.prose p { max-width: 66ch; }
+.side h3 { font-family: var(--sans); font-size: 0.9375rem; font-weight: 600; margin: 0 0 0.6rem; }
+.side ul { list-style: none; margin: 0; padding: 0; }
+.side li { padding: 0.8rem 0; border-top: 1px solid var(--line); font-size: 1rem; line-height: 1.45; }
+.side .date { display: block; font-family: var(--sans); font-size: 0.8125rem; color: var(--muted); margin-bottom: 0.15rem; }
+.portrait { margin: 0 0 1.75rem; }
+.portrait img { display: block; width: 100%; max-width: 15rem; aspect-ratio: 4 / 5; object-fit: cover; border-radius: 2px; }
+@media (max-width: 1060px) { .about-grid { grid-template-columns: minmax(0, 1fr); gap: 2.5rem; } }
+
+/* Research */
+.themes { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 2.75rem; }
+.theme { border-top: 1px solid var(--line); padding: 1.3rem 0 1.6rem; }
+.theme p { font-size: 1.0625rem; color: var(--ink-2); margin: 0 0 0.7rem; max-width: 52ch; }
+@media (max-width: 720px) { .themes { grid-template-columns: minmax(0, 1fr); } }
+.linkish {
+  font-family: var(--sans); font-size: 0.875rem; font-weight: 500; color: var(--accent);
+  background: none; border: 0; padding: 0.3rem 0; cursor: pointer;
+  text-decoration: underline; text-underline-offset: 0.2em; text-decoration-thickness: 1px;
+}
+.linkish:hover { color: var(--accent-hover); }
+
+/* Publications */
+.pub-controls {
+  display: flex; flex-wrap: wrap; align-items: center; gap: 0.85rem 1.25rem;
+  font-family: var(--sans); font-size: 0.9375rem;
+  padding-bottom: 1.25rem; border-bottom: 1px solid var(--line);
+}
+.seg { display: flex; flex-wrap: wrap; gap: 0.4rem; width: 100%; }
+.seg button {
+  font-family: var(--sans); font-size: 0.875rem; color: var(--ink-2);
+  background: transparent; border: 1px solid var(--line); border-radius: 3px;
+  min-height: 2.25rem; padding: 0 0.75rem; cursor: pointer;
+}
+.seg button:hover { border-color: var(--ink-2); }
+.seg button[aria-checked="true"] { background: var(--ink); border-color: var(--ink); color: var(--bg); }
+.seg .n { margin-left: 0.35rem; opacity: 0.68; font-variant-numeric: tabular-nums; }
+.field { display: inline-flex; align-items: center; gap: 0.5rem; color: var(--ink-2); }
+.field select, .search input {
+  font-family: var(--sans); font-size: 0.875rem; color: var(--ink);
+  background: var(--surface); border: 1px solid var(--line); border-radius: 3px;
+  min-height: 2.25rem; padding: 0 0.6rem;
+}
+.field select { max-width: 15rem; }
+.check { display: inline-flex; align-items: center; gap: 0.45rem; color: var(--ink-2); cursor: pointer; }
+.check input { width: 1rem; height: 1rem; accent-color: var(--accent); margin: 0; }
+.search { flex: 1 1 13rem; min-width: 0; }
+.search input { width: 100%; }
+.pub-count { font-family: var(--sans); font-size: 0.8125rem; color: var(--muted); margin: 0.85rem 0 0; }
+.pub-empty { font-family: var(--sans); font-size: 0.9375rem; color: var(--ink-2); padding: 1.5rem 0; }
+.pub-empty[hidden] { display: none; }
+
+.pub-year { display: grid; grid-template-columns: 4.25rem minmax(0, 1fr); gap: 1rem; padding-top: 1.4rem; }
+.pub-year[hidden] { display: none; }
+.pub-year > h3 { font-family: var(--sans); font-size: 0.9375rem; font-weight: 600; color: var(--muted); margin: 1rem 0 0; font-variant-numeric: tabular-nums; }
+.pub-list { list-style: none; margin: 0; padding: 0; }
+.pub { display: grid; grid-template-columns: 2.6rem minmax(0, 1fr); gap: 0.6rem; padding: 0.95rem 0 1.05rem; border-bottom: 1px solid var(--line); }
+.pub:last-child { border-bottom: 0; }
+.pub[hidden] { display: none; }
+.pub-id { font-family: var(--sans); font-size: 0.8125rem; color: var(--muted); padding-top: 0.22rem; font-variant-numeric: tabular-nums; }
+.pub-title { font-size: 1.0625rem; font-weight: 600; line-height: 1.4; color: var(--ink); text-decoration: none; }
+.pub-title:hover { color: var(--accent); text-decoration: underline; text-decoration-thickness: 1px; }
+.pub-authors { font-size: 1rem; line-height: 1.5; color: var(--ink-2); margin: 0.3rem 0 0; }
+.pub-authors strong { color: var(--ink); font-weight: 600; }
+.pub-venue { font-size: 1rem; line-height: 1.5; color: var(--muted); margin: 0.1rem 0 0; }
+.pub-links { display: flex; flex-wrap: wrap; gap: 0.25rem 1.1rem; font-family: var(--sans); font-size: 0.8125rem; margin: 0.4rem 0 0; }
+@media (max-width: 600px) {
+  .pub-year { grid-template-columns: minmax(0, 1fr); gap: 0; }
+  .pub-year > h3 { margin-top: 0.5rem; }
+}
+
+/* CV */
+.cv-head { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 1rem; margin-bottom: 1.5rem; }
+.cv-head p { margin: 0; color: var(--ink-2); max-width: 54ch; }
+.cv-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 3.5rem; }
+@media (max-width: 980px) { .cv-grid { grid-template-columns: minmax(0, 1fr); } }
+.cv-block { margin-bottom: 2.5rem; }
+.timeline { list-style: none; margin: 0.4rem 0 0; padding: 0; }
+.timeline li { display: grid; grid-template-columns: 7rem minmax(0, 1fr); gap: 1rem; padding: 0.9rem 0; border-top: 1px solid var(--line); }
+.when { font-family: var(--sans); font-size: 0.875rem; color: var(--muted); padding-top: 0.2rem; font-variant-numeric: tabular-nums; }
+.when .now { display: inline-block; width: 0.5rem; height: 0.5rem; border-radius: 50%; background: var(--signal); margin-right: 0.4rem; vertical-align: 0.06em; }
+.what strong { display: block; font-weight: 600; }
+.what .where { display: block; color: var(--ink-2); }
+.what .note { display: block; color: var(--muted); font-size: 1rem; line-height: 1.5; margin-top: 0.25rem; }
+@media (max-width: 480px) { .timeline li { grid-template-columns: minmax(0, 1fr); gap: 0.2rem; } }
+.ruled { list-style: none; margin: 0.4rem 0 0; padding: 0; }
+.ruled li { padding: 0.65rem 0; border-top: 1px solid var(--line); line-height: 1.5; }
+.ruled .yr { font-family: var(--sans); font-size: 0.875rem; color: var(--muted); white-space: nowrap; }
+.dl { margin: 0.4rem 0 0; }
+.dl dt { font-family: var(--sans); font-size: 0.875rem; font-weight: 600; color: var(--ink); padding-top: 0.7rem; border-top: 1px solid var(--line); }
+.dl dd { margin: 0.2rem 0 0.8rem; color: var(--ink-2); line-height: 1.55; }
+[data-cv-pdf][hidden] { display: none; }
+
+/* Contact */
+.contact-mail {
+  display: inline-block; font-size: clamp(1.5rem, 3.6vw, 2.25rem); font-weight: 500; line-height: 1.2;
+  color: var(--ink); text-decoration: underline; text-decoration-color: var(--line); text-decoration-thickness: 2px;
+  overflow-wrap: anywhere; margin-bottom: 1rem;
+}
+.contact-mail:hover { color: var(--accent); text-decoration-color: var(--accent); }
+.contact-where { color: var(--ink-2); margin-bottom: 1.5rem; }
+
+.site-footer { border-top: 1px solid var(--line); padding-block: 2rem 2.5rem; font-family: var(--sans); font-size: 0.8125rem; color: var(--muted); }
+.site-footer p { margin: 0; }
+
+@media print {
+  .site-header, .skip, .ris, .actions, .pub-controls, .pub-count, .linkish, .pub-links { display: none !important; }
+  body { background: #fff; color: #000; font-size: 10.5pt; }
+  .section { border-top: 0; padding-block: 1rem; }
+  .section-grid { grid-template-columns: 1fr; gap: 0.5rem; }
+  .section-grid > h2 { position: static; }
+  .pub[hidden], .pub-year[hidden] { display: grid !important; }
+  a { color: inherit; text-decoration: none; }
+}
+/* ---- additions: tutorials, interactive models, diagrams, Urdu ---- */
+/* Chart colours validated for colour-vision deficiency on both surfaces. */
+:root {
+  --chart-1: #1F62AE;
+  --chart-2: #C98200;
+  --tint: #EAF0F7;
+  --ok-bg: #E3F1E8;
+  --ok-ink: #1D5B34;
+  --no-bg: #F7E8E2;
+  --no-ink: #7A2E14;
+  --urdu: "Noto Nastaliq Urdu", "Jameel Noori Nastaleeq", "Alvi Nastaleeq", "Urdu Typesetting", serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --chart-1: #4A8EE2;
+    --chart-2: #C4851E;
+    --tint: #12253D;
+    --ok-bg: #163524;
+    --ok-ink: #A9DDBA;
+    --no-bg: #3A2117;
+    --no-ink: #F2BBA4;
+  }
+}
+:root[data-theme="dark"] {
+  --chart-1: #4A8EE2;
+  --chart-2: #C4851E;
+  --tint: #12253D;
+  --ok-bg: #163524;
+  --ok-ink: #A9DDBA;
+  --no-bg: #3A2117;
+  --no-ink: #F2BBA4;
+}
+
+[hidden] { display: none !important; }
+.site-nav a[aria-current="page"] { color: var(--ink); border-bottom-color: var(--accent); }
+
+/* Shared page head for inner pages */
+.page-head { padding-block: clamp(2.5rem, 6vw, 4.5rem) clamp(1.5rem, 4vw, 2.5rem); }
+.crumbs { font-family: var(--sans); font-size: 0.875rem; color: var(--muted); margin: 0 0 1.25rem; display: flex; flex-wrap: wrap; gap: 0.4rem; }
+.crumbs a { color: var(--ink-2); }
+.page-head h1 { font-weight: 600; font-size: clamp(2.2rem, 5.2vw, 3.6rem); line-height: 1.05; letter-spacing: -0.015em; margin: 0 0 1rem; max-width: 22ch; }
+.page-head .lede { max-width: 40ch; }
+.meta-row { display: flex; flex-wrap: wrap; gap: 0.5rem 1.25rem; font-family: var(--sans); font-size: 0.875rem; color: var(--muted); margin: 0; padding: 0; list-style: none; }
+.meta-row li { display: inline-flex; align-items: center; gap: 0.4rem; }
+.meta-row .level { color: var(--ink-2); font-weight: 500; }
+
+/* Tutorial layout */
+.tut-grid { display: grid; grid-template-columns: 12.5rem minmax(0, 1fr); gap: 3.5rem; padding-bottom: clamp(3rem, 8vw, 5rem); border-top: 1px solid var(--line); padding-top: 2.5rem; }
+.toc { position: sticky; top: calc(env(safe-area-inset-top, 0px) + 5rem); align-self: start; font-family: var(--sans); font-size: 0.875rem; }
+.toc h2 { font-family: var(--sans); font-size: 0.75rem; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); margin: 0 0 0.75rem; }
+.toc ol { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.15rem; }
+.toc a { display: block; padding: 0.3rem 0 0.3rem 0.75rem; color: var(--ink-2); text-decoration: none; border-left: 2px solid var(--line); line-height: 1.35; }
+.toc a:hover { color: var(--ink); border-left-color: var(--ink-2); }
+.toc a[aria-current="true"] { color: var(--ink); border-left-color: var(--accent); }
+@media (max-width: 1000px) {
+  .tut-grid { grid-template-columns: minmax(0, 1fr); gap: 1.5rem; }
+  .toc { display: none; }
+}
+
+.prose { min-width: 0; max-width: 44rem; }
+.prose > * { max-width: 100%; }
+.prose h2 { font-size: 1.625rem; font-weight: 600; line-height: 1.2; margin: 3rem 0 0.9rem; scroll-margin-top: 5rem; }
+.prose > h2:first-child { margin-top: 0; }
+.prose h3 { font-size: 1.1875rem; margin: 1.75rem 0 0.5rem; }
+.prose p, .prose li { line-height: 1.65; }
+.prose ul, .prose ol { padding-left: 1.3rem; margin: 0 0 1.1em; }
+.prose li { margin-bottom: 0.4em; }
+.prose li::marker { color: var(--muted); }
+.prose strong { font-weight: 600; }
+.prose a { text-decoration-thickness: 1px; }
+.prose dl.terms { margin: 0 0 1.2em; display: grid; gap: 0.9rem; }
+.prose dl.terms dt { font-weight: 600; }
+.prose dl.terms dd { margin: 0.15rem 0 0; color: var(--ink-2); }
+
+/* Equations rendered to SVG at build time */
+svg.tex { display: inline-block; overflow: visible; }
+.eq { overflow-x: auto; overflow-y: hidden; text-align: center; margin: 1.25rem 0 1.4rem; padding-block: 0.2rem; font-size: 1.12em; }
+.eq svg.tex { margin-inline: auto; }
+
+.callout { background: var(--tint); border-radius: 4px; padding: 1.1rem 1.25rem; margin: 1.5rem 0; }
+.callout p:last-child, .callout ul:last-child { margin-bottom: 0; }
+.label { display: block; font-family: var(--sans); font-size: 0.75rem; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink-2); margin-bottom: 0.45rem; }
+
+/* Diagrams */
+figure.diagram { margin: 1.75rem 0; }
+.fig-scroll { overflow-x: auto; }
+.fig-scroll svg { display: block; width: 100%; height: auto; min-width: 34rem; }
+figure.diagram figcaption, figure.table-fig figcaption { font-family: var(--sans); font-size: 0.875rem; line-height: 1.55; color: var(--muted); margin-top: 0.6rem; }
+.dg { color: var(--ink); }
+.dg text { fill: currentColor; font-family: var(--sans); font-size: 13px; }
+.dg .sm { font-size: 11.5px; fill: var(--muted); }
+.dg .lbl { font-weight: 500; }
+.dg .stroke { stroke: currentColor; fill: none; stroke-width: 1.5; }
+.dg .thin { stroke: var(--muted); fill: none; stroke-width: 1; }
+.dg .c1 { stroke: var(--chart-1); fill: none; stroke-width: 2; }
+.dg .c2 { stroke: var(--chart-2); fill: none; stroke-width: 2; }
+.dg .ref { stroke: var(--muted); fill: none; stroke-width: 1.5; stroke-dasharray: 6 5; }
+.dg .fill-c1 { fill: var(--chart-1); }
+.dg .fill-c2 { fill: var(--chart-2); }
+.dg .fill-ink { fill: currentColor; }
+.dg .fill-muted { fill: var(--muted); }
+.dg .fill-line { fill: var(--line); }
+.dg .box { fill: var(--surface); stroke: var(--muted); stroke-width: 1; }
+.dg .box-tint { fill: var(--tint); stroke: none; }
+.dg .surf { fill: var(--surface); }
+
+/* Tables */
+figure.table-fig { margin: 1.5rem 0; }
+.table-scroll { overflow-x: auto; }
+table.cmp { width: 100%; border-collapse: collapse; font-family: var(--sans); font-size: 0.9375rem; min-width: 32rem; }
+table.cmp th, table.cmp td { text-align: left; padding: 0.6rem 0.75rem 0.6rem 0; border-bottom: 1px solid var(--line); vertical-align: top; }
+table.cmp thead th { font-size: 0.8125rem; font-weight: 600; color: var(--ink-2); border-bottom-color: var(--ink-2); }
+table.cmp td { font-variant-numeric: tabular-nums; color: var(--ink-2); }
+table.cmp td:first-child { color: var(--ink); font-weight: 500; }
+table.cmp td.new { color: var(--ink); }
+
+/* Interactive models */
+.demo { background: var(--surface); border: 1px solid var(--line); border-radius: 4px; padding: 1.1rem 1.1rem 1rem; margin: 1.5rem 0; font-family: var(--sans); }
+.demo-controls { display: grid; grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr)); gap: 0.9rem 1.5rem; margin-bottom: 0.9rem; }
+.ctl { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 0.25rem 0.75rem; min-width: 0; }
+.ctl label, .ctl .ctl-l { font-size: 0.8125rem; color: var(--ink-2); grid-column: 1; }
+.ctl output { grid-column: 2; grid-row: 1; font-size: 0.875rem; font-weight: 600; color: var(--ink); font-variant-numeric: tabular-nums; text-align: right; }
+.ctl input[type="range"] { grid-column: 1 / -1; width: 100%; margin: 0; accent-color: var(--chart-1); height: 1.75rem; }
+.ctl-seg, .ctl-presets { grid-template-columns: minmax(0, 1fr); }
+.ctl-btn { grid-template-columns: minmax(0, 1fr); align-content: end; }
+.seg-mini { display: flex; flex-wrap: wrap; gap: 0.35rem; }
+.seg-mini button { font: inherit; font-size: 0.8125rem; color: var(--ink-2); background: transparent; border: 1px solid var(--line); border-radius: 3px; min-height: 2rem; padding: 0 0.6rem; cursor: pointer; }
+.seg-mini button:hover { border-color: var(--ink-2); }
+.seg-mini button[aria-checked="true"] { background: var(--ink); border-color: var(--ink); color: var(--bg); }
+.btn-small { min-height: 2.1rem; font-size: 0.8125rem; padding: 0 0.85rem; justify-self: start; cursor: pointer; }
+.legend { list-style: none; margin: 0 0 0.5rem; padding: 0; display: flex; flex-wrap: wrap; gap: 0.3rem 1.25rem; font-size: 0.8125rem; color: var(--ink-2); }
+.legend li { display: inline-flex; align-items: center; gap: 0.45rem; }
+.key { display: inline-block; width: 1.1rem; height: 0; border-top: 2px solid var(--chart-1); flex: none; }
+.key-c1 { border-top-color: var(--chart-1); }
+.key-c2 { border-top-color: var(--chart-2); }
+.key-ref { border-top-color: var(--muted); }
+.key-dash { border-top-style: dashed; }
+.key-dot { width: 0.55rem; height: 0.55rem; border: 0; border-radius: 50%; background: var(--chart-1); }
+.key-dot.key-c2 { background: var(--chart-2); }
+.key-dot.key-ref { background: var(--muted); }
+.demo-plot { position: relative; width: 100%; aspect-ratio: 16 / 9; max-width: 100%; }
+.demo-plot canvas { display: block; width: 100%; height: 100%; touch-action: pan-y; cursor: crosshair; }
+@media (max-width: 600px) { .demo-plot { aspect-ratio: 4 / 3.4; } }
+.tip { position: absolute; left: 0; top: 0; pointer-events: none; background: var(--surface); border: 1px solid var(--line); border-radius: 3px; padding: 0.45rem 0.6rem; font-size: 0.8125rem; line-height: 1.45; color: var(--ink-2); box-shadow: 0 4px 14px rgba(10, 21, 36, 0.12); white-space: nowrap; z-index: 2; }
+.tip p { margin: 0; display: flex; align-items: center; gap: 0.4rem; }
+.tip .tip-h { color: var(--ink); font-weight: 600; margin-bottom: 0.15rem; }
+.tip b { color: var(--ink); font-weight: 600; font-variant-numeric: tabular-nums; }
+.demo-read { display: grid; grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr)); gap: 0.75rem 1.5rem; margin: 0.9rem 0 0; padding-top: 0.85rem; border-top: 1px solid var(--line); }
+.demo-read dt { font-size: 0.75rem; color: var(--muted); margin-bottom: 0.15rem; }
+.demo-read dd { margin: 0; font-size: 0.9375rem; font-weight: 600; color: var(--ink); font-variant-numeric: tabular-nums; }
+.chip { display: inline-block; font-size: 0.8125rem; font-weight: 600; border-radius: 999px; padding: 0.1rem 0.6rem; }
+.chip-ok { background: var(--ok-bg); color: var(--ok-ink); }
+.chip-no { background: var(--no-bg); color: var(--no-ink); }
+.demo-note { font-family: var(--sans); font-size: 0.875rem; color: var(--muted); margin-top: -0.6rem; }
+
+/* Takeaways, self-check, references, papers */
+.takeaways { border-top: 2px solid var(--ink); padding-top: 1rem; margin-top: 3rem; }
+.takeaways ul { margin-bottom: 0; }
+details.qa { border-bottom: 1px solid var(--line); padding: 0.85rem 0; }
+details.qa:first-of-type { border-top: 1px solid var(--line); }
+details.qa summary { cursor: pointer; font-weight: 600; line-height: 1.5; list-style-position: outside; margin-left: 1.1rem; }
+details.qa summary::marker { color: var(--muted); }
+details.qa .ans { margin: 0.6rem 0 0 1.1rem; color: var(--ink-2); }
+details.qa .ans p:last-child { margin-bottom: 0; }
+ol.refs { padding-left: 1.5rem; }
+ol.refs li { font-size: 1rem; line-height: 1.55; color: var(--ink-2); margin-bottom: 0.7rem; }
+ol.refs a { font-family: var(--sans); font-size: 0.8125rem; white-space: nowrap; }
+.paper-list { list-style: none; margin: 0; padding: 0; }
+.paper-list li { padding: 0.8rem 0; border-bottom: 1px solid var(--line); }
+.paper-list li:first-child { border-top: 1px solid var(--line); }
+.paper-list a.t { font-weight: 600; color: var(--ink); text-decoration: none; line-height: 1.4; }
+.paper-list a.t:hover { color: var(--accent); text-decoration: underline; text-decoration-thickness: 1px; }
+.paper-list .v { display: block; font-size: 0.9375rem; color: var(--muted); margin-top: 0.2rem; }
+.prevnext { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; margin-top: 3.5rem; font-family: var(--sans); }
+.prevnext a { display: block; padding: 0.9rem 1rem; border: 1px solid var(--line); border-radius: 4px; text-decoration: none; color: var(--ink); }
+.prevnext a:hover { border-color: var(--ink-2); color: var(--ink); }
+.prevnext .dir { display: block; font-size: 0.75rem; color: var(--muted); margin-bottom: 0.2rem; }
+.prevnext .nm { font-weight: 600; font-size: 0.9375rem; }
+.prevnext .next { text-align: right; grid-column: 2; }
+@media (max-width: 560px) { .prevnext { grid-template-columns: minmax(0, 1fr); } .prevnext .next { grid-column: 1; } }
+
+/* Tutorial hub */
+.hub-list { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--line); }
+.hub-item a { display: grid; grid-template-columns: 2.5rem minmax(0, 1fr) auto; gap: 0.25rem 1.25rem; align-items: baseline; padding: 1.35rem 0; border-bottom: 1px solid var(--line); text-decoration: none; color: var(--ink); }
+.hub-item a:hover .nm { color: var(--accent); text-decoration: underline; text-decoration-thickness: 1px; }
+.hub-item .no { font-family: var(--sans); font-size: 0.875rem; color: var(--muted); font-variant-numeric: tabular-nums; }
+.hub-item .nm { font-size: 1.375rem; font-weight: 600; line-height: 1.25; }
+.hub-item .sm { grid-column: 2; color: var(--ink-2); font-size: 1.0625rem; max-width: 52ch; }
+.hub-item .mt { grid-column: 3; grid-row: 1; font-family: var(--sans); font-size: 0.8125rem; color: var(--muted); white-space: nowrap; text-align: right; }
+.hub-item .dm { grid-column: 2; font-family: var(--sans); font-size: 0.8125rem; color: var(--muted); }
+@media (max-width: 640px) {
+  .hub-item a { grid-template-columns: 2rem minmax(0, 1fr); }
+  .hub-item .mt { grid-column: 2; grid-row: auto; text-align: left; }
+}
+.hub-note { font-family: var(--sans); font-size: 0.875rem; color: var(--muted); margin-top: 1.5rem; max-width: 60ch; }
+
+/* Home page teasers */
+.tut-teaser { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 2.75rem; }
+.tut-teaser li { border-top: 1px solid var(--line); padding: 1rem 0 1.15rem; }
+.tut-teaser a { font-weight: 600; font-size: 1.125rem; color: var(--ink); text-decoration: none; }
+.tut-teaser a:hover { color: var(--accent); text-decoration: underline; text-decoration-thickness: 1px; }
+.tut-teaser p { margin: 0.25rem 0 0; font-size: 1rem; color: var(--ink-2); }
+@media (max-width: 720px) { .tut-teaser { grid-template-columns: minmax(0, 1fr); } }
+.more { font-family: var(--sans); font-size: 0.9375rem; margin-top: 1.5rem; }
+.theme .theme-links { display: flex; flex-wrap: wrap; gap: 0.25rem 1.25rem; align-items: baseline; }
+.theme .theme-links a { font-family: var(--sans); font-size: 0.875rem; font-weight: 500; }
+
+/* Urdu */
+.ur { font-family: var(--urdu); direction: rtl; unicode-bidi: isolate; line-height: 2.3; font-weight: 400; }
+.urdu-teaser { display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); gap: 2.5rem; align-items: center; }
+.urdu-teaser .ur { font-size: clamp(1.2rem, 2vw, 1.4rem); margin: 0; text-align: right; }
+.urdu-teaser .ur span, .urdu-teaser .en span { display: block; }
+.urdu-teaser .en { color: var(--ink-2); font-style: italic; margin: 0 0 0.5rem; }
+.urdu-teaser .who { font-family: var(--sans); font-size: 0.875rem; color: var(--muted); margin: 0 0 1rem; }
+@media (max-width: 820px) { .urdu-teaser { grid-template-columns: minmax(0, 1fr); gap: 1rem; } }
+
+.urdu-head h1 .ur { display: block; font-size: clamp(2.4rem, 6vw, 3.6rem); line-height: 1.9; font-weight: 400; margin-bottom: 0.2rem; letter-spacing: 0; }
+.urdu-head h1 .en-t { display: block; font-size: clamp(1.6rem, 3.6vw, 2.25rem); }
+.urdu-sec { padding-block: clamp(2.5rem, 6vw, 4rem); border-top: 1px solid var(--line); }
+.urdu-sec > .wrap > h2 { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.25rem 1rem; font-size: 2rem; font-weight: 600; margin: 0 0 0.5rem; }
+.urdu-sec > .wrap > h2 .ur { font-size: 1.6rem; font-weight: 400; line-height: 1.8; color: var(--ink-2); }
+.urdu-sec .intro { margin-bottom: 1.25rem; }
+.toggles { display: flex; flex-wrap: wrap; gap: 0.5rem 1.5rem; font-family: var(--sans); font-size: 0.9375rem; color: var(--ink-2); margin: 0 0 1.75rem; }
+.toggles label { display: inline-flex; align-items: center; gap: 0.45rem; cursor: pointer; }
+.toggles input { width: 1rem; height: 1rem; accent-color: var(--accent); margin: 0; }
+.couplets { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 22rem), 1fr)); gap: 1.25rem; }
+.couplet { background: var(--surface); border: 1px solid var(--line); border-radius: 4px; padding: 1.25rem 1.4rem 1.1rem; display: grid; gap: 0.75rem; align-content: start; }
+.couplet .ur { font-size: clamp(1.25rem, 2.2vw, 1.5rem); margin: 0; text-align: right; color: var(--ink); }
+.couplet .ur span, .couplet .ro span, .couplet .en span { display: block; }
+.couplet .ro { font-family: var(--sans); font-size: 0.9375rem; color: var(--ink-2); margin: 0; line-height: 1.6; }
+.couplet .en { font-style: italic; color: var(--ink-2); margin: 0; line-height: 1.55; }
+.couplet .who { font-family: var(--sans); font-size: 0.8125rem; color: var(--muted); margin: 0.25rem 0 0; display: flex; justify-content: space-between; gap: 1rem; border-top: 1px solid var(--line); padding-top: 0.65rem; }
+.couplet .who .ur { font-size: 1rem; line-height: 1.6; color: var(--muted); text-align: left; }
+.hide-roman .ro, .hide-en .en { display: none; }
+.books { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 16rem), 1fr)); gap: 0 2.25rem; }
+.book { border-top: 1px solid var(--line); padding: 1.1rem 0 1.4rem; }
+.book .ur { font-size: 1.5rem; margin: 0; text-align: right; }
+.book h3 { font-size: 1.125rem; margin: 0.1rem 0 0.15rem; }
+.book .by { font-family: var(--sans); font-size: 0.875rem; color: var(--muted); margin: 0 0 0.6rem; }
+.book p.nt { font-size: 1rem; color: var(--ink-2); margin: 0; }
+
+/* Contact copy button */
+.mail-row { display: flex; flex-wrap: wrap; align-items: center; gap: 0.75rem 1rem; margin-bottom: 1rem; }
+.mail-row .contact-mail { margin-bottom: 0; }
+.copy-status { font-family: var(--sans); font-size: 0.875rem; color: var(--muted); }
+.prose dl.terms dt .tag { font-family: var(--sans); font-size: 0.8125rem; font-weight: 500; color: var(--muted); margin-left: 0.5rem; }
+@media (max-width: 560px) { .site-nav ul { gap: 0.7rem; } .site-nav a { font-size: 0.8125rem; } }
+
+/* Footer links */
+.foot { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 0.75rem 2rem; }
+.foot nav { display: flex; flex-wrap: wrap; gap: 0.5rem 1.25rem; }
+.foot a { color: var(--ink-2); }
+
+/* Places */
+.place-head .local { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.25rem 1.5rem; margin: -0.35rem 0 0.6rem; color: var(--ink-2); font-size: 1.375rem; }
+.place-head .local .ur { font-size: 1.375rem; line-height: 2; }
+.place-head .local .hi { font-family: "Noto Serif Devanagari", var(--serif); }
+.place-head .local .en-full { font-size: 1.125rem; font-style: italic; }
+.place-head .where { font-family: var(--sans); font-size: 0.9375rem; color: var(--muted); margin: 0 0 1.25rem; }
+.conn { background: var(--tint); border-radius: 4px; padding: 0.9rem 1.15rem; max-width: 44rem; margin: 1.5rem 0 0; color: var(--ink); }
+.conn .label { margin-bottom: 0.25rem; }
+.place-grid { display: grid; grid-template-columns: minmax(0, 19rem) minmax(0, 1fr); gap: 3.5rem; padding-block: 2.5rem clamp(3rem, 8vw, 5rem); border-top: 1px solid var(--line); }
+.place-grid h2 { font-size: 1.375rem; margin: 0 0 0.9rem; }
+.fact-list { margin: 0; }
+.fact-list div { padding: 0.7rem 0; border-top: 1px solid var(--line); }
+.fact-list dt { font-family: var(--sans); font-size: 0.75rem; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; color: var(--muted); }
+.fact-list dd { margin: 0.2rem 0 0; font-size: 1.0625rem; line-height: 1.45; color: var(--ink); font-variant-numeric: tabular-nums; }
+.ext-links { display: flex; flex-wrap: wrap; gap: 0.5rem 1.25rem; font-family: var(--sans); font-size: 0.9375rem; margin: 1.25rem 0 0; }
+.notes ul { list-style: none; margin: 0; padding: 0; max-width: 44rem; }
+.notes li { padding: 0.9rem 0; border-top: 1px solid var(--line); line-height: 1.6; }
+.see-also { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.5rem 1.25rem; font-family: var(--sans); font-size: 0.9375rem; margin-top: 1.75rem; }
+.see-also .label { margin: 0; }
+@media (max-width: 860px) { .place-grid { grid-template-columns: minmax(0, 1fr); gap: 2.5rem; } }
+
+.places-wrap { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr); gap: 3.5rem; padding-block: 2.5rem clamp(3rem, 8vw, 5rem); border-top: 1px solid var(--line); }
+.places-wrap h2 { font-size: 1.625rem; margin: 0 0 0.6rem; }
+.places-wrap h3 { font-family: var(--sans); font-size: 0.75rem; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); margin: 1.5rem 0 0.25rem; }
+@media (max-width: 900px) { .places-wrap { grid-template-columns: minmax(0, 1fr); } }
+.route { list-style: none; margin: 1.25rem 0 0; padding: 0; }
+.route .stop { display: grid; grid-template-columns: 1.4rem minmax(0, 1fr) auto; gap: 0 0.9rem; align-items: start; }
+.route .dot { width: 0.85rem; height: 0.85rem; border-radius: 50%; border: 2px solid var(--ink); background: var(--bg); margin-top: 0.5rem; justify-self: center; }
+.route .stop.now .dot { background: var(--signal); border-color: var(--signal); }
+.route .stop-body { display: grid; gap: 0.1rem; min-width: 0; }
+.route .city { font-size: 1.375rem; font-weight: 600; color: var(--ink); text-decoration: none; line-height: 1.35; }
+.route .city:hover { color: var(--accent); text-decoration: underline; text-decoration-thickness: 1px; }
+.route .sub { font-family: var(--sans); font-size: 0.875rem; color: var(--muted); }
+.route .role { font-size: 1rem; color: var(--ink-2); }
+.route .yrs { font-family: var(--sans); font-size: 0.875rem; color: var(--ink-2); font-variant-numeric: tabular-nums; padding-top: 0.35rem; white-space: nowrap; }
+.route .leg { display: grid; grid-template-columns: 1.4rem minmax(0, 1fr); gap: 0 0.9rem; min-height: 2.6rem; }
+.route .leg .line { justify-self: center; width: 0; border-left: 2px dashed var(--line); }
+.route .leg .km { align-self: center; font-family: var(--sans); font-size: 0.8125rem; color: var(--muted); font-variant-numeric: tabular-nums; }
+.place-index { list-style: none; margin: 0; padding: 0; }
+.place-index li { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 0.15rem 1rem; padding: 0.6rem 0; border-top: 1px solid var(--line); }
+.place-index a { font-weight: 600; color: var(--ink); text-decoration: none; }
+.place-index a:hover { color: var(--accent); text-decoration: underline; text-decoration-thickness: 1px; }
+.place-index span { font-family: var(--sans); font-size: 0.8125rem; color: var(--muted); }
+</style>
+<style>
+:root { --k1: #2a78d6; --k2: #eb6834; --k3: #1baf7a; --k4: #eda100; --k5: #e87ba4; --k6: #008300; --k7: #6250d6; --k8: #e34948; --t: #2a78d6; --t-deep: #1c5cab; }
+body.t-found { --t: #1baf7a; --t-deep: #0d7550; }
+body.t-tech { --t: #2a78d6; --t-deep: #1c5cab; }
+body.t-tools { --t: #eb6834; --t-deep: #b4461b; }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) { --k1: #3987e5; --k2: #d95926; --k3: #199e70; --k4: #c98500; --k5: #d55181; --k6: #2f9e2f; --k7: #9085e9; --k8: #e66767; }
+  :root:not([data-theme="light"]) body.t-found { --t: #22b383; --t-deep: #7fdcb6; }
+:root:not([data-theme="light"]) body.t-tech { --t: #3987e5; --t-deep: #9ec5f4; }
+:root:not([data-theme="light"]) body.t-tools { --t: #e0682f; --t-deep: #f5a983; }
+}
+:root[data-theme="dark"] { --k1: #3987e5; --k2: #d95926; --k3: #199e70; --k4: #c98500; --k5: #d55181; --k6: #2f9e2f; --k7: #9085e9; --k8: #e66767; }
+:root[data-theme="dark"] body.t-found { --t: #22b383; --t-deep: #7fdcb6; }
+:root[data-theme="dark"] body.t-tech { --t: #3987e5; --t-deep: #9ec5f4; }
+:root[data-theme="dark"] body.t-tools { --t: #e0682f; --t-deep: #f5a983; }
+
+/* ================= picture-first tutorials ================= */
+body { --t-soft: color-mix(in srgb, var(--t) 11%, var(--surface)); --t-soft2: color-mix(in srgb, var(--t) 22%, var(--surface)); --t-line: color-mix(in srgb, var(--t) 40%, var(--line)); }
+.site-header { border-bottom-color: var(--line); }
+.t-band { height: 6px; background: linear-gradient(90deg, var(--t), color-mix(in srgb, var(--t) 45%, var(--k4))); }
+
+/* page head with hero illustration */
+.page-head.hero2 { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 25rem); gap: clamp(1.5rem, 4vw, 3.5rem); align-items: center; }
+.page-head.hero2 .hero-art { margin: 0; }
+.page-head.hero2 .hero-art svg { display: block; width: 100%; height: auto; }
+.page-head .kicker { display: inline-flex; align-items: center; gap: 0.5rem; font-family: var(--sans); font-size: 0.8125rem; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; color: var(--t-deep); margin: 0 0 0.75rem; }
+.page-head .kicker::before { content: ""; width: 0.65rem; height: 0.65rem; border-radius: 50%; background: var(--t); }
+.meta-row .pill { background: var(--t-soft); color: var(--ink); border-radius: 999px; padding: 0.15rem 0.7rem; font-weight: 500; }
+@media (max-width: 880px) { .page-head.hero2 { grid-template-columns: minmax(0, 1fr); } .page-head.hero2 .hero-art { max-width: 26rem; } }
+
+/* at a glance */
+.glance { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 12.5rem), 1fr)); gap: 0.9rem; margin: 0 0 2.75rem; }
+.glance .g { background: var(--surface); border: 1px solid var(--line); border-top: 4px solid var(--gc, var(--t)); border-radius: 6px; padding: 0.95rem 1rem 1rem; }
+.glance .g svg { width: 2.4rem; height: 2.4rem; display: block; margin-bottom: 0.55rem; }
+.glance .g b { display: block; font-family: var(--sans); font-size: 0.9375rem; font-weight: 600; color: var(--ink); margin-bottom: 0.2rem; }
+.glance .g span { display: block; font-size: 0.975rem; line-height: 1.45; color: var(--ink-2); }
+.glance-h { font-family: var(--sans); font-size: 0.75rem; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); margin: 0 0 0.75rem; }
+
+/* numbered section headings */
+.prose { counter-reset: sec; }
+.prose h2.sec { counter-increment: sec; display: flex; align-items: baseline; gap: 0.75rem; }
+.prose h2.sec::before { content: counter(sec); flex: none; display: inline-grid; place-items: center; width: 2rem; height: 2rem; border-radius: 50%; background: var(--t-deep); color: var(--surface); font-family: var(--sans); font-size: 0.95rem; font-weight: 600; transform: translateY(-0.12rem); }
+.prose .lead { font-size: 1.125rem; color: var(--ink); }
+.toc a[aria-current="true"] { border-left-color: var(--t); }
+
+/* figures */
+figure.viz { margin: 1.5rem 0 1.75rem; background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 1rem 1rem 0.85rem; }
+figure.viz .fig-scroll { overflow-x: auto; }
+figure.viz svg { display: block; width: 100%; height: auto; }
+figure.viz .fig-scroll svg { min-width: 0; }
+figure.viz.wide .fig-scroll svg { min-width: 34rem; }
+figure.viz figcaption { font-family: var(--sans); font-size: 0.875rem; line-height: 1.55; color: var(--ink-2); margin-top: 0.7rem; }
+figure.viz figcaption b { color: var(--ink); font-weight: 600; }
+figure.viz .legend2 { list-style: none; display: flex; flex-wrap: wrap; gap: 0.3rem 1.1rem; margin: 0 0 0.4rem; padding: 0; font-family: var(--sans); font-size: 0.8125rem; color: var(--ink-2); }
+figure.viz .legend2 li { display: inline-flex; align-items: center; gap: 0.4rem; margin: 0; }
+figure.viz .legend2 i { width: 1rem; height: 0; border-top: 3px solid var(--c); border-radius: 2px; }
+figure.viz .legend2 i.sq { width: 0.7rem; height: 0.7rem; border: 0; background: var(--c); border-radius: 2px; }
+figure.viz .legend2 i.dash { border-top-style: dashed; }
+.fig-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 15rem), 1fr)); gap: 1rem; margin: 1.5rem 0 1.75rem; }
+.fig-row figure.viz { margin: 0; }
+
+/* photos */
+figure.photo { margin: 1.5rem 0 1.75rem; }
+figure.photo img { display: block; width: 100%; height: auto; border-radius: 8px; background: var(--tint); }
+figure.photo figcaption { font-family: var(--sans); font-size: 0.875rem; line-height: 1.55; color: var(--ink-2); margin-top: 0.55rem; }
+figure.photo .credit { display: block; font-size: 0.75rem; color: var(--muted); margin-top: 0.2rem; }
+figure.photo .credit a { color: var(--muted); }
+.photo-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 13rem), 1fr)); gap: 1rem; margin: 1.5rem 0 1.75rem; }
+.photo-row figure.photo { margin: 0; }
+.photo-row figure.photo img { aspect-ratio: 4 / 3; object-fit: cover; }
+
+figure.photo.tall img { max-width: 21rem; }
+.photo-row figure.photo.tall img { max-width: none; }
+/* key idea */
+.keyidea { position: relative; background: var(--t-soft); border-left: 4px solid var(--t); border-radius: 0 6px 6px 0; padding: 0.95rem 1.15rem 1rem; margin: 1.5rem 0; }
+.keyidea .label { display: block; font-family: var(--sans); font-size: 0.75rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--t-deep); margin-bottom: 0.3rem; }
+.keyidea p { margin: 0 0 0.5rem; color: var(--ink); }
+.keyidea p:last-child { margin-bottom: 0; }
+.keyidea .eq { margin: 0.6rem 0 0.2rem; }
+
+/* more detail */
+details.more { border: 1px solid var(--t-line); border-radius: 6px; margin: 1.25rem 0 1.5rem; background: var(--surface); }
+details.more > summary { cursor: pointer; list-style: none; display: flex; align-items: center; gap: 0.6rem; padding: 0.7rem 1rem; font-family: var(--sans); font-size: 0.9375rem; font-weight: 600; color: var(--ink); }
+details.more > summary::-webkit-details-marker { display: none; }
+details.more > summary::before { content: "+"; display: inline-grid; place-items: center; width: 1.35rem; height: 1.35rem; border-radius: 50%; background: var(--t-soft2); color: var(--t-deep); font-weight: 700; flex: none; }
+details.more[open] > summary::before { content: "\2212"; }
+details.more > summary .hint { font-weight: 400; color: var(--muted); font-size: 0.8125rem; }
+details.more > .body { padding: 0.25rem 1.1rem 1rem; border-top: 1px dashed var(--line); }
+details.more > .body > :first-child { margin-top: 0.75rem; }
+
+/* concept cards */
+.prose ul.cards, .prose ul.learn, .prose ul.tcards { padding-left: 0; }
+.cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 13rem), 1fr)); gap: 0.85rem; margin: 1.25rem 0 1.75rem; padding: 0; list-style: none; }
+.cards > li, .cards > a, .cards > div { margin: 0; background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 0.9rem 1rem 1rem; position: relative; overflow: hidden; }
+.cards > li::before, .cards > a::before, .cards > div::before { content: ""; position: absolute; inset: 0 0 auto 0; height: 4px; background: var(--c, var(--t)); }
+.cards svg.ic { width: 2.6rem; height: 2.6rem; display: block; margin: 0.15rem 0 0.5rem; }
+.cards b { display: block; font-family: var(--sans); font-size: 0.9375rem; font-weight: 600; color: var(--ink); margin-bottom: 0.2rem; }
+.cards span { display: block; font-size: 0.975rem; line-height: 1.45; color: var(--ink-2); }
+.cards .tag { font-style: normal; display: inline-block; font-family: var(--sans); font-size: 0.6875rem; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; color: var(--ink); background: color-mix(in srgb, var(--c, var(--t)) 18%, var(--surface)); border-radius: 999px; padding: 0.1rem 0.5rem; margin-bottom: 0.4rem; }
+.cards > a { text-decoration: none; color: inherit; transition: border-color .15s; }
+.cards > a:hover { border-color: var(--c, var(--t)); }
+.cards > a:hover b { color: var(--accent); }
+
+.cards.c4 { grid-template-columns: repeat(auto-fit, minmax(min(100%, 9.5rem), 1fr)); }
+/* learn more */
+.learn { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 15.5rem), 1fr)); gap: 0.85rem; margin: 1rem 0 0; padding: 0; list-style: none; }
+.learn li { margin: 0; }
+.learn a { display: grid; grid-template-columns: 2.4rem minmax(0, 1fr); gap: 0.15rem 0.8rem; height: 100%; box-sizing: border-box; padding: 0.85rem 1rem; background: var(--surface); border: 1px solid var(--line); border-radius: 8px; text-decoration: none; color: var(--ink); }
+.learn a:hover { border-color: var(--c); }
+.learn .av { grid-row: 1 / span 3; width: 2.4rem; height: 2.4rem; border-radius: 8px; display: grid; place-items: center; background: color-mix(in srgb, var(--c) 18%, var(--surface)); color: var(--ink); font-family: var(--sans); font-weight: 700; font-size: 0.875rem; }
+.learn .ty { font-family: var(--sans); font-size: 0.6875rem; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; color: var(--ink-2); }
+.learn .nm { font-family: var(--sans); font-weight: 600; font-size: 0.9375rem; line-height: 1.35; }
+.learn .ds { font-size: 0.9375rem; line-height: 1.45; color: var(--ink-2); }
+.learn .dm { font-family: var(--sans); font-size: 0.75rem; color: var(--muted); margin-top: 0.15rem; }
+
+/* compact further reading */
+details.reading > summary { cursor: pointer; font-family: var(--sans); font-weight: 600; font-size: 0.9375rem; color: var(--ink-2); padding: 0.4rem 0; }
+
+/* diagram styling (inline SVG) */
+.viz svg { color: var(--ink); overflow: visible; }
+.viz text { fill: currentColor; font-family: var(--sans); font-size: 13px; }
+.viz text.s { font-size: 11.5px; fill: var(--ink-2); }
+.viz text.xs { font-size: 10.5px; fill: var(--muted); }
+.viz text.b { font-weight: 600; }
+.viz text.h { font-weight: 600; font-size: 14px; }
+.viz text.w { fill: #fff; font-weight: 600; }
+.viz text.m { fill: var(--muted); }
+.viz text.ser { font-family: var(--serif); font-style: italic; font-size: 15px; }
+.viz .ink { fill: var(--ink); } .viz .ink2 { fill: var(--ink-2); } .viz .mut { fill: var(--muted); }
+.viz .srf { fill: var(--surface); } .viz .bg { fill: var(--bg); } .viz .lnf { fill: var(--line); } .viz .tnt { fill: var(--tint); }
+.viz .st { stroke: currentColor; fill: none; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+.viz .st-m { stroke: var(--muted); fill: none; stroke-width: 1.3; stroke-linecap: round; }
+.viz .st-l { stroke: var(--line); fill: none; stroke-width: 1; }
+.viz .grid { stroke: var(--line); stroke-width: 1; fill: none; }
+.viz .axis { stroke: var(--muted); stroke-width: 1.2; fill: none; }
+.viz .dash { stroke-dasharray: 5 4; }
+.viz .dot { stroke-dasharray: 1.5 4; }
+.viz .f1 { fill: var(--k1); } .viz .s1 { stroke: var(--k1); fill: none; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; } .viz .l1 { fill: color-mix(in srgb, var(--k1) 20%, var(--surface)); } .viz .ll1 { fill: color-mix(in srgb, var(--k1) 10%, var(--surface)); } .viz .tx1 { fill: color-mix(in srgb, var(--k1) 70%, var(--ink)); }
+.viz .f2 { fill: var(--k2); } .viz .s2 { stroke: var(--k2); fill: none; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; } .viz .l2 { fill: color-mix(in srgb, var(--k2) 20%, var(--surface)); } .viz .ll2 { fill: color-mix(in srgb, var(--k2) 10%, var(--surface)); } .viz .tx2 { fill: color-mix(in srgb, var(--k2) 70%, var(--ink)); }
+.viz .f3 { fill: var(--k3); } .viz .s3 { stroke: var(--k3); fill: none; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; } .viz .l3 { fill: color-mix(in srgb, var(--k3) 20%, var(--surface)); } .viz .ll3 { fill: color-mix(in srgb, var(--k3) 10%, var(--surface)); } .viz .tx3 { fill: color-mix(in srgb, var(--k3) 70%, var(--ink)); }
+.viz .f4 { fill: var(--k4); } .viz .s4 { stroke: var(--k4); fill: none; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; } .viz .l4 { fill: color-mix(in srgb, var(--k4) 20%, var(--surface)); } .viz .ll4 { fill: color-mix(in srgb, var(--k4) 10%, var(--surface)); } .viz .tx4 { fill: color-mix(in srgb, var(--k4) 70%, var(--ink)); }
+.viz .f5 { fill: var(--k5); } .viz .s5 { stroke: var(--k5); fill: none; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; } .viz .l5 { fill: color-mix(in srgb, var(--k5) 20%, var(--surface)); } .viz .ll5 { fill: color-mix(in srgb, var(--k5) 10%, var(--surface)); } .viz .tx5 { fill: color-mix(in srgb, var(--k5) 70%, var(--ink)); }
+.viz .f6 { fill: var(--k6); } .viz .s6 { stroke: var(--k6); fill: none; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; } .viz .l6 { fill: color-mix(in srgb, var(--k6) 20%, var(--surface)); } .viz .ll6 { fill: color-mix(in srgb, var(--k6) 10%, var(--surface)); } .viz .tx6 { fill: color-mix(in srgb, var(--k6) 70%, var(--ink)); }
+.viz .f7 { fill: var(--k7); } .viz .s7 { stroke: var(--k7); fill: none; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; } .viz .l7 { fill: color-mix(in srgb, var(--k7) 20%, var(--surface)); } .viz .ll7 { fill: color-mix(in srgb, var(--k7) 10%, var(--surface)); } .viz .tx7 { fill: color-mix(in srgb, var(--k7) 70%, var(--ink)); }
+.viz .f8 { fill: var(--k8); } .viz .s8 { stroke: var(--k8); fill: none; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; } .viz .l8 { fill: color-mix(in srgb, var(--k8) 20%, var(--surface)); } .viz .ll8 { fill: color-mix(in srgb, var(--k8) 10%, var(--surface)); } .viz .tx8 { fill: color-mix(in srgb, var(--k8) 70%, var(--ink)); }
+.viz .ft { fill: var(--t); } .viz .st-t { stroke: var(--t); fill: none; stroke-width: 2.2; } .viz .lt { fill: var(--t-soft2); } .viz .llt { fill: var(--t-soft); }
+.viz .hov { cursor: help; }
+.viz .hov:hover { opacity: 0.85; }
+
+/* plot hover */
+.ptip { position: absolute; left: 0; top: 0; pointer-events: none; background: var(--surface); border: 1px solid var(--line); border-radius: 4px; padding: 0.4rem 0.55rem; font-family: var(--sans); font-size: 0.8125rem; line-height: 1.45; color: var(--ink-2); box-shadow: 0 2px 10px rgba(0,0,0,.08); z-index: 3; white-space: nowrap; }
+.ptip b { color: var(--ink); font-variant-numeric: tabular-nums; }
+.ptip i { display: inline-block; width: 0.6rem; height: 0.6rem; border-radius: 50%; background: var(--c); margin-right: 0.35rem; vertical-align: -0.02rem; }
+figure.viz { position: relative; }
+
+/* track tab bar */
+.tabs { border-bottom: 1px solid var(--line); background: var(--bg); position: sticky; top: calc(env(safe-area-inset-top, 0px) + 3.5rem); z-index: 15; }
+.tabs .wrap { display: flex; align-items: stretch; gap: 0.25rem; overflow-x: auto; scrollbar-width: thin; }
+.tabs .trk { flex: none; display: inline-flex; align-items: center; gap: 0.45rem; padding: 0.65rem 0.9rem 0.65rem 0; margin-right: 0.4rem; border-right: 1px solid var(--line); font-family: var(--sans); font-size: 0.8125rem; font-weight: 700; color: var(--t-deep); text-decoration: none; white-space: nowrap; }
+.tabs .trk::before { content: ""; width: 0.6rem; height: 0.6rem; border-radius: 50%; background: var(--t); }
+.tabs a.tab { flex: none; display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.65rem 0.75rem; font-family: var(--sans); font-size: 0.875rem; color: var(--ink-2); text-decoration: none; white-space: nowrap; border-bottom: 3px solid transparent; }
+.tabs a.tab .n { font-size: 0.75rem; color: var(--muted); font-variant-numeric: tabular-nums; }
+.tabs a.tab:hover { color: var(--ink); background: var(--t-soft); }
+.tabs a.tab[aria-current="page"] { color: var(--ink); font-weight: 600; border-bottom-color: var(--t); }
+@media (max-width: 880px) { .tabs { position: static; } }
+
+/* track landing cards */
+.tcards { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 17rem), 1fr)); gap: 1.1rem; list-style: none; margin: 1.5rem 0 0; padding: 0; }
+.tcards li { margin: 0; }
+.tcards a { display: flex; flex-direction: column; height: 100%; box-sizing: border-box; background: var(--surface); border: 1px solid var(--line); border-radius: 10px; overflow: hidden; text-decoration: none; color: var(--ink); transition: border-color .15s, transform .15s; }
+.tcards a:hover { border-color: var(--t); transform: translateY(-2px); }
+.tcards .art { background: var(--t-soft); border-bottom: 1px solid var(--line); padding: 0.6rem; }
+.tcards .art { height: 11.5rem; box-sizing: border-box; overflow: hidden; }
+.tcards .art svg { display: block; width: 100%; height: 100%; }
+.tcards .txt { padding: 0.85rem 1rem 1rem; display: flex; flex-direction: column; gap: 0.3rem; flex: 1; }
+.tcards .tg { align-self: flex-start; font-family: var(--sans); font-size: 0.6875rem; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; color: var(--ink); background: var(--t-soft2); border-radius: 999px; padding: 0.1rem 0.55rem; }
+.tcards b { font-family: var(--serif); font-size: 1.1875rem; font-weight: 600; line-height: 1.25; }
+.tcards span.d { font-size: 0.975rem; line-height: 1.45; color: var(--ink-2); }
+.tcards span.m { margin-top: auto; padding-top: 0.4rem; font-family: var(--sans); font-size: 0.75rem; color: var(--muted); }
+
+/* tutorial-to-tutorial chips */
+a.tchip { display: inline-flex; align-items: center; gap: 0.35rem; font-family: var(--sans); font-size: 0.8125rem; font-weight: 600; text-decoration: none; color: var(--ink); background: color-mix(in srgb, var(--c) 16%, var(--surface)); border-radius: 999px; padding: 0.12rem 0.6rem 0.12rem 0.45rem; white-space: nowrap; }
+a.tchip::before { content: ""; width: 0.55rem; height: 0.55rem; border-radius: 50%; background: var(--c); }
+a.tchip:hover { color: var(--accent); }
+
+/* takeaways in colour */
+.takeaways { border-top-color: var(--t); }
+.takeaways ul { list-style: none; padding-left: 0; }
+.takeaways li { position: relative; padding-left: 1.6rem; }
+.takeaways li::before { content: ""; position: absolute; left: 0.1rem; top: 0.55em; width: 0.7rem; height: 0.7rem; border-radius: 3px; background: var(--t); }
+details.qa summary::marker { color: var(--t); }
+.prevnext a:hover { border-color: var(--t); }
+
+.hubtrack { --t-soft: color-mix(in srgb, var(--t) 11%, var(--surface)); --t-soft2: color-mix(in srgb, var(--t) 22%, var(--surface)); }
+.hubtrack { border-top: 1px solid var(--line); padding: 2.25rem 0 0.5rem; }
+.hubtrack .hub-h { display: flex; gap: 1rem; align-items: flex-start; }
+.hubtrack .hub-h .num { flex: none; display: grid; place-items: center; width: 2.4rem; height: 2.4rem; border-radius: 50%; background: var(--t); color: #fff; font-family: var(--sans); font-weight: 700; }
+.hubtrack h2 { margin: 0 0 0.3rem; font-size: 1.75rem; }
+.hubtrack h2 a { color: var(--ink); text-decoration: none; }
+.hubtrack h2 a:hover { color: var(--accent); }
+.hubtrack .hub-h p { margin: 0; color: var(--ink-2); max-width: 62ch; }
+</style>
+</head>
+<body class="t-tech">
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="site-header">
+  <div class="wrap header-inner">
+    <a class="brand" href="../index.html">Hamza Shaikh</a>
+    <nav class="site-nav" aria-label="Site">
+      <ul>
+        <li><a href="../index.html#research">Research</a></li>
+        <li><a href="../index.html#publications">Publications</a></li>
+        <li><a href="index.html" aria-current="page">Tutorials</a></li>
+        <li><a href="../urdu.html">Urdu</a></li>
+        <li><a href="../index.html#cv">CV</a></li>
+        <li><a href="../index.html#contact">Contact</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+<div class="t-band" aria-hidden="true"></div>
+<nav class="tabs" aria-label="6G technologies tutorials"><div class="wrap"><a class="trk" href="6g.html">6G technologies</a><a class="tab" href="isac.html"><span class="n">1</span>ISAC</a><a class="tab" href="ris.html"><span class="n">2</span>RIS</a><a class="tab" href="full-duplex.html"><span class="n">3</span>Full-duplex</a><a class="tab" href="thz.html" aria-current="page"><span class="n">4</span>THz</a><a class="tab" href="vlc.html"><span class="n">5</span>VLC</a><a class="tab" href="radar.html"><span class="n">6</span>Radar signal processing</a><a class="tab" href="noma.html"><span class="n">7</span>NOMA & RSMA</a><a class="tab" href="fluid-antennas.html"><span class="n">8</span>Fluid antennas</a><a class="tab" href="v2x.html"><span class="n">9</span>Vehicular</a></div></nav>
+<main id="main">
+  <div class="wrap page-head hero2">
+    <div>
+      <p class="kicker">6G technologies · 4 of 9</p>
+      <h1>Terahertz communication</h1>
+      <p class="lede">Above 100 GHz lie tens of gigahertz of unused spectrum: enough for links of hundreds of gigabits per second, if the losses and the hardware can be tamed.</p>
+      <ul class="meta-row"><li class="pill">6G technology</li><li>8 min</li></ul>
+    </div>
+    <figure class="hero-art viz" aria-hidden="false"><svg viewBox="0 0 712 210" role="img" aria-label="The radio spectrum on a log scale: sub-6 GHz, the upper mid-band, millimetre wave, sub-terahertz and terahertz bands." class="" xmlns="http://www.w3.org/2000/svg"><rect x="30.0" y="60.0" width="172.9" height="46.0" rx="4" class="f3" data-tip="Sub-6 GHz (FR1): 0.41 to 7.125 GHz"/><text x="117.5" y="54.0" text-anchor="middle" class="s b">Sub-6 GHz (FR1)</text><text x="117.5" y="128.0" text-anchor="middle" class="xs">4G, 5G, Wi-Fi</text><rect x="204.9" y="60.0" width="78.6" height="46.0" rx="4" class="f4" data-tip="Upper mid-band: 7.125 to 24.25 GHz"/><text x="245.2" y="36.0" text-anchor="middle" class="s b">Upper mid-band</text><text x="245.2" y="128.0" text-anchor="middle" class="xs">6G candidate</text><rect x="285.5" y="60.0" width="68.7" height="46.0" rx="4" class="f1" data-tip="mmWave (FR2): 24.25 to 71 GHz"/><text x="320.9" y="54.0" text-anchor="middle" class="s b">mmWave (FR2)</text><text x="320.9" y="128.0" text-anchor="middle" class="xs">5G</text><rect x="378.8" y="60.0" width="70.3" height="46.0" rx="4" class="f7" data-tip="Sub-THz: 100 to 300 GHz"/><text x="415.0" y="36.0" text-anchor="middle" class="s b">Sub-THz</text><text x="415.0" y="128.0" text-anchor="middle" class="xs">6G research</text><rect x="451.1" y="60.0" width="228.9" height="46.0" rx="4" class="f8" data-tip="Terahertz: 300 to 10000 GHz"/><text x="566.6" y="54.0" text-anchor="middle" class="s b">Terahertz</text><text x="566.6" y="128.0" text-anchor="middle" class="xs">research</text><line x1="75.6" y1="108.0" x2="75.6" y2="114.0" class="axis"/><text x="75.6" y="148.0" text-anchor="middle" class="xs">1 GHz</text><line x1="227.2" y1="108.0" x2="227.2" y2="114.0" class="axis"/><text x="227.2" y="148.0" text-anchor="middle" class="xs">10 GHz</text><line x1="378.8" y1="108.0" x2="378.8" y2="114.0" class="axis"/><text x="378.8" y="148.0" text-anchor="middle" class="xs">100 GHz</text><line x1="530.4" y1="108.0" x2="530.4" y2="114.0" class="axis"/><text x="530.4" y="148.0" text-anchor="middle" class="xs">1 THz</text><line x1="682.0" y1="108.0" x2="682.0" y2="114.0" class="axis"/><text x="682.0" y="148.0" text-anchor="middle" class="xs">10 THz</text><line x1="30.0" y1="108.0" x2="682.0" y2="108.0" class="axis"/><path d="M439.6657571648654 168 L439.6657571648654 176 L455.59871476048676 176 L455.59871476048676 168" class="s7" style="stroke-width:1.6"/><text x="447.6" y="194.0" text-anchor="middle" class="s b tx7">IEEE 802.15.3d: 252–321 GHz</text><text x="30.0" y="14.0" class="s b">Frequency, log scale: each step up offers about ten times more bandwidth</text></svg></figure>
+  </div>
+  <div class="wrap tut-grid">
+    <nav class="toc" aria-labelledby="toc-h"><h2 id="toc-h">On this page</h2><ol><li><a href="#spectrum">Where the spectrum is</a></li><li><a href="#bandwidth">Why bandwidth</a></li><li><a href="#losses">The catch: losses</a></li><li><a href="#aperture">Antennas win it back</a></li><li><a href="#beams">Pencil beams and blockage</a></li><li><a href="#uses">What it will be used for</a></li><li><a href="#check">Check your understanding</a></li><li><a href="#learn">Learn more</a></li><li><a href="#reading">Further reading</a></li></ol></nav>
+    <article class="prose">
+<p class="glance-h">The idea in 30 seconds</p><div class="glance viz"><div class="g" style="--gc:var(--k7)"><svg class="ic" viewBox="0 0 48 48" aria-hidden="true"><rect x="6.0" y="28.0" width="8.0" height="14.0" rx="1.5" class="l7"/><rect x="18.0" y="18.0" width="8.0" height="24.0" rx="1.5" class="f7"/><rect x="30.0" y="8.0" width="8.0" height="34.0" rx="1.5" class="l7"/><line x1="4.0" y1="43.0" x2="44.0" y2="43.0" class="axis"/></svg><b>Huge bandwidth</b><span>Tens of GHz of spectrum mean tens of Gbit/s and more.</span></div><div class="g" style="--gc:var(--k2)"><svg class="ic" viewBox="0 0 48 48" aria-hidden="true"><path d="M4 24 Q10 10 16 24 T28 24 T40 24" class="s2" style="stroke-width:3"/><circle cx="44.0" cy="24.0" r="2.5" class="f2"/></svg><b>Big losses</b><span>Spreading, absorption and blockage all grow with frequency.</span></div><div class="g" style="--gc:var(--k1)"><svg class="ic" viewBox="0 0 48 48" aria-hidden="true"><circle cx="24.0" cy="24.0" r="18.0" class="l1"/><circle cx="24.0" cy="24.0" r="11.0" class="srf"/><circle cx="24.0" cy="24.0" r="11.0" class="s1"/><circle cx="24.0" cy="24.0" r="4.5" class="f1"/></svg><b>Narrow beams</b><span>Large arrays win back the losses, but must be pointed precisely.</span></div></div>
+<h2 class="sec" id="spectrum">Where the spectrum is</h2>
+<p class="lead">Every generation has moved up in frequency to find more bandwidth. Above 100 GHz lie tens of gigahertz of largely unused spectrum: the sub-terahertz and terahertz bands.</p><figure class="viz wide "><div class="fig-scroll"><svg viewBox="0 0 712 210" role="img" aria-label="The radio spectrum on a log scale: sub-6 GHz, the upper mid-band, millimetre wave, sub-terahertz and terahertz bands." class="" xmlns="http://www.w3.org/2000/svg"><rect x="30.0" y="60.0" width="172.9" height="46.0" rx="4" class="f3" data-tip="Sub-6 GHz (FR1): 0.41 to 7.125 GHz"/><text x="117.5" y="54.0" text-anchor="middle" class="s b">Sub-6 GHz (FR1)</text><text x="117.5" y="128.0" text-anchor="middle" class="xs">4G, 5G, Wi-Fi</text><rect x="204.9" y="60.0" width="78.6" height="46.0" rx="4" class="f4" data-tip="Upper mid-band: 7.125 to 24.25 GHz"/><text x="245.2" y="36.0" text-anchor="middle" class="s b">Upper mid-band</text><text x="245.2" y="128.0" text-anchor="middle" class="xs">6G candidate</text><rect x="285.5" y="60.0" width="68.7" height="46.0" rx="4" class="f1" data-tip="mmWave (FR2): 24.25 to 71 GHz"/><text x="320.9" y="54.0" text-anchor="middle" class="s b">mmWave (FR2)</text><text x="320.9" y="128.0" text-anchor="middle" class="xs">5G</text><rect x="378.8" y="60.0" width="70.3" height="46.0" rx="4" class="f7" data-tip="Sub-THz: 100 to 300 GHz"/><text x="415.0" y="36.0" text-anchor="middle" class="s b">Sub-THz</text><text x="415.0" y="128.0" text-anchor="middle" class="xs">6G research</text><rect x="451.1" y="60.0" width="228.9" height="46.0" rx="4" class="f8" data-tip="Terahertz: 300 to 10000 GHz"/><text x="566.6" y="54.0" text-anchor="middle" class="s b">Terahertz</text><text x="566.6" y="128.0" text-anchor="middle" class="xs">research</text><line x1="75.6" y1="108.0" x2="75.6" y2="114.0" class="axis"/><text x="75.6" y="148.0" text-anchor="middle" class="xs">1 GHz</text><line x1="227.2" y1="108.0" x2="227.2" y2="114.0" class="axis"/><text x="227.2" y="148.0" text-anchor="middle" class="xs">10 GHz</text><line x1="378.8" y1="108.0" x2="378.8" y2="114.0" class="axis"/><text x="378.8" y="148.0" text-anchor="middle" class="xs">100 GHz</text><line x1="530.4" y1="108.0" x2="530.4" y2="114.0" class="axis"/><text x="530.4" y="148.0" text-anchor="middle" class="xs">1 THz</text><line x1="682.0" y1="108.0" x2="682.0" y2="114.0" class="axis"/><text x="682.0" y="148.0" text-anchor="middle" class="xs">10 THz</text><line x1="30.0" y1="108.0" x2="682.0" y2="108.0" class="axis"/><path d="M439.6657571648654 168 L439.6657571648654 176 L455.59871476048676 176 L455.59871476048676 168" class="s7" style="stroke-width:1.6"/><text x="447.6" y="194.0" text-anchor="middle" class="s b tx7">IEEE 802.15.3d: 252–321 GHz</text><text x="30.0" y="14.0" class="s b">Frequency, log scale: each step up offers about ten times more bandwidth</text></svg></div><figcaption>The bands on a log scale. IEEE 802.15.3d already standardises point-to-point links around 300 GHz with channels up to about 69 GHz wide. Hover for band edges.</figcaption></figure>
+<h2 class="sec" id="bandwidth">Why bandwidth</h2>
+<p class="lead">Shannon’s formula says rate grows in proportion to bandwidth, but only logarithmically with SNR. Huge bandwidths are the shortest path to huge data rates.</p><figure class="viz "><div class="fig-scroll"><svg viewBox="0 0 640 236" role="img" aria-label="Shannon rate at 10 dB SNR grows from 69 Mbit/s in 20 MHz to 35 Gbit/s in 10 GHz of bandwidth." class="" xmlns="http://www.w3.org/2000/svg"><line x1="170.0" y1="18.0" x2="170.0" y2="200.0" class="grid"/><text x="170.0" y="214.0" text-anchor="middle" class="xs">10</text><line x1="270.0" y1="18.0" x2="270.0" y2="200.0" class="grid"/><text x="270.0" y="214.0" text-anchor="middle" class="xs">100</text><line x1="370.0" y1="18.0" x2="370.0" y2="200.0" class="grid"/><text x="370.0" y="214.0" text-anchor="middle" class="xs">1,000</text><line x1="470.0" y1="18.0" x2="470.0" y2="200.0" class="grid"/><text x="470.0" y="214.0" text-anchor="middle" class="xs">10,000</text><line x1="570.0" y1="18.0" x2="570.0" y2="200.0" class="grid"/><text x="570.0" y="214.0" text-anchor="middle" class="xs">100,000</text><text x="160.0" y="51.0" text-anchor="end">20 MHz (4G carrier)</text><rect x="170" y="36.0" width="84.0" height="22" rx="4" class="f3" data-tip="20 MHz (4G carrier): 69 Mbit/s at 10 dB SNR"/><text x="262.0" y="51.0" class="b">69 Mbit/s</text><text x="160.0" y="85.0" text-anchor="end">100 MHz (5G, FR1)</text><rect x="170" y="70.0" width="153.9" height="22" rx="4" class="f4" data-tip="100 MHz (5G, FR1): 346 Mbit/s at 10 dB SNR"/><text x="331.9" y="85.0" class="b">346 Mbit/s</text><text x="160.0" y="119.0" text-anchor="end">400 MHz (5G, FR2)</text><rect x="170" y="104.0" width="214.1" height="22" rx="4" class="f1" data-tip="400 MHz (5G, FR2): 1.4 Gbit/s at 10 dB SNR"/><text x="392.1" y="119.0" class="b">1.4 Gbit/s</text><text x="160.0" y="153.0" text-anchor="end">2 GHz</text><rect x="170" y="138.0" width="284.0" height="22" rx="4" class="f7" data-tip="2 GHz: 6.9 Gbit/s at 10 dB SNR"/><text x="462.0" y="153.0" class="b">6.9 Gbit/s</text><text x="160.0" y="187.0" text-anchor="end">10 GHz (sub-THz)</text><rect x="170" y="172.0" width="353.9" height="22" rx="4" class="f8" data-tip="10 GHz (sub-THz): 34.6 Gbit/s at 10 dB SNR"/><text x="531.9" y="187.0" class="b">34.6 Gbit/s</text><line x1="170.0" y1="18.0" x2="170.0" y2="200.0" class="axis"/><text x="370.0" y="228.0" text-anchor="middle" class="s b">Shannon rate at 10 dB SNR (Mbit/s, log scale)</text></svg></div><figcaption>At the same 10 dB SNR, 10 GHz of bandwidth supports about 35 Gbit/s; a 20 MHz 4G carrier, about 70 Mbit/s.</figcaption></figure><p>See the <a href="communication-model.html">communication model</a> tab for where the formula comes from.</p>
+<h2 class="sec" id="losses">The catch: losses</h2>
+<p class="lead">Higher frequencies bring two kinds of loss. Spreading loss grows if antennas keep the same gain. And the air itself absorbs energy at specific frequencies, where oxygen and water molecules resonate.</p><figure class="viz wide "><div class="fig-scroll"><svg viewBox="0 0 712 248" role="img" aria-label="Schematic of atmospheric absorption against frequency: oxygen peaks near 60 and 119 GHz, water-vapour peaks near 183, 325, 380, 448 and 557 GHz, with windows in between." class="" xmlns="http://www.w3.org/2000/svg"><path d="M50.0 158.1 L51.1 154.4 L52.3 150.0 L53.4 144.9 L54.6 139.1 L55.7 132.5 L56.9 125.5 L58.0 118.6 L59.2 112.5 L60.3 108.2 L61.5 106.6 L62.6 108.0 L63.8 112.1 L64.9 117.9 L66.1 124.6 L67.2 131.4 L68.4 137.7 L69.5 143.3 L70.7 148.2 L71.8 152.3 L73.0 155.8 L74.1 158.7 L75.3 161.1 L76.4 163.2 L77.6 164.9 L78.7 166.3 L79.9 167.5 L81.0 168.6 L82.2 169.4 L83.3 170.2 L84.5 170.8 L85.6 171.3 L86.8 171.7 L87.9 172.0 L89.1 172.3 L90.2 172.5 L91.4 172.7 L92.5 172.8 L93.7 172.8 L94.8 172.8 L96.0 172.8 L97.1 172.7 L98.3 172.6 L99.4 172.4 L100.6 172.2 L101.7 172.0 L102.9 171.7 L104.0 171.3 L105.2 170.8 L106.3 170.3 L107.5 169.7 L108.6 169.0 L109.8 168.2 L110.9 167.3 L112.1 166.2 L113.2 164.9 L114.3 163.4 L115.5 161.6 L116.6 159.5 L117.8 157.0 L118.9 154.1 L120.1 150.7 L121.2 146.6 L122.4 142.0 L123.5 136.8 L124.7 131.2 L125.8 125.7 L127.0 120.8 L128.1 117.4 L129.3 116.2 L130.4 117.3 L131.6 120.5 L132.7 125.2 L133.9 130.6 L135.0 136.0 L136.2 141.0 L137.3 145.5 L138.5 149.3 L139.6 152.6 L140.8 155.4 L141.9 157.7 L143.1 159.6 L144.2 161.2 L145.4 162.6 L146.5 163.7 L147.7 164.6 L148.8 165.4 L150.0 166.0 L151.1 166.5 L152.3 166.9 L153.4 167.3 L154.6 167.5 L155.7 167.7 L156.9 167.9 L158.0 167.9 L159.2 168.0 L160.3 167.9 L161.5 167.9 L162.6 167.8 L163.8 167.6 L164.9 167.4 L166.1 167.1 L167.2 166.8 L168.4 166.5 L169.5 166.1 L170.7 165.6 L171.8 165.1 L173.0 164.4 L174.1 163.8 L175.3 163.0 L176.4 162.1 L177.5 161.1 L178.7 160.0 L179.8 158.7 L181.0 157.2 L182.1 155.5 L183.3 153.6 L184.4 151.3 L185.6 148.7 L186.7 145.7 L187.9 142.2 L189.0 138.0 L190.2 133.1 L191.3 127.3 L192.5 120.4 L193.6 112.3 L194.8 102.8 L195.9 91.9 L197.1 79.6 L198.2 66.5 L199.4 53.5 L200.5 42.1 L201.7 34.2 L202.8 31.3 L204.0 34.1 L205.1 42.0 L206.3 53.3 L207.4 66.2 L208.6 79.2 L209.7 91.4 L210.9 102.2 L212.0 111.7 L213.2 119.7 L214.3 126.5 L215.5 132.2 L216.6 137.1 L217.8 141.2 L218.9 144.6 L220.1 147.6 L221.2 150.1 L222.4 152.3 L223.5 154.2 L224.7 155.8 L225.8 157.3 L227.0 158.5 L228.1 159.6 L229.3 160.6 L230.4 161.4 L231.6 162.2 L232.7 162.8 L233.9 163.4 L235.0 164.0 L236.2 164.4 L237.3 164.9 L238.5 165.3 L239.6 165.6 L240.7 165.9 L241.9 166.2 L243.0 166.4 L244.2 166.7 L245.3 166.9 L246.5 167.0 L247.6 167.2 L248.8 167.3 L249.9 167.5 L251.1 167.6 L252.2 167.7 L253.4 167.8 L254.5 167.9 L255.7 167.9 L256.8 168.0 L258.0 168.1 L259.1 168.1 L260.3 168.1 L261.4 168.2 L262.6 168.2 L263.7 168.2 L264.9 168.2 L266.0 168.2 L267.2 168.2 L268.3 168.2 L269.5 168.2 L270.6 168.2 L271.8 168.2 L272.9 168.1 L274.1 168.1 L275.2 168.1 L276.4 168.1 L277.5 168.0 L278.7 168.0 L279.8 167.9 L281.0 167.9 L282.1 167.8 L283.3 167.8 L284.4 167.7 L285.6 167.7 L286.7 167.6 L287.9 167.5 L289.0 167.5 L290.2 167.4 L291.3 167.3 L292.5 167.2 L293.6 167.1 L294.8 167.0 L295.9 166.9 L297.1 166.8 L298.2 166.7 L299.4 166.6 L300.5 166.5 L301.7 166.4 L302.8 166.3 L303.9 166.2 L305.1 166.0 L306.2 165.9 L307.4 165.7 L308.5 165.6 L309.7 165.4 L310.8 165.3 L312.0 165.1 L313.1 164.9 L314.3 164.7 L315.4 164.5 L316.6 164.3 L317.7 164.1 L318.9 163.9 L320.0 163.6 L321.2 163.4 L322.3 163.1 L323.5 162.8 L324.6 162.5 L325.8 162.1 L326.9 161.7 L328.1 161.4 L329.2 160.9 L330.4 160.5 L331.5 160.0 L332.7 159.5 L333.8 158.9 L335.0 158.2 L336.1 157.5 L337.3 156.8 L338.4 155.9 L339.6 155.0 L340.7 153.9 L341.9 152.7 L343.0 151.4 L344.2 149.9 L345.3 148.2 L346.5 146.3 L347.6 144.1 L348.8 141.6 L349.9 138.6 L351.1 135.2 L352.2 131.1 L353.4 126.4 L354.5 120.8 L355.7 114.2 L356.8 106.4 L358.0 97.3 L359.1 86.9 L360.3 75.2 L361.4 62.7 L362.6 50.3 L363.7 39.4 L364.9 31.8 L366.0 28.9 L367.1 31.5 L368.3 38.8 L369.4 49.4 L370.6 61.5 L371.7 73.7 L372.9 85.1 L374.0 95.3 L375.2 104.0 L376.3 111.5 L377.5 117.7 L378.6 123.0 L379.8 127.4 L380.9 131.1 L382.1 134.1 L383.2 136.7 L384.4 138.9 L385.5 140.7 L386.7 142.2 L387.8 143.4 L389.0 144.4 L390.1 145.3 L391.3 145.9 L392.4 146.4 L393.6 146.7 L394.7 147.0 L395.9 147.0 L397.0 147.0 L398.2 146.8 L399.3 146.6 L400.5 146.1 L401.6 145.6 L402.8 144.9 L403.9 144.1 L405.1 143.0 L406.2 141.8 L407.4 140.4 L408.5 138.7 L409.7 136.7 L410.8 134.4 L412.0 131.7 L413.1 128.4 L414.3 124.6 L415.4 120.1 L416.6 114.8 L417.7 108.4 L418.9 100.9 L420.0 92.0 L421.2 81.6 L422.3 69.6 L423.5 56.1 L424.6 41.7 L425.8 27.4 L426.9 14.8 L428.1 13.0 L429.2 13.0 L430.3 13.0 L431.5 14.7 L432.6 27.2 L433.8 41.5 L434.9 55.9 L436.1 69.4 L437.2 81.3 L438.4 91.7 L439.5 100.6 L440.7 108.1 L441.8 114.4 L443.0 119.7 L444.1 124.2 L445.3 128.0 L446.4 131.2 L447.6 134.0 L448.7 136.3 L449.9 138.4 L451.0 140.1 L452.2 141.6 L453.3 142.9 L454.5 144.0 L455.6 144.9 L456.8 145.7 L457.9 146.4 L459.1 147.0 L460.2 147.5 L461.4 148.0 L462.5 148.3 L463.7 148.6 L464.8 148.8 L466.0 148.9 L467.1 149.0 L468.3 149.0 L469.4 149.0 L470.6 148.9 L471.7 148.7 L472.9 148.5 L474.0 148.2 L475.2 147.8 L476.3 147.4 L477.5 146.9 L478.6 146.3 L479.8 145.6 L480.9 144.7 L482.1 143.8 L483.2 142.7 L484.4 141.5 L485.5 140.0 L486.7 138.4 L487.8 136.4 L489.0 134.2 L490.1 131.6 L491.3 128.5 L492.4 124.9 L493.5 120.7 L494.7 115.6 L495.8 109.7 L497.0 102.7 L498.1 94.3 L499.3 84.6 L500.4 73.4 L501.6 60.8 L502.7 47.3 L503.9 33.9 L505.0 22.2 L506.2 14.1 L507.3 13.0 L508.5 14.0 L509.6 22.2 L510.8 33.9 L511.9 47.2 L513.1 60.7 L514.2 73.3 L515.4 84.5 L516.5 94.2 L517.7 102.5 L518.8 109.6 L520.0 115.5 L521.1 120.5 L522.3 124.8 L523.4 128.4 L524.6 131.4 L525.7 134.1 L526.9 136.3 L528.0 138.3 L529.2 140.0 L530.3 141.5 L531.5 142.8 L532.6 143.9 L533.8 144.9 L534.9 145.8 L536.1 146.6 L537.2 147.3 L538.4 147.9 L539.5 148.4 L540.7 148.9 L541.8 149.4 L543.0 149.8 L544.1 150.1 L545.3 150.4 L546.4 150.7 L547.6 151.0 L548.7 151.2 L549.9 151.4 L551.0 151.6 L552.2 151.7 L553.3 151.9 L554.5 152.0 L555.6 152.1 L556.7 152.2 L557.9 152.2 L559.0 152.3 L560.2 152.3 L561.3 152.4 L562.5 152.4 L563.6 152.4 L564.8 152.4 L565.9 152.4 L567.1 152.4 L568.2 152.3 L569.4 152.3 L570.5 152.3 L571.7 152.2 L572.8 152.1 L574.0 152.0 L575.1 151.9 L576.3 151.8 L577.4 151.7 L578.6 151.6 L579.7 151.5 L580.9 151.3 L582.0 151.1 L583.2 150.9 L584.3 150.7 L585.5 150.5 L586.6 150.3 L587.8 150.1 L588.9 149.8 L590.1 149.5 L591.2 149.2 L592.4 148.8 L593.5 148.4 L594.7 148.0 L595.8 147.6 L597.0 147.1 L598.1 146.5 L599.3 145.9 L600.4 145.3 L601.6 144.6 L602.7 143.8 L603.9 142.9 L605.0 141.9 L606.2 140.8 L607.3 139.6 L608.5 138.2 L609.6 136.7 L610.8 134.9 L611.9 132.9 L613.1 130.6 L614.2 127.9 L615.4 124.8 L616.5 121.2 L617.7 117.1 L618.8 112.1 L619.9 106.3 L621.1 99.5 L622.2 91.4 L623.4 81.8 L624.5 70.6 L625.7 57.8 L626.8 43.3 L628.0 27.9 L629.1 13.0 L630.3 13.0 L631.4 13.0 L632.6 13.0 L633.7 13.0 L634.9 13.0 L636.0 13.0 L637.2 27.6 L638.3 43.0 L639.5 57.3 L640.6 70.1 L641.8 81.2 L642.9 90.7 L644.1 98.8 L645.2 105.6 L646.4 111.3 L647.5 116.1 L648.7 120.3 L649.8 123.8 L651.0 126.8 L652.1 129.4 L653.3 131.6 L654.4 133.6 L655.6 135.3 L656.7 136.8 L657.9 138.1 L659.0 139.3 L660.2 140.3 L661.3 141.2 L662.5 142.0 L663.6 142.8 L664.8 143.4 L665.9 144.0 L667.1 144.5 L668.2 145.0 L669.4 145.5 L670.5 145.8 L671.7 146.2 L672.8 146.5 L674.0 146.8 L675.1 147.1 L676.3 147.4 L677.4 147.6 L678.6 147.8 L679.7 148.0 L680.9 148.2 L682.0 148.3 L682.0 190 L50.0 190 Z" class="l2"/><path d="M50.0 158.1 L51.1 154.4 L52.3 150.0 L53.4 144.9 L54.6 139.1 L55.7 132.5 L56.9 125.5 L58.0 118.6 L59.2 112.5 L60.3 108.2 L61.5 106.6 L62.6 108.0 L63.8 112.1 L64.9 117.9 L66.1 124.6 L67.2 131.4 L68.4 137.7 L69.5 143.3 L70.7 148.2 L71.8 152.3 L73.0 155.8 L74.1 158.7 L75.3 161.1 L76.4 163.2 L77.6 164.9 L78.7 166.3 L79.9 167.5 L81.0 168.6 L82.2 169.4 L83.3 170.2 L84.5 170.8 L85.6 171.3 L86.8 171.7 L87.9 172.0 L89.1 172.3 L90.2 172.5 L91.4 172.7 L92.5 172.8 L93.7 172.8 L94.8 172.8 L96.0 172.8 L97.1 172.7 L98.3 172.6 L99.4 172.4 L100.6 172.2 L101.7 172.0 L102.9 171.7 L104.0 171.3 L105.2 170.8 L106.3 170.3 L107.5 169.7 L108.6 169.0 L109.8 168.2 L110.9 167.3 L112.1 166.2 L113.2 164.9 L114.3 163.4 L115.5 161.6 L116.6 159.5 L117.8 157.0 L118.9 154.1 L120.1 150.7 L121.2 146.6 L122.4 142.0 L123.5 136.8 L124.7 131.2 L125.8 125.7 L127.0 120.8 L128.1 117.4 L129.3 116.2 L130.4 117.3 L131.6 120.5 L132.7 125.2 L133.9 130.6 L135.0 136.0 L136.2 141.0 L137.3 145.5 L138.5 149.3 L139.6 152.6 L140.8 155.4 L141.9 157.7 L143.1 159.6 L144.2 161.2 L145.4 162.6 L146.5 163.7 L147.7 164.6 L148.8 165.4 L150.0 166.0 L151.1 166.5 L152.3 166.9 L153.4 167.3 L154.6 167.5 L155.7 167.7 L156.9 167.9 L158.0 167.9 L159.2 168.0 L160.3 167.9 L161.5 167.9 L162.6 167.8 L163.8 167.6 L164.9 167.4 L166.1 167.1 L167.2 166.8 L168.4 166.5 L169.5 166.1 L170.7 165.6 L171.8 165.1 L173.0 164.4 L174.1 163.8 L175.3 163.0 L176.4 162.1 L177.5 161.1 L178.7 160.0 L179.8 158.7 L181.0 157.2 L182.1 155.5 L183.3 153.6 L184.4 151.3 L185.6 148.7 L186.7 145.7 L187.9 142.2 L189.0 138.0 L190.2 133.1 L191.3 127.3 L192.5 120.4 L193.6 112.3 L194.8 102.8 L195.9 91.9 L197.1 79.6 L198.2 66.5 L199.4 53.5 L200.5 42.1 L201.7 34.2 L202.8 31.3 L204.0 34.1 L205.1 42.0 L206.3 53.3 L207.4 66.2 L208.6 79.2 L209.7 91.4 L210.9 102.2 L212.0 111.7 L213.2 119.7 L214.3 126.5 L215.5 132.2 L216.6 137.1 L217.8 141.2 L218.9 144.6 L220.1 147.6 L221.2 150.1 L222.4 152.3 L223.5 154.2 L224.7 155.8 L225.8 157.3 L227.0 158.5 L228.1 159.6 L229.3 160.6 L230.4 161.4 L231.6 162.2 L232.7 162.8 L233.9 163.4 L235.0 164.0 L236.2 164.4 L237.3 164.9 L238.5 165.3 L239.6 165.6 L240.7 165.9 L241.9 166.2 L243.0 166.4 L244.2 166.7 L245.3 166.9 L246.5 167.0 L247.6 167.2 L248.8 167.3 L249.9 167.5 L251.1 167.6 L252.2 167.7 L253.4 167.8 L254.5 167.9 L255.7 167.9 L256.8 168.0 L258.0 168.1 L259.1 168.1 L260.3 168.1 L261.4 168.2 L262.6 168.2 L263.7 168.2 L264.9 168.2 L266.0 168.2 L267.2 168.2 L268.3 168.2 L269.5 168.2 L270.6 168.2 L271.8 168.2 L272.9 168.1 L274.1 168.1 L275.2 168.1 L276.4 168.1 L277.5 168.0 L278.7 168.0 L279.8 167.9 L281.0 167.9 L282.1 167.8 L283.3 167.8 L284.4 167.7 L285.6 167.7 L286.7 167.6 L287.9 167.5 L289.0 167.5 L290.2 167.4 L291.3 167.3 L292.5 167.2 L293.6 167.1 L294.8 167.0 L295.9 166.9 L297.1 166.8 L298.2 166.7 L299.4 166.6 L300.5 166.5 L301.7 166.4 L302.8 166.3 L303.9 166.2 L305.1 166.0 L306.2 165.9 L307.4 165.7 L308.5 165.6 L309.7 165.4 L310.8 165.3 L312.0 165.1 L313.1 164.9 L314.3 164.7 L315.4 164.5 L316.6 164.3 L317.7 164.1 L318.9 163.9 L320.0 163.6 L321.2 163.4 L322.3 163.1 L323.5 162.8 L324.6 162.5 L325.8 162.1 L326.9 161.7 L328.1 161.4 L329.2 160.9 L330.4 160.5 L331.5 160.0 L332.7 159.5 L333.8 158.9 L335.0 158.2 L336.1 157.5 L337.3 156.8 L338.4 155.9 L339.6 155.0 L340.7 153.9 L341.9 152.7 L343.0 151.4 L344.2 149.9 L345.3 148.2 L346.5 146.3 L347.6 144.1 L348.8 141.6 L349.9 138.6 L351.1 135.2 L352.2 131.1 L353.4 126.4 L354.5 120.8 L355.7 114.2 L356.8 106.4 L358.0 97.3 L359.1 86.9 L360.3 75.2 L361.4 62.7 L362.6 50.3 L363.7 39.4 L364.9 31.8 L366.0 28.9 L367.1 31.5 L368.3 38.8 L369.4 49.4 L370.6 61.5 L371.7 73.7 L372.9 85.1 L374.0 95.3 L375.2 104.0 L376.3 111.5 L377.5 117.7 L378.6 123.0 L379.8 127.4 L380.9 131.1 L382.1 134.1 L383.2 136.7 L384.4 138.9 L385.5 140.7 L386.7 142.2 L387.8 143.4 L389.0 144.4 L390.1 145.3 L391.3 145.9 L392.4 146.4 L393.6 146.7 L394.7 147.0 L395.9 147.0 L397.0 147.0 L398.2 146.8 L399.3 146.6 L400.5 146.1 L401.6 145.6 L402.8 144.9 L403.9 144.1 L405.1 143.0 L406.2 141.8 L407.4 140.4 L408.5 138.7 L409.7 136.7 L410.8 134.4 L412.0 131.7 L413.1 128.4 L414.3 124.6 L415.4 120.1 L416.6 114.8 L417.7 108.4 L418.9 100.9 L420.0 92.0 L421.2 81.6 L422.3 69.6 L423.5 56.1 L424.6 41.7 L425.8 27.4 L426.9 14.8 L428.1 13.0 L429.2 13.0 L430.3 13.0 L431.5 14.7 L432.6 27.2 L433.8 41.5 L434.9 55.9 L436.1 69.4 L437.2 81.3 L438.4 91.7 L439.5 100.6 L440.7 108.1 L441.8 114.4 L443.0 119.7 L444.1 124.2 L445.3 128.0 L446.4 131.2 L447.6 134.0 L448.7 136.3 L449.9 138.4 L451.0 140.1 L452.2 141.6 L453.3 142.9 L454.5 144.0 L455.6 144.9 L456.8 145.7 L457.9 146.4 L459.1 147.0 L460.2 147.5 L461.4 148.0 L462.5 148.3 L463.7 148.6 L464.8 148.8 L466.0 148.9 L467.1 149.0 L468.3 149.0 L469.4 149.0 L470.6 148.9 L471.7 148.7 L472.9 148.5 L474.0 148.2 L475.2 147.8 L476.3 147.4 L477.5 146.9 L478.6 146.3 L479.8 145.6 L480.9 144.7 L482.1 143.8 L483.2 142.7 L484.4 141.5 L485.5 140.0 L486.7 138.4 L487.8 136.4 L489.0 134.2 L490.1 131.6 L491.3 128.5 L492.4 124.9 L493.5 120.7 L494.7 115.6 L495.8 109.7 L497.0 102.7 L498.1 94.3 L499.3 84.6 L500.4 73.4 L501.6 60.8 L502.7 47.3 L503.9 33.9 L505.0 22.2 L506.2 14.1 L507.3 13.0 L508.5 14.0 L509.6 22.2 L510.8 33.9 L511.9 47.2 L513.1 60.7 L514.2 73.3 L515.4 84.5 L516.5 94.2 L517.7 102.5 L518.8 109.6 L520.0 115.5 L521.1 120.5 L522.3 124.8 L523.4 128.4 L524.6 131.4 L525.7 134.1 L526.9 136.3 L528.0 138.3 L529.2 140.0 L530.3 141.5 L531.5 142.8 L532.6 143.9 L533.8 144.9 L534.9 145.8 L536.1 146.6 L537.2 147.3 L538.4 147.9 L539.5 148.4 L540.7 148.9 L541.8 149.4 L543.0 149.8 L544.1 150.1 L545.3 150.4 L546.4 150.7 L547.6 151.0 L548.7 151.2 L549.9 151.4 L551.0 151.6 L552.2 151.7 L553.3 151.9 L554.5 152.0 L555.6 152.1 L556.7 152.2 L557.9 152.2 L559.0 152.3 L560.2 152.3 L561.3 152.4 L562.5 152.4 L563.6 152.4 L564.8 152.4 L565.9 152.4 L567.1 152.4 L568.2 152.3 L569.4 152.3 L570.5 152.3 L571.7 152.2 L572.8 152.1 L574.0 152.0 L575.1 151.9 L576.3 151.8 L577.4 151.7 L578.6 151.6 L579.7 151.5 L580.9 151.3 L582.0 151.1 L583.2 150.9 L584.3 150.7 L585.5 150.5 L586.6 150.3 L587.8 150.1 L588.9 149.8 L590.1 149.5 L591.2 149.2 L592.4 148.8 L593.5 148.4 L594.7 148.0 L595.8 147.6 L597.0 147.1 L598.1 146.5 L599.3 145.9 L600.4 145.3 L601.6 144.6 L602.7 143.8 L603.9 142.9 L605.0 141.9 L606.2 140.8 L607.3 139.6 L608.5 138.2 L609.6 136.7 L610.8 134.9 L611.9 132.9 L613.1 130.6 L614.2 127.9 L615.4 124.8 L616.5 121.2 L617.7 117.1 L618.8 112.1 L619.9 106.3 L621.1 99.5 L622.2 91.4 L623.4 81.8 L624.5 70.6 L625.7 57.8 L626.8 43.3 L628.0 27.9 L629.1 13.0 L630.3 13.0 L631.4 13.0 L632.6 13.0 L633.7 13.0 L634.9 13.0 L636.0 13.0 L637.2 27.6 L638.3 43.0 L639.5 57.3 L640.6 70.1 L641.8 81.2 L642.9 90.7 L644.1 98.8 L645.2 105.6 L646.4 111.3 L647.5 116.1 L648.7 120.3 L649.8 123.8 L651.0 126.8 L652.1 129.4 L653.3 131.6 L654.4 133.6 L655.6 135.3 L656.7 136.8 L657.9 138.1 L659.0 139.3 L660.2 140.3 L661.3 141.2 L662.5 142.0 L663.6 142.8 L664.8 143.4 L665.9 144.0 L667.1 144.5 L668.2 145.0 L669.4 145.5 L670.5 145.8 L671.7 146.2 L672.8 146.5 L674.0 146.8 L675.1 147.1 L676.3 147.4 L677.4 147.6 L678.6 147.8 L679.7 148.0 L680.9 148.2 L682.0 148.3" class="s2"/><text x="61.5" y="95.0" text-anchor="middle" class="xs b">O₂</text><text x="129.3" y="110.0" text-anchor="middle" class="xs b">O₂</text><text x="202.8" y="27.5" text-anchor="middle" class="xs b">H₂O</text><text x="366.0" y="35.0" text-anchor="middle" class="xs b">H₂O</text><text x="429.2" y="12.5" text-anchor="middle" class="xs b">H₂O</text><text x="507.3" y="23.0" text-anchor="middle" class="xs b">H₂O</text><text x="632.6" y="5.0" text-anchor="middle" class="xs b">H₂O</text><rect x="73.0" y="196.0" width="46.0" height="8.0" rx="3" class="f6"/><rect x="136.2" y="196.0" width="51.7" height="8.0" rx="3" class="f6"/><rect x="222.4" y="196.0" width="126.4" height="8.0" rx="3" class="f6"/><rect x="377.5" y="196.0" width="40.2" height="8.0" rx="3" class="f6"/><text x="682.0" y="240.0" text-anchor="end" class="s b tx6">green bars: windows with lower absorption</text><line x1="50.0" y1="190.0" x2="682.0" y2="190.0" class="axis"/><text x="107.5" y="214.0" text-anchor="middle" class="xs">100 GHz</text><text x="222.4" y="214.0" text-anchor="middle" class="xs">200 GHz</text><text x="337.3" y="214.0" text-anchor="middle" class="xs">300 GHz</text><text x="452.2" y="214.0" text-anchor="middle" class="xs">400 GHz</text><text x="567.1" y="214.0" text-anchor="middle" class="xs">500 GHz</text><text x="682.0" y="214.0" text-anchor="middle" class="xs">600 GHz</text><text x="50.0" y="22.0" class="s b">Absorption by air (schematic, not to scale)</text></svg></div><figcaption>Real links are planned inside the windows between absorption lines. Over a few metres indoors, absorption is small; over hundreds of metres, it matters.</figcaption></figure><div class="keyidea"><span class="label">Key idea</span><p>Absorption depends on humidity and distance and is computed with ITU-R P.676. For short indoor links, spreading loss and blockage matter far more.</p></div>
+<h2 class="sec" id="aperture">Antennas win it back</h2>
+<p class="lead">The free-space loss formula assumes antennas of fixed gain, which shrink as the wavelength shrinks. Keep the antennas the same physical size instead, and the link gets <b>better</b> at higher frequency.</p><figure class="viz "><div class="fig-scroll"><svg data-plot='{&quot;x0&quot;:56,&quot;x1&quot;:618,&quot;y0&quot;:26,&quot;y1&quot;:244,&quot;xmin&quot;:1,&quot;xmax&quot;:300,&quot;ymin&quot;:-110,&quot;ymax&quot;:10,&quot;xlog&quot;:true,&quot;series&quot;:[{&quot;n&quot;:&quot;Two 5 cm \u00d7 5 cm antennas&quot;,&quot;k&quot;:3,&quot;p&quot;:[[1.0,-61.584],[1.0471,-61.184],[1.0965,-60.784],[1.1482,-60.384],[1.2023,-59.984],[1.2589,-59.584],[1.3183,-59.184],[1.3804,-58.784],[1.4454,-58.384],[1.5136,-57.984],[1.5849,-57.584],[1.6596,-57.184],[1.7378,-56.784],[1.8197,-56.384],[1.9055,-55.984],[1.9953,-55.584],[2.0893,-55.184],[2.1878,-54.784],[2.2909,-54.384],[2.3988,-53.984],[2.5119,-53.584],[2.6303,-53.184],[2.7542,-52.784],[2.884,-52.384],[3.02,-51.984],[3.1623,-51.584],[3.3113,-51.184],[3.4674,-50.784],[3.6308,-50.384],[3.8019,-49.984],[3.9811,-49.584],[4.1687,-49.184],[4.3652,-48.784],[4.5709,-48.384],[4.7863,-47.984],[5.0119,-47.584],[5.2481,-47.184],[5.4954,-46.784],[5.7544,-46.384],[6.0256,-45.984],[6.3096,-45.584],[6.6069,-45.184],[6.9183,-44.784],[7.2444,-44.384],[7.5858,-43.984],[7.9433,-43.584],[8.3176,-43.184],[8.7096,-42.784],[9.1201,-42.384],[9.5499,-41.984],[10.0,-41.584],[10.4713,-41.184],[10.9648,-40.784],[11.4815,-40.384],[12.0226,-39.984],[12.5893,-39.584],[13.1826,-39.184],[13.8038,-38.784],[14.4544,-38.384],[15.1356,-37.984],[15.8489,-37.584],[16.5959,-37.184],[17.378,-36.784],[18.197,-36.384],[19.0546,-35.984],[19.9526,-35.584],[20.893,-35.184],[21.8776,-34.784],[22.9087,-34.384],[23.9883,-33.984],[25.1189,-33.584],[26.3027,-33.184],[27.5423,-32.784],[28.8403,-32.384],[30.1995,-31.984],[31.6228,-31.584],[33.1131,-31.184],[34.6737,-30.784],[36.3078,-30.384],[38.0189,-29.984],[39.8107,-29.584],[41.6869,-29.184],[43.6516,-28.784],[45.7088,-28.384],[47.863,-27.984],[50.1187,-27.584],[52.4807,-27.184],[54.9541,-26.784],[57.544,-26.384],[60.256,-25.984],[63.0957,-25.584],[66.0693,-25.184],[69.1831,-24.784],[72.4436,-24.384],[75.8578,-23.984],[79.4328,-23.584],[83.1764,-23.184],[87.0964,-22.784],[91.2011,-22.384],[95.4993,-21.984],[100.0,-21.584],[104.7129,-21.184],[109.6478,-20.784],[114.8154,-20.384],[120.2264,-19.984],[125.8925,-19.584],[131.8257,-19.184],[138.0384,-18.784],[144.544,-18.384],[151.3561,-17.984],[158.4893,-17.584],[165.9587,-17.184],[173.7801,-16.784],[181.9701,-16.384],[190.5461,-15.984],[199.5262,-15.584],[208.9296,-15.184],[218.7762,-14.784],[229.0868,-14.384],[239.8833,-13.984],[251.1886,-13.584],[263.0268,-13.184],[275.4229,-12.784],[288.4032,-12.384],[301.9952,-11.984],[316.2278,-11.584]]},{&quot;n&quot;:&quot;Two fixed-gain (isotropic) antennas&quot;,&quot;k&quot;:8,&quot;p&quot;:[[1.0,-52.442],[1.0471,-52.842],[1.0965,-53.242],[1.1482,-53.642],[1.2023,-54.042],[1.2589,-54.442],[1.3183,-54.842],[1.3804,-55.242],[1.4454,-55.642],[1.5136,-56.042],[1.5849,-56.442],[1.6596,-56.842],[1.7378,-57.242],[1.8197,-57.642],[1.9055,-58.042],[1.9953,-58.442],[2.0893,-58.842],[2.1878,-59.242],[2.2909,-59.642],[2.3988,-60.042],[2.5119,-60.442],[2.6303,-60.842],[2.7542,-61.242],[2.884,-61.642],[3.02,-62.042],[3.1623,-62.442],[3.3113,-62.842],[3.4674,-63.242],[3.6308,-63.642],[3.8019,-64.042],[3.9811,-64.442],[4.1687,-64.842],[4.3652,-65.242],[4.5709,-65.642],[4.7863,-66.042],[5.0119,-66.442],[5.2481,-66.842],[5.4954,-67.242],[5.7544,-67.642],[6.0256,-68.042],[6.3096,-68.442],[6.6069,-68.842],[6.9183,-69.242],[7.2444,-69.642],[7.5858,-70.042],[7.9433,-70.442],[8.3176,-70.842],[8.7096,-71.242],[9.1201,-71.642],[9.5499,-72.042],[10.0,-72.442],[10.4713,-72.842],[10.9648,-73.242],[11.4815,-73.642],[12.0226,-74.042],[12.5893,-74.442],[13.1826,-74.842],[13.8038,-75.242],[14.4544,-75.642],[15.1356,-76.042],[15.8489,-76.442],[16.5959,-76.842],[17.378,-77.242],[18.197,-77.642],[19.0546,-78.042],[19.9526,-78.442],[20.893,-78.842],[21.8776,-79.242],[22.9087,-79.642],[23.9883,-80.042],[25.1189,-80.442],[26.3027,-80.842],[27.5423,-81.242],[28.8403,-81.642],[30.1995,-82.042],[31.6228,-82.442],[33.1131,-82.842],[34.6737,-83.242],[36.3078,-83.642],[38.0189,-84.042],[39.8107,-84.442],[41.6869,-84.842],[43.6516,-85.242],[45.7088,-85.642],[47.863,-86.042],[50.1187,-86.442],[52.4807,-86.842],[54.9541,-87.242],[57.544,-87.642],[60.256,-88.042],[63.0957,-88.442],[66.0693,-88.842],[69.1831,-89.242],[72.4436,-89.642],[75.8578,-90.042],[79.4328,-90.442],[83.1764,-90.842],[87.0964,-91.242],[91.2011,-91.642],[95.4993,-92.042],[100.0,-92.442],[104.7129,-92.842],[109.6478,-93.242],[114.8154,-93.642],[120.2264,-94.042],[125.8925,-94.442],[131.8257,-94.842],[138.0384,-95.242],[144.544,-95.642],[151.3561,-96.042],[158.4893,-96.442],[165.9587,-96.842],[173.7801,-97.242],[181.9701,-97.642],[190.5461,-98.042],[199.5262,-98.442],[208.9296,-98.842],[218.7762,-99.242],[229.0868,-99.642],[239.8833,-100.042],[251.1886,-100.442],[263.0268,-100.842],[275.4229,-101.242],[288.4032,-101.642],[301.9952,-102.042],[316.2278,-102.442]]}],&quot;xl&quot;:&quot;&quot;,&quot;xu&quot;:&quot; GHz&quot;,&quot;xd&quot;:1,&quot;yd&quot;:1,&quot;yu&quot;:&quot; dB&quot;}' viewBox="0 0 640 290" role="img" aria-label="Link gain at 10 m against frequency: falling for fixed-gain antennas, rising for antennas of fixed physical size." class="" xmlns="http://www.w3.org/2000/svg"><line x1="56.0" y1="244.0" x2="618.0" y2="244.0" class="grid"/><text x="48.0" y="248.0" text-anchor="end" class="xs">-110</text><line x1="56.0" y1="207.7" x2="618.0" y2="207.7" class="grid"/><text x="48.0" y="211.7" text-anchor="end" class="xs">-90</text><line x1="56.0" y1="171.3" x2="618.0" y2="171.3" class="grid"/><text x="48.0" y="175.3" text-anchor="end" class="xs">-70</text><line x1="56.0" y1="135.0" x2="618.0" y2="135.0" class="grid"/><text x="48.0" y="139.0" text-anchor="end" class="xs">-50</text><line x1="56.0" y1="98.7" x2="618.0" y2="98.7" class="grid"/><text x="48.0" y="102.7" text-anchor="end" class="xs">-30</text><line x1="56.0" y1="62.3" x2="618.0" y2="62.3" class="grid"/><text x="48.0" y="66.3" text-anchor="end" class="xs">-10</text><line x1="56.0" y1="26.0" x2="618.0" y2="26.0" class="grid"/><text x="48.0" y="30.0" text-anchor="end" class="xs">10</text><line x1="56.0" y1="244.0" x2="56.0" y2="249.0" class="axis"/><text x="56.0" y="262.0" text-anchor="middle" class="xs">1</text><line x1="282.9" y1="244.0" x2="282.9" y2="249.0" class="axis"/><text x="282.9" y="262.0" text-anchor="middle" class="xs">10</text><line x1="509.8" y1="244.0" x2="509.8" y2="249.0" class="axis"/><text x="509.8" y="262.0" text-anchor="middle" class="xs">100</text><line x1="56.0" y1="244.0" x2="618.0" y2="244.0" class="axis"/><text x="12.0" y="16.0" class="s b">Link gain at 10 m (dB)</text><text x="337.0" y="282.0" text-anchor="middle" class="s b">Carrier frequency (GHz, log scale)</text><clipPath id="cp139991597061504"><rect x="56" y="23" width="562" height="224"/></clipPath><g clip-path="url(#cp139991597061504)"><path d="M56.0 156.0 L60.5 155.3 L65.1 154.6 L69.6 153.9 L74.2 153.1 L78.7 152.4 L83.2 151.7 L87.8 151.0 L92.3 150.2 L96.8 149.5 L101.4 148.8 L105.9 148.1 L110.5 147.3 L115.0 146.6 L119.5 145.9 L124.1 145.1 L128.6 144.4 L133.1 143.7 L137.7 143.0 L142.2 142.2 L146.8 141.5 L151.3 140.8 L155.8 140.1 L160.4 139.3 L164.9 138.6 L169.4 137.9 L174.0 137.2 L178.5 136.4 L183.1 135.7 L187.6 135.0 L192.1 134.2 L196.7 133.5 L201.2 132.8 L205.7 132.1 L210.3 131.3 L214.8 130.6 L219.4 129.9 L223.9 129.2 L228.4 128.4 L233.0 127.7 L237.5 127.0 L242.0 126.3 L246.6 125.5 L251.1 124.8 L255.7 124.1 L260.2 123.3 L264.7 122.6 L269.3 121.9 L273.8 121.2 L278.3 120.4 L282.9 119.7 L287.4 119.0 L292.0 118.3 L296.5 117.5 L301.0 116.8 L305.6 116.1 L310.1 115.4 L314.6 114.6 L319.2 113.9 L323.7 113.2 L328.3 112.4 L332.8 111.7 L337.3 111.0 L341.9 110.3 L346.4 109.5 L350.9 108.8 L355.5 108.1 L360.0 107.4 L364.6 106.6 L369.1 105.9 L373.6 105.2 L378.2 104.5 L382.7 103.7 L387.2 103.0 L391.8 102.3 L396.3 101.5 L400.9 100.8 L405.4 100.1 L409.9 99.4 L414.5 98.6 L419.0 97.9 L423.5 97.2 L428.1 96.5 L432.6 95.7 L437.2 95.0 L441.7 94.3 L446.2 93.6 L450.8 92.8 L455.3 92.1 L459.8 91.4 L464.4 90.6 L468.9 89.9 L473.5 89.2 L478.0 88.5 L482.5 87.7 L487.1 87.0 L491.6 86.3 L496.1 85.6 L500.7 84.8 L505.2 84.1 L509.8 83.4 L514.3 82.7 L518.8 81.9 L523.4 81.2 L527.9 80.5 L532.4 79.7 L537.0 79.0 L541.5 78.3 L546.1 77.6 L550.6 76.8 L555.1 76.1 L559.7 75.4 L564.2 74.7 L568.7 73.9 L573.3 73.2 L577.8 72.5 L582.4 71.8 L586.9 71.0 L591.4 70.3 L596.0 69.6 L600.5 68.8 L605.0 68.1 L609.6 67.4 L614.1 66.7 L618.7 65.9 L623.2 65.2" class="s3" style="stroke-width:2.2"/><path d="M56.0 139.4 L60.5 140.2 L65.1 140.9 L69.6 141.6 L74.2 142.3 L78.7 143.1 L83.2 143.8 L87.8 144.5 L92.3 145.2 L96.8 146.0 L101.4 146.7 L105.9 147.4 L110.5 148.2 L115.0 148.9 L119.5 149.6 L124.1 150.3 L128.6 151.1 L133.1 151.8 L137.7 152.5 L142.2 153.2 L146.8 154.0 L151.3 154.7 L155.8 155.4 L160.4 156.1 L164.9 156.9 L169.4 157.6 L174.0 158.3 L178.5 159.1 L183.1 159.8 L187.6 160.5 L192.1 161.2 L196.7 162.0 L201.2 162.7 L205.7 163.4 L210.3 164.1 L214.8 164.9 L219.4 165.6 L223.9 166.3 L228.4 167.0 L233.0 167.8 L237.5 168.5 L242.0 169.2 L246.6 170.0 L251.1 170.7 L255.7 171.4 L260.2 172.1 L264.7 172.9 L269.3 173.6 L273.8 174.3 L278.3 175.0 L282.9 175.8 L287.4 176.5 L292.0 177.2 L296.5 177.9 L301.0 178.7 L305.6 179.4 L310.1 180.1 L314.6 180.9 L319.2 181.6 L323.7 182.3 L328.3 183.0 L332.8 183.8 L337.3 184.5 L341.9 185.2 L346.4 185.9 L350.9 186.7 L355.5 187.4 L360.0 188.1 L364.6 188.8 L369.1 189.6 L373.6 190.3 L378.2 191.0 L382.7 191.8 L387.2 192.5 L391.8 193.2 L396.3 193.9 L400.9 194.7 L405.4 195.4 L409.9 196.1 L414.5 196.8 L419.0 197.6 L423.5 198.3 L428.1 199.0 L432.6 199.7 L437.2 200.5 L441.7 201.2 L446.2 201.9 L450.8 202.7 L455.3 203.4 L459.8 204.1 L464.4 204.8 L468.9 205.6 L473.5 206.3 L478.0 207.0 L482.5 207.7 L487.1 208.5 L491.6 209.2 L496.1 209.9 L500.7 210.6 L505.2 211.4 L509.8 212.1 L514.3 212.8 L518.8 213.6 L523.4 214.3 L527.9 215.0 L532.4 215.7 L537.0 216.5 L541.5 217.2 L546.1 217.9 L550.6 218.6 L555.1 219.4 L559.7 220.1 L564.2 220.8 L568.7 221.5 L573.3 222.3 L577.8 223.0 L582.4 223.7 L586.9 224.5 L591.4 225.2 L596.0 225.9 L600.5 226.6 L605.0 227.4 L609.6 228.1 L614.1 228.8 L618.7 229.5 L623.2 230.3" class="s8" style="stroke-width:2.2"/></g><text x="549.1" y="66.1" text-anchor="end" class="b tx3">Two 5 cm × 5 cm antennas</text><text x="549.1" y="239.4" text-anchor="end" class="b tx8">Two fixed-gain (isotropic) antennas</text></svg></div><figcaption>With two 5 cm × 5 cm antennas at 10 m, the link gain rises 20 dB per decade of frequency: the same area holds many more half-wavelength elements.</figcaption></figure><details class="more"><summary>More detail: <span class="hint">the Friis equation with apertures</span></summary><div class="body"><p>With effective apertures A_t and A_r, the Friis equation can be written</p><div class="eq"><svg class="tex" xmlns="http://www.w3.org/2000/svg" viewBox="0 -99 336 152" style="width:3.359em;height:1.517em" role="img" aria-label="received over transmitted power equals the product of the apertures over lambda squared d squared" focusable="false"><path fill="currentColor" d="M16.5 -91.4L33.3 -91.4Q48.6 -91.4 48.6 -81.1Q48.6 -78.3 47.3 -75.6Q46.0 -72.9 43.8 -71.0Q39.0 -67.1 29.5 -67.1Q25.6 -67.1 23.2 -67.6L19.5 -54.1Q18.5 -50.3 18.5 -49.7Q18.5 -48.4 19.5 -47.8Q20.6 -47.1 23.3 -46.8L23.3 -45.7L6.2 -45.7L6.2 -46.8Q9.3 -47.2 10.2 -48.2Q11.1 -49.1 12.1 -52.6L20.2 -81.5Q21.4 -85.8 21.4 -87.4Q21.4 -88.8 20.5 -89.3Q19.5 -89.9 16.5 -90.3L16.5 -91.4ZM28.6 -87.1L23.8 -70.0Q25.8 -69.6 27.5 -69.6Q33.5 -69.6 36.4 -71.3Q41.4 -74.1 41.4 -80.7Q41.4 -89.3 32.3 -89.3Q29.2 -89.3 28.6 -87.1ZM57.6 -46.1L58.4 -47.8Q60.1 -51.5 63.0 -54.6Q65.1 -56.8 66.9 -56.8Q67.9 -56.8 68.6 -56.1Q69.2 -55.4 69.2 -54.3Q69.2 -53.2 68.6 -52.4Q68.0 -51.7 66.9 -51.7Q66.0 -51.7 65.2 -52.9Q64.8 -53.6 64.4 -53.6Q63.1 -53.6 60.4 -49.0Q58.7 -46.2 57.7 -43.7Q56.7 -41.1 54.9 -35.2L51.2 -35.2L55.2 -49.5Q56.0 -52.4 56.0 -53.5Q56.0 -54.8 54.1 -54.8Q53.7 -54.8 52.6 -54.7L52.6 -55.5L60.2 -56.8L60.3 -56.7L57.6 -46.1ZM19.5 -16.5L36.3 -16.5Q51.6 -16.5 51.6 -6.1Q51.6 -3.3 50.3 -0.6Q49.0 2.1 46.8 3.9Q42.0 7.9 32.5 7.9Q28.6 7.9 26.2 7.3L22.5 20.9Q21.5 24.6 21.5 25.3Q21.5 26.5 22.5 27.2Q23.6 27.9 26.3 28.1L26.3 29.3L9.2 29.3L9.2 28.1Q12.3 27.7 13.2 26.8Q14.1 25.8 15.1 22.4L23.2 -6.6Q24.4 -10.9 24.4 -12.4Q24.4 -13.8 23.5 -14.4Q22.5 -15.0 19.5 -15.3L19.5 -16.5ZM31.6 -12.2L26.8 5.0Q28.8 5.3 30.5 5.3Q36.5 5.3 39.4 3.6Q44.4 0.8 44.4 -5.7Q44.4 -14.4 35.3 -14.4Q32.2 -14.4 31.6 -12.2ZM66.5 18.8L66.3 20.4L62.2 20.4L57.9 36.4Q57.8 36.8 57.8 37.1Q57.8 37.9 58.5 37.9Q59.1 37.9 59.9 37.1Q60.7 36.4 62.5 34.0L63.1 34.4Q60.9 37.8 59.4 39.0Q58.0 40.3 56.1 40.3Q53.9 40.3 53.9 38.5Q53.9 38.0 54.7 34.9L58.5 20.4L54.8 20.4L54.8 20.1Q54.8 19.2 56.4 18.8Q57.6 18.5 59.6 16.9Q61.6 15.4 62.9 13.4Q63.2 13.0 63.6 13.0Q64.0 13.0 64.0 13.4Q64.0 13.6 64.0 13.7L62.6 18.8L66.5 18.8ZM161.2 -32.8L102.3 -32.8L102.3 -39.4L161.2 -39.4L161.2 -32.8ZM161.2 -12.8L102.3 -12.8L102.3 -19.4L161.2 -19.4L161.2 -12.8ZM238.7 -46.2L221.6 -46.2L221.6 -47.4Q224.7 -47.5 225.8 -48.3Q226.9 -49.2 226.9 -51.1Q226.9 -51.6 226.8 -52.9L225.4 -62.1L210.0 -62.1L205.9 -54.3Q204.3 -51.4 204.3 -49.7Q204.3 -47.6 208.7 -47.4L208.7 -46.2L195.7 -46.2L195.7 -47.4Q198.0 -47.9 199.5 -49.6Q201.0 -51.4 205.0 -58.3L225.0 -93.0L226.8 -93.0L233.2 -54.3Q233.9 -50.0 234.9 -48.8Q235.9 -47.6 238.7 -47.4L238.7 -46.2ZM225.1 -64.6L221.9 -83.0L211.5 -64.6L225.1 -64.6ZM256.5 -56.7L256.3 -55.1L252.1 -55.1L247.9 -39.1Q247.8 -38.7 247.8 -38.4Q247.8 -37.6 248.5 -37.6Q249.1 -37.6 249.9 -38.4Q250.7 -39.1 252.5 -41.5L253.1 -41.1Q250.9 -37.7 249.4 -36.5Q248.0 -35.2 246.1 -35.2Q243.9 -35.2 243.9 -37.0Q243.9 -37.5 244.6 -40.6L248.5 -55.1L244.8 -55.1L244.7 -55.4Q244.7 -56.3 246.4 -56.7Q247.6 -57.0 249.6 -58.6Q251.6 -60.1 252.9 -62.1Q253.2 -62.5 253.6 -62.5Q254.0 -62.5 254.0 -62.1Q254.0 -61.9 254.0 -61.8L252.6 -56.7L256.5 -56.7ZM298.3 -46.2L281.1 -46.2L281.1 -47.4Q284.3 -47.5 285.4 -48.3Q286.5 -49.2 286.5 -51.1Q286.5 -51.6 286.4 -52.9L285.0 -62.1L269.6 -62.1L265.4 -54.3Q263.9 -51.4 263.9 -49.7Q263.9 -47.6 268.2 -47.4L268.2 -46.2L255.2 -46.2L255.2 -47.4Q257.6 -47.9 259.1 -49.6Q260.6 -51.4 264.6 -58.3L284.5 -93.0L286.4 -93.0L292.8 -54.3Q293.5 -50.0 294.5 -48.8Q295.5 -47.6 298.3 -47.4L298.3 -46.2ZM284.6 -64.6L281.5 -83.0L271.0 -64.6L284.6 -64.6ZM310.2 -46.7L311.0 -48.4Q312.6 -52.1 315.6 -55.1Q317.7 -57.3 319.4 -57.3Q320.5 -57.3 321.1 -56.7Q321.7 -56.0 321.7 -54.9Q321.7 -53.7 321.1 -53.0Q320.5 -52.2 319.4 -52.2Q318.5 -52.2 317.7 -53.5Q317.3 -54.2 316.9 -54.2Q315.6 -54.2 312.9 -49.6Q311.2 -46.7 310.2 -44.2Q309.2 -41.7 307.5 -35.7L303.7 -35.7L307.7 -50.1Q308.5 -52.9 308.5 -54.1Q308.5 -55.3 306.6 -55.3Q306.2 -55.3 305.1 -55.2L305.1 -56.0L312.7 -57.3L312.9 -57.3L310.2 -46.7ZM221.3 37.0L222.4 37.0Q220.2 46.7 215.3 46.7Q213.7 46.7 212.7 45.0Q211.6 43.4 211.6 40.1Q211.6 38.2 211.8 35.9Q212.0 33.5 212.3 29.8Q212.6 26.0 212.7 23.5L198.1 45.6L191.4 45.6L213.1 15.6Q213.4 13.1 213.4 10.1Q213.4 2.5 209.9 2.5Q209.0 2.5 207.6 3.8Q206.3 5.0 205.4 7.7L204.3 7.7Q206.6 -1.9 211.3 -1.9Q213.3 -1.9 214.6 0.6Q215.8 3.0 215.8 7.6Q215.8 12.3 215.1 21.6Q214.4 30.9 214.4 35.3Q214.4 39.0 215.1 40.6Q215.7 42.3 217.3 42.3Q219.4 42.3 221.3 37.0ZM255.3 10.0L252.6 16.7L233.5 16.7L233.5 16.1L242.2 6.8Q245.6 3.2 247.1 0.2Q248.6 -2.7 248.6 -5.9Q248.6 -9.2 246.8 -11.0Q244.9 -12.8 241.8 -12.8Q239.1 -12.8 237.6 -11.5Q236.0 -10.1 234.5 -6.5L233.5 -6.7Q234.4 -11.3 236.9 -13.9Q239.4 -16.5 243.7 -16.5Q247.8 -16.5 250.3 -14.0Q252.8 -11.6 252.8 -7.8Q252.8 -2.3 246.5 4.3L238.4 12.9L249.9 12.9Q251.5 12.9 252.5 12.3Q253.4 11.7 254.6 9.7L255.3 10.0ZM296.2 -2.2L296.6 -1.8L293.9 8.8L289.7 24.2Q285.1 40.9 285.1 41.4Q285.1 42.8 286.4 42.8Q287.3 42.8 288.3 41.9Q289.3 41.0 292.1 37.8L293.0 38.5Q287.6 46.5 282.7 46.5Q281.3 46.5 280.6 45.6Q279.8 44.8 279.8 43.3Q279.8 41.2 280.7 37.1Q277.7 42.2 274.8 44.3Q271.9 46.3 268.2 46.3Q264.7 46.3 262.7 44.2Q260.8 42.1 260.8 38.2Q260.8 29.8 267.5 22.3Q274.3 14.7 281.2 14.7Q283.4 14.7 284.4 15.7Q285.4 16.7 285.7 18.8L285.8 18.8L289.0 7.4Q289.9 3.9 289.9 2.4Q289.9 1.3 289.2 1.0Q288.4 0.7 285.5 0.6L285.5 -0.6Q290.9 -1.1 296.2 -2.2ZM284.6 20.3Q284.6 18.5 283.6 17.4Q282.6 16.3 281.3 16.3Q278.0 16.3 275.0 19.5Q271.5 23.2 269.2 28.4Q266.8 33.5 266.8 37.9Q266.8 40.3 267.9 41.6Q269.0 43.0 270.9 43.0Q274.1 43.0 277.3 39.6Q280.5 36.1 282.6 30.8Q284.6 25.5 284.6 20.3ZM325.8 10.0L323.1 16.7L304.0 16.7L304.0 16.1L312.7 6.8Q316.1 3.2 317.6 0.2Q319.1 -2.7 319.1 -5.9Q319.1 -9.2 317.2 -11.0Q315.4 -12.8 312.2 -12.8Q309.6 -12.8 308.0 -11.5Q306.5 -10.1 305.0 -6.5L304.0 -6.7Q304.8 -11.3 307.4 -13.9Q309.9 -16.5 314.2 -16.5Q318.3 -16.5 320.8 -14.0Q323.3 -11.6 323.3 -7.8Q323.3 -2.3 317.0 4.3L308.9 12.9L320.4 12.9Q322.0 12.9 322.9 12.3Q323.9 11.7 325.1 9.7L325.8 10.0ZM6.2 -22.7L6.2 -29.0L71.2 -29.0L71.2 -22.7L6.2 -22.7ZM192.2 -22.7L192.2 -29.0L330.2 -29.0L330.2 -22.7L192.2 -22.7Z"/></svg></div><p>so for fixed apertures the received power grows with f². The price is a very narrow beam that must be pointed accurately. See the <a href="antennas.html">antennas</a> tab.</p></div></details>
+<h2 class="sec" id="beams">Pencil beams and blockage</h2>
+<p class="lead">Very narrow beams carry the link, so they must be found, pointed and tracked. And almost anything in the way blocks them.</p><figure class="viz wide "><div class="fig-scroll"><svg viewBox="0 0 712 240" role="img" aria-label="A narrow terahertz beam from a base station to a user is blocked when a person walks through it." class="" xmlns="http://www.w3.org/2000/svg"><line x1="10" y1="200" x2="702" y2="200" class="axis"/><g transform="translate(70.0,200.0) scale(1.1)"><path d="M-14 0 L-3 -62 L3 -62 L14 0" class="st" style="stroke-width:2"/><path d="M-11 -16 L9 -30 M11 -16 L-9 -30 M-8 -34 L6 -46 M8 -34 L-6 -46 M-5 -50 L4 -58 M5 -50 L-4 -58" class="st-m"/><rect x="-9" y="-74" width="5" height="16" rx="1.5" class="f7"/><rect x="4" y="-74" width="5" height="16" rx="1.5" class="f7"/><rect x="-2.5" y="-77" width="5" height="17" rx="1.5" class="f7"/></g><path d="M84 118 L620 150 L620 166 Z" class="l7"/><text x="240.0" y="112.0" text-anchor="middle" class="s b tx7">pencil beam, a few degrees wide</text><g transform="translate(640.0,200.0) scale(1.1)"><circle cx="0" cy="-33" r="6" class="f1"/><path d="M-9 0 L-9 -16 Q-9 -25 0 -25 Q9 -25 9 -16 L9 0 Z" class="f1"/></g><g transform="translate(654.0,176.0) scale(0.6)"><rect x="-9" y="-30" width="18" height="30" rx="3.5" class="f1"/><rect x="-6.5" y="-26.5" width="13" height="21" rx="1.5" class="srf"/><circle cx="0" cy="-2.7" r="1.4" class="srf"/></g><g transform="translate(420.0,200.0) scale(1.5)"><circle cx="0" cy="-33" r="6" class="f8"/><path d="M-9 0 L-9 -16 Q-9 -25 0 -25 Q9 -25 9 -16 L9 0 Z" class="f8"/></g><text x="420.0" y="232.0" text-anchor="middle" class="s b tx8">a person walks through: 20 dB or more lost</text><g transform="translate(420.0,143.0)"><circle cx="0" cy="0" r="9" class="f8"/><path d="M-4 -4 L4 4 M4 -4 L-4 4" style="stroke:#fff;stroke-width:2.2;stroke-linecap:round"/></g></svg></div><figcaption>Bodies, hands and furniture block terahertz links almost completely. Reflecting surfaces, multiple access points and fast beam switching keep the link alive.</figcaption></figure><div class="cards viz c4"><div style="--c:var(--k7)"><svg class="ic" viewBox="0 0 48 48" aria-hidden="true"><rect x="12.0" y="12.0" width="24.0" height="24.0" rx="3" class="f7"/><line x1="16.0" y1="6.0" x2="16.0" y2="12.0" class="s7"/><line x1="16.0" y1="36.0" x2="16.0" y2="42.0" class="s7"/><line x1="6.0" y1="16.0" x2="12.0" y2="16.0" class="s7"/><line x1="36.0" y1="16.0" x2="42.0" y2="16.0" class="s7"/><line x1="24.0" y1="6.0" x2="24.0" y2="12.0" class="s7"/><line x1="24.0" y1="36.0" x2="24.0" y2="42.0" class="s7"/><line x1="6.0" y1="24.0" x2="12.0" y2="24.0" class="s7"/><line x1="36.0" y1="24.0" x2="42.0" y2="24.0" class="s7"/><line x1="32.0" y1="6.0" x2="32.0" y2="12.0" class="s7"/><line x1="32.0" y1="36.0" x2="32.0" y2="42.0" class="s7"/><line x1="6.0" y1="32.0" x2="12.0" y2="32.0" class="s7"/><line x1="36.0" y1="32.0" x2="42.0" y2="32.0" class="s7"/></svg><em class="tag">devices</em><b>Hardware</b><span>Transistors and amplifiers deliver little power above 100 GHz, and efficiently.</span></div><a href="hardware-impairments.html" style="--c:var(--k2)"><svg class="ic" viewBox="0 0 48 48" aria-hidden="true"><path d="M4 24 Q10 10 16 24 T28 24 T40 24" class="s2" style="stroke-width:3"/><circle cx="44.0" cy="24.0" r="2.5" class="f2"/></svg><em class="tag">impairments</em><b>Phase noise</b><span>Oscillator noise grows with frequency, limiting dense constellations.</span></a><a href="ris.html" style="--c:var(--k1)"><svg class="ic" viewBox="0 0 48 48" aria-hidden="true"><circle cx="24.0" cy="24.0" r="18.0" class="l1"/><circle cx="24.0" cy="24.0" r="11.0" class="srf"/><circle cx="24.0" cy="24.0" r="11.0" class="s1"/><circle cx="24.0" cy="24.0" r="4.5" class="f1"/></svg><em class="tag">control</em><b>Beam alignment</b><span>Searching many narrow beams takes time; sensing and RIS can help.</span></a><div style="--c:var(--k4)"><svg class="ic" viewBox="0 0 48 48" aria-hidden="true"><path d="M27 4 L12 27 L23 27 L19 44 L36 19 L25 19 Z" class="f4"/></svg><em class="tag">baseband</em><b>Data converters</b><span>Tens of gigahertz of bandwidth need extremely fast ADCs and DACs.</span></div></div><figure class="photo"><img src="https://upload.wikimedia.org/wikipedia/commons/e/e4/Terahertz_freq._metamaterial_modulator.jpg" alt="A metamaterial terahertz modulator from Los Alamos National Laboratory: an array of gold structures on a semiconductor, switched electrically." width="600" height="181" loading="lazy" decoding="async" referrerpolicy="no-referrer"><figcaption>A metamaterial terahertz modulator from Los Alamos National Laboratory: an array of gold structures on a semiconductor, switched electrically.<span class="credit">Photo: Hou-Tong Chen, Los Alamos National Laboratory, <a href="https://commons.wikimedia.org/w/index.php?curid=7877175" target="_blank" rel="noopener noreferrer">Public domain</a>, via Wikimedia Commons</span></figcaption></figure>
+<h2 class="sec" id="uses">What it will be used for</h2>
+<div class="cards viz c4"><div style="--c:var(--k7)"><svg class="ic" viewBox="0 0 48 48" aria-hidden="true"><g transform="translate(24.0,46.0) scale(0.6)"><path d="M-14 0 L-3 -62 L3 -62 L14 0" class="st" style="stroke-width:2"/><path d="M-11 -16 L9 -30 M11 -16 L-9 -30 M-8 -34 L6 -46 M8 -34 L-6 -46 M-5 -50 L4 -58 M5 -50 L-4 -58" class="st-m"/><rect x="-9" y="-74" width="5" height="16" rx="1.5" class="f7"/><rect x="4" y="-74" width="5" height="16" rx="1.5" class="f7"/><rect x="-2.5" y="-77" width="5" height="17" rx="1.5" class="f7"/><path d="M15.2 -75.4 A9 9 0 0 1 18.7 -65.7" class="s7" style="stroke-width:2;opacity:1.00"/><path d="M19.2 -81.1 A16 16 0 0 1 25.5 -63.9" class="s7" style="stroke-width:2;opacity:0.78"/><path d="M23.2 -86.8 A23 23 0 0 1 32.2 -62.0" class="s7" style="stroke-width:2;opacity:0.56"/><path d="M-18.7 -65.7 A9 9 0 0 1 -15.2 -75.4" class="s7" style="stroke-width:2;opacity:1.00"/><path d="M-25.5 -63.9 A16 16 0 0 1 -19.2 -81.1" class="s7" style="stroke-width:2;opacity:0.78"/><path d="M-32.2 -62.0 A23 23 0 0 1 -23.2 -86.8" class="s7" style="stroke-width:2;opacity:0.56"/></g></svg><b>Wireless backhaul</b><span>Fibre-like point-to-point links between base stations.</span></div><div style="--c:var(--k1)"><svg class="ic" viewBox="0 0 48 48" aria-hidden="true"><rect x="6.0" y="6.0" width="10.0" height="10.0" rx="2" class="l1"/><rect x="6.0" y="19.0" width="10.0" height="10.0" rx="2" class="f1"/><rect x="6.0" y="32.0" width="10.0" height="10.0" rx="2" class="l1"/><rect x="19.0" y="6.0" width="10.0" height="10.0" rx="2" class="f1"/><rect x="19.0" y="19.0" width="10.0" height="10.0" rx="2" class="l1"/><rect x="19.0" y="32.0" width="10.0" height="10.0" rx="2" class="f1"/><rect x="32.0" y="6.0" width="10.0" height="10.0" rx="2" class="l1"/><rect x="32.0" y="19.0" width="10.0" height="10.0" rx="2" class="f1"/><rect x="32.0" y="32.0" width="10.0" height="10.0" rx="2" class="l1"/></svg><b>Data centres</b><span>Rack-to-rack and chip-to-chip links at hundreds of gigabits per second.</span></div><div style="--c:var(--k3)"><svg class="ic" viewBox="0 0 48 48" aria-hidden="true"><g transform="translate(24.0,40.0) scale(1.1)"><rect x="-9" y="-30" width="18" height="30" rx="3.5" class="f3"/><rect x="-6.5" y="-26.5" width="13" height="21" rx="1.5" class="srf"/><circle cx="0" cy="-2.7" r="1.4" class="srf"/></g></svg><b>Instant downloads</b><span>Short-range kiosks that transfer gigabytes in seconds.</span></div><a href="isac.html" style="--c:var(--k8)"><svg class="ic" viewBox="0 0 48 48" aria-hidden="true"><path d="M4 24 Q24 6 44 24 Q24 42 4 24 Z" class="l8"/><path d="M4 24 Q24 6 44 24 Q24 42 4 24 Z" class="s8"/><circle cx="24.0" cy="24.0" r="7.0" class="f8"/></svg><b>Imaging and sensing</b><span>Centimetre-level resolution for ISAC, security scanning and quality control.</span></a></div>
+<div class="takeaways"><span class="label">Key takeaways</span><ul><li>The sub-THz and THz bands offer tens of gigahertz of bandwidth, the most direct route to very high data rates.</li><li>Oxygen and water vapour absorb at specific frequencies; links use the windows between them.</li><li>For antennas of fixed size, the link improves with frequency, at the cost of very narrow beams.</li><li>Blockage, beam alignment and hardware limits are the main obstacles.</li></ul></div>
+<h2 id="check">Check your understanding</h2><details class="qa"><summary>Why do higher frequencies offer more bandwidth?</summary><div class="ans"><p>Bandwidth is roughly proportional to the carrier frequency for a given fractional bandwidth, and the spectrum above 100 GHz is largely unallocated.</p></div></details><details class="qa"><summary>Is free-space path loss really higher at 300 GHz than at 3 GHz?</summary><div class="ans"><p>Only for antennas of fixed gain. With antennas of fixed physical size, the link improves by 40 dB between the two frequencies.</p></div></details><details class="qa"><summary>Why are terahertz links usually short?</summary><div class="ans"><p>Absorption grows with distance, transmitters produce little power, and narrow beams are easily blocked.</p></div></details>
+<h2 id="learn">Learn more</h2><p>Trusted places to go further, outside this site.</p><ul class="learn"><li><a href="https://wireless.engineering.nyu.edu/wireless-communications-and-applications-above-100-ghz-opportunities-and-challenges-for-6g-and-beyond/" target="_blank" rel="noopener noreferrer" style="--c:var(--k5)"><span class="av">WC</span><span class="ty">Paper</span><span class="nm">Wireless communications above 100 GHz</span><span class="ds">Rappaport et al. on sub-THz opportunities and challenges.</span><span class="dm">wireless.engineering.nyu.edu</span></a></li><li><a href="https://arxiv.org/abs/2011.01683" target="_blank" rel="noopener noreferrer" style="--c:var(--k2)"><span class="av">I8</span><span class="ty">Standard</span><span class="nm">IEEE 802.15.3d: the first sub-THz standard</span><span class="ds">Overview of the 252–325 GHz standard for 100 Gbit/s links.</span><span class="dm">arxiv.org</span></a></li><li><a href="https://en.wikipedia.org/wiki/Terahertz_radiation" target="_blank" rel="noopener noreferrer" style="--c:var(--k3)"><span class="av">TR</span><span class="ty">Article</span><span class="nm">Terahertz radiation</span><span class="ds">Physics, sources and uses of the THz band.</span><span class="dm">en.wikipedia.org</span></a></li><li><a href="https://www.itu.int/rec/R-REC-P.525/en" target="_blank" rel="noopener noreferrer" style="--c:var(--k2)"><span class="av">IR</span><span class="ty">Standard</span><span class="nm">ITU-R P.525: free-space attenuation</span><span class="ds">Spreading loss, which grows with frequency for fixed-gain antennas.</span><span class="dm">itu.int</span></a></li></ul>
+<h2 id="reading">Further reading</h2><ol class="refs"><li>T. S. Rappaport et al., “Wireless communications and applications above 100 GHz: Opportunities and challenges for 6G and beyond,” <i>IEEE Access</i>, vol. 7, pp. 78729–78757, 2019.</li><li>ITU-R P.676, “Attenuation by atmospheric gases and related effects.”</li></ol>
+<nav class="prevnext" aria-label="More tutorials"><a class="prev" href="full-duplex.html"><span class="dir">Previous</span><span class="nm">Full-duplex</span></a><a class="next" href="vlc.html"><span class="dir">Next</span><span class="nm">VLC</span></a></nav>
+    </article>
+  </div>
+</main>
+<footer class="site-footer">
+  <div class="wrap foot"><p>&copy; 2026 Mohd Hamza Naim Shaikh. Last updated October 2026.</p>
+    <nav aria-label="More pages"><a href="index.html">Tutorials</a><a href="../urdu.html">Urdu</a><a href="../places/index.html">Places</a></nav>
+  </div>
+</footer>
+<script>(function () {
+  const links = Array.from(document.querySelectorAll('.toc a[href^="#"]'));
+  if (!("IntersectionObserver" in window) || !links.length) return;
+  const byId = new Map(links.map(function (a) { return [a.getAttribute("href").slice(1), a]; }));
+  const io = new IntersectionObserver(function (entries) {
+    entries.forEach(function (e) {
+      if (!e.isIntersecting) return;
+      links.forEach(function (l) { l.removeAttribute("aria-current"); });
+      const a = byId.get(e.target.id); if (a) a.setAttribute("aria-current", "true");
+    });
+  }, { rootMargin: "-20% 0px -70% 0px" });
+  byId.forEach(function (_a, id) { const s = document.getElementById(id); if (s) io.observe(s); });
+})();</script>
+<script>/* Interactive models for the tutorials.
+   Each <div class="demo" data-demo="..."> is built here: controls, a canvas
+   plot with a hover read-out, and a row of computed values. */
+(function () {
+  "use strict";
+
+  /* ---------------------------------------------------------------- utils */
+  const C0 = 299792458;
+  const $ = (tag, attrs, kids) => {
+    const el = document.createElement(tag);
+    if (attrs) for (const k in attrs) {
+      if (k === "text") el.textContent = attrs[k];
+      else if (k === "html") el.innerHTML = attrs[k];
+      else el.setAttribute(k, attrs[k]);
+    }
+    (kids || []).forEach((c) => c && el.appendChild(c));
+    return el;
+  };
+  const token = (name) => getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+  const fmt = (v, d) => (Math.abs(v) < 1e-12 ? 0 : v).toFixed(d);
+  const db = (p) => 10 * Math.log10(Math.max(p, 1e-12));
+  function rng(seed) { // mulberry32
+    let a = seed >>> 0;
+    return function () {
+      a = (a + 0x6D2B79F5) >>> 0;
+      let t = a;
+      t = Math.imul(t ^ (t >>> 15), t | 1);
+      t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+      return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+    };
+  }
+  function niceMax(v) {
+    if (!(v > 0)) return 1;
+    const p = Math.pow(10, Math.floor(Math.log10(v)));
+    for (const m of [1, 1.2, 1.5, 2, 2.5, 3, 4, 5, 6, 8, 10]) if (m * p >= v) return m * p;
+    return 10 * p;
+  }
+  function ticks(min, max, n) {
+    const span = max - min, raw = span / n;
+    const p = Math.pow(10, Math.floor(Math.log10(raw)));
+    const step = [1, 2, 2.5, 5, 10].map((m) => m * p).find((s) => s >= raw) || raw;
+    const out = [];
+    for (let v = Math.ceil(min / step) * step; v <= max + step * 1e-6; v += step) out.push(+v.toFixed(10));
+    return out;
+  }
+  function frame(fn) { let q = false; return () => { if (q) return; q = true; requestAnimationFrame(() => { q = false; fn(); }); }; }
+
+  /* ----------------------------------------------------------------- Plot */
+  const plots = [];
+  function Plot(box, label) {
+    this.box = box;
+    this.canvas = $("canvas", { role: "img", "aria-label": label });
+    this.tip = $("div", { class: "tip", hidden: "" });
+    box.appendChild(this.canvas);
+    box.appendChild(this.tip);
+    this.ctx = this.canvas.getContext("2d");
+    this.cfg = null; this.hover = null; this.W = 0; this.H = 0;
+    const redraw = frame(() => this.draw());
+    this.redraw = redraw;
+    if ("ResizeObserver" in window) new ResizeObserver(redraw).observe(box);
+    else window.addEventListener("resize", redraw);
+    const move = (e) => {
+      const r = this.canvas.getBoundingClientRect();
+      this.hover = { px: e.clientX - r.left, py: e.clientY - r.top };
+      redraw();
+    };
+    this.canvas.addEventListener("pointermove", move);
+    this.canvas.addEventListener("pointerdown", move);
+    this.canvas.addEventListener("pointerleave", () => { this.hover = null; this.tip.hidden = true; redraw(); });
+    plots.push(this);
+  }
+  Plot.prototype.set = function (cfg) { this.cfg = cfg; this.redraw(); };
+  Plot.prototype.draw = function () {
+    const cfg = this.cfg; if (!cfg) return;
+    const r = this.box.getBoundingClientRect();
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    const W = Math.max(1, Math.round(r.width)), H = Math.max(1, Math.round(r.height));
+    if (this.canvas.width !== Math.round(W * dpr) || this.canvas.height !== Math.round(H * dpr)) {
+      this.canvas.width = Math.round(W * dpr); this.canvas.height = Math.round(H * dpr);
+    }
+    const ctx = this.ctx;
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    ctx.clearRect(0, 0, W, H);
+    const col = {
+      ink: token("--ink"), ink2: token("--ink-2"), muted: token("--muted"), line: token("--line"),
+      surface: token("--surface"), c1: token("--chart-1"), c2: token("--chart-2"), ref: token("--muted")
+    };
+    const font = (s, w) => (w || "400") + " " + s + 'px "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif';
+    const L = 50, R = 16, T = 28, B = 42;
+    const pw = W - L - R, ph = H - T - B;
+    const X = (v) => L + ((v - cfg.x.min) / (cfg.x.max - cfg.x.min)) * pw;
+    const Y = (v) => T + (1 - (v - cfg.y.min) / (cfg.y.max - cfg.y.min)) * ph;
+    this.X = X; this.Y = Y; this.L = L; this.T = T; this.pw = pw; this.ph = ph;
+
+    // grid and axes
+    ctx.lineWidth = 1; ctx.strokeStyle = col.line; ctx.fillStyle = col.muted;
+    ctx.font = font(12); ctx.textBaseline = "middle"; ctx.textAlign = "right";
+    (cfg.y.ticks || ticks(cfg.y.min, cfg.y.max, 5)).forEach((v) => {
+      const y = Math.round(Y(v)) + 0.5;
+      ctx.beginPath(); ctx.moveTo(L, y); ctx.lineTo(L + pw, y); ctx.stroke();
+      ctx.fillText((cfg.y.fmt || String)(v), L - 8, y);
+    });
+    ctx.textAlign = "center"; ctx.textBaseline = "top";
+    (cfg.x.ticks || ticks(cfg.x.min, cfg.x.max, 6)).forEach((v) => {
+      const x = Math.round(X(v)) + 0.5;
+      ctx.beginPath(); ctx.moveTo(x, T + ph); ctx.lineTo(x, T + ph + 5); ctx.stroke();
+      ctx.fillText((cfg.x.fmt || String)(v), x, T + ph + 9);
+    });
+    ctx.strokeStyle = col.muted;
+    ctx.beginPath(); ctx.moveTo(L, Math.round(T + ph) + 0.5); ctx.lineTo(L + pw, Math.round(T + ph) + 0.5); ctx.stroke();
+    ctx.fillStyle = col.ink2; ctx.font = font(12, "500");
+    ctx.textAlign = "left"; ctx.textBaseline = "alphabetic";
+    ctx.fillText(cfg.y.label, 4, 16);
+    ctx.textAlign = "center";
+    ctx.fillText(cfg.x.label, L + pw / 2, H - 6);
+
+    ctx.save();
+    ctx.beginPath(); ctx.rect(L, T - 2, pw, ph + 4); ctx.clip();
+    // reference lines
+    (cfg.hlines || []).forEach((h) => {
+      if (h.y < cfg.y.min || h.y > cfg.y.max) return;
+      ctx.strokeStyle = col[h.color || "c2"]; ctx.lineWidth = 1.5; ctx.setLineDash([5, 4]);
+      ctx.beginPath(); ctx.moveTo(L, Y(h.y)); ctx.lineTo(L + pw, Y(h.y)); ctx.stroke(); ctx.setLineDash([]);
+    });
+    (cfg.vlines || []).forEach((v) => {
+      ctx.strokeStyle = col[v.color || "c2"]; ctx.lineWidth = 1.5;
+      ctx.beginPath(); ctx.moveTo(X(v.x), T); ctx.lineTo(X(v.x), T + ph); ctx.stroke();
+    });
+    // series
+    cfg.series.forEach((s) => {
+      ctx.strokeStyle = col[s.color]; ctx.lineWidth = s.width || 2;
+      ctx.lineJoin = "round"; ctx.lineCap = "round";
+      ctx.setLineDash(s.dash || []);
+      ctx.beginPath();
+      s.data.forEach((p, i) => { const x = X(p[0]), y = Y(Math.max(cfg.y.min - 1, Math.min(cfg.y.max + 1, p[1]))); i ? ctx.lineTo(x, y) : ctx.moveTo(x, y); });
+      ctx.stroke(); ctx.setLineDash([]);
+    });
+    ctx.restore();
+
+    // labels for reference lines (text tokens, not series colours)
+    ctx.font = font(12, "500"); ctx.fillStyle = col.ink2; ctx.textBaseline = "alphabetic";
+    (cfg.hlines || []).forEach((h) => {
+      if (!h.label || h.y < cfg.y.min || h.y > cfg.y.max) return;
+      ctx.textAlign = "right"; ctx.fillText(h.label, L + pw - 4, Y(h.y) - 6);
+    });
+    (cfg.vlines || []).forEach((v) => {
+      if (!v.label) return;
+      const x = X(v.x), right = x < L + pw - 80;
+      ctx.textAlign = right ? "left" : "right";
+      ctx.fillText(v.label, x + (right ? 6 : -6), T + 12);
+    });
+    // points
+    const dot = (x, y, c, rad) => {
+      ctx.beginPath(); ctx.arc(x, y, rad + 2, 0, Math.PI * 2); ctx.fillStyle = col.surface; ctx.fill();
+      ctx.beginPath(); ctx.arc(x, y, rad, 0, Math.PI * 2); ctx.fillStyle = col[c]; ctx.fill();
+    };
+    (cfg.points || []).forEach((p) => {
+      if (p.x < cfg.x.min || p.x > cfg.x.max || p.y < cfg.y.min || p.y > cfg.y.max) return;
+      const x = X(p.x), y = Y(p.y);
+      dot(x, y, p.color || "c1", p.r || 4);
+      if (p.label) {
+        ctx.font = font(12, "500"); ctx.fillStyle = col.ink;
+        const right = x < L + pw - 110;
+        ctx.textAlign = right ? "left" : "right"; ctx.textBaseline = "alphabetic";
+        ctx.fillText(p.label, x + (right ? 10 : -10), y - 9);
+      }
+    });
+
+    // hover: crosshair and tooltip
+    const hv = this.hover;
+    if (!hv || hv.px < L || hv.px > L + pw || hv.py < T - 10 || hv.py > T + ph + 10) { this.tip.hidden = true; return; }
+    const xv = cfg.x.min + ((hv.px - L) / pw) * (cfg.x.max - cfg.x.min);
+    const rows = [];
+    let cx = null;
+    cfg.series.forEach((s) => {
+      if (s.hover === false || !s.data.length) return;
+      let lo = 0, hi = s.data.length - 1;
+      while (hi - lo > 1) { const m = (lo + hi) >> 1; if (s.data[m][0] < xv) lo = m; else hi = m; }
+      const p = Math.abs(s.data[lo][0] - xv) < Math.abs(s.data[hi][0] - xv) ? s.data[lo] : s.data[hi];
+      if (cx === null) cx = X(p[0]);
+      if (p[1] >= cfg.y.min && p[1] <= cfg.y.max) dot(X(p[0]), Y(p[1]), s.color, 4);
+      rows.push({ s: s, p: p });
+    });
+    if (cx === null) { this.tip.hidden = true; return; }
+    ctx.strokeStyle = col.muted; ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.moveTo(Math.round(cx) + 0.5, T); ctx.lineTo(Math.round(cx) + 0.5, T + ph); ctx.stroke();
+    rows.forEach((rw) => { if (rw.p[1] >= cfg.y.min && rw.p[1] <= cfg.y.max) dot(X(rw.p[0]), Y(rw.p[1]), rw.s.color, 4); });
+    const head = (cfg.x.hover || cfg.x.fmt || String)(rows[0].p[0]);
+    this.tip.innerHTML = '<p class="tip-h">' + head + "</p>" + rows.map((rw) =>
+      '<p><span class="key key-' + rw.s.color + (rw.s.dash ? " key-dash" : "") + '" aria-hidden="true"></span>' +
+      (rw.s.name ? rw.s.name + ": " : "") + "<b>" + (rw.s.fmt || cfg.y.hover || String)(rw.p[1]) + "</b></p>").join("");
+    this.tip.hidden = false;
+    const tw = this.tip.offsetWidth, th = this.tip.offsetHeight;
+    let tx = cx + 12; if (tx + tw > W - 4) tx = cx - 12 - tw;
+    let ty = Math.max(4, Math.min(hv.py - th / 2, H - th - 4));
+    this.tip.style.transform = "translate(" + Math.round(Math.max(4, tx)) + "px," + Math.round(ty) + "px)";
+  };
+
+  /* ------------------------------------------------------------- controls */
+  function slider(o) {
+    const input = $("input", { type: "range", id: o.id, min: o.min, max: o.max, step: o.step, value: o.value });
+    const out = $("output", { for: o.id });
+    const wrap = $("div", { class: "ctl" }, [$("label", { for: o.id, text: o.label }), input, out]);
+    const api = {
+      el: wrap, input: input,
+      get value() { return o.map ? o.map(+input.value) : +input.value; },
+      set: (v) => { input.value = v; api.show(); },
+      show: () => { out.textContent = o.fmt(api.value); }
+    };
+    input.addEventListener("input", api.show);
+    api.show();
+    return api;
+  }
+  function seg(o) {
+    let value = o.value;
+    const group = $("div", { class: "seg-mini", role: "radiogroup", "aria-labelledby": o.id + "-l" });
+    const btns = o.options.map((op) => {
+      const b = $("button", { type: "button", role: "radio", id: o.id + "-" + String(op.v).replace(/\W/g, ""), "aria-checked": String(op.v === value), text: op.t });
+      b.addEventListener("click", () => { value = op.v; btns.forEach((x, i) => x.setAttribute("aria-checked", String(o.options[i].v === value))); api.onchange && api.onchange(); });
+      group.appendChild(b);
+      return b;
+    });
+    const wrap = $("div", { class: "ctl ctl-seg" }, [$("span", { id: o.id + "-l", class: "ctl-l", text: o.label }), group]);
+    const api = { el: wrap, get value() { return value; }, onchange: null };
+    return api;
+  }
+  function button(id, text) { return $("button", { type: "button", class: "btn btn-quiet btn-small", id: id, text: text }); }
+  function legend(items) {
+    return $("ul", { class: "legend" }, items.map((it) => $("li", {}, [
+      $("span", { class: "key key-" + it[0] + (it[2] === true ? " key-dash" : it[2] === "dot" ? " key-dot" : ""), "aria-hidden": "true" }), document.createTextNode(it[1])
+    ])));
+  }
+  function readouts(defs) {
+    const dl = $("dl", { class: "demo-read" });
+    const vals = {};
+    defs.forEach((d) => {
+      const dd = $("dd", { text: "–" });
+      vals[d[0]] = dd;
+      dl.appendChild($("div", {}, [$("dt", { text: d[1] }), dd]));
+    });
+    return { el: dl, set: (k, v) => { vals[k].innerHTML = v; } };
+  }
+  function shell(root, parts) {
+    root.textContent = "";
+    const controls = $("div", { class: "demo-controls" }, parts.controls);
+    const plotBox = $("div", { class: "demo-plot" });
+    [controls, parts.legend, plotBox, parts.read && parts.read.el].forEach((x) => x && root.appendChild(x));
+    return new Plot(plotBox, parts.label);
+  }
+
+  /* ============================================================ the demos */
+  const DEMOS = {};
+
+  /* RIS: beam pattern of an N-element surface with b-bit phases */
+  DEMOS["ris-beam"] = function (root) {
+    const N = slider({ id: "ris-n", label: "Elements, N", min: 4, max: 64, step: 1, value: 16, fmt: (v) => String(v) });
+    const T = slider({ id: "ris-t", label: "Target angle", min: -60, max: 60, step: 1, value: 25, fmt: (v) => v + "°" });
+    const Bq = seg({ id: "ris-b", label: "Phase resolution", value: 2, options: [{ v: 1, t: "1 bit" }, { v: 2, t: "2 bits" }, { v: 3, t: "3 bits" }, { v: 0, t: "Continuous" }] });
+    const read = readouts([["g", "Gain toward target"], ["i", "Ideal, N²"], ["q", "Loss from quantized phases"], ["p", "Main beam at"]]);
+    const plot = shell(root, {
+      controls: [N.el, T.el, Bq.el], read: read,
+      legend: legend([["c1", "Configured surface"], ["ref", "Unconfigured surface (mirror)", true]]),
+      label: "Reflection gain of the surface against angle, with the target direction marked."
+    });
+    function af(phi, s) { let re = 0, im = 0; for (let i = 0; i < phi.length; i++) { const a = phi[i] + Math.PI * i * s; re += Math.cos(a); im += Math.sin(a); } return re * re + im * im; }
+    const run = frame(() => {
+      const n = N.value, th = T.value * Math.PI / 180, b = Bq.value;
+      const phi = [], zero = new Array(n).fill(0);
+      for (let i = 0; i < n; i++) {
+        let p = -Math.PI * i * Math.sin(th);
+        if (b) { const q = 2 * Math.PI / (1 << b); p = Math.round(p / q) * q; }
+        phi.push(p);
+      }
+      const cfgd = [], mirror = []; let best = -1, bestA = 0;
+      for (let a = -90; a <= 90.0001; a += 0.25) {
+        const s = Math.sin(a * Math.PI / 180), g = af(phi, s);
+        if (g > best) { best = g; bestA = a; }
+        cfgd.push([a, db(g)]); mirror.push([a, db(af(zero, s))]);
+      }
+      const gt = db(af(phi, Math.sin(th))), ideal = 20 * Math.log10(n);
+      plot.set({
+        x: { min: -90, max: 90, ticks: [-90, -60, -30, 0, 30, 60, 90], fmt: (v) => v + "°", label: "Reflection angle", hover: (v) => fmt(v, 1) + "°" },
+        y: { min: -10, max: 40, ticks: [-10, 0, 10, 20, 30, 40], label: "Gain over one element (dB)", hover: (v) => fmt(v, 1) + " dB" },
+        series: [{ name: "Configured", color: "c1", data: cfgd }, { name: "Mirror", color: "ref", data: mirror, dash: [6, 5], width: 1.5 }],
+        vlines: [{ x: T.value, label: "Target " + T.value + "°" }]
+      });
+      read.set("g", fmt(gt, 1) + " dB");
+      read.set("i", fmt(ideal, 1) + " dB");
+      read.set("q", fmt(Math.max(0, ideal - gt), 2) + " dB");
+      read.set("p", fmt(bestA, 1) + "°");
+    });
+    [N, T].forEach((s) => s.input.addEventListener("input", run));
+    Bq.onchange = run; run();
+  };
+
+  /* NOMA: two-user downlink rate region versus TDMA */
+  DEMOS["noma-region"] = function (root) {
+    const s1 = slider({ id: "noma-s1", label: "Near-user SNR", min: 0, max: 40, step: 1, value: 20, fmt: (v) => v + " dB" });
+    const s2 = slider({ id: "noma-s2", label: "Far-user SNR", min: -10, max: 30, step: 1, value: 5, fmt: (v) => v + " dB" });
+    const al = slider({ id: "noma-a", label: "Power to near user, α", min: 0.01, max: 0.5, step: 0.01, value: 0.2, fmt: (v) => v.toFixed(2) });
+    const read = readouts([["n", "NOMA rates (near, far)"], ["t", "TDMA, same near-user rate"], ["d", "Far user gains with NOMA"]]);
+    const plot = shell(root, {
+      controls: [s1.el, s2.el, al.el], read: read,
+      legend: legend([["c1", "NOMA (superposition and SIC)"], ["ref", "TDMA (time sharing)", true]]),
+      label: "Achievable rate pairs of the near and far user with NOMA and with TDMA."
+    });
+    const run = frame(() => {
+      if (s2.value > s1.value) s2.set(s1.value);
+      const S1 = Math.pow(10, s1.value / 10), S2 = Math.pow(10, s2.value / 10);
+      const C1 = Math.log2(1 + S1), C2 = Math.log2(1 + S2);
+      const R1 = (a) => Math.log2(1 + a * S1), R2 = (a) => Math.log2(1 + (1 - a) * S2 / (a * S2 + 1));
+      const noma = [], tdma = [];
+      for (let k = 0; k <= 400; k++) { const a = k / 400; noma.push([R1(a), R2(a)]); }
+      for (let k = 0; k <= 200; k++) { const t = k / 200; tdma.push([t * C1, (1 - t) * C2]); }
+      const a = al.value, r1 = R1(a), r2 = R2(a), r2t = (1 - r1 / C1) * C2;
+      const xm = niceMax(C1 * 1.04), ym = niceMax(C2 * 1.12);
+      plot.set({
+        x: { min: 0, max: xm, ticks: ticks(0, xm, 5), label: "Near-user rate R₁ (bit/s/Hz)", hover: (v) => "R₁ = " + fmt(v, 2) },
+        y: { min: 0, max: ym, ticks: ticks(0, ym, 4), label: "Far-user rate R₂ (bit/s/Hz)", fmt: (v) => String(+v.toFixed(2)), hover: (v) => fmt(v, 2) },
+        series: [{ name: "NOMA, R₂", color: "c1", data: noma }, { name: "TDMA, R₂", color: "ref", data: tdma, dash: [6, 5], width: 1.5 }],
+        points: [{ x: r1, y: r2, color: "c1", r: 5, label: "α = " + a.toFixed(2) }, { x: r1, y: r2t, color: "ref", r: 4 }]
+      });
+      read.set("n", fmt(r1, 2) + " and " + fmt(r2, 2) + " bit/s/Hz");
+      read.set("t", "far user " + fmt(r2t, 2) + " bit/s/Hz");
+      const gain = r2 - r2t;
+      read.set("d", (gain >= 0 ? "+" : "") + fmt(gain, 2) + " bit/s/Hz" + (r2t > 1e-6 ? " (" + (gain >= 0 ? "+" : "") + fmt(100 * gain / r2t, 0) + "%)" : ""));
+    });
+    [s1, s2, al].forEach((s) => s.input.addEventListener("input", run));
+    run();
+  };
+
+  /* ISAC: range profile of two equal targets after matched filtering */
+  DEMOS["isac-range"] = function (root) {
+    const BW = [[10e6, "10 MHz"], [20e6, "20 MHz, an LTE carrier"], [50e6, "50 MHz"], [100e6, "100 MHz, 5G NR in FR1"], [200e6, "200 MHz"],
+      [320e6, "320 MHz, Wi-Fi 7"], [400e6, "400 MHz, 5G NR in FR2"], [800e6, "800 MHz"], [1e9, "1 GHz"], [2e9, "2 GHz"], [4e9, "4 GHz, automotive radar"]];
+    const SEP = [0.05, 0.1, 0.2, 0.3, 0.5, 0.75, 1, 1.5, 2, 3, 5, 10];
+    const len = (m) => (m === 0 ? "0" : m < 1 ? +(m * 100).toPrecision(3) + " cm" : +m.toPrecision(3) + " m");
+    const b = slider({ id: "isac-b", label: "Bandwidth, B", min: 0, max: BW.length - 1, step: 1, value: 3, map: (i) => BW[i], fmt: (v) => v[1] });
+    const s = slider({ id: "isac-d", label: "Target separation", min: 0, max: SEP.length - 1, step: 1, value: 8, map: (i) => SEP[i], fmt: len });
+    const read = readouts([["r", "Range resolution, c/2B"], ["s", "Separation"], ["v", "Result"]]);
+    const plot = shell(root, {
+      controls: [b.el, s.el], read: read,
+      label: "Echo power against range for two equal targets, with their true positions marked."
+    });
+    const sinc2 = (x) => { if (Math.abs(x) < 1e-9) return 1; const v = Math.sin(Math.PI * x) / (Math.PI * x); return v * v; };
+    const run = frame(() => {
+      const B = b.value[0], d = s.value, dr = C0 / (2 * B);
+      const r1 = -d / 2, r2 = d / 2, span = 1.5 * d + 3 * dr;
+      const data = []; let mx = 0;
+      for (let k = 0; k <= 600; k++) {
+        const r = -span + (2 * span * k) / 600;
+        const p = sinc2(2 * B * (r - r1) / C0) + sinc2(2 * B * (r - r2) / C0);
+        mx = Math.max(mx, p); data.push([r, p]);
+      }
+      data.forEach((p) => { p[1] /= mx; });
+      const tk = ticks(-span, span, 6);
+      plot.set({
+        x: { min: -span, max: span, ticks: tk, label: "Range offset from the midpoint", fmt: (v) => (v < 0 ? "−" : "") + len(Math.abs(v)), hover: (v) => (v < 0 ? "−" : "") + len(Math.abs(v)) },
+        y: { min: 0, max: 1.05, ticks: [0, 0.25, 0.5, 0.75, 1], label: "Echo power (normalized)", fmt: (v) => v.toFixed(2), hover: (v) => v.toFixed(2) },
+        series: [{ name: "Echo", color: "c1", data: data }],
+        vlines: [{ x: r1 }, { x: r2 }]
+      });
+      read.set("r", len(dr));
+      read.set("s", len(d));
+      read.set("v", d >= dr ? '<span class="chip chip-ok">Two peaks: resolved</span>' : '<span class="chip chip-no">One peak: not resolved</span>');
+    });
+    [b, s].forEach((x) => x.input.addEventListener("input", run));
+    run();
+  };
+
+  /* V2X: Clarke fading envelope over time */
+  DEMOS["v2x-fading"] = function (root) {
+    const v = slider({ id: "v2x-v", label: "Speed", min: 0, max: 250, step: 5, value: 120, fmt: (x) => x + " km/h" });
+    const fc = seg({ id: "v2x-f", label: "Carrier frequency", value: 5.9, options: [{ v: 3.5, t: "3.5 GHz" }, { v: 5.9, t: "5.9 GHz" }, { v: 28, t: "28 GHz" }] });
+    const nb = button("v2x-new", "New channel");
+    const read = readouts([["d", "Maximum Doppler shift, f_D"], ["c", "Coherence time ≈ 0.423/f_D"], ["f", "Fades below −10 dB in 50 ms"]]);
+    const plot = shell(root, {
+      controls: [v.el, fc.el, $("div", { class: "ctl ctl-btn" }, [nb])], read: read,
+      label: "Received power of a mobile channel over 50 milliseconds."
+    });
+    let seed = 7;
+    const run = frame(() => {
+      const fD = (v.value / 3.6) * fc.value * 1e9 / C0, M = 32, rnd = rng(seed);
+      const ang = [], ph = [];
+      for (let m = 0; m < M; m++) { ang.push(2 * Math.PI * (m + rnd()) / M); ph.push(2 * Math.PI * rnd()); }
+      const data = []; let fades = 0, below = false;
+      for (let k = 0; k <= 1000; k++) {
+        const t = 0.05 * k / 1000; let re = 0, im = 0;
+        for (let m = 0; m < M; m++) { const a = 2 * Math.PI * fD * Math.cos(ang[m]) * t + ph[m]; re += Math.cos(a); im += Math.sin(a); }
+        const g = db((re * re + im * im) / M);
+        if (g < -10 && !below) fades++;
+        below = g < -10;
+        data.push([t * 1000, g]);
+      }
+      plot.set({
+        x: { min: 0, max: 50, ticks: [0, 10, 20, 30, 40, 50], label: "Time (ms)", hover: (x) => fmt(x, 2) + " ms" },
+        y: { min: -30, max: 10, ticks: [-30, -20, -10, 0, 10], label: "Received power (dB)", hover: (x) => fmt(x, 1) + " dB" },
+        series: [{ name: "Power", color: "c1", data: data }],
+        hlines: [{ y: -10, color: "ref", label: "−10 dB" }]
+      });
+      read.set("d", fD > 0 ? fmt(fD, fD < 100 ? 1 : 0) + " Hz" : "0 Hz");
+      const Tc = fD > 0 ? 0.423 / fD : Infinity;
+      read.set("c", isFinite(Tc) ? (Tc < 0.01 ? fmt(Tc * 1000, Tc < 0.001 ? 2 : 1) + " ms" : fmt(Tc, 2) + " s") : "unlimited (static channel)");
+      read.set("f", String(fades));
+    });
+    v.input.addEventListener("input", run);
+    fc.onchange = run;
+    nb.addEventListener("click", () => { seed = (seed * 9301 + 49297) % 233280; run(); });
+    run();
+  };
+
+  /* Fluid antenna: spatial fading along W wavelengths and port selection */
+  DEMOS["fas-ports"] = function (root) {
+    const w = slider({ id: "fas-w", label: "Antenna length, W", min: 0.5, max: 5, step: 0.5, value: 2, fmt: (x) => x + "λ" });
+    const n = slider({ id: "fas-n", label: "Ports, N", min: 2, max: 64, step: 1, value: 16, fmt: String });
+    const nb = button("fas-new", "New channel");
+    const read = readouts([["b", "Best port, this channel"], ["a", "Average gain of the best port"], ["o", "Outage below −10 dB"]]);
+    const plot = shell(root, {
+      controls: [w.el, n.el, $("div", { class: "ctl ctl-btn" }, [nb])], read: read,
+      legend: legend([["c1", "Channel gain along the antenna"], ["c2", "Best port", "dot"], ["ref", "Other ports", "dot"]]),
+      label: "Channel gain along a fluid antenna, with its ports and the best port marked."
+    });
+    let seed = 11;
+    function channel(rnd, M) {
+      const c = [], p = [];
+      for (let m = 0; m < M; m++) { c.push(2 * Math.PI * Math.cos(2 * Math.PI * rnd())); p.push(2 * Math.PI * rnd()); }
+      return (x) => { let re = 0, im = 0; for (let m = 0; m < M; m++) { const a = c[m] * x + p[m]; re += Math.cos(a); im += Math.sin(a); } return (re * re + im * im) / M; };
+    }
+    let mcKey = "", mcTimer = 0;
+    function monteCarlo(W, N) {
+      const key = W + ":" + N; if (key === mcKey) return; mcKey = key;
+      read.set("a", "computing…"); read.set("o", "computing…");
+      clearTimeout(mcTimer);
+      mcTimer = setTimeout(() => {
+        const rnd = rng(2024), trials = 1000; let sum = 0, out = 0;
+        for (let t = 0; t < trials; t++) {
+          const h = channel(rnd, 32); let best = 0;
+          for (let k = 0; k < N; k++) best = Math.max(best, h(k * W / (N - 1)));
+          sum += best; if (best < 0.1) out++;
+        }
+        read.set("a", "+" + fmt(db(sum / trials), 1) + " dB over a fixed antenna");
+        read.set("o", fmt(100 * out / trials, 1) + "% fluid, 9.5% fixed");
+      }, 140);
+    }
+    const run = frame(() => {
+      const W = w.value, N = n.value, h = channel(rng(seed), 64);
+      const data = [];
+      for (let k = 0; k <= 500; k++) { const x = W * k / 500; data.push([x, db(h(x))]); }
+      const ports = []; let bi = 0, bg = -1;
+      for (let k = 0; k < N; k++) { const x = k * W / (N - 1), g = h(x); ports.push([x, g]); if (g > bg) { bg = g; bi = k; } }
+      const pts = ports.map((p, k) => ({ x: p[0], y: Math.max(-30, db(p[1])), color: k === bi ? "c2" : "ref", r: k === bi ? 5.5 : 4 }));
+      pts.push(pts.splice(bi, 1)[0]);
+      pts[pts.length - 1].label = "Best port";
+      plot.set({
+        x: { min: 0, max: W, ticks: ticks(0, W, 5), label: "Position along the antenna (wavelengths)", fmt: (x) => String(+x.toFixed(2)), hover: (x) => fmt(x, 2) + "λ" },
+        y: { min: -30, max: 10, ticks: [-30, -20, -10, 0, 10], label: "Channel gain (dB)", hover: (x) => fmt(x, 1) + " dB" },
+        series: [{ name: "Gain", color: "c1", data: data }],
+        points: pts
+      });
+      read.set("b", "port " + (bi + 1) + ", " + (db(bg / ports[0][1]) >= 0 ? "+" : "") + fmt(db(bg / ports[0][1]), 1) + " dB over port 1");
+      monteCarlo(W, N);
+    });
+    [w, n].forEach((x) => x.input.addEventListener("input", run));
+    nb.addEventListener("click", () => { seed = (seed * 9301 + 49297) % 233280; run(); });
+    run();
+  };
+
+  /* Hardware impairments: spectral efficiency ceiling */
+  DEMOS["hwi-ceiling"] = function (root) {
+    const k = slider({ id: "hwi-k", label: "Impairment level κ (EVM)", min: 0, max: 25, step: 0.5, value: 8, fmt: (x) => x + "%" });
+    const presets = $("div", { class: "ctl ctl-presets" }, [$("span", { class: "ctl-l", text: "3GPP EVM limits" })]);
+    const row = $("div", { class: "seg-mini" });
+    [["QPSK", 17.5], ["16-QAM", 12.5], ["64-QAM", 8], ["256-QAM", 3.5]].forEach((p) => {
+      const bt = $("button", { type: "button", id: "hwi-" + p[0].replace(/\W/g, ""), text: p[0] + " " + p[1] + "%" });
+      bt.addEventListener("click", () => { k.set(p[1]); run(); });
+      row.appendChild(bt);
+    });
+    presets.appendChild(row);
+    const read = readouts([["s", "SNDR ceiling, 1/κ²"], ["c", "Capacity ceiling"], ["l", "Loss at 30 dB SNR"]]);
+    const plot = shell(root, {
+      controls: [k.el, presets], read: read,
+      legend: legend([["c1", "With impairments"], ["ref", "Ideal hardware", true]]),
+      label: "Spectral efficiency against SNR for ideal and impaired hardware."
+    });
+    const run = frame(() => {
+      const kk = k.value / 100, k2 = kk * kk;
+      const ideal = [], imp = [];
+      for (let s = -10; s <= 50.0001; s += 0.25) {
+        const S = Math.pow(10, s / 10);
+        ideal.push([s, Math.log2(1 + S)]);
+        imp.push([s, Math.log2(1 + S / (k2 * S + 1))]);
+      }
+      const ceil = k2 > 0 ? Math.log2(1 + 1 / k2) : null;
+      plot.set({
+        x: { min: -10, max: 50, ticks: [-10, 0, 10, 20, 30, 40, 50], label: "SNR (dB)", hover: (x) => "SNR " + fmt(x, 1) + " dB" },
+        y: { min: 0, max: 18, ticks: [0, 3, 6, 9, 12, 15, 18], label: "Spectral efficiency (bit/s/Hz)", hover: (x) => fmt(x, 2) + " bit/s/Hz" },
+        series: [{ name: "Impaired", color: "c1", data: imp }, { name: "Ideal", color: "ref", data: ideal, dash: [6, 5], width: 1.5 }],
+        hlines: ceil !== null ? [{ y: ceil, color: "c2", label: "Ceiling " + fmt(ceil, 2) + " bit/s/Hz" }] : []
+      });
+      read.set("s", ceil !== null ? fmt(db(1 / k2), 1) + " dB" : "none (ideal hardware)");
+      read.set("c", ceil !== null ? fmt(ceil, 2) + " bit/s/Hz" : "none");
+      const S30 = 1000;
+      read.set("l", fmt(Math.log2(1 + S30) - Math.log2(1 + S30 / (k2 * S30 + 1)), 2) + " bit/s/Hz");
+    });
+    k.input.addEventListener("input", run);
+    run();
+  };
+
+
+  /* Optimization: successive convex approximation on two-user power control */
+  DEMOS["opt-sca"] = function (root) {
+    const P = 100, a1 = 1, a2 = 0.4, LN2 = Math.LN2;
+    const bS = slider({ id: "sca-b", label: "Interference, cross-link gain", min: 0, max: 1, step: 0.01, value: 0.02, fmt: (v) => v.toFixed(2) });
+    const xS = slider({ id: "sca-x", label: "Starting point, power to user 1", min: 0, max: 1, step: 0.01, value: 0.05, fmt: (v) => Math.round(v * 100) + "%" });
+    const stepB = button("sca-step", "Next iteration"), runB = button("sca-run", "Run to convergence"), resetB = button("sca-reset", "Restart");
+    const btnRow = $("div", { class: "ctl ctl-btn" }, [$("div", { style: "display:flex;flex-wrap:wrap;gap:0.5rem" }, [stepB, runB, resetB])]);
+    const read = readouts([["t", "Iteration"], ["r", "Sum rate now"], ["g", "Best possible (grid search)"], ["s", "Status"]]);
+    const plot = shell(root, {
+      controls: [bS.el, xS.el, btnRow], read: read,
+      legend: legend([["c1", "Sum rate R(p)"], ["c2", "Concave surrogate at the current point"], ["ref", "Earlier iterates", "dot"]]),
+      label: "Sum rate of two interfering users against the share of power given to user 1, with the SCA surrogate and its iterates."
+    });
+    let x = 0.05, t = 0, trail = [], done = false;
+    const model = () => {
+      const b = bS.value;
+      const f = (u) => Math.log2(1 + P * (u * a1 + (1 - u) * b)) + Math.log2(1 + P * ((1 - u) * a2 + u * b));
+      const g = (u) => Math.log2(1 + P * (1 - u) * b) + Math.log2(1 + P * u * b);
+      const gp = (u) => (-P * b / (1 + P * (1 - u) * b) + P * b / (1 + P * u * b)) / LN2;
+      return { f: f, g: g, gp: gp, R: (u) => f(u) - g(u) };
+    };
+    function argmaxSurrogate(m, xk) {
+      const S = (u) => m.f(u) - m.g(xk) - m.gp(xk) * (u - xk);
+      let lo = 0, hi = 1;
+      for (let i = 0; i < 70; i++) {
+        const m1 = lo + (hi - lo) * 0.382, m2 = lo + (hi - lo) * 0.618;
+        if (S(m1) < S(m2)) lo = m1; else hi = m2;
+      }
+      const c = (lo + hi) / 2, cands = [0, 1, c];
+      return cands.reduce((best, u) => (S(u) > S(best) ? u : best), c);
+    }
+    function restart() { x = xS.value; t = 0; trail = []; done = false; draw(); }
+    function step() {
+      if (done) return;
+      const m = model(), xn = argmaxSurrogate(m, x);
+      trail.push(x); t++;
+      if (Math.abs(xn - x) < 1e-4) done = true;
+      x = xn;
+    }
+    const draw = frame(() => {
+      const m = model(), cur = [], sur = [];
+      let rmin = Infinity, rmax = -Infinity, xbest = 0;
+      for (let k = 0; k <= 400; k++) {
+        const u = k / 400, r = m.R(u);
+        cur.push([u, r]);
+        sur.push([u, m.f(u) - m.g(x) - m.gp(x) * (u - x)]);
+        if (r < rmin) rmin = r;
+        if (r > rmax) { rmax = r; xbest = u; }
+      }
+      const ymin = Math.max(0, Math.floor(rmin - 1)), ymax = Math.ceil(rmax + 0.6);
+      const pts = trail.slice(-8).map((u) => ({ x: u, y: m.R(u), color: "ref", r: 3.5 }));
+      pts.push({ x: x, y: m.R(x), color: "c1", r: 5.5, label: t ? "p after " + t + (t === 1 ? " step" : " steps") : "Start" });
+      plot.set({
+        x: { min: 0, max: 1, ticks: [0, 0.25, 0.5, 0.75, 1], fmt: (v) => Math.round(v * 100) + "%", label: "Share of total power given to user 1", hover: (v) => fmt(v * 100, 1) + "% to user 1" },
+        y: { min: ymin, max: ymax, ticks: ticks(ymin, ymax, 4), label: "Sum rate (bit/s/Hz)", fmt: (v) => String(+v.toFixed(1)), hover: (v) => fmt(v, 2) + " bit/s/Hz" },
+        series: [{ name: "Sum rate", color: "c1", data: cur }, { name: "Surrogate", color: "c2", data: sur, width: 1.75 }],
+        points: pts
+      });
+      const r = m.R(x), gap = rmax - r;
+      read.set("t", String(t));
+      read.set("r", fmt(r, 2) + " bit/s/Hz");
+      read.set("g", fmt(rmax, 2) + " bit/s/Hz at " + Math.round(xbest * 100) + "%");
+      read.set("s", !done ? (t ? "Improving" : "Press Next iteration")
+        : gap < 0.01 ? "Converged, global optimum"
+        : "Stuck at a local optimum, " + fmt(gap, 2) + " bit/s/Hz below best");
+    });
+    stepB.addEventListener("click", () => { step(); draw(); });
+    runB.addEventListener("click", () => { for (let i = 0; i < 60 && !done; i++) step(); draw(); });
+    resetB.addEventListener("click", restart);
+    bS.input.addEventListener("input", restart);
+    xS.input.addEventListener("input", restart);
+    restart();
+  };
+
+  /* ----------------------------------------------------------------- boot */
+  document.querySelectorAll(".demo[data-demo]").forEach((el) => {
+    const f = DEMOS[el.getAttribute("data-demo")];
+    if (f) f(el);
+  });
+  const redrawAll = () => plots.forEach((p) => p.redraw());
+  const mq = window.matchMedia("(prefers-color-scheme: dark)");
+  if (mq.addEventListener) mq.addEventListener("change", redrawAll);
+  new MutationObserver(redrawAll).observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
+})();
+</script>
+<script>
+(function () {
+  function tipFor(fig) {
+    let t = fig.querySelector(".ptip");
+    if (!t) { t = document.createElement("div"); t.className = "ptip"; t.hidden = true; fig.appendChild(t); }
+    return t;
+  }
+  function place(fig, tip, cx, cy) {
+    const fr = fig.getBoundingClientRect();
+    let x = cx - fr.left + 14, y = cy - fr.top + 14;
+    tip.hidden = false;
+    const w = tip.offsetWidth, h = tip.offsetHeight;
+    if (x + w > fr.width - 6) x = cx - fr.left - w - 14;
+    if (y + h > fr.height - 6) y = cy - fr.top - h - 14;
+    tip.style.transform = "translate(" + Math.max(4, x) + "px," + Math.max(4, y) + "px)";
+  }
+  // marks carrying their own tooltip
+  document.querySelectorAll("figure.viz").forEach(function (fig) {
+    const marks = fig.querySelectorAll("[data-tip]");
+    if (!marks.length) return;
+    const tip = tipFor(fig);
+    marks.forEach(function (m) {
+      m.classList.add("hov");
+      const show = function (e) { tip.innerHTML = m.getAttribute("data-tip"); place(fig, tip, e.clientX, e.clientY); };
+      m.addEventListener("pointermove", show);
+      m.addEventListener("pointerleave", function () { tip.hidden = true; });
+    });
+  });
+  // line plots: crosshair readout
+  document.querySelectorAll("figure.viz svg[data-plot]").forEach(function (svg) {
+    const fig = svg.closest("figure"), cfg = JSON.parse(svg.getAttribute("data-plot"));
+    const tip = tipFor(fig), ns = "http://www.w3.org/2000/svg";
+    const xh = document.createElementNS(ns, "line"); xh.setAttribute("class", "axis"); xh.setAttribute("y1", cfg.y0); xh.setAttribute("y2", cfg.y1); xh.style.display = "none";
+    svg.appendChild(xh);
+    const dots = cfg.series.map(function (s) { const c = document.createElementNS(ns, "circle"); c.setAttribute("r", 4.5); c.setAttribute("class", "f" + s.k); c.setAttribute("stroke", "var(--surface)"); c.setAttribute("stroke-width", 2); c.style.display = "none"; svg.appendChild(c); return c; });
+    const SUP = { "-": "⁻", "0": "⁰", "1": "¹", "2": "²", "3": "³", "4": "⁴", "5": "⁵", "6": "⁶", "7": "⁷", "8": "⁸", "9": "⁹" };
+    function fv(v) {
+      if (cfg.ypow) { const e = Math.pow(10, v).toExponential(1).split("e"); return e[0] + "×10" + String(+e[1]).split("").map(function (c) { return SUP[c] || c; }).join(""); }
+      return String(+v.toFixed(cfg.yd));
+    }
+    function sx(v) { return cfg.xlog ? Math.log10(v) : v; }
+    function px(v) { return cfg.x0 + (sx(v) - sx(cfg.xmin)) / (sx(cfg.xmax) - sx(cfg.xmin)) * (cfg.x1 - cfg.x0); }
+    function py(v) { return cfg.y1 - (v - cfg.ymin) / (cfg.ymax - cfg.ymin) * (cfg.y1 - cfg.y0); }
+    svg.addEventListener("pointermove", function (e) {
+      const pt = svg.createSVGPoint(); pt.x = e.clientX; pt.y = e.clientY;
+      const p = pt.matrixTransform(svg.getScreenCTM().inverse());
+      if (p.x < cfg.x0 - 4 || p.x > cfg.x1 + 4) { xh.style.display = "none"; dots.forEach(function (d) { d.style.display = "none"; }); tip.hidden = true; return; }
+      let rows = [], gx = null;
+      cfg.series.forEach(function (s, i) {
+        let best = null, bd = 1e9;
+        s.p.forEach(function (q) { const d = Math.abs(px(q[0]) - p.x); if (d < bd) { bd = d; best = q; } });
+        if (!best) return;
+        if (gx === null) gx = best;
+        const yy = py(best[1]);
+        if (yy >= cfg.y0 - 2 && yy <= cfg.y1 + 2) { dots[i].setAttribute("cx", px(best[0])); dots[i].setAttribute("cy", yy); dots[i].style.display = ""; } else dots[i].style.display = "none";
+        rows.push('<div><i style="--c:var(--k' + s.k + ')"></i>' + s.n + ": <b>" + fv(best[1]) + (cfg.yu || "") + "</b></div>");
+      });
+      if (gx === null) return;
+      xh.setAttribute("x1", px(gx[0])); xh.setAttribute("x2", px(gx[0])); xh.style.display = "";
+      tip.innerHTML = '<div><b>' + cfg.xl + " " + (+gx[0].toFixed(cfg.xd)) + (cfg.xu || "") + "</b></div>" + rows.join("");
+      place(fig, tip, e.clientX, e.clientY);
+    });
+    svg.addEventListener("pointerleave", function () { xh.style.display = "none"; dots.forEach(function (d) { d.style.display = "none"; }); tip.hidden = true; });
+  });
+})();
+</script>
+</body>
+</html>

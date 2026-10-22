@@ -3,20 +3,20 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="description" content="What 6G is meant to deliver, how its targets compare with 5G, and which physical-layer ideas are being developed to get there.">
+<meta name="description" content="What 6G is meant to deliver (IMT-2030 scenarios and targets, standardisation timeline) and picture-first tutorials on ISAC, RIS, full duplex, THz, VLC, radar, NOMA, fluid antennas and V2X.">
 <meta name="author" content="Mohd Hamza Naim Shaikh">
 <meta name="theme-color" content="#F5F7FA" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#0A1524" media="(prefers-color-scheme: dark)">
-<title>6G Networks Tutorial</title>
+<title>6G technologies | Wireless tutorials</title>
 <!-- share-meta -->
 <link rel="canonical" href="https://hamza-qub.github.io/learn/6g.html">
 <link rel="icon" href="../favicon.svg" type="image/svg+xml">
 <link rel="icon" href="../favicon-32.png" type="image/png" sizes="32x32">
 <link rel="apple-touch-icon" href="../apple-touch-icon.png">
 <meta property="og:site_name" content="Hamza Shaikh">
-<meta property="og:type" content="article">
-<meta property="og:title" content="6G Networks Tutorial">
-<meta property="og:description" content="What 6G is meant to deliver, how its targets compare with 5G, and which physical-layer ideas are being developed to get there.">
+<meta property="og:type" content="website">
+<meta property="og:title" content="6G technologies | Wireless tutorials">
+<meta property="og:description" content="What 6G is meant to deliver (IMT-2030 scenarios and targets, standardisation timeline) and picture-first tutorials on ISAC, RIS, full duplex, THz, VLC, radar, NOMA, fluid antennas and V2X.">
 <meta property="og:url" content="https://hamza-qub.github.io/learn/6g.html">
 <meta property="og:image" content="https://hamza-qub.github.io/og-image.png">
 <meta property="og:image:width" content="1200">
@@ -24,8 +24,8 @@
 <meta property="og:image:alt" content="Mohd Hamza Naim Shaikh, Research Fellow at Queen’s University Belfast, beside the phase pattern of a reconfigurable intelligent surface.">
 <meta property="og:locale" content="en_GB">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="6G Networks Tutorial">
-<meta name="twitter:description" content="What 6G is meant to deliver, how its targets compare with 5G, and which physical-layer ideas are being developed to get there.">
+<meta name="twitter:title" content="6G technologies | Wireless tutorials">
+<meta name="twitter:description" content="What 6G is meant to deliver (IMT-2030 scenarios and targets, standardisation timeline) and picture-first tutorials on ISAC, RIS, full duplex, THz, VLC, radar, NOMA, fluid antennas and V2X.">
 <meta name="twitter:image" content="https://hamza-qub.github.io/og-image.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -623,8 +623,210 @@ ol.refs a { font-family: var(--sans); font-size: 0.8125rem; white-space: nowrap;
 .place-index a:hover { color: var(--accent); text-decoration: underline; text-decoration-thickness: 1px; }
 .place-index span { font-family: var(--sans); font-size: 0.8125rem; color: var(--muted); }
 </style>
+<style>
+:root { --k1: #2a78d6; --k2: #eb6834; --k3: #1baf7a; --k4: #eda100; --k5: #e87ba4; --k6: #008300; --k7: #6250d6; --k8: #e34948; --t: #2a78d6; --t-deep: #1c5cab; }
+body.t-found { --t: #1baf7a; --t-deep: #0d7550; }
+body.t-tech { --t: #2a78d6; --t-deep: #1c5cab; }
+body.t-tools { --t: #eb6834; --t-deep: #b4461b; }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) { --k1: #3987e5; --k2: #d95926; --k3: #199e70; --k4: #c98500; --k5: #d55181; --k6: #2f9e2f; --k7: #9085e9; --k8: #e66767; }
+  :root:not([data-theme="light"]) body.t-found { --t: #22b383; --t-deep: #7fdcb6; }
+:root:not([data-theme="light"]) body.t-tech { --t: #3987e5; --t-deep: #9ec5f4; }
+:root:not([data-theme="light"]) body.t-tools { --t: #e0682f; --t-deep: #f5a983; }
+}
+:root[data-theme="dark"] { --k1: #3987e5; --k2: #d95926; --k3: #199e70; --k4: #c98500; --k5: #d55181; --k6: #2f9e2f; --k7: #9085e9; --k8: #e66767; }
+:root[data-theme="dark"] body.t-found { --t: #22b383; --t-deep: #7fdcb6; }
+:root[data-theme="dark"] body.t-tech { --t: #3987e5; --t-deep: #9ec5f4; }
+:root[data-theme="dark"] body.t-tools { --t: #e0682f; --t-deep: #f5a983; }
+
+/* ================= picture-first tutorials ================= */
+body { --t-soft: color-mix(in srgb, var(--t) 11%, var(--surface)); --t-soft2: color-mix(in srgb, var(--t) 22%, var(--surface)); --t-line: color-mix(in srgb, var(--t) 40%, var(--line)); }
+.site-header { border-bottom-color: var(--line); }
+.t-band { height: 6px; background: linear-gradient(90deg, var(--t), color-mix(in srgb, var(--t) 45%, var(--k4))); }
+
+/* page head with hero illustration */
+.page-head.hero2 { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 25rem); gap: clamp(1.5rem, 4vw, 3.5rem); align-items: center; }
+.page-head.hero2 .hero-art { margin: 0; }
+.page-head.hero2 .hero-art svg { display: block; width: 100%; height: auto; }
+.page-head .kicker { display: inline-flex; align-items: center; gap: 0.5rem; font-family: var(--sans); font-size: 0.8125rem; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; color: var(--t-deep); margin: 0 0 0.75rem; }
+.page-head .kicker::before { content: ""; width: 0.65rem; height: 0.65rem; border-radius: 50%; background: var(--t); }
+.meta-row .pill { background: var(--t-soft); color: var(--ink); border-radius: 999px; padding: 0.15rem 0.7rem; font-weight: 500; }
+@media (max-width: 880px) { .page-head.hero2 { grid-template-columns: minmax(0, 1fr); } .page-head.hero2 .hero-art { max-width: 26rem; } }
+
+/* at a glance */
+.glance { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 12.5rem), 1fr)); gap: 0.9rem; margin: 0 0 2.75rem; }
+.glance .g { background: var(--surface); border: 1px solid var(--line); border-top: 4px solid var(--gc, var(--t)); border-radius: 6px; padding: 0.95rem 1rem 1rem; }
+.glance .g svg { width: 2.4rem; height: 2.4rem; display: block; margin-bottom: 0.55rem; }
+.glance .g b { display: block; font-family: var(--sans); font-size: 0.9375rem; font-weight: 600; color: var(--ink); margin-bottom: 0.2rem; }
+.glance .g span { display: block; font-size: 0.975rem; line-height: 1.45; color: var(--ink-2); }
+.glance-h { font-family: var(--sans); font-size: 0.75rem; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); margin: 0 0 0.75rem; }
+
+/* numbered section headings */
+.prose { counter-reset: sec; }
+.prose h2.sec { counter-increment: sec; display: flex; align-items: baseline; gap: 0.75rem; }
+.prose h2.sec::before { content: counter(sec); flex: none; display: inline-grid; place-items: center; width: 2rem; height: 2rem; border-radius: 50%; background: var(--t-deep); color: var(--surface); font-family: var(--sans); font-size: 0.95rem; font-weight: 600; transform: translateY(-0.12rem); }
+.prose .lead { font-size: 1.125rem; color: var(--ink); }
+.toc a[aria-current="true"] { border-left-color: var(--t); }
+
+/* figures */
+figure.viz { margin: 1.5rem 0 1.75rem; background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 1rem 1rem 0.85rem; }
+figure.viz .fig-scroll { overflow-x: auto; }
+figure.viz svg { display: block; width: 100%; height: auto; }
+figure.viz .fig-scroll svg { min-width: 0; }
+figure.viz.wide .fig-scroll svg { min-width: 34rem; }
+figure.viz figcaption { font-family: var(--sans); font-size: 0.875rem; line-height: 1.55; color: var(--ink-2); margin-top: 0.7rem; }
+figure.viz figcaption b { color: var(--ink); font-weight: 600; }
+figure.viz .legend2 { list-style: none; display: flex; flex-wrap: wrap; gap: 0.3rem 1.1rem; margin: 0 0 0.4rem; padding: 0; font-family: var(--sans); font-size: 0.8125rem; color: var(--ink-2); }
+figure.viz .legend2 li { display: inline-flex; align-items: center; gap: 0.4rem; margin: 0; }
+figure.viz .legend2 i { width: 1rem; height: 0; border-top: 3px solid var(--c); border-radius: 2px; }
+figure.viz .legend2 i.sq { width: 0.7rem; height: 0.7rem; border: 0; background: var(--c); border-radius: 2px; }
+figure.viz .legend2 i.dash { border-top-style: dashed; }
+.fig-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 15rem), 1fr)); gap: 1rem; margin: 1.5rem 0 1.75rem; }
+.fig-row figure.viz { margin: 0; }
+
+/* photos */
+figure.photo { margin: 1.5rem 0 1.75rem; }
+figure.photo img { display: block; width: 100%; height: auto; border-radius: 8px; background: var(--tint); }
+figure.photo figcaption { font-family: var(--sans); font-size: 0.875rem; line-height: 1.55; color: var(--ink-2); margin-top: 0.55rem; }
+figure.photo .credit { display: block; font-size: 0.75rem; color: var(--muted); margin-top: 0.2rem; }
+figure.photo .credit a { color: var(--muted); }
+.photo-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 13rem), 1fr)); gap: 1rem; margin: 1.5rem 0 1.75rem; }
+.photo-row figure.photo { margin: 0; }
+.photo-row figure.photo img { aspect-ratio: 4 / 3; object-fit: cover; }
+
+figure.photo.tall img { max-width: 21rem; }
+.photo-row figure.photo.tall img { max-width: none; }
+/* key idea */
+.keyidea { position: relative; background: var(--t-soft); border-left: 4px solid var(--t); border-radius: 0 6px 6px 0; padding: 0.95rem 1.15rem 1rem; margin: 1.5rem 0; }
+.keyidea .label { display: block; font-family: var(--sans); font-size: 0.75rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--t-deep); margin-bottom: 0.3rem; }
+.keyidea p { margin: 0 0 0.5rem; color: var(--ink); }
+.keyidea p:last-child { margin-bottom: 0; }
+.keyidea .eq { margin: 0.6rem 0 0.2rem; }
+
+/* more detail */
+details.more { border: 1px solid var(--t-line); border-radius: 6px; margin: 1.25rem 0 1.5rem; background: var(--surface); }
+details.more > summary { cursor: pointer; list-style: none; display: flex; align-items: center; gap: 0.6rem; padding: 0.7rem 1rem; font-family: var(--sans); font-size: 0.9375rem; font-weight: 600; color: var(--ink); }
+details.more > summary::-webkit-details-marker { display: none; }
+details.more > summary::before { content: "+"; display: inline-grid; place-items: center; width: 1.35rem; height: 1.35rem; border-radius: 50%; background: var(--t-soft2); color: var(--t-deep); font-weight: 700; flex: none; }
+details.more[open] > summary::before { content: "\2212"; }
+details.more > summary .hint { font-weight: 400; color: var(--muted); font-size: 0.8125rem; }
+details.more > .body { padding: 0.25rem 1.1rem 1rem; border-top: 1px dashed var(--line); }
+details.more > .body > :first-child { margin-top: 0.75rem; }
+
+/* concept cards */
+.prose ul.cards, .prose ul.learn, .prose ul.tcards { padding-left: 0; }
+.cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 13rem), 1fr)); gap: 0.85rem; margin: 1.25rem 0 1.75rem; padding: 0; list-style: none; }
+.cards > li, .cards > a, .cards > div { margin: 0; background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 0.9rem 1rem 1rem; position: relative; overflow: hidden; }
+.cards > li::before, .cards > a::before, .cards > div::before { content: ""; position: absolute; inset: 0 0 auto 0; height: 4px; background: var(--c, var(--t)); }
+.cards svg.ic { width: 2.6rem; height: 2.6rem; display: block; margin: 0.15rem 0 0.5rem; }
+.cards b { display: block; font-family: var(--sans); font-size: 0.9375rem; font-weight: 600; color: var(--ink); margin-bottom: 0.2rem; }
+.cards span { display: block; font-size: 0.975rem; line-height: 1.45; color: var(--ink-2); }
+.cards .tag { font-style: normal; display: inline-block; font-family: var(--sans); font-size: 0.6875rem; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; color: var(--ink); background: color-mix(in srgb, var(--c, var(--t)) 18%, var(--surface)); border-radius: 999px; padding: 0.1rem 0.5rem; margin-bottom: 0.4rem; }
+.cards > a { text-decoration: none; color: inherit; transition: border-color .15s; }
+.cards > a:hover { border-color: var(--c, var(--t)); }
+.cards > a:hover b { color: var(--accent); }
+
+.cards.c4 { grid-template-columns: repeat(auto-fit, minmax(min(100%, 9.5rem), 1fr)); }
+/* learn more */
+.learn { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 15.5rem), 1fr)); gap: 0.85rem; margin: 1rem 0 0; padding: 0; list-style: none; }
+.learn li { margin: 0; }
+.learn a { display: grid; grid-template-columns: 2.4rem minmax(0, 1fr); gap: 0.15rem 0.8rem; height: 100%; box-sizing: border-box; padding: 0.85rem 1rem; background: var(--surface); border: 1px solid var(--line); border-radius: 8px; text-decoration: none; color: var(--ink); }
+.learn a:hover { border-color: var(--c); }
+.learn .av { grid-row: 1 / span 3; width: 2.4rem; height: 2.4rem; border-radius: 8px; display: grid; place-items: center; background: color-mix(in srgb, var(--c) 18%, var(--surface)); color: var(--ink); font-family: var(--sans); font-weight: 700; font-size: 0.875rem; }
+.learn .ty { font-family: var(--sans); font-size: 0.6875rem; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; color: var(--ink-2); }
+.learn .nm { font-family: var(--sans); font-weight: 600; font-size: 0.9375rem; line-height: 1.35; }
+.learn .ds { font-size: 0.9375rem; line-height: 1.45; color: var(--ink-2); }
+.learn .dm { font-family: var(--sans); font-size: 0.75rem; color: var(--muted); margin-top: 0.15rem; }
+
+/* compact further reading */
+details.reading > summary { cursor: pointer; font-family: var(--sans); font-weight: 600; font-size: 0.9375rem; color: var(--ink-2); padding: 0.4rem 0; }
+
+/* diagram styling (inline SVG) */
+.viz svg { color: var(--ink); overflow: visible; }
+.viz text { fill: currentColor; font-family: var(--sans); font-size: 13px; }
+.viz text.s { font-size: 11.5px; fill: var(--ink-2); }
+.viz text.xs { font-size: 10.5px; fill: var(--muted); }
+.viz text.b { font-weight: 600; }
+.viz text.h { font-weight: 600; font-size: 14px; }
+.viz text.w { fill: #fff; font-weight: 600; }
+.viz text.m { fill: var(--muted); }
+.viz text.ser { font-family: var(--serif); font-style: italic; font-size: 15px; }
+.viz .ink { fill: var(--ink); } .viz .ink2 { fill: var(--ink-2); } .viz .mut { fill: var(--muted); }
+.viz .srf { fill: var(--surface); } .viz .bg { fill: var(--bg); } .viz .lnf { fill: var(--line); } .viz .tnt { fill: var(--tint); }
+.viz .st { stroke: currentColor; fill: none; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+.viz .st-m { stroke: var(--muted); fill: none; stroke-width: 1.3; stroke-linecap: round; }
+.viz .st-l { stroke: var(--line); fill: none; stroke-width: 1; }
+.viz .grid { stroke: var(--line); stroke-width: 1; fill: none; }
+.viz .axis { stroke: var(--muted); stroke-width: 1.2; fill: none; }
+.viz .dash { stroke-dasharray: 5 4; }
+.viz .dot { stroke-dasharray: 1.5 4; }
+.viz .f1 { fill: var(--k1); } .viz .s1 { stroke: var(--k1); fill: none; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; } .viz .l1 { fill: color-mix(in srgb, var(--k1) 20%, var(--surface)); } .viz .ll1 { fill: color-mix(in srgb, var(--k1) 10%, var(--surface)); } .viz .tx1 { fill: color-mix(in srgb, var(--k1) 70%, var(--ink)); }
+.viz .f2 { fill: var(--k2); } .viz .s2 { stroke: var(--k2); fill: none; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; } .viz .l2 { fill: color-mix(in srgb, var(--k2) 20%, var(--surface)); } .viz .ll2 { fill: color-mix(in srgb, var(--k2) 10%, var(--surface)); } .viz .tx2 { fill: color-mix(in srgb, var(--k2) 70%, var(--ink)); }
+.viz .f3 { fill: var(--k3); } .viz .s3 { stroke: var(--k3); fill: none; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; } .viz .l3 { fill: color-mix(in srgb, var(--k3) 20%, var(--surface)); } .viz .ll3 { fill: color-mix(in srgb, var(--k3) 10%, var(--surface)); } .viz .tx3 { fill: color-mix(in srgb, var(--k3) 70%, var(--ink)); }
+.viz .f4 { fill: var(--k4); } .viz .s4 { stroke: var(--k4); fill: none; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; } .viz .l4 { fill: color-mix(in srgb, var(--k4) 20%, var(--surface)); } .viz .ll4 { fill: color-mix(in srgb, var(--k4) 10%, var(--surface)); } .viz .tx4 { fill: color-mix(in srgb, var(--k4) 70%, var(--ink)); }
+.viz .f5 { fill: var(--k5); } .viz .s5 { stroke: var(--k5); fill: none; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; } .viz .l5 { fill: color-mix(in srgb, var(--k5) 20%, var(--surface)); } .viz .ll5 { fill: color-mix(in srgb, var(--k5) 10%, var(--surface)); } .viz .tx5 { fill: color-mix(in srgb, var(--k5) 70%, var(--ink)); }
+.viz .f6 { fill: var(--k6); } .viz .s6 { stroke: var(--k6); fill: none; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; } .viz .l6 { fill: color-mix(in srgb, var(--k6) 20%, var(--surface)); } .viz .ll6 { fill: color-mix(in srgb, var(--k6) 10%, var(--surface)); } .viz .tx6 { fill: color-mix(in srgb, var(--k6) 70%, var(--ink)); }
+.viz .f7 { fill: var(--k7); } .viz .s7 { stroke: var(--k7); fill: none; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; } .viz .l7 { fill: color-mix(in srgb, var(--k7) 20%, var(--surface)); } .viz .ll7 { fill: color-mix(in srgb, var(--k7) 10%, var(--surface)); } .viz .tx7 { fill: color-mix(in srgb, var(--k7) 70%, var(--ink)); }
+.viz .f8 { fill: var(--k8); } .viz .s8 { stroke: var(--k8); fill: none; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; } .viz .l8 { fill: color-mix(in srgb, var(--k8) 20%, var(--surface)); } .viz .ll8 { fill: color-mix(in srgb, var(--k8) 10%, var(--surface)); } .viz .tx8 { fill: color-mix(in srgb, var(--k8) 70%, var(--ink)); }
+.viz .ft { fill: var(--t); } .viz .st-t { stroke: var(--t); fill: none; stroke-width: 2.2; } .viz .lt { fill: var(--t-soft2); } .viz .llt { fill: var(--t-soft); }
+.viz .hov { cursor: help; }
+.viz .hov:hover { opacity: 0.85; }
+
+/* plot hover */
+.ptip { position: absolute; left: 0; top: 0; pointer-events: none; background: var(--surface); border: 1px solid var(--line); border-radius: 4px; padding: 0.4rem 0.55rem; font-family: var(--sans); font-size: 0.8125rem; line-height: 1.45; color: var(--ink-2); box-shadow: 0 2px 10px rgba(0,0,0,.08); z-index: 3; white-space: nowrap; }
+.ptip b { color: var(--ink); font-variant-numeric: tabular-nums; }
+.ptip i { display: inline-block; width: 0.6rem; height: 0.6rem; border-radius: 50%; background: var(--c); margin-right: 0.35rem; vertical-align: -0.02rem; }
+figure.viz { position: relative; }
+
+/* track tab bar */
+.tabs { border-bottom: 1px solid var(--line); background: var(--bg); position: sticky; top: calc(env(safe-area-inset-top, 0px) + 3.5rem); z-index: 15; }
+.tabs .wrap { display: flex; align-items: stretch; gap: 0.25rem; overflow-x: auto; scrollbar-width: thin; }
+.tabs .trk { flex: none; display: inline-flex; align-items: center; gap: 0.45rem; padding: 0.65rem 0.9rem 0.65rem 0; margin-right: 0.4rem; border-right: 1px solid var(--line); font-family: var(--sans); font-size: 0.8125rem; font-weight: 700; color: var(--t-deep); text-decoration: none; white-space: nowrap; }
+.tabs .trk::before { content: ""; width: 0.6rem; height: 0.6rem; border-radius: 50%; background: var(--t); }
+.tabs a.tab { flex: none; display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.65rem 0.75rem; font-family: var(--sans); font-size: 0.875rem; color: var(--ink-2); text-decoration: none; white-space: nowrap; border-bottom: 3px solid transparent; }
+.tabs a.tab .n { font-size: 0.75rem; color: var(--muted); font-variant-numeric: tabular-nums; }
+.tabs a.tab:hover { color: var(--ink); background: var(--t-soft); }
+.tabs a.tab[aria-current="page"] { color: var(--ink); font-weight: 600; border-bottom-color: var(--t); }
+@media (max-width: 880px) { .tabs { position: static; } }
+
+/* track landing cards */
+.tcards { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 17rem), 1fr)); gap: 1.1rem; list-style: none; margin: 1.5rem 0 0; padding: 0; }
+.tcards li { margin: 0; }
+.tcards a { display: flex; flex-direction: column; height: 100%; box-sizing: border-box; background: var(--surface); border: 1px solid var(--line); border-radius: 10px; overflow: hidden; text-decoration: none; color: var(--ink); transition: border-color .15s, transform .15s; }
+.tcards a:hover { border-color: var(--t); transform: translateY(-2px); }
+.tcards .art { background: var(--t-soft); border-bottom: 1px solid var(--line); padding: 0.6rem; }
+.tcards .art { height: 11.5rem; box-sizing: border-box; overflow: hidden; }
+.tcards .art svg { display: block; width: 100%; height: 100%; }
+.tcards .txt { padding: 0.85rem 1rem 1rem; display: flex; flex-direction: column; gap: 0.3rem; flex: 1; }
+.tcards .tg { align-self: flex-start; font-family: var(--sans); font-size: 0.6875rem; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; color: var(--ink); background: var(--t-soft2); border-radius: 999px; padding: 0.1rem 0.55rem; }
+.tcards b { font-family: var(--serif); font-size: 1.1875rem; font-weight: 600; line-height: 1.25; }
+.tcards span.d { font-size: 0.975rem; line-height: 1.45; color: var(--ink-2); }
+.tcards span.m { margin-top: auto; padding-top: 0.4rem; font-family: var(--sans); font-size: 0.75rem; color: var(--muted); }
+
+/* tutorial-to-tutorial chips */
+a.tchip { display: inline-flex; align-items: center; gap: 0.35rem; font-family: var(--sans); font-size: 0.8125rem; font-weight: 600; text-decoration: none; color: var(--ink); background: color-mix(in srgb, var(--c) 16%, var(--surface)); border-radius: 999px; padding: 0.12rem 0.6rem 0.12rem 0.45rem; white-space: nowrap; }
+a.tchip::before { content: ""; width: 0.55rem; height: 0.55rem; border-radius: 50%; background: var(--c); }
+a.tchip:hover { color: var(--accent); }
+
+/* takeaways in colour */
+.takeaways { border-top-color: var(--t); }
+.takeaways ul { list-style: none; padding-left: 0; }
+.takeaways li { position: relative; padding-left: 1.6rem; }
+.takeaways li::before { content: ""; position: absolute; left: 0.1rem; top: 0.55em; width: 0.7rem; height: 0.7rem; border-radius: 3px; background: var(--t); }
+details.qa summary::marker { color: var(--t); }
+.prevnext a:hover { border-color: var(--t); }
+
+.hubtrack { --t-soft: color-mix(in srgb, var(--t) 11%, var(--surface)); --t-soft2: color-mix(in srgb, var(--t) 22%, var(--surface)); }
+.hubtrack { border-top: 1px solid var(--line); padding: 2.25rem 0 0.5rem; }
+.hubtrack .hub-h { display: flex; gap: 1rem; align-items: flex-start; }
+.hubtrack .hub-h .num { flex: none; display: grid; place-items: center; width: 2.4rem; height: 2.4rem; border-radius: 50%; background: var(--t); color: #fff; font-family: var(--sans); font-weight: 700; }
+.hubtrack h2 { margin: 0 0 0.3rem; font-size: 1.75rem; }
+.hubtrack h2 a { color: var(--ink); text-decoration: none; }
+.hubtrack h2 a:hover { color: var(--accent); }
+.hubtrack .hub-h p { margin: 0; color: var(--ink-2); max-width: 62ch; }
+</style>
 </head>
-<body>
+<body class="t-tech">
 <a class="skip" href="#main">Skip to content</a>
 
 <header class="site-header">
@@ -642,162 +844,40 @@ ol.refs a { font-family: var(--sans); font-size: 0.8125rem; white-space: nowrap;
     </nav>
   </div>
 </header>
+<div class="t-band" aria-hidden="true"></div>
+<nav class="tabs" aria-label="6G technologies tutorials"><div class="wrap"><a class="trk" href="6g.html" aria-current="page">6G technologies</a><a class="tab" href="isac.html"><span class="n">1</span>ISAC</a><a class="tab" href="ris.html"><span class="n">2</span>RIS</a><a class="tab" href="full-duplex.html"><span class="n">3</span>Full-duplex</a><a class="tab" href="thz.html"><span class="n">4</span>THz</a><a class="tab" href="vlc.html"><span class="n">5</span>VLC</a><a class="tab" href="radar.html"><span class="n">6</span>Radar signal processing</a><a class="tab" href="noma.html"><span class="n">7</span>NOMA & RSMA</a><a class="tab" href="fluid-antennas.html"><span class="n">8</span>Fluid antennas</a><a class="tab" href="v2x.html"><span class="n">9</span>Vehicular</a></div></nav>
 <main id="main">
-  <div class="wrap page-head">
-    <nav class="crumbs" aria-label="Breadcrumb"><a href="index.html">Tutorials</a><span aria-hidden="true">/</span><span>1 of 8</span></nav>
-    <h1>6G networks</h1>
-    <p class="lede">What 6G is meant to deliver, how its targets compare with 5G, and which physical-layer ideas are being developed to get there.</p>
-    <ul class="meta-row"><li class="level">Start here</li><li>10 min read</li></ul>
+  <div class="wrap page-head hero2">
+    <div>
+      <p class="kicker">Tutorials · track 2 of 3</p>
+      <h1>6G technologies</h1>
+      <p class="lede">The physical-layer ideas behind 6G: networks that sense, surfaces that shape the channel, radios that talk and listen at once, new spectrum, light, and new ways to share it.</p>
+      <ul class="meta-row"><li class="pill">9 tutorials</li><li>Diagrams, interactive models and self-checks</li></ul>
+    </div>
+    <figure class="hero-art viz"><svg viewBox="0 0 712 432" role="img" aria-label="The six IMT-2030 usage scenarios: immersive communication, hyper-reliable low-latency communication and massive communication extend 5G; ubiquitous connectivity, AI and communication, and integrated sensing and communication are new." class="" xmlns="http://www.w3.org/2000/svg"><path d="M324.0 142.3 L283.3 68.8 A150 150 0 0 1 428.7 68.8 L388.0 142.3 A66 66 0 0 0 324.0 142.3 Z" class="l1" opacity="0.95"/><text x="356.0" y="26.0" text-anchor="middle" class="s b tx1">Immersive</text><text x="356.0" y="41.0" text-anchor="middle" class="s b tx1">communication</text><text x="356.0" y="56.0" text-anchor="middle" class="xs">extends eMBB</text><text x="356.0" y="97.0" text-anchor="middle" class="xs b">5G+</text><path d="M390.0 143.4 L433.3 71.4 A150 150 0 0 1 506.0 197.4 L422.0 198.8 A66 66 0 0 0 390.0 143.4 Z" class="l7" opacity="0.95"/><text x="501.5" y="116.0" class="s b tx7">Hyper-reliable, low</text><text x="501.5" y="131.0" class="s b tx7">latency</text><text x="501.5" y="146.0" class="xs">extends URLLC</text><text x="449.5" y="151.0" text-anchor="middle" class="xs b">5G+</text><path d="M422.0 201.2 L506.0 202.6 A150 150 0 0 1 433.3 328.6 L390.0 256.6 A66 66 0 0 0 422.0 201.2 Z" class="l3" opacity="0.95"/><text x="501.5" y="284.0" class="s b tx3">Massive communication</text><text x="501.5" y="299.0" class="xs">extends mMTC</text><text x="449.5" y="259.0" text-anchor="middle" class="xs b">5G+</text><path d="M388.0 257.7 L428.7 331.2 A150 150 0 0 1 283.3 331.2 L324.0 257.7 A66 66 0 0 0 388.0 257.7 Z" class="f4" opacity="0.9"/><text x="356.0" y="382.0" text-anchor="middle" class="s b tx4">Ubiquitous</text><text x="356.0" y="397.0" text-anchor="middle" class="s b tx4">connectivity</text><text x="356.0" y="412.0" text-anchor="middle" class="xs">new</text><text x="356.0" y="313.0" text-anchor="middle" class="xs b w">new</text><path d="M322.0 256.6 L278.7 328.6 A150 150 0 0 1 206.0 202.6 L290.0 201.2 A66 66 0 0 0 322.0 256.6 Z" class="f2" opacity="0.9"/><text x="210.5" y="284.0" text-anchor="end" class="s b tx2">AI and communication</text><text x="210.5" y="299.0" text-anchor="end" class="xs">new</text><text x="262.5" y="259.0" text-anchor="middle" class="xs b w">new</text><path d="M290.0 198.8 L206.0 197.4 A150 150 0 0 1 278.7 71.4 L322.0 143.4 A66 66 0 0 0 290.0 198.8 Z" class="f8" opacity="0.9"/><text x="210.5" y="110.0" text-anchor="end" class="s b tx8">Integrated sensing</text><text x="210.5" y="125.0" text-anchor="end" class="s b tx8">and communication</text><text x="210.5" y="140.0" text-anchor="end" class="xs">new</text><text x="262.5" y="151.0" text-anchor="middle" class="xs b w">new</text><circle cx="356.0" cy="200.0" r="60.0" class="srf"/><circle cx="356.0" cy="200.0" r="60.0" class="s7" style="fill:none;stroke-width:1.2"/><text x="356.0" y="196.0" text-anchor="middle" class="h">IMT-2030</text><text x="356.0" y="214.0" text-anchor="middle" class="xs">six scenarios</text></svg></figure>
   </div>
-  <div class="wrap tut-grid">
-    <nav class="toc" aria-labelledby="toc-h">
-      <h2 id="toc-h">On this page</h2>
-      <ol>
-      <li><a href="#generations">Five generations, briefly</a></li>
-      <li><a href="#imt-2030">What the ITU asks of 6G</a></li>
-      <li><a href="#targets">The targets, side by side</a></li>
-      <li><a href="#physical-layer">Where the physical layer comes in</a></li>
-      <li><a href="#timeline">Where standardisation stands</a></li>
-      <li><a href="#check">Check your understanding</a></li>
-      <li><a href="#papers">Related papers</a></li>
-      <li><a href="#reading">Further reading</a></li>
-      </ol>
-    </nav>
-    <article class="prose">
-<h2 id="generations">Five generations, briefly</h2>
-<p>Each generation of mobile networks is remembered for what it let people do. 1G carried analogue voice. 2G made voice digital and added text messages. 3G brought mobile data, and 4G turned the phone into a broadband device on an all-IP network built on OFDM. 5G, launched commercially in 2019, added services that have little to do with phones: ultra-reliable low-latency links for machines and massive connectivity for sensors. 6G is expected around 2030.</p>
-<figure class="diagram">
-  <div class="fig-scroll">
-    <svg class="dg" viewBox="0 0 680 128" role="img" aria-label="Timeline of mobile generations from 1G in the 1980s to 6G around 2030, with what each one added.">
-      <line class="thin" x1="40" y1="52" x2="650" y2="52"/>
-      <g text-anchor="middle">
-        <text class="lbl" x="55" y="30">1G</text><text class="lbl" x="170" y="30">2G</text><text class="lbl" x="285" y="30">3G</text>
-        <text class="lbl" x="400" y="30">4G</text><text class="lbl" x="515" y="30">5G</text><text class="lbl" x="630" y="30">6G</text>
-        <circle cx="55" cy="52" r="6" class="surf" stroke="currentColor" stroke-width="1.5"/>
-        <circle cx="170" cy="52" r="6" class="surf" stroke="currentColor" stroke-width="1.5"/>
-        <circle cx="285" cy="52" r="6" class="surf" stroke="currentColor" stroke-width="1.5"/>
-        <circle cx="400" cy="52" r="6" class="surf" stroke="currentColor" stroke-width="1.5"/>
-        <circle cx="515" cy="52" r="6" class="surf" stroke="currentColor" stroke-width="1.5"/>
-        <circle cx="630" cy="52" r="7" class="fill-c2"/>
-        <text class="sm" x="55" y="78">1980s</text><text class="sm" x="170" y="78">1990s</text><text class="sm" x="285" y="78">2000s</text>
-        <text class="sm" x="400" y="78">2010s</text><text class="sm" x="515" y="78">2019</text><text class="sm" x="630" y="78">about 2030</text>
-        <text x="55" y="98">Analogue</text><text x="55" y="115">voice</text>
-        <text x="170" y="98">Digital voice</text><text x="170" y="115">and SMS</text>
-        <text x="285" y="98">Mobile</text><text x="285" y="115">data</text>
-        <text x="400" y="98">Mobile</text><text x="400" y="115">broadband</text>
-        <text x="515" y="98">eMBB, URLLC</text><text x="515" y="115">and mMTC</text>
-        <text x="630" y="98">Adds sensing</text><text x="630" y="115">and AI</text>
-      </g>
-    </svg>
-  </div>
-  <figcaption>Roughly one generation per decade. 5G’s three scenarios are enhanced mobile broadband (eMBB), ultra-reliable low-latency communication (URLLC) and massive machine-type communication (mMTC).</figcaption>
-</figure>
-
-<h2 id="imt-2030">What the ITU asks of 6G</h2>
-<p>The International Telecommunication Union defines each generation through an IMT framework. For 5G this was IMT-2020. For 6G it is IMT-2030, set out in Recommendation ITU-R M.2160 in November 2023. The framework describes six usage scenarios. Three extend the 5G scenarios and three are new.</p>
-<dl class="terms">
-  <dt>Immersive communication <span class="tag">extends eMBB</span></dt>
-  <dd>Extended reality, holographic calls and high-rate video for many users at once.</dd>
-  <dt>Hyper-reliable and low-latency communication <span class="tag">extends URLLC</span></dt>
-  <dd>Industrial control, teleoperation and remote surgery, where a late packet is a lost packet.</dd>
-  <dt>Massive communication <span class="tag">extends mMTC</span></dt>
-  <dd>Very dense deployments of sensors and low-power devices.</dd>
-  <dt>Ubiquitous connectivity <span class="tag">new</span></dt>
-  <dd>Coverage for rural, remote and sparsely populated areas, so that fewer people are left unconnected.</dd>
-  <dt>AI and communication <span class="tag">new</span></dt>
-  <dd>The network supports distributed training and inference of AI models, and uses AI to run itself.</dd>
-  <dt>Integrated sensing and communication <span class="tag">new</span></dt>
-  <dd>The network measures range, velocity, angle and shape of objects using its own radio signals. See the <a href="isac.html">ISAC tutorial</a>.</dd>
-</dl>
-<p>Four overarching aspects apply to every scenario: sustainability, connecting the unconnected, ubiquitous intelligence, and security and resilience.</p>
-
-<h2 id="targets">The targets, side by side</h2>
-<p>IMT-2030 gives its targets as ranges. Different scenarios stress different capabilities: a factory needs reliability and latency, a stadium needs capacity, and no single deployment needs every number at once.</p>
-<figure class="table-fig">
-  <div class="table-scroll">
-    <table class="cmp">
-      <thead><tr><th scope="col">Capability</th><th scope="col">5G (IMT-2020)</th><th scope="col">6G (IMT-2030 research targets)</th></tr></thead>
-      <tbody>
-        <tr><td>Peak data rate</td><td>20 Gbit/s</td><td class="new">50, 100 or 200 Gbit/s</td></tr>
-        <tr><td>User-experienced data rate</td><td>100 Mbit/s</td><td class="new">300 or 500 Mbit/s</td></tr>
-        <tr><td>Spectrum efficiency</td><td>3× IMT-Advanced</td><td class="new">1.5× or 3× IMT-2020</td></tr>
-        <tr><td>Area traffic capacity</td><td>10 Mbit/s/m²</td><td class="new">30 or 50 Mbit/s/m²</td></tr>
-        <tr><td>Connection density</td><td>10⁶ devices/km²</td><td class="new">10⁶ to 10⁸ devices/km²</td></tr>
-        <tr><td>Mobility</td><td>500 km/h</td><td class="new">500 to 1,000 km/h</td></tr>
-        <tr><td>Latency, over the air</td><td>1 ms</td><td class="new">0.1 to 1 ms</td></tr>
-        <tr><td>Reliability</td><td>1 − 10⁻⁵</td><td class="new">1 − 10⁻⁵ to 1 − 10⁻⁷</td></tr>
-        <tr><td>Positioning accuracy</td><td>not a key capability</td><td class="new">1 to 10 cm</td></tr>
-        <tr><td>New capabilities</td><td>none</td><td class="new">Sensing, AI, coverage, sustainability, interoperability, security and resilience</td></tr>
-      </tbody>
-    </table>
-  </div>
-  <figcaption>IMT-2020 values are the key capabilities in Recommendation ITU-R M.2083, with reliability from the minimum requirements in Report ITU-R M.2410. IMT-2030 values are the example research targets in M.2160; the ITU notes that they need not all be met together.</figcaption>
-</figure>
-
-<h2 id="physical-layer">Where the physical layer comes in</h2>
-<p>Most of these gains have to come from new spectrum and from better use of the radio channel. Faster processors alone will not deliver them. Several research directions stand out, and each has its own tutorial on this site.</p>
-<dl class="terms">
-  <dt>More spectrum, higher up</dt>
-  <dd>The upper mid-band (roughly 7 to 24 GHz), millimetre wave and sub-terahertz bands offer wide bandwidths but suffer heavier path loss and are easily blocked.</dd>
-  <dt>Control of the channel itself</dt>
-  <dd><a href="ris.html">Reconfigurable intelligent surfaces</a> create and focus new propagation paths where the direct one is weak or blocked.</dd>
-  <dt>Antennas that move</dt>
-  <dd><a href="fluid-antennas.html">Fluid and movable antennas</a> pick the best point in space to receive, without extra radio chains.</dd>
-  <dt>More users per resource</dt>
-  <dd><a href="noma.html">Non-orthogonal multiple access</a> and rate splitting let users share time and frequency.</dd>
-  <dt>Radios that also sense</dt>
-  <dd><a href="isac.html">Integrated sensing and communication</a> turns base stations into radars.</dd>
-  <dt>Fast-moving users</dt>
-  <dd><a href="v2x.html">Vehicles</a>, drones and satellites bring Doppler, blockage and handover challenges.</dd>
-  <dt>Imperfect hardware</dt>
-  <dd>Wider bandwidths and larger arrays push cost down per element, so <a href="hardware-impairments.html">hardware impairments</a> matter more.</dd>
-</dl>
-
-<h2 id="timeline">Where standardisation stands</h2>
-<p>Status in October 2026:</p>
-<ol>
-  <li><strong>November 2023.</strong> ITU-R adopts the IMT-2030 framework, Recommendation M.2160.</li>
-  <li><strong>2025 to 2026.</strong> 3GPP Release 20 carries the first 6G study items. In June 2026, 3GPP completes its first 6G study and approves the Release 21 timeline, which will hold the first 6G specifications.</li>
-  <li><strong>18 October to 12 November 2027.</strong> The World Radiocommunication Conference WRC-27 in Shanghai decides on spectrum, including bands for IMT.</li>
-  <li><strong>December 2028.</strong> Planned stage-3 freeze of Release 21, for both the 6G radio access network and 5G-Advanced.</li>
-  <li><strong>March 2029.</strong> Planned final ASN.1 and code freeze, completing the first 6G standard.</li>
-  <li><strong>Around 2030.</strong> First commercial 6G networks are widely expected.</li>
-</ol>
-
-<div class="takeaways">
-  <span class="label">Key takeaways</span>
-  <ul>
-    <li>IMT-2030 defines six usage scenarios. Ubiquitous connectivity, AI and communication, and integrated sensing and communication are new.</li>
-    <li>The headline numbers are ranges, and no deployment is expected to meet all of them at once.</li>
-    <li>New spectrum and control of the radio environment carry most of the expected gain.</li>
-    <li>The first 6G specifications are due in 3GPP Release 21, frozen between December 2028 and March 2029.</li>
-  </ul>
-</div>
-
-<h2 id="check">Check your understanding</h2>
-<details class="qa"><summary>Which three IMT-2030 usage scenarios have no 5G counterpart?</summary><div class="ans"><p>Ubiquitous connectivity, AI and communication, and integrated sensing and communication.</p></div></details>
-<details class="qa"><summary>The 6G latency target is 0.1 to 1 ms. Over which part of the system is it defined?</summary><div class="ans"><p>Over the air, across the radio interface. It is not an end-to-end figure that includes the core network or the application.</p></div></details>
-<details class="qa"><summary>Why do higher frequency bands make technologies such as RIS more attractive?</summary><div class="ans"><p>Higher bands suffer more path loss and are blocked more easily by walls, vehicles and people. Creating alternative reflected paths and focusing energy on the user matters more there than at low frequencies.</p></div></details>
-
-<h2 id="papers">Related papers</h2>
-<p>Work on this topic by Hamza Shaikh and his co-authors.</p>
-<ul class="paper-list">
+  <div class="wrap" style="padding-bottom: clamp(3rem, 8vw, 5rem); border-top: 1px solid var(--line); padding-top: 2rem;">
+    <p>The physical-layer ideas behind 6G, one per tutorial. Start with any of them; each links to the others where they meet. Below the cards: what 6G is meant to deliver and where the standard stands.</p>
+    <ul class="tcards"><li><a href="isac.html"><div class="art viz"><svg viewBox="0 0 712 210" role="img" aria-label="A base station sends data to a user; the same transmission reflects off a car and the echo returns to the base station." class="" xmlns="http://www.w3.org/2000/svg"><line x1="10" y1="190" x2="702" y2="190" class="axis"/><g transform="translate(80.0,190.0) scale(1.25)"><path d="M-14 0 L-3 -62 L3 -62 L14 0" class="st" style="stroke-width:2"/><path d="M-11 -16 L9 -30 M11 -16 L-9 -30 M-8 -34 L6 -46 M8 -34 L-6 -46 M-5 -50 L4 -58 M5 -50 L-4 -58" class="st-m"/><rect x="-9" y="-74" width="5" height="16" rx="1.5" class="f2"/><rect x="4" y="-74" width="5" height="16" rx="1.5" class="f2"/><rect x="-2.5" y="-77" width="5" height="17" rx="1.5" class="f2"/><path d="M15.2 -75.4 A9 9 0 0 1 18.7 -65.7" class="s2" style="stroke-width:2;opacity:1.00"/><path d="M19.2 -81.1 A16 16 0 0 1 25.5 -63.9" class="s2" style="stroke-width:2;opacity:0.78"/><path d="M23.2 -86.8 A23 23 0 0 1 32.2 -62.0" class="s2" style="stroke-width:2;opacity:0.56"/><path d="M-18.7 -65.7 A9 9 0 0 1 -15.2 -75.4" class="s2" style="stroke-width:2;opacity:1.00"/><path d="M-25.5 -63.9 A16 16 0 0 1 -19.2 -81.1" class="s2" style="stroke-width:2;opacity:0.78"/><path d="M-32.2 -62.0 A23 23 0 0 1 -23.2 -86.8" class="s2" style="stroke-width:2;opacity:0.56"/></g><g transform="translate(620.0,190.0) scale(1.1)"><circle cx="0" cy="-33" r="6" class="f1"/><path d="M-9 0 L-9 -16 Q-9 -25 0 -25 Q9 -25 9 -16 L9 0 Z" class="f1"/></g><g transform="translate(634.0,166.0) scale(0.6)"><rect x="-9" y="-30" width="18" height="30" rx="3.5" class="f1"/><rect x="-6.5" y="-26.5" width="13" height="21" rx="1.5" class="srf"/><circle cx="0" cy="-2.7" r="1.4" class="srf"/></g><g transform="translate(400.0,190.0) scale(1.3)"><path d="M-30 -8 L-30 -18 Q-29 -22 -24 -23 L-16 -24 L-8 -33 Q-6 -35 -2 -35 L12 -35 Q16 -35 18 -32 L24 -24 L28 -23 Q31 -22 31 -18 L31 -8 Z" class="f3"/><path d="M-6 -31 L-12 -25 L4 -25 L4 -31 Z M8 -31 L8 -25 L20 -25 L15 -31 Z" class="srf" opacity="0.9"/><circle cx="-17" cy="-7" r="7" class="ink"/><circle cx="-17" cy="-7" r="3" class="srf"/><circle cx="18" cy="-7" r="7" class="ink"/><circle cx="18" cy="-7" r="3" class="srf"/></g><defs><marker id="ah63" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" class="f1"/></marker></defs><line x1="96.0" y1="104.0" x2="606.0" y2="148.0" class="s1" style="stroke-width:2.8" marker-end="url(#ah63)"/><text x="470.0" y="114.0" class="b tx1">data to the user</text><defs><marker id="ah64" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" class="f2"/></marker></defs><line x1="96.0" y1="112.0" x2="370.0" y2="152.0" class="s2" style="stroke-width:2.4" marker-end="url(#ah64)"/><text x="150.0" y="180.0" class="s b tx2">the same signal hits the car</text><defs><marker id="ah65" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" class="f2"/></marker></defs><path d="M366.0 132.0 Q234.1 151.0 104.0 122.0" class="s2 dash" style="stroke-width:2.2" marker-end="url(#ah65)"/><text x="250.0" y="78.0" text-anchor="middle" class="s b tx2">echo back to the base station</text><path d="M386 150 A14 14 0 0 1 414 150" class="s2" style="stroke-width:1.6;opacity:0.6"/><path d="M376 150 A24 24 0 0 1 424 150" class="s2" style="stroke-width:1.6;opacity:0.6"/><path d="M366 150 A34 34 0 0 1 434 150" class="s2" style="stroke-width:1.6;opacity:0.6"/></svg></div><div class="txt"><span class="tg">1. ISAC</span><b>Integrated sensing and communication</b><span class="d">One radio, one band and often one signal that both carries data and senses the surroundings, turning the network into a radar.</span><span class="m">10 min · model: Resolve two targets</span></div></a></li><li><a href="ris.html"><div class="art viz"><svg viewBox="0 0 712 300" role="img" aria-label="A base station&#x27;s direct path to a user is blocked by a building; a reconfigurable surface high on another building reflects and focuses the signal onto the user." class="" xmlns="http://www.w3.org/2000/svg"><line x1="10" y1="280" x2="702" y2="280" class="axis"/><g transform="translate(70.0,280.0) scale(1.2)"><path d="M-14 0 L-3 -62 L3 -62 L14 0" class="st" style="stroke-width:2"/><path d="M-11 -16 L9 -30 M11 -16 L-9 -30 M-8 -34 L6 -46 M8 -34 L-6 -46 M-5 -50 L4 -58 M5 -50 L-4 -58" class="st-m"/><rect x="-9" y="-74" width="5" height="16" rx="1.5" class="f7"/><rect x="4" y="-74" width="5" height="16" rx="1.5" class="f7"/><rect x="-2.5" y="-77" width="5" height="17" rx="1.5" class="f7"/><path d="M15.2 -75.4 A9 9 0 0 1 18.7 -65.7" class="s7" style="stroke-width:2;opacity:1.00"/><path d="M19.2 -81.1 A16 16 0 0 1 25.5 -63.9" class="s7" style="stroke-width:2;opacity:0.78"/><path d="M23.2 -86.8 A23 23 0 0 1 32.2 -62.0" class="s7" style="stroke-width:2;opacity:0.56"/><path d="M-18.7 -65.7 A9 9 0 0 1 -15.2 -75.4" class="s7" style="stroke-width:2;opacity:1.00"/><path d="M-25.5 -63.9 A16 16 0 0 1 -19.2 -81.1" class="s7" style="stroke-width:2;opacity:0.78"/><path d="M-32.2 -62.0 A23 23 0 0 1 -23.2 -86.8" class="s7" style="stroke-width:2;opacity:0.56"/></g><g transform="translate(290.0,280.0)"><rect x="0" y="-120" width="100" height="120" rx="2" class="l4"/><rect x="0" y="-120" width="100" height="120" rx="2" class="st-m"/><rect x="6.6" y="-110" width="9" height="8" rx="1" class="srf"/><rect x="22.1" y="-110" width="9" height="8" rx="1" class="srf"/><rect x="37.7" y="-110" width="9" height="8" rx="1" class="srf"/><rect x="53.3" y="-110" width="9" height="8" rx="1" class="srf"/><rect x="68.9" y="-110" width="9" height="8" rx="1" class="srf"/><rect x="84.4" y="-110" width="9" height="8" rx="1" class="srf"/><rect x="6.6" y="-94" width="9" height="8" rx="1" class="srf"/><rect x="22.1" y="-94" width="9" height="8" rx="1" class="srf"/><rect x="37.7" y="-94" width="9" height="8" rx="1" class="srf"/><rect x="53.3" y="-94" width="9" height="8" rx="1" class="srf"/><rect x="68.9" y="-94" width="9" height="8" rx="1" class="srf"/><rect x="84.4" y="-94" width="9" height="8" rx="1" class="srf"/><rect x="6.6" y="-78" width="9" height="8" rx="1" class="srf"/><rect x="22.1" y="-78" width="9" height="8" rx="1" class="srf"/><rect x="37.7" y="-78" width="9" height="8" rx="1" class="srf"/><rect x="53.3" y="-78" width="9" height="8" rx="1" class="srf"/><rect x="68.9" y="-78" width="9" height="8" rx="1" class="srf"/><rect x="84.4" y="-78" width="9" height="8" rx="1" class="srf"/><rect x="6.6" y="-62" width="9" height="8" rx="1" class="srf"/><rect x="22.1" y="-62" width="9" height="8" rx="1" class="srf"/><rect x="37.7" y="-62" width="9" height="8" rx="1" class="srf"/><rect x="53.3" y="-62" width="9" height="8" rx="1" class="srf"/><rect x="68.9" y="-62" width="9" height="8" rx="1" class="srf"/><rect x="84.4" y="-62" width="9" height="8" rx="1" class="srf"/><rect x="6.6" y="-46" width="9" height="8" rx="1" class="srf"/><rect x="22.1" y="-46" width="9" height="8" rx="1" class="srf"/><rect x="37.7" y="-46" width="9" height="8" rx="1" class="srf"/><rect x="53.3" y="-46" width="9" height="8" rx="1" class="srf"/><rect x="68.9" y="-46" width="9" height="8" rx="1" class="srf"/><rect x="84.4" y="-46" width="9" height="8" rx="1" class="srf"/><rect x="6.6" y="-30" width="9" height="8" rx="1" class="srf"/><rect x="22.1" y="-30" width="9" height="8" rx="1" class="srf"/><rect x="37.7" y="-30" width="9" height="8" rx="1" class="srf"/><rect x="53.3" y="-30" width="9" height="8" rx="1" class="srf"/><rect x="68.9" y="-30" width="9" height="8" rx="1" class="srf"/><rect x="84.4" y="-30" width="9" height="8" rx="1" class="srf"/></g><g transform="translate(470.0,280.0)"><rect x="0" y="-250" width="76" height="250" rx="2" class="l1"/><rect x="0" y="-250" width="76" height="250" rx="2" class="st-m"/></g><g transform="translate(476.0,60.0)"><rect x="0" y="0" width="46" height="76" rx="2" class="ink"/><rect x="3.3" y="3.3" width="6.6" height="7.3" rx="0.8" class="l1"/><rect x="4.5" y="4.5" width="4.2" height="4.9" rx="0.6" class="f1" opacity="0.55"/><rect x="3.3" y="12.2" width="6.6" height="7.3" rx="0.8" class="f1"/><rect x="3.3" y="21.1" width="6.6" height="7.3" rx="0.8" class="l1"/><rect x="3.3" y="29.9" width="6.6" height="7.3" rx="0.8" class="l1"/><rect x="3.3" y="38.8" width="6.6" height="7.3" rx="0.8" class="l1"/><rect x="3.3" y="47.7" width="6.6" height="7.3" rx="0.8" class="l1"/><rect x="3.3" y="56.5" width="6.6" height="7.3" rx="0.8" class="l1"/><rect x="3.3" y="65.4" width="6.6" height="7.3" rx="0.8" class="f1"/><rect x="11.5" y="3.3" width="6.6" height="7.3" rx="0.8" class="f1"/><rect x="11.5" y="12.2" width="6.6" height="7.3" rx="0.8" class="l1"/><rect x="11.5" y="21.1" width="6.6" height="7.3" rx="0.8" class="l1"/><rect x="11.5" y="29.9" width="6.6" height="7.3" rx="0.8" class="f1"/><rect x="11.5" y="38.8" width="6.6" height="7.3" rx="0.8" class="f1"/><rect x="11.5" y="47.7" width="6.6" height="7.3" rx="0.8" class="f1"/><rect x="11.5" y="56.5" width="6.6" height="7.3" rx="0.8" class="l1"/><rect x="11.5" y="65.4" width="6.6" height="7.3" rx="0.8" class="l1"/><rect x="19.7" y="3.3" width="6.6" height="7.3" rx="0.8" class="f1"/><rect x="19.7" y="12.2" width="6.6" height="7.3" rx="0.8" class="l1"/><rect x="19.7" y="21.1" width="6.6" height="7.3" rx="0.8" class="l1"/><rect x="20.9" y="22.2" width="4.2" height="4.9" rx="0.6" class="f1" opacity="0.55"/><rect x="19.7" y="29.9" width="6.6" height="7.3" rx="0.8" class="f1"/><rect x="19.7" y="38.8" width="6.6" height="7.3" rx="0.8" class="f1"/><rect x="19.7" y="47.7" width="6.6" height="7.3" rx="0.8" class="f1"/><rect x="19.7" y="56.5" width="6.6" height="7.3" rx="0.8" class="l1"/><rect x="20.9" y="57.8" width="4.2" height="4.9" rx="0.6" class="f1" opacity="0.55"/><rect x="19.7" y="65.4" width="6.6" height="7.3" rx="0.8" class="l1"/><rect x="27.9" y="3.3" width="6.6" height="7.3" rx="0.8" class="f1"/><rect x="27.9" y="12.2" width="6.6" height="7.3" rx="0.8" class="l1"/><rect x="27.9" y="21.1" width="6.6" height="7.3" rx="0.8" class="l1"/><rect x="29.1" y="22.2" width="4.2" height="4.9" rx="0.6" class="f1" opacity="0.55"/><rect x="27.9" y="29.9" width="6.6" height="7.3" rx="0.8" class="f1"/><rect x="27.9" y="38.8" width="6.6" height="7.3" rx="0.8" class="f1"/><rect x="27.9" y="47.7" width="6.6" height="7.3" rx="0.8" class="f1"/><rect x="27.9" y="56.5" width="6.6" height="7.3" rx="0.8" class="l1"/><rect x="29.1" y="57.8" width="4.2" height="4.9" rx="0.6" class="f1" opacity="0.55"/><rect x="27.9" y="65.4" width="6.6" height="7.3" rx="0.8" class="l1"/><rect x="36.1" y="3.3" width="6.6" height="7.3" rx="0.8" class="f1"/><rect x="36.1" y="12.2" width="6.6" height="7.3" rx="0.8" class="l1"/><rect x="36.1" y="21.1" width="6.6" height="7.3" rx="0.8" class="l1"/><rect x="36.1" y="29.9" width="6.6" height="7.3" rx="0.8" class="f1"/><rect x="36.1" y="38.8" width="6.6" height="7.3" rx="0.8" class="f1"/><rect x="36.1" y="47.7" width="6.6" height="7.3" rx="0.8" class="f1"/><rect x="36.1" y="56.5" width="6.6" height="7.3" rx="0.8" class="l1"/><rect x="36.1" y="65.4" width="6.6" height="7.3" rx="0.8" class="l1"/></g><text x="530.0" y="54.0" class="b tx1">RIS</text><rect x="476.0" y="144.0" width="66.0" height="22.0" rx="4" class="srf"/><rect x="476.0" y="144.0" width="66.0" height="22.0" rx="4" class="st-m"/><text x="509.0" y="159.0" text-anchor="middle" class="xs b">controller</text><g transform="translate(650.0,280.0) scale(1.1)"><circle cx="0" cy="-33" r="6" class="f3"/><path d="M-9 0 L-9 -16 Q-9 -25 0 -25 Q9 -25 9 -16 L9 0 Z" class="f3"/></g><g transform="translate(664.0,256.0) scale(0.6)"><rect x="-9" y="-30" width="18" height="30" rx="3.5" class="f3"/><rect x="-6.5" y="-26.5" width="13" height="21" rx="1.5" class="srf"/><circle cx="0" cy="-2.7" r="1.4" class="srf"/></g><defs><marker id="ah76" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" class="f8"/></marker></defs><line x1="82.0" y1="208.0" x2="286.0" y2="208.0" class="s8 dash" style="stroke-width:2" marker-end="url(#ah76)"/><g transform="translate(296.0,208.0)"><circle cx="0" cy="0" r="9" class="f8"/><path d="M-4 -4 L4 4 M4 -4 L-4 4" style="stroke:#fff;stroke-width:2.2;stroke-linecap:round"/></g><text x="140.0" y="230.0" class="s b tx8">direct path blocked</text><defs><marker id="ah77" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" class="f7"/></marker></defs><line x1="82.0" y1="198.0" x2="472.0" y2="95.0" class="s7" style="stroke-width:2.6" marker-end="url(#ah77)"/><text x="250.0" y="110.0" text-anchor="middle" class="s b tx7">base station to surface</text><defs><marker id="ah78" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" class="f3"/></marker></defs><line x1="524.0" y1="100.0" x2="640.0" y2="244.0" class="s3" style="stroke-width:2.6" marker-end="url(#ah78)"/><text x="600.0" y="150.0" class="s b tx3">focused</text><text x="600.0" y="164.0" class="s b tx3">reflection</text></svg></div><div class="txt"><span class="tg">2. RIS</span><b>Reconfigurable intelligent surfaces</b><span class="d">Thin panels of many small elements, each able to switch how it reflects. Together they let the network shape the channel, which engineers could once only measure.</span><span class="m">10 min · model: Steer a reflected beam</span></div></a></li><li><a href="full-duplex.html"><div class="art viz"><svg viewBox="0 0 712 240" role="img" aria-label="A full-duplex radio transmits at 23 dBm while trying to receive a −90 dBm signal; its own transmission leaks into its receiver directly and via reflections." class="" xmlns="http://www.w3.org/2000/svg"><rect x="40.0" y="60.0" width="210.0" height="150.0" rx="12" class="ll7"/><text x="145.0" y="82.0" text-anchor="middle" class="b">full-duplex radio</text><rect x="60.0" y="100.0" width="76.0" height="40.0" rx="6" class="f1"/><text x="98.0" y="124.5" text-anchor="middle" class="w">TX</text><rect x="60.0" y="156.0" width="76.0" height="40.0" rx="6" class="f2"/><text x="98.0" y="180.5" text-anchor="middle" class="w">RX</text><line x1="136.0" y1="120.0" x2="280.0" y2="120.0" class="s1" style="stroke-width:2.4"/><line x1="136.0" y1="176.0" x2="280.0" y2="176.0" class="s2" style="stroke-width:2.4"/><g transform="translate(280.0,120.0)"><path d="M0 0 L0 -30 M-12 -30 L0 -16 L12 -30" class="st" style="stroke-width:2.2"/></g><g transform="translate(280.0,176.0)"><path d="M0 0 L0 -30 M-12 -30 L0 -16 L12 -30" class="st" style="stroke-width:2.2"/></g><defs><marker id="ah85" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" class="f1"/></marker></defs><line x1="296.0" y1="96.0" x2="470.0" y2="96.0" class="s1" style="stroke-width:2.6" marker-end="url(#ah85)"/><text x="560.0" y="100.0" text-anchor="middle" class="s b tx1">to the other end: +23 dBm</text><defs><marker id="ah86" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" class="f2"/></marker></defs><line x1="470.0" y1="160.0" x2="296.0" y2="160.0" class="s2" style="stroke-width:1.6" marker-end="url(#ah86)"/><text x="560.0" y="164.0" text-anchor="middle" class="s b tx2">wanted signal: −90 dBm</text><defs><marker id="ah87" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" class="f8"/></marker></defs><line x1="276.0" y1="132.0" x2="276.0" y2="150.0" class="s8" style="stroke-width:3" marker-end="url(#ah87)"/><path d="M296 108 Q340 140 296 168" class="s8 dash" style="stroke-width:2"/><text x="350.0" y="140.0" class="s b tx8">self-interference</text><text x="350.0" y="230.0" text-anchor="middle" class="s">the radio hears itself about 10¹¹ times louder than the signal it wants</text></svg></div><div class="txt"><span class="tg">3. Full-duplex</span><b>Full-duplex radios</b><span class="d">Transmitting and receiving on the same frequency at the same time could double spectral efficiency, if a radio can stop hearing itself.</span><span class="m">8 min · model: Cancellation budget</span></div></a></li><li><a href="thz.html"><div class="art viz"><svg viewBox="0 0 712 210" role="img" aria-label="The radio spectrum on a log scale: sub-6 GHz, the upper mid-band, millimetre wave, sub-terahertz and terahertz bands." class="" xmlns="http://www.w3.org/2000/svg"><rect x="30.0" y="60.0" width="172.9" height="46.0" rx="4" class="f3" data-tip="Sub-6 GHz (FR1): 0.41 to 7.125 GHz"/><text x="117.5" y="54.0" text-anchor="middle" class="s b">Sub-6 GHz (FR1)</text><text x="117.5" y="128.0" text-anchor="middle" class="xs">4G, 5G, Wi-Fi</text><rect x="204.9" y="60.0" width="78.6" height="46.0" rx="4" class="f4" data-tip="Upper mid-band: 7.125 to 24.25 GHz"/><text x="245.2" y="36.0" text-anchor="middle" class="s b">Upper mid-band</text><text x="245.2" y="128.0" text-anchor="middle" class="xs">6G candidate</text><rect x="285.5" y="60.0" width="68.7" height="46.0" rx="4" class="f1" data-tip="mmWave (FR2): 24.25 to 71 GHz"/><text x="320.9" y="54.0" text-anchor="middle" class="s b">mmWave (FR2)</text><text x="320.9" y="128.0" text-anchor="middle" class="xs">5G</text><rect x="378.8" y="60.0" width="70.3" height="46.0" rx="4" class="f7" data-tip="Sub-THz: 100 to 300 GHz"/><text x="415.0" y="36.0" text-anchor="middle" class="s b">Sub-THz</text><text x="415.0" y="128.0" text-anchor="middle" class="xs">6G research</text><rect x="451.1" y="60.0" width="228.9" height="46.0" rx="4" class="f8" data-tip="Terahertz: 300 to 10000 GHz"/><text x="566.6" y="54.0" text-anchor="middle" class="s b">Terahertz</text><text x="566.6" y="128.0" text-anchor="middle" class="xs">research</text><line x1="75.6" y1="108.0" x2="75.6" y2="114.0" class="axis"/><text x="75.6" y="148.0" text-anchor="middle" class="xs">1 GHz</text><line x1="227.2" y1="108.0" x2="227.2" y2="114.0" class="axis"/><text x="227.2" y="148.0" text-anchor="middle" class="xs">10 GHz</text><line x1="378.8" y1="108.0" x2="378.8" y2="114.0" class="axis"/><text x="378.8" y="148.0" text-anchor="middle" class="xs">100 GHz</text><line x1="530.4" y1="108.0" x2="530.4" y2="114.0" class="axis"/><text x="530.4" y="148.0" text-anchor="middle" class="xs">1 THz</text><line x1="682.0" y1="108.0" x2="682.0" y2="114.0" class="axis"/><text x="682.0" y="148.0" text-anchor="middle" class="xs">10 THz</text><line x1="30.0" y1="108.0" x2="682.0" y2="108.0" class="axis"/><path d="M439.6657571648654 168 L439.6657571648654 176 L455.59871476048676 176 L455.59871476048676 168" class="s7" style="stroke-width:1.6"/><text x="447.6" y="194.0" text-anchor="middle" class="s b tx7">IEEE 802.15.3d: 252–321 GHz</text><text x="30.0" y="14.0" class="s b">Frequency, log scale: each step up offers about ten times more bandwidth</text></svg></div><div class="txt"><span class="tg">4. THz</span><b>Terahertz communication</b><span class="d">Above 100 GHz lie tens of gigahertz of unused spectrum: enough for links of hundreds of gigabits per second, if the losses and the hardware can be tamed.</span><span class="m">8 min</span></div></a></li><li><a href="vlc.html"><div class="art viz"><svg viewBox="0 0 712 262" role="img" aria-label="A ceiling LED sends data down in a cone of light to a photodiode on a laptop; the uplink often uses infrared." class="" xmlns="http://www.w3.org/2000/svg"><rect x="10.0" y="20.0" width="692.0" height="12.0" rx="3" class="lnf"/><rect x="320.0" y="32.0" width="70.0" height="14.0" rx="4" class="f4"/><text x="355.0" y="64.0" class="s"></text><path d="M330 46 L180 220 L530 220 L380 46 Z" class="l4" opacity="0.65"/><text x="355.0" y="14.0" text-anchor="middle" class="s b">ceiling LED: lights the room and sends data</text><rect x="150.0" y="220.0" width="410.0" height="10.0" rx="2" class="mut"/><rect x="320.0" y="204.0" width="54.0" height="16.0" rx="3" class="f1"/><text x="347.0" y="250.0" text-anchor="middle" class="s b">photodiode on a laptop or phone</text><rect x="30.0" y="100.0" width="120.0" height="44.0" rx="6" class="l7"/><rect x="30.0" y="100.0" width="120.0" height="44.0" rx="6" class="s7" style="stroke-width:1.4"/><text x="90.0" y="119.0" text-anchor="middle" class="b">data in</text><text x="90.0" y="134.0" text-anchor="middle" class="s">drives the LED</text><defs><marker id="ah91" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" class="f7"/></marker></defs><line x1="150.0" y1="122.0" x2="316.0" y2="40.0" class="s7" style="stroke-width:1.8" marker-end="url(#ah91)"/><rect x="560.0" y="150.0" width="130.0" height="44.0" rx="6" class="l3"/><rect x="560.0" y="150.0" width="130.0" height="44.0" rx="6" class="s3" style="stroke-width:1.4"/><text x="625.0" y="169.0" text-anchor="middle" class="b">data out</text><text x="625.0" y="184.0" text-anchor="middle" class="s">from the current</text><defs><marker id="ah92" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" class="f3"/></marker></defs><line x1="376.0" y1="210.0" x2="558.0" y2="176.0" class="s3" style="stroke-width:1.8" marker-end="url(#ah92)"/><rect x="560.0" y="60.0" width="130.0" height="44.0" rx="6" class="l8"/><rect x="560.0" y="60.0" width="130.0" height="44.0" rx="6" class="s8" style="stroke-width:1.4"/><text x="625.0" y="79.0" text-anchor="middle" class="b">uplink</text><text x="625.0" y="94.0" text-anchor="middle" class="s">often infrared</text><defs><marker id="ah93" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" class="f8"/></marker></defs><line x1="372.0" y1="204.0" x2="558.0" y2="90.0" class="s8 dash" style="stroke-width:1.6" marker-end="url(#ah93)"/></svg></div><div class="txt"><span class="tg">5. VLC</span><b>Visible light communication</b><span class="d">LED lights can flicker data faster than the eye can see, turning every lamp into a wireless access point with hundreds of terahertz of free spectrum.</span><span class="m">7 min · model: Light up a room</span></div></a></li><li><a href="radar.html"><div class="art viz"><svg viewBox="0 0 712 320" role="img" aria-label="A radar sends a short pulse, a target reflects a weak echo, and the delay tau between them gives the range, r equals c tau over 2." class="" xmlns="http://www.w3.org/2000/svg"><line x1="10" y1="150" x2="702" y2="150" class="axis"/><g transform="translate(80.0,150.0) scale(1.3)"><path d="M-8 0 L0 -20 L8 0" class="st" style="stroke-width:2"/><g transform="translate(0,-22) rotate(-25)"><path d="M-14 -16 Q4 0 -14 16" class="s2" style="stroke-width:3.5"/><line x1="-10" y1="0" x2="6" y2="0" class="st"/><circle cx="7" cy="0" r="2.2" class="f2"/></g></g><g transform="translate(560.0,62.0) scale(1.4)"><rect x="-12" y="-4" width="24" height="8" rx="3" class="f3"/><line x1="-12" y1="-1" x2="-24" y2="-8" class="st" style="stroke-width:2"/><line x1="12" y1="-1" x2="24" y2="-8" class="st" style="stroke-width:2"/><ellipse cx="-24" cy="-10" rx="10" ry="2.4" class="mut"/><ellipse cx="24" cy="-10" rx="10" ry="2.4" class="mut"/><line x1="-6" y1="4" x2="-9" y2="10" class="st"/><line x1="6" y1="4" x2="9" y2="10" class="st"/></g><defs><marker id="ah106" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" class="f2"/></marker></defs><line x1="110.0" y1="104.0" x2="530.0" y2="66.0" class="s2" style="stroke-width:2.6" marker-end="url(#ah106)"/><text x="300.0" y="70.0" text-anchor="middle" class="b tx2">pulse out</text><defs><marker id="ah107" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" class="f2"/></marker></defs><line x1="530.0" y1="80.0" x2="112.0" y2="118.0" class="s2 dash" style="stroke-width:2.2" marker-end="url(#ah107)"/><text x="330.0" y="122.0" text-anchor="middle" class="s b tx2">weak echo back</text><text x="560.0" y="30.0" text-anchor="middle" class="s b">target at range r</text><line x1="40.0" y1="238.0" x2="680.0" y2="238.0" class="axis"/><text x="684.0" y="242.0" class="xs">time</text><rect x="60.0" y="194.0" width="26.0" height="44.0" rx="2" class="f2"/><text x="73.0" y="256.0" text-anchor="middle" class="xs b">transmit</text><rect x="470.0" y="226.0" width="26.0" height="12.0" rx="2" class="f2" opacity="0.55"/><text x="483.0" y="256.0" text-anchor="middle" class="xs b">echo</text><rect x="96.0" y="182.0" width="560.0" height="14.0" rx="3" class="ll1"/><text x="376.0" y="192.0" text-anchor="middle" class="xs b tx1">listen</text><defs><marker id="ah108" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" class="f7"/></marker></defs><line x1="73.0" y1="272.0" x2="483.0" y2="272.0" class="s7" style="stroke-width:1.4" marker-end="url(#ah108)" marker-start="url(#ah108)"/><text x="278.0" y="290.0" text-anchor="middle" class="s b">delay τ = 2r / c</text></svg></div><div class="txt"><span class="tg">6. Radar</span><b>Radar signal processing</b><span class="d">Send a signal, listen for the echo, and turn delays, Doppler shifts and phase differences into a map of what is out there.</span><span class="m">14 min · model: Tune a CFAR detector</span></div></a></li><li><a href="noma.html"><div class="art viz"><svg viewBox="0 0 712 228" role="img" aria-label="TDMA splits time between users, OFDMA splits time and frequency, and power-domain NOMA lets both users share all resources at different power levels." class="" xmlns="http://www.w3.org/2000/svg"><text x="140.0" y="22.0" text-anchor="middle" class="h">TDMA</text><line x1="48.0" y1="170.0" x2="232.0" y2="170.0" class="axis"/><line x1="48.0" y1="40.0" x2="48.0" y2="170.0" class="axis"/><rect x="52.0" y="44.0" width="41.0" height="122.0" rx="3" class="f1" opacity="0.85"/><rect x="97.0" y="44.0" width="41.0" height="122.0" rx="3" class="f3" opacity="0.85"/><rect x="142.0" y="44.0" width="41.0" height="122.0" rx="3" class="f1" opacity="0.85"/><rect x="187.0" y="44.0" width="41.0" height="122.0" rx="3" class="f3" opacity="0.85"/><text x="140.0" y="188.0" text-anchor="middle" class="xs">time →</text><text x="42.0" y="105.0" text-anchor="end" class="xs">freq.</text><text x="372.0" y="22.0" text-anchor="middle" class="h">OFDMA</text><line x1="280.0" y1="170.0" x2="464.0" y2="170.0" class="axis"/><line x1="280.0" y1="40.0" x2="280.0" y2="170.0" class="axis"/><rect x="284.0" y="44.0" width="41.0" height="27.0" rx="3" class="f1" opacity="0.85"/><rect x="329.0" y="44.0" width="41.0" height="27.0" rx="3" class="f3" opacity="0.85"/><rect x="374.0" y="44.0" width="41.0" height="27.0" rx="3" class="f1" opacity="0.85"/><rect x="419.0" y="44.0" width="41.0" height="27.0" rx="3" class="f3" opacity="0.85"/><rect x="284.0" y="75.0" width="41.0" height="27.0" rx="3" class="f3" opacity="0.85"/><rect x="329.0" y="75.0" width="41.0" height="27.0" rx="3" class="f1" opacity="0.85"/><rect x="374.0" y="75.0" width="41.0" height="27.0" rx="3" class="f3" opacity="0.85"/><rect x="419.0" y="75.0" width="41.0" height="27.0" rx="3" class="f1" opacity="0.85"/><rect x="284.0" y="106.0" width="41.0" height="27.0" rx="3" class="f1" opacity="0.85"/><rect x="329.0" y="106.0" width="41.0" height="27.0" rx="3" class="f1" opacity="0.85"/><rect x="374.0" y="106.0" width="41.0" height="27.0" rx="3" class="f3" opacity="0.85"/><rect x="419.0" y="106.0" width="41.0" height="27.0" rx="3" class="f3" opacity="0.85"/><rect x="284.0" y="137.0" width="41.0" height="27.0" rx="3" class="f3" opacity="0.85"/><rect x="329.0" y="137.0" width="41.0" height="27.0" rx="3" class="f3" opacity="0.85"/><rect x="374.0" y="137.0" width="41.0" height="27.0" rx="3" class="f1" opacity="0.85"/><rect x="419.0" y="137.0" width="41.0" height="27.0" rx="3" class="f1" opacity="0.85"/><text x="372.0" y="188.0" text-anchor="middle" class="xs">time →</text><text x="274.0" y="105.0" text-anchor="end" class="xs">freq.</text><text x="604.0" y="22.0" text-anchor="middle" class="h">Power-domain NOMA</text><line x1="512.0" y1="170.0" x2="696.0" y2="170.0" class="axis"/><line x1="512.0" y1="40.0" x2="512.0" y2="170.0" class="axis"/><rect x="516.0" y="90.0" width="176.0" height="76.0" rx="3" class="f3" opacity="0.85"/><text x="604.0" y="138.0" text-anchor="middle" class="s b">far user: high power</text><rect x="516.0" y="58.0" width="176.0" height="28.0" rx="3" class="f1" opacity="0.85"/><text x="604.0" y="77.0" text-anchor="middle" class="s b">near user: low power</text><text x="604.0" y="188.0" text-anchor="middle" class="xs">all time, all frequency</text><text x="506.0" y="105.0" text-anchor="end" class="xs">power</text><rect x="170.0" y="204.0" width="14.0" height="14.0" rx="3" class="f1"/><text x="190.0" y="216.0" class="s">near user (strong channel)</text><rect x="400.0" y="204.0" width="14.0" height="14.0" rx="3" class="f3"/><text x="420.0" y="216.0" class="s">far user (weak channel)</text></svg></div><div class="txt"><span class="tg">7. NOMA & RSMA</span><b>NOMA and rate-splitting</b><span class="d">Let several users share the same time and frequency by giving them different power levels, then peel their signals apart at the receiver.</span><span class="m">10 min · model: Compare NOMA and TDMA rate regions</span></div></a></li><li><a href="fluid-antennas.html"><div class="art viz"><svg viewBox="0 0 712 274" role="img" aria-label="Channel gain along a fluid antenna fluctuates by tens of decibels within a few wavelengths; the antenna switches to the best of its ports instead of sitting in a fade." class="" xmlns="http://www.w3.org/2000/svg"><line x1="70.0" y1="63.9" x2="680.0" y2="63.9" class="grid"/><text x="64.0" y="67.9" text-anchor="end" class="xs">average</text><path d="M70.0 82.0 L71.0 81.2 L72.0 80.4 L73.1 79.6 L74.1 78.9 L75.1 78.2 L76.1 77.6 L77.1 77.0 L78.1 76.4 L79.2 75.8 L80.2 75.3 L81.2 74.9 L82.2 74.4 L83.2 74.0 L84.3 73.6 L85.3 73.3 L86.3 73.0 L87.3 72.7 L88.3 72.5 L89.3 72.3 L90.4 72.1 L91.4 72.0 L92.4 71.9 L93.4 71.8 L94.4 71.8 L95.5 71.8 L96.5 71.8 L97.5 71.9 L98.5 72.0 L99.5 72.2 L100.6 72.4 L101.6 72.6 L102.6 72.9 L103.6 73.2 L104.6 73.6 L105.6 74.0 L106.7 74.4 L107.7 74.9 L108.7 75.4 L109.7 76.0 L110.7 76.7 L111.8 77.3 L112.8 78.1 L113.8 78.9 L114.8 79.8 L115.8 80.7 L116.8 81.7 L117.9 82.8 L118.9 83.9 L119.9 85.2 L120.9 86.5 L121.9 87.9 L123.0 89.4 L124.0 91.1 L125.0 92.8 L126.0 94.7 L127.0 96.8 L128.0 99.0 L129.1 101.4 L130.1 104.0 L131.1 106.8 L132.1 109.9 L133.1 113.3 L134.2 116.9 L135.2 120.8 L136.2 125.0 L137.2 129.2 L138.2 133.3 L139.2 136.7 L140.3 138.6 L141.3 138.5 L142.3 136.3 L143.3 132.6 L144.3 128.1 L145.4 123.4 L146.4 118.8 L147.4 114.4 L148.4 110.3 L149.4 106.4 L150.5 102.9 L151.5 99.6 L152.5 96.5 L153.5 93.6 L154.5 90.9 L155.5 88.4 L156.6 86.0 L157.6 83.8 L158.6 81.7 L159.6 79.6 L160.6 77.7 L161.7 75.9 L162.7 74.2 L163.7 72.6 L164.7 71.0 L165.7 69.5 L166.7 68.1 L167.8 66.7 L168.8 65.4 L169.8 64.1 L170.8 62.9 L171.8 61.8 L172.9 60.7 L173.9 59.6 L174.9 58.6 L175.9 57.6 L176.9 56.6 L177.9 55.7 L179.0 54.9 L180.0 54.0 L181.0 53.2 L182.0 52.4 L183.0 51.7 L184.1 51.0 L185.1 50.3 L186.1 49.7 L187.1 49.0 L188.1 48.4 L189.1 47.8 L190.2 47.3 L191.2 46.8 L192.2 46.3 L193.2 45.8 L194.2 45.3 L195.3 44.9 L196.3 44.5 L197.3 44.1 L198.3 43.7 L199.3 43.4 L200.4 43.1 L201.4 42.8 L202.4 42.5 L203.4 42.2 L204.4 41.9 L205.4 41.7 L206.5 41.5 L207.5 41.3 L208.5 41.1 L209.5 41.0 L210.5 40.8 L211.6 40.7 L212.6 40.6 L213.6 40.5 L214.6 40.5 L215.6 40.4 L216.6 40.4 L217.7 40.4 L218.7 40.4 L219.7 40.4 L220.7 40.4 L221.7 40.4 L222.8 40.5 L223.8 40.6 L224.8 40.7 L225.8 40.8 L226.8 40.9 L227.8 41.1 L228.9 41.2 L229.9 41.4 L230.9 41.6 L231.9 41.8 L232.9 42.0 L234.0 42.3 L235.0 42.5 L236.0 42.8 L237.0 43.1 L238.0 43.4 L239.0 43.7 L240.1 44.0 L241.1 44.3 L242.1 44.7 L243.1 45.1 L244.1 45.5 L245.2 45.9 L246.2 46.3 L247.2 46.7 L248.2 47.1 L249.2 47.6 L250.3 48.0 L251.3 48.5 L252.3 49.0 L253.3 49.5 L254.3 50.0 L255.3 50.5 L256.4 51.1 L257.4 51.6 L258.4 52.2 L259.4 52.7 L260.4 53.3 L261.5 53.9 L262.5 54.4 L263.5 55.0 L264.5 55.6 L265.5 56.2 L266.5 56.8 L267.6 57.4 L268.6 58.0 L269.6 58.6 L270.6 59.1 L271.6 59.7 L272.7 60.3 L273.7 60.8 L274.7 61.4 L275.7 61.9 L276.7 62.4 L277.7 63.0 L278.8 63.5 L279.8 63.9 L280.8 64.4 L281.8 64.8 L282.8 65.2 L283.9 65.6 L284.9 66.0 L285.9 66.3 L286.9 66.6 L287.9 66.9 L288.9 67.2 L290.0 67.4 L291.0 67.7 L292.0 67.8 L293.0 68.0 L294.0 68.2 L295.1 68.3 L296.1 68.4 L297.1 68.5 L298.1 68.6 L299.1 68.6 L300.2 68.7 L301.2 68.7 L302.2 68.7 L303.2 68.8 L304.2 68.8 L305.2 68.8 L306.3 68.8 L307.3 68.8 L308.3 68.8 L309.3 68.8 L310.3 68.9 L311.4 68.9 L312.4 68.9 L313.4 69.0 L314.4 69.1 L315.4 69.1 L316.4 69.2 L317.5 69.3 L318.5 69.5 L319.5 69.6 L320.5 69.8 L321.5 69.9 L322.6 70.1 L323.6 70.4 L324.6 70.6 L325.6 70.9 L326.6 71.2 L327.6 71.5 L328.7 71.9 L329.7 72.3 L330.7 72.7 L331.7 73.2 L332.7 73.6 L333.8 74.2 L334.8 74.7 L335.8 75.3 L336.8 76.0 L337.8 76.7 L338.8 77.4 L339.9 78.2 L340.9 79.0 L341.9 79.9 L342.9 80.8 L343.9 81.8 L345.0 82.9 L346.0 84.0 L347.0 85.2 L348.0 86.5 L349.0 87.8 L350.1 89.3 L351.1 90.8 L352.1 92.5 L353.1 94.3 L354.1 96.2 L355.1 98.2 L356.2 100.5 L357.2 102.9 L358.2 105.5 L359.2 108.4 L360.2 111.6 L361.3 115.2 L362.3 119.1 L363.3 123.7 L364.3 128.9 L365.3 135.0 L366.3 142.4 L367.4 151.8 L368.4 164.3 L369.4 170.0 L370.4 170.0 L371.4 170.0 L372.5 170.0 L373.5 157.3 L374.5 146.3 L375.5 137.7 L376.5 130.6 L377.5 124.7 L378.6 119.6 L379.6 115.1 L380.6 111.1 L381.6 107.5 L382.6 104.2 L383.7 101.2 L384.7 98.4 L385.7 95.8 L386.7 93.4 L387.7 91.2 L388.7 89.1 L389.8 87.1 L390.8 85.3 L391.8 83.5 L392.8 81.8 L393.8 80.3 L394.9 78.8 L395.9 77.3 L396.9 76.0 L397.9 74.7 L398.9 73.5 L399.9 72.3 L401.0 71.2 L402.0 70.1 L403.0 69.1 L404.0 68.1 L405.0 67.2 L406.1 66.3 L407.1 65.4 L408.1 64.6 L409.1 63.8 L410.1 63.1 L411.2 62.3 L412.2 61.7 L413.2 61.0 L414.2 60.4 L415.2 59.8 L416.2 59.2 L417.3 58.7 L418.3 58.2 L419.3 57.7 L420.3 57.2 L421.3 56.8 L422.4 56.4 L423.4 56.0 L424.4 55.6 L425.4 55.3 L426.4 54.9 L427.4 54.6 L428.5 54.4 L429.5 54.1 L430.5 53.8 L431.5 53.6 L432.5 53.4 L433.6 53.2 L434.6 53.1 L435.6 52.9 L436.6 52.8 L437.6 52.7 L438.6 52.6 L439.7 52.5 L440.7 52.4 L441.7 52.3 L442.7 52.3 L443.7 52.3 L444.8 52.3 L445.8 52.3 L446.8 52.3 L447.8 52.4 L448.8 52.4 L449.8 52.5 L450.9 52.6 L451.9 52.7 L452.9 52.8 L453.9 52.9 L454.9 53.1 L456.0 53.2 L457.0 53.4 L458.0 53.6 L459.0 53.8 L460.0 54.0 L461.1 54.2 L462.1 54.4 L463.1 54.6 L464.1 54.9 L465.1 55.2 L466.1 55.4 L467.2 55.7 L468.2 56.0 L469.2 56.3 L470.2 56.7 L471.2 57.0 L472.3 57.3 L473.3 57.7 L474.3 58.0 L475.3 58.4 L476.3 58.8 L477.3 59.2 L478.4 59.6 L479.4 60.0 L480.4 60.4 L481.4 60.8 L482.4 61.2 L483.5 61.6 L484.5 62.1 L485.5 62.5 L486.5 63.0 L487.5 63.4 L488.5 63.9 L489.6 64.4 L490.6 64.9 L491.6 65.3 L492.6 65.8 L493.6 66.3 L494.7 66.8 L495.7 67.3 L496.7 67.8 L497.7 68.3 L498.7 68.8 L499.7 69.4 L500.8 69.9 L501.8 70.4 L502.8 70.9 L503.8 71.5 L504.8 72.0 L505.9 72.5 L506.9 73.1 L507.9 73.6 L508.9 74.2 L509.9 74.8 L511.0 75.3 L512.0 75.9 L513.0 76.5 L514.0 77.1 L515.0 77.7 L516.0 78.3 L517.1 78.9 L518.1 79.5 L519.1 80.2 L520.1 80.8 L521.1 81.5 L522.2 82.1 L523.2 82.8 L524.2 83.5 L525.2 84.3 L526.2 85.0 L527.2 85.8 L528.3 86.5 L529.3 87.4 L530.3 88.2 L531.3 89.1 L532.3 89.9 L533.4 90.9 L534.4 91.8 L535.4 92.8 L536.4 93.8 L537.4 94.9 L538.4 96.0 L539.5 97.2 L540.5 98.4 L541.5 99.7 L542.5 101.1 L543.5 102.5 L544.6 104.0 L545.6 105.5 L546.6 107.2 L547.6 108.9 L548.6 110.7 L549.6 112.7 L550.7 114.8 L551.7 117.0 L552.7 119.4 L553.7 121.9 L554.7 124.6 L555.8 127.5 L556.8 130.6 L557.8 134.0 L558.8 137.5 L559.8 141.2 L560.9 145.1 L561.9 148.8 L562.9 152.2 L563.9 154.7 L564.9 155.9 L565.9 155.5 L567.0 153.5 L568.0 150.4 L569.0 146.7 L570.0 142.7 L571.0 138.7 L572.1 134.9 L573.1 131.2 L574.1 127.8 L575.1 124.6 L576.1 121.6 L577.1 118.8 L578.2 116.1 L579.2 113.7 L580.2 111.4 L581.2 109.2 L582.2 107.1 L583.3 105.2 L584.3 103.3 L585.3 101.6 L586.3 99.9 L587.3 98.4 L588.3 96.9 L589.4 95.5 L590.4 94.1 L591.4 92.9 L592.4 91.7 L593.4 90.5 L594.5 89.4 L595.5 88.3 L596.5 87.3 L597.5 86.4 L598.5 85.5 L599.5 84.6 L600.6 83.8 L601.6 83.0 L602.6 82.3 L603.6 81.6 L604.6 80.9 L605.7 80.3 L606.7 79.7 L607.7 79.2 L608.7 78.7 L609.7 78.2 L610.8 77.7 L611.8 77.3 L612.8 76.9 L613.8 76.5 L614.8 76.2 L615.8 75.9 L616.9 75.6 L617.9 75.4 L618.9 75.2 L619.9 75.0 L620.9 74.9 L622.0 74.7 L623.0 74.6 L624.0 74.6 L625.0 74.6 L626.0 74.5 L627.0 74.6 L628.1 74.6 L629.1 74.7 L630.1 74.8 L631.1 75.0 L632.1 75.1 L633.2 75.3 L634.2 75.6 L635.2 75.8 L636.2 76.1 L637.2 76.4 L638.2 76.8 L639.3 77.2 L640.3 77.6 L641.3 78.1 L642.3 78.6 L643.3 79.1 L644.4 79.7 L645.4 80.3 L646.4 80.9 L647.4 81.6 L648.4 82.3 L649.4 83.1 L650.5 83.9 L651.5 84.7 L652.5 85.6 L653.5 86.5 L654.5 87.5 L655.6 88.5 L656.6 89.5 L657.6 90.6 L658.6 91.8 L659.6 92.9 L660.7 94.1 L661.7 95.3 L662.7 96.6 L663.7 97.8 L664.7 99.1 L665.7 100.4 L666.8 101.6 L667.8 102.7 L668.8 103.8 L669.8 104.8 L670.8 105.7 L671.9 106.4 L672.9 106.9 L673.9 107.2 L674.9 107.3 L675.9 107.2 L676.9 106.8 L678.0 106.1 L679.0 105.3 L680.0 104.3" class="s1" style="stroke-width:2;fill:none"/><line x1="70.0" y1="82.0" x2="70.0" y2="222.0" class="mut dash" style="stroke-width:0.8"/><circle cx="70.0" cy="82.0" r="4.0" class="f7"/><line x1="120.8" y1="86.4" x2="120.8" y2="222.0" class="mut dash" style="stroke-width:0.8"/><circle cx="120.8" cy="86.4" r="4.0" class="f7"/><line x1="171.7" y1="62.0" x2="171.7" y2="222.0" class="mut dash" style="stroke-width:0.8"/><circle cx="171.7" cy="62.0" r="4.0" class="f7"/><line x1="222.5" y1="40.5" x2="222.5" y2="222.0" class="mut dash" style="stroke-width:0.8"/><circle cx="222.5" cy="40.5" r="6.0" class="f3"/><line x1="273.3" y1="60.7" x2="273.3" y2="222.0" class="mut dash" style="stroke-width:0.8"/><circle cx="273.3" cy="60.7" r="4.0" class="f7"/><line x1="324.2" y1="70.5" x2="324.2" y2="222.0" class="mut dash" style="stroke-width:0.8"/><circle cx="324.2" cy="70.5" r="4.0" class="f7"/><line x1="375.0" y1="141.7" x2="375.0" y2="222.0" class="mut dash" style="stroke-width:0.8"/><circle cx="375.0" cy="141.7" r="4.0" class="f8"/><line x1="425.8" y1="55.1" x2="425.8" y2="222.0" class="mut dash" style="stroke-width:0.8"/><circle cx="425.8" cy="55.1" r="4.0" class="f7"/><line x1="476.7" y1="58.9" x2="476.7" y2="222.0" class="mut dash" style="stroke-width:0.8"/><circle cx="476.7" cy="58.9" r="4.0" class="f7"/><line x1="527.5" y1="86.0" x2="527.5" y2="222.0" class="mut dash" style="stroke-width:0.8"/><circle cx="527.5" cy="86.0" r="4.0" class="f7"/><line x1="578.3" y1="115.7" x2="578.3" y2="222.0" class="mut dash" style="stroke-width:0.8"/><circle cx="578.3" cy="115.7" r="4.0" class="f7"/><line x1="629.2" y1="74.7" x2="629.2" y2="222.0" class="mut dash" style="stroke-width:0.8"/><circle cx="629.2" cy="74.7" r="4.0" class="f7"/><line x1="680.0" y1="104.3" x2="680.0" y2="222.0" class="mut dash" style="stroke-width:0.8"/><circle cx="680.0" cy="104.3" r="4.0" class="f7"/><text x="222.5" y="28.5" text-anchor="middle" class="s b tx3">best port: switch here</text><text x="387.0" y="149.7" class="s b tx8">a fixed antenna here sits in a fade</text><rect x="60.0" y="214.0" width="630.0" height="16.0" rx="8" class="ll7"/><rect x="60.0" y="214.0" width="630.0" height="16.0" rx="8" class="s7" style="fill:none;stroke-width:1.4"/><circle cx="70.0" cy="222.0" r="3.0" class="f7"/><circle cx="120.8" cy="222.0" r="3.0" class="f7"/><circle cx="171.7" cy="222.0" r="3.0" class="f7"/><circle cx="222.5" cy="222.0" r="3.0" class="f7"/><circle cx="273.3" cy="222.0" r="3.0" class="f7"/><circle cx="324.2" cy="222.0" r="3.0" class="f7"/><circle cx="375.0" cy="222.0" r="3.0" class="f7"/><circle cx="425.8" cy="222.0" r="3.0" class="f7"/><circle cx="476.7" cy="222.0" r="3.0" class="f7"/><circle cx="527.5" cy="222.0" r="3.0" class="f7"/><circle cx="578.3" cy="222.0" r="3.0" class="f7"/><circle cx="629.2" cy="222.0" r="3.0" class="f7"/><circle cx="680.0" cy="222.0" r="3.0" class="f7"/><rect x="212.5" y="215.0" width="20.0" height="14.0" rx="6" class="f3"/><defs><marker id="ah132" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" class="f7"/></marker></defs><line x1="60.0" y1="246.0" x2="690.0" y2="246.0" class="s7" style="stroke-width:1.3" marker-end="url(#ah132)" marker-start="url(#ah132)"/><text x="375.0" y="264.0" text-anchor="middle" class="s b">W = 3 wavelengths, N = 13 ports, one radio chain</text><text x="64.0" y="34.0" text-anchor="end" class="xs b">channel gain</text><text x="64.0" y="48.0" text-anchor="end" class="xs">(dB)</text></svg></div><div class="txt"><span class="tg">8. Fluid antennas</span><b>Fluid and movable antennas</b><span class="d">An antenna that changes its position within a small space. The channel changes over a fraction of a wavelength, so that freedom buys diversity without extra radio chains.</span><span class="m">9 min · model: Pick the best port</span></div></a></li><li><a href="v2x.html"><div class="art viz"><svg viewBox="0 0 712 250" role="img" aria-label="V2X links: vehicle to vehicle, to a roadside unit, to a pedestrian, and to the cellular network. Direct links use the sidelink, network links the Uu interface." class="" xmlns="http://www.w3.org/2000/svg"><rect x="0.0" y="170.0" width="712.0" height="70.0" class="mut" opacity="0.18"/><rect x="10.0" y="203.0" width="30.0" height="4.0" rx="1" class="srf"/><rect x="70.0" y="203.0" width="30.0" height="4.0" rx="1" class="srf"/><rect x="130.0" y="203.0" width="30.0" height="4.0" rx="1" class="srf"/><rect x="190.0" y="203.0" width="30.0" height="4.0" rx="1" class="srf"/><rect x="250.0" y="203.0" width="30.0" height="4.0" rx="1" class="srf"/><rect x="310.0" y="203.0" width="30.0" height="4.0" rx="1" class="srf"/><rect x="370.0" y="203.0" width="30.0" height="4.0" rx="1" class="srf"/><rect x="430.0" y="203.0" width="30.0" height="4.0" rx="1" class="srf"/><rect x="490.0" y="203.0" width="30.0" height="4.0" rx="1" class="srf"/><rect x="550.0" y="203.0" width="30.0" height="4.0" rx="1" class="srf"/><rect x="610.0" y="203.0" width="30.0" height="4.0" rx="1" class="srf"/><rect x="670.0" y="203.0" width="30.0" height="4.0" rx="1" class="srf"/><g transform="translate(150.0,202.0) scale(1.3)"><path d="M-30 -8 L-30 -18 Q-29 -22 -24 -23 L-16 -24 L-8 -33 Q-6 -35 -2 -35 L12 -35 Q16 -35 18 -32 L24 -24 L28 -23 Q31 -22 31 -18 L31 -8 Z" class="f1"/><path d="M-6 -31 L-12 -25 L4 -25 L4 -31 Z M8 -31 L8 -25 L20 -25 L15 -31 Z" class="srf" opacity="0.9"/><circle cx="-17" cy="-7" r="7" class="ink"/><circle cx="-17" cy="-7" r="3" class="srf"/><circle cx="18" cy="-7" r="7" class="ink"/><circle cx="18" cy="-7" r="3" class="srf"/></g><g transform="translate(390.0,232.0) scale(1.3)"><path d="M-30 -8 L-30 -18 Q-29 -22 -24 -23 L-16 -24 L-8 -33 Q-6 -35 -2 -35 L12 -35 Q16 -35 18 -32 L24 -24 L28 -23 Q31 -22 31 -18 L31 -8 Z" class="f3"/><path d="M-6 -31 L-12 -25 L4 -25 L4 -31 Z M8 -31 L8 -25 L20 -25 L15 -31 Z" class="srf" opacity="0.9"/><circle cx="-17" cy="-7" r="7" class="ink"/><circle cx="-17" cy="-7" r="3" class="srf"/><circle cx="18" cy="-7" r="7" class="ink"/><circle cx="18" cy="-7" r="3" class="srf"/></g><g transform="translate(630.0,140.0) scale(1.15)"><path d="M-14 0 L-3 -62 L3 -62 L14 0" class="st" style="stroke-width:2"/><path d="M-11 -16 L9 -30 M11 -16 L-9 -30 M-8 -34 L6 -46 M8 -34 L-6 -46 M-5 -50 L4 -58 M5 -50 L-4 -58" class="st-m"/><rect x="-9" y="-74" width="5" height="16" rx="1.5" class="f7"/><rect x="4" y="-74" width="5" height="16" rx="1.5" class="f7"/><rect x="-2.5" y="-77" width="5" height="17" rx="1.5" class="f7"/><path d="M15.2 -75.4 A9 9 0 0 1 18.7 -65.7" class="s7" style="stroke-width:2;opacity:1.00"/><path d="M19.2 -81.1 A16 16 0 0 1 25.5 -63.9" class="s7" style="stroke-width:2;opacity:0.78"/><path d="M23.2 -86.8 A23 23 0 0 1 32.2 -62.0" class="s7" style="stroke-width:2;opacity:0.56"/><path d="M-18.7 -65.7 A9 9 0 0 1 -15.2 -75.4" class="s7" style="stroke-width:2;opacity:1.00"/><path d="M-25.5 -63.9 A16 16 0 0 1 -19.2 -81.1" class="s7" style="stroke-width:2;opacity:0.78"/><path d="M-32.2 -62.0 A23 23 0 0 1 -23.2 -86.8" class="s7" style="stroke-width:2;opacity:0.56"/></g><text x="630.0" y="160.0" text-anchor="middle" class="xs b">base station</text><rect x="470.0" y="100.0" width="16.0" height="70.0" rx="2" class="ink"/><rect x="456.0" y="92.0" width="44.0" height="18.0" rx="4" class="f4"/><text x="478.0" y="86.0" text-anchor="middle" class="xs b">roadside unit</text><g transform="translate(70.0,150.0)"><circle cx="0" cy="-33" r="6" class="f2"/><path d="M-9 0 L-9 -16 Q-9 -25 0 -25 Q9 -25 9 -16 L9 0 Z" class="f2"/></g><g transform="translate(82.0,128.0) scale(0.55)"><rect x="-9" y="-30" width="18" height="30" rx="3.5" class="f2"/><rect x="-6.5" y="-26.5" width="13" height="21" rx="1.5" class="srf"/><circle cx="0" cy="-2.7" r="1.4" class="srf"/></g><defs><marker id="ah145" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" class="f1"/></marker></defs><line x1="186.0" y1="186.0" x2="352.0" y2="210.0" class="s1" style="stroke-width:2.4" marker-end="url(#ah145)" marker-start="url(#ah145)"/><text x="268.0" y="184.0" text-anchor="middle" class="b tx1">V2V</text><defs><marker id="ah146" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" class="f4"/></marker></defs><line x1="420.0" y1="200.0" x2="462.0" y2="122.0" class="s4" style="stroke-width:2.2" marker-end="url(#ah146)" marker-start="url(#ah146)"/><text x="452.0" y="172.0" text-anchor="middle" class="b tx4">V2I</text><defs><marker id="ah147" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" class="f2"/></marker></defs><line x1="124.0" y1="180.0" x2="82.0" y2="160.0" class="s2" style="stroke-width:2.2" marker-end="url(#ah147)" marker-start="url(#ah147)"/><text x="96.0" y="196.0" text-anchor="end" class="b tx2">V2P</text><defs><marker id="ah148" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" class="f7"/></marker></defs><line x1="176.0" y1="168.0" x2="604.0" y2="92.0" class="s7 dash" style="stroke-width:2.2" marker-end="url(#ah148)" marker-start="url(#ah148)"/><text x="330.0" y="120.0" text-anchor="middle" class="b tx7">V2N, through the network</text><rect x="10.0" y="20.0" width="220.0" height="48.0" rx="6" class="l1"/><rect x="10.0" y="20.0" width="220.0" height="48.0" rx="6" class="s1" style="stroke-width:1.4"/><text x="120.0" y="41.0" text-anchor="middle" class="b">Sidelink (PC5)</text><text x="120.0" y="56.0" text-anchor="middle" class="s">direct, device to device</text><rect x="250.0" y="20.0" width="220.0" height="48.0" rx="6" class="l7"/><rect x="250.0" y="20.0" width="220.0" height="48.0" rx="6" class="s7" style="stroke-width:1.4"/><text x="360.0" y="41.0" text-anchor="middle" class="b">Uplink and downlink (Uu)</text><text x="360.0" y="56.0" text-anchor="middle" class="s">through a base station</text></svg></div><div class="txt"><span class="tg">9. Vehicular</span><b>Vehicular communications</b><span class="d">Vehicles talking to each other, to the roadside, to pedestrians and to the network. Speed is what makes it hard: the channel can change in a fraction of a millisecond.</span><span class="m">9 min · model: See Doppler fading</span></div></a></li></ul>
+    <article class="prose" style="max-width: 50rem; margin-top: 3.5rem"><h2 class="sec" id="generations">Five generations, briefly</h2>
+<figure class="viz wide "><div class="fig-scroll"><svg viewBox="0 0 712 150" role="img" aria-label="Mobile generations from 1G in the 1980s to 6G around 2030, with what each one added." class="" xmlns="http://www.w3.org/2000/svg"><line x1="70.0" y1="76.0" x2="640.0" y2="76.0" class="axis"/><circle cx="70.0" cy="76.0" r="20.0" class="f7"/><text x="70.0" y="81.0" text-anchor="middle" class="w b">1G</text><text x="70.0" y="116.0" text-anchor="middle" class="s b">1980s</text><text x="70.0" y="40.0" text-anchor="middle" class="xs">analogue voice</text><circle cx="184.0" cy="76.0" r="23.0" class="f2"/><text x="184.0" y="81.0" text-anchor="middle" class="w b">2G</text><text x="184.0" y="119.0" text-anchor="middle" class="s b">1990s</text><text x="184.0" y="37.0" text-anchor="middle" class="xs">digital voice, SMS</text><circle cx="298.0" cy="76.0" r="26.0" class="f4"/><text x="298.0" y="81.0" text-anchor="middle" class="w b">3G</text><text x="298.0" y="122.0" text-anchor="middle" class="s b">2000s</text><text x="298.0" y="34.0" text-anchor="middle" class="xs">mobile data</text><circle cx="412.0" cy="76.0" r="29.0" class="f3"/><text x="412.0" y="81.0" text-anchor="middle" class="w b">4G</text><text x="412.0" y="125.0" text-anchor="middle" class="s b">2010s</text><text x="412.0" y="31.0" text-anchor="middle" class="xs">broadband, OFDM</text><circle cx="526.0" cy="76.0" r="32.0" class="f1"/><text x="526.0" y="81.0" text-anchor="middle" class="w b">5G</text><text x="526.0" y="128.0" text-anchor="middle" class="s b">2019</text><text x="526.0" y="28.0" text-anchor="middle" class="xs">eMBB, URLLC, mMTC</text><circle cx="640.0" cy="76.0" r="35.0" class="f8"/><text x="640.0" y="81.0" text-anchor="middle" class="w b">6G</text><text x="640.0" y="131.0" text-anchor="middle" class="s b">~2030</text><text x="640.0" y="25.0" text-anchor="middle" class="xs">sensing and AI too</text></svg></div><figcaption>Roughly one generation per decade. 5G added services beyond phones: reliable low-latency links for machines and massive connectivity for sensors.</figcaption></figure><h2 class="sec" id="imt">What the ITU asks of 6G</h2>
+<p>The ITU defines each generation through an IMT framework: IMT-2020 for 5G, IMT-2030 for 6G (Recommendation ITU-R M.2160, November 2023).</p><figure class="viz wide "><div class="fig-scroll"><svg viewBox="0 0 712 432" role="img" aria-label="The six IMT-2030 usage scenarios: immersive communication, hyper-reliable low-latency communication and massive communication extend 5G; ubiquitous connectivity, AI and communication, and integrated sensing and communication are new." class="" xmlns="http://www.w3.org/2000/svg"><path d="M324.0 142.3 L283.3 68.8 A150 150 0 0 1 428.7 68.8 L388.0 142.3 A66 66 0 0 0 324.0 142.3 Z" class="l1" opacity="0.95"/><text x="356.0" y="26.0" text-anchor="middle" class="s b tx1">Immersive</text><text x="356.0" y="41.0" text-anchor="middle" class="s b tx1">communication</text><text x="356.0" y="56.0" text-anchor="middle" class="xs">extends eMBB</text><text x="356.0" y="97.0" text-anchor="middle" class="xs b">5G+</text><path d="M390.0 143.4 L433.3 71.4 A150 150 0 0 1 506.0 197.4 L422.0 198.8 A66 66 0 0 0 390.0 143.4 Z" class="l7" opacity="0.95"/><text x="501.5" y="116.0" class="s b tx7">Hyper-reliable, low</text><text x="501.5" y="131.0" class="s b tx7">latency</text><text x="501.5" y="146.0" class="xs">extends URLLC</text><text x="449.5" y="151.0" text-anchor="middle" class="xs b">5G+</text><path d="M422.0 201.2 L506.0 202.6 A150 150 0 0 1 433.3 328.6 L390.0 256.6 A66 66 0 0 0 422.0 201.2 Z" class="l3" opacity="0.95"/><text x="501.5" y="284.0" class="s b tx3">Massive communication</text><text x="501.5" y="299.0" class="xs">extends mMTC</text><text x="449.5" y="259.0" text-anchor="middle" class="xs b">5G+</text><path d="M388.0 257.7 L428.7 331.2 A150 150 0 0 1 283.3 331.2 L324.0 257.7 A66 66 0 0 0 388.0 257.7 Z" class="f4" opacity="0.9"/><text x="356.0" y="382.0" text-anchor="middle" class="s b tx4">Ubiquitous</text><text x="356.0" y="397.0" text-anchor="middle" class="s b tx4">connectivity</text><text x="356.0" y="412.0" text-anchor="middle" class="xs">new</text><text x="356.0" y="313.0" text-anchor="middle" class="xs b w">new</text><path d="M322.0 256.6 L278.7 328.6 A150 150 0 0 1 206.0 202.6 L290.0 201.2 A66 66 0 0 0 322.0 256.6 Z" class="f2" opacity="0.9"/><text x="210.5" y="284.0" text-anchor="end" class="s b tx2">AI and communication</text><text x="210.5" y="299.0" text-anchor="end" class="xs">new</text><text x="262.5" y="259.0" text-anchor="middle" class="xs b w">new</text><path d="M290.0 198.8 L206.0 197.4 A150 150 0 0 1 278.7 71.4 L322.0 143.4 A66 66 0 0 0 290.0 198.8 Z" class="f8" opacity="0.9"/><text x="210.5" y="110.0" text-anchor="end" class="s b tx8">Integrated sensing</text><text x="210.5" y="125.0" text-anchor="end" class="s b tx8">and communication</text><text x="210.5" y="140.0" text-anchor="end" class="xs">new</text><text x="262.5" y="151.0" text-anchor="middle" class="xs b w">new</text><circle cx="356.0" cy="200.0" r="60.0" class="srf"/><circle cx="356.0" cy="200.0" r="60.0" class="s7" style="fill:none;stroke-width:1.2"/><text x="356.0" y="196.0" text-anchor="middle" class="h">IMT-2030</text><text x="356.0" y="214.0" text-anchor="middle" class="xs">six scenarios</text></svg></div><figcaption>Three scenarios extend 5G, three are new. Sustainability, connecting the unconnected, ubiquitous intelligence, and security and resilience apply to all six.</figcaption></figure><h2 class="sec" id="targets">The targets, side by side</h2>
+<figure class="viz wide "><div class="fig-scroll"><svg viewBox="0 0 700 304" role="img" aria-label="IMT-2030 research targets relative to 5G: peak rate 10 times, user rate 5 times, area capacity 5 times, connection density 100 times, mobility 2 times, latency 10 times lower and reliability failures 100 times rarer." class="" xmlns="http://www.w3.org/2000/svg"><line x1="170.0" y1="18.0" x2="170.0" y2="268.0" class="grid"/><text x="170.0" y="282.0" text-anchor="middle" class="xs">1×</text><line x1="355.7" y1="18.0" x2="355.7" y2="268.0" class="grid"/><text x="355.7" y="282.0" text-anchor="middle" class="xs">10×</text><line x1="541.4" y1="18.0" x2="541.4" y2="268.0" class="grid"/><text x="541.4" y="282.0" text-anchor="middle" class="xs">100×</text><text x="160.0" y="51.0" text-anchor="end">Peak data rate</text><rect x="170" y="36.0" width="185.7" height="22" rx="4" class="f1" data-tip="20 Gbit/s → up to 200 Gbit/s"/><text x="363.7" y="51.0" class="b">10× (200 Gbit/s)</text><text x="160.0" y="85.0" text-anchor="end">User data rate</text><rect x="170" y="70.0" width="129.8" height="22" rx="4" class="f1" data-tip="100 Mbit/s → up to 500 Mbit/s"/><text x="307.8" y="85.0" class="b">5× (500 Mbit/s)</text><text x="160.0" y="119.0" text-anchor="end">Area traffic capacity</text><rect x="170" y="104.0" width="129.8" height="22" rx="4" class="f3" data-tip="10 → up to 50 Mbit/s/m²"/><text x="307.8" y="119.0" class="b">5× (50 Mbit/s/m²)</text><text x="160.0" y="153.0" text-anchor="end">Connection density</text><rect x="170" y="138.0" width="371.4" height="22" rx="4" class="f3" data-tip="10⁶ → up to 10⁸ devices/km²"/><text x="549.4" y="153.0" class="b">100× (10⁸ /km²)</text><text x="160.0" y="187.0" text-anchor="end">Mobility</text><rect x="170" y="172.0" width="55.9" height="22" rx="4" class="f4" data-tip="500 → up to 1,000 km/h"/><text x="233.9" y="187.0" class="b">2× (1,000 km/h)</text><text x="160.0" y="221.0" text-anchor="end">Latency, over the air</text><rect x="170" y="206.0" width="185.7" height="22" rx="4" class="f7" data-tip="1 ms → down to 0.1 ms"/><text x="363.7" y="221.0" class="b">10× lower (0.1 ms)</text><text x="160.0" y="255.0" text-anchor="end">Reliability</text><rect x="170" y="240.0" width="371.4" height="22" rx="4" class="f7" data-tip="1−10⁻⁵ → 1−10⁻⁷: failures 100× rarer"/><text x="549.4" y="255.0" class="b">100× fewer failures</text><line x1="170.0" y1="18.0" x2="170.0" y2="268.0" class="axis"/><text x="400.0" y="296.0" text-anchor="middle" class="s b">Improvement over the 5G (IMT-2020) value, at the top of the 6G range (log scale)</text></svg></div><figcaption>The 6G values are research targets given as ranges. No single deployment needs every number at once. Positioning (1–10 cm) is a new capability with no 5G counterpart.</figcaption></figure><div style="max-width: 22rem"><figure class="photo"><img src="https://thumb.wikimedia.org/wikipedia/commons/thumb/a/a8/Antennes_5G_o2_Munich.jpg/1280px-Antennes_5G_o2_Munich.jpg" alt="5G antennas on a rooftop in Munich. 6G will add bands from 7 to 24 GHz and beyond, and far larger arrays." width="1280" height="960" loading="lazy" decoding="async" referrerpolicy="no-referrer"><figcaption>5G antennas on a rooftop in Munich. 6G will add bands from 7 to 24 GHz and beyond, and far larger arrays.<span class="credit">Photo: Yumikember, <a href="https://commons.wikimedia.org/w/index.php?curid=146024905" target="_blank" rel="noopener noreferrer">CC BY-SA 4.0</a>, via Wikimedia Commons</span></figcaption></figure></div><h2 class="sec" id="timeline">Where standardisation stands</h2>
+<figure class="viz wide "><div class="fig-scroll"><svg viewBox="0 0 712 158" role="img" aria-label="6G standardisation: ITU adopts IMT-2030 in November 2023, 3GPP Release 20 studies in 2025 to 2026, Release 21 with the first 6G specifications frozen around December 2028 to March 2029, WRC-27 in late 2027, and first networks around 2030." class="" xmlns="http://www.w3.org/2000/svg"><line x1="30.0" y1="96.0" x2="690.0" y2="96.0" class="axis"/><line x1="30.0" y1="96.0" x2="30.0" y2="102.0" class="axis"/><text x="30.0" y="116.0" text-anchor="middle" class="xs">2023</text><line x1="112.5" y1="96.0" x2="112.5" y2="102.0" class="axis"/><text x="112.5" y="116.0" text-anchor="middle" class="xs">2024</text><line x1="195.0" y1="96.0" x2="195.0" y2="102.0" class="axis"/><text x="195.0" y="116.0" text-anchor="middle" class="xs">2025</text><line x1="277.5" y1="96.0" x2="277.5" y2="102.0" class="axis"/><text x="277.5" y="116.0" text-anchor="middle" class="xs">2026</text><line x1="360.0" y1="96.0" x2="360.0" y2="102.0" class="axis"/><text x="360.0" y="116.0" text-anchor="middle" class="xs">2027</text><line x1="442.5" y1="96.0" x2="442.5" y2="102.0" class="axis"/><text x="442.5" y="116.0" text-anchor="middle" class="xs">2028</text><line x1="525.0" y1="96.0" x2="525.0" y2="102.0" class="axis"/><text x="525.0" y="116.0" text-anchor="middle" class="xs">2029</text><line x1="607.5" y1="96.0" x2="607.5" y2="102.0" class="axis"/><text x="607.5" y="116.0" text-anchor="middle" class="xs">2030</text><line x1="690.0" y1="96.0" x2="690.0" y2="102.0" class="axis"/><text x="690.0" y="116.0" text-anchor="middle" class="xs">2031</text><rect x="195.0" y="82.0" width="123.8" height="10.0" rx="3" class="f4"/><text x="256.9" y="74.0" text-anchor="middle" class="xs b tx4">Rel-20 6G studies</text><rect x="318.8" y="82.0" width="226.9" height="10.0" rx="3" class="f1"/><text x="432.2" y="74.0" text-anchor="middle" class="xs b tx1">Rel-21: first 6G specs</text><line x1="343.5" y1="26.0" x2="343.5" y2="122.0" class="s8 dash" style="stroke-width:1.4"/><text x="347.5" y="36.0" class="xs b tx8">today</text><circle cx="101.8" cy="96.0" r="6.0" class="f3"/><line x1="101.8" y1="104.0" x2="101.8" y2="104.0" class="s3"/><text x="101.8" y="136.0" text-anchor="middle" class="xs b tx3">ITU adopts IMT-2030</text><circle cx="430.1" cy="96.0" r="6.0" class="f2"/><line x1="430.1" y1="104.0" x2="430.1" y2="104.0" class="s2"/><text x="430.1" y="136.0" text-anchor="middle" class="xs b tx2">WRC-27 spectrum</text><circle cx="520.9" cy="96.0" r="6.0" class="f7"/><line x1="520.9" y1="88.0" x2="520.9" y2="52.0" class="s7" style="stroke-width:1.2"/><text x="520.9" y="46.0" text-anchor="middle" class="xs b tx7">Rel-21 freeze</text><circle cx="607.5" cy="96.0" r="6.0" class="f8"/><line x1="607.5" y1="104.0" x2="607.5" y2="104.0" class="s8"/><text x="607.5" y="136.0" text-anchor="middle" class="xs b tx8">first networks</text></svg></div><figcaption>Status in October 2026. The first 6G standard is due when Release 21 is completed in 2029.</figcaption></figure><h2 class="sec" id="papers">Related papers</h2>
+<p>Work on 6G technologies by Hamza Shaikh and his co-authors.</p><ul class="paper-list">
 <li><a class="t" href="https://ieeexplore.ieee.org/document/10772059" target="_blank" rel="noopener noreferrer">Multi-STAR-RIS NOMA: Clustering, RIS Assignment and Power Optimization</a><span class="v">IEEE Transactions on Vehicular Technology, 2025. Read on IEEE Xplore.</span></li>
 <li><a class="t" href="https://ieeexplore.ieee.org/document/11414135" target="_blank" rel="noopener noreferrer">Sum-Rate Maximization for FRIS-Enabled NOMA Communications</a><span class="v">IEEE Wireless Communications Letters, 2026. Read on IEEE Xplore.</span></li>
 <li><a class="t" href="https://ieeexplore.ieee.org/document/10942975" target="_blank" rel="noopener noreferrer">Sense and Jam: ISAC-Aided Robust Physical Layer Security</a><span class="v">58th Asilomar Conference on Signals, Systems, and Computers, 2024. Read on IEEE Xplore.</span></li>
 <li><a class="t" href="https://scholar.google.com/scholar?q=%22Aerial%20RIS-Aided%20Uplink%20NOMA%3A%20A%20DRL-Aided%20Resource%20Allocation%20Framework%22" target="_blank" rel="noopener noreferrer">Aerial RIS-Aided Uplink NOMA: A DRL-Aided Resource Allocation Framework</a><span class="v">IEEE Transactions on Cognitive Communications and Networking, 2026. Read on Google Scholar.</span></li>
 <li><a class="t" href="https://arxiv.org/abs/2509.20299" target="_blank" rel="noopener noreferrer">Geometric Port Selection in CUMA Systems</a><span class="v">arXiv preprint arXiv:2509.20299, 2025. Read on arXiv.</span></li>
 <li><a class="t" href="https://www.researchgate.net/publication/410133583_Evolution_of_Intelligent_Transportation_Systems_for_the_Next_Generation_IRS_Enabled_6G" target="_blank" rel="noopener noreferrer">Evolution of Intelligent Transportation Systems for the Next Generation: IRS Enabled 6G</a><span class="v">Book chapter, 2026. Read on ResearchGate.</span></li>
-</ul>
-<h2 id="reading">Further reading</h2>
+</ul><h2 class="sec" id="reading">Further reading</h2>
 <ol class="refs">
 <li>ITU-R, “Framework and overall objectives of the future development of IMT for 2030 and beyond,” Recommendation ITU-R M.2160-0, Nov. 2023. <a href="https://www.itu.int/rec/R-REC-M.2160-0-202311-I/en" target="_blank" rel="noopener noreferrer">Open</a></li>
 <li>ITU-R, “IMT Vision: Framework and overall objectives of the future development of IMT for 2020 and beyond,” Recommendation ITU-R M.2083-0, Sep. 2015. <a href="https://www.itu.int/rec/R-REC-M.2083-0-201509-I/en" target="_blank" rel="noopener noreferrer">Open</a></li>
 <li>W. Saad, M. Bennis, and M. Chen, “A vision of 6G wireless systems: Applications, trends, technologies, and open research problems,” IEEE Network, vol. 34, no. 3, pp. 134–142, 2020. <a href="https://scholar.google.com/scholar?q=A%20vision%20of%206G%20wireless%20systems%3A%20Applications%2C%20trends%2C%20technologies%2C%20and%20open%20research%20problems" target="_blank" rel="noopener noreferrer">Find on Google Scholar</a></li>
 <li>S. Dang, O. Amin, B. Shihada, and M.-S. Alouini, “What should 6G be?” Nature Electronics, vol. 3, pp. 20–29, 2020. <a href="https://scholar.google.com/scholar?q=What%20should%206G%20be%3F%20Dang%20Amin%20Shihada%20Alouini" target="_blank" rel="noopener noreferrer">Find on Google Scholar</a></li>
-</ol>
-<nav class="prevnext" aria-label="More tutorials"><a class="next" href="ris.html"><span class="dir">Next</span><span class="nm">Reconfigurable intelligent surfaces</span></a></nav>
-    </article>
+</ol></article>
   </div>
 </main>
 <footer class="site-footer">
@@ -818,5 +898,665 @@ ol.refs a { font-family: var(--sans); font-size: 0.8125rem; white-space: nowrap;
   }, { rootMargin: "-20% 0px -70% 0px" });
   byId.forEach(function (_a, id) { const s = document.getElementById(id); if (s) io.observe(s); });
 })();</script>
+<script>/* Interactive models for the tutorials.
+   Each <div class="demo" data-demo="..."> is built here: controls, a canvas
+   plot with a hover read-out, and a row of computed values. */
+(function () {
+  "use strict";
+
+  /* ---------------------------------------------------------------- utils */
+  const C0 = 299792458;
+  const $ = (tag, attrs, kids) => {
+    const el = document.createElement(tag);
+    if (attrs) for (const k in attrs) {
+      if (k === "text") el.textContent = attrs[k];
+      else if (k === "html") el.innerHTML = attrs[k];
+      else el.setAttribute(k, attrs[k]);
+    }
+    (kids || []).forEach((c) => c && el.appendChild(c));
+    return el;
+  };
+  const token = (name) => getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+  const fmt = (v, d) => (Math.abs(v) < 1e-12 ? 0 : v).toFixed(d);
+  const db = (p) => 10 * Math.log10(Math.max(p, 1e-12));
+  function rng(seed) { // mulberry32
+    let a = seed >>> 0;
+    return function () {
+      a = (a + 0x6D2B79F5) >>> 0;
+      let t = a;
+      t = Math.imul(t ^ (t >>> 15), t | 1);
+      t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+      return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+    };
+  }
+  function niceMax(v) {
+    if (!(v > 0)) return 1;
+    const p = Math.pow(10, Math.floor(Math.log10(v)));
+    for (const m of [1, 1.2, 1.5, 2, 2.5, 3, 4, 5, 6, 8, 10]) if (m * p >= v) return m * p;
+    return 10 * p;
+  }
+  function ticks(min, max, n) {
+    const span = max - min, raw = span / n;
+    const p = Math.pow(10, Math.floor(Math.log10(raw)));
+    const step = [1, 2, 2.5, 5, 10].map((m) => m * p).find((s) => s >= raw) || raw;
+    const out = [];
+    for (let v = Math.ceil(min / step) * step; v <= max + step * 1e-6; v += step) out.push(+v.toFixed(10));
+    return out;
+  }
+  function frame(fn) { let q = false; return () => { if (q) return; q = true; requestAnimationFrame(() => { q = false; fn(); }); }; }
+
+  /* ----------------------------------------------------------------- Plot */
+  const plots = [];
+  function Plot(box, label) {
+    this.box = box;
+    this.canvas = $("canvas", { role: "img", "aria-label": label });
+    this.tip = $("div", { class: "tip", hidden: "" });
+    box.appendChild(this.canvas);
+    box.appendChild(this.tip);
+    this.ctx = this.canvas.getContext("2d");
+    this.cfg = null; this.hover = null; this.W = 0; this.H = 0;
+    const redraw = frame(() => this.draw());
+    this.redraw = redraw;
+    if ("ResizeObserver" in window) new ResizeObserver(redraw).observe(box);
+    else window.addEventListener("resize", redraw);
+    const move = (e) => {
+      const r = this.canvas.getBoundingClientRect();
+      this.hover = { px: e.clientX - r.left, py: e.clientY - r.top };
+      redraw();
+    };
+    this.canvas.addEventListener("pointermove", move);
+    this.canvas.addEventListener("pointerdown", move);
+    this.canvas.addEventListener("pointerleave", () => { this.hover = null; this.tip.hidden = true; redraw(); });
+    plots.push(this);
+  }
+  Plot.prototype.set = function (cfg) { this.cfg = cfg; this.redraw(); };
+  Plot.prototype.draw = function () {
+    const cfg = this.cfg; if (!cfg) return;
+    const r = this.box.getBoundingClientRect();
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    const W = Math.max(1, Math.round(r.width)), H = Math.max(1, Math.round(r.height));
+    if (this.canvas.width !== Math.round(W * dpr) || this.canvas.height !== Math.round(H * dpr)) {
+      this.canvas.width = Math.round(W * dpr); this.canvas.height = Math.round(H * dpr);
+    }
+    const ctx = this.ctx;
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    ctx.clearRect(0, 0, W, H);
+    const col = {
+      ink: token("--ink"), ink2: token("--ink-2"), muted: token("--muted"), line: token("--line"),
+      surface: token("--surface"), c1: token("--chart-1"), c2: token("--chart-2"), ref: token("--muted")
+    };
+    const font = (s, w) => (w || "400") + " " + s + 'px "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif';
+    const L = 50, R = 16, T = 28, B = 42;
+    const pw = W - L - R, ph = H - T - B;
+    const X = (v) => L + ((v - cfg.x.min) / (cfg.x.max - cfg.x.min)) * pw;
+    const Y = (v) => T + (1 - (v - cfg.y.min) / (cfg.y.max - cfg.y.min)) * ph;
+    this.X = X; this.Y = Y; this.L = L; this.T = T; this.pw = pw; this.ph = ph;
+
+    // grid and axes
+    ctx.lineWidth = 1; ctx.strokeStyle = col.line; ctx.fillStyle = col.muted;
+    ctx.font = font(12); ctx.textBaseline = "middle"; ctx.textAlign = "right";
+    (cfg.y.ticks || ticks(cfg.y.min, cfg.y.max, 5)).forEach((v) => {
+      const y = Math.round(Y(v)) + 0.5;
+      ctx.beginPath(); ctx.moveTo(L, y); ctx.lineTo(L + pw, y); ctx.stroke();
+      ctx.fillText((cfg.y.fmt || String)(v), L - 8, y);
+    });
+    ctx.textAlign = "center"; ctx.textBaseline = "top";
+    (cfg.x.ticks || ticks(cfg.x.min, cfg.x.max, 6)).forEach((v) => {
+      const x = Math.round(X(v)) + 0.5;
+      ctx.beginPath(); ctx.moveTo(x, T + ph); ctx.lineTo(x, T + ph + 5); ctx.stroke();
+      ctx.fillText((cfg.x.fmt || String)(v), x, T + ph + 9);
+    });
+    ctx.strokeStyle = col.muted;
+    ctx.beginPath(); ctx.moveTo(L, Math.round(T + ph) + 0.5); ctx.lineTo(L + pw, Math.round(T + ph) + 0.5); ctx.stroke();
+    ctx.fillStyle = col.ink2; ctx.font = font(12, "500");
+    ctx.textAlign = "left"; ctx.textBaseline = "alphabetic";
+    ctx.fillText(cfg.y.label, 4, 16);
+    ctx.textAlign = "center";
+    ctx.fillText(cfg.x.label, L + pw / 2, H - 6);
+
+    ctx.save();
+    ctx.beginPath(); ctx.rect(L, T - 2, pw, ph + 4); ctx.clip();
+    // reference lines
+    (cfg.hlines || []).forEach((h) => {
+      if (h.y < cfg.y.min || h.y > cfg.y.max) return;
+      ctx.strokeStyle = col[h.color || "c2"]; ctx.lineWidth = 1.5; ctx.setLineDash([5, 4]);
+      ctx.beginPath(); ctx.moveTo(L, Y(h.y)); ctx.lineTo(L + pw, Y(h.y)); ctx.stroke(); ctx.setLineDash([]);
+    });
+    (cfg.vlines || []).forEach((v) => {
+      ctx.strokeStyle = col[v.color || "c2"]; ctx.lineWidth = 1.5;
+      ctx.beginPath(); ctx.moveTo(X(v.x), T); ctx.lineTo(X(v.x), T + ph); ctx.stroke();
+    });
+    // series
+    cfg.series.forEach((s) => {
+      ctx.strokeStyle = col[s.color]; ctx.lineWidth = s.width || 2;
+      ctx.lineJoin = "round"; ctx.lineCap = "round";
+      ctx.setLineDash(s.dash || []);
+      ctx.beginPath();
+      s.data.forEach((p, i) => { const x = X(p[0]), y = Y(Math.max(cfg.y.min - 1, Math.min(cfg.y.max + 1, p[1]))); i ? ctx.lineTo(x, y) : ctx.moveTo(x, y); });
+      ctx.stroke(); ctx.setLineDash([]);
+    });
+    ctx.restore();
+
+    // labels for reference lines (text tokens, not series colours)
+    ctx.font = font(12, "500"); ctx.fillStyle = col.ink2; ctx.textBaseline = "alphabetic";
+    (cfg.hlines || []).forEach((h) => {
+      if (!h.label || h.y < cfg.y.min || h.y > cfg.y.max) return;
+      ctx.textAlign = "right"; ctx.fillText(h.label, L + pw - 4, Y(h.y) - 6);
+    });
+    (cfg.vlines || []).forEach((v) => {
+      if (!v.label) return;
+      const x = X(v.x), right = x < L + pw - 80;
+      ctx.textAlign = right ? "left" : "right";
+      ctx.fillText(v.label, x + (right ? 6 : -6), T + 12);
+    });
+    // points
+    const dot = (x, y, c, rad) => {
+      ctx.beginPath(); ctx.arc(x, y, rad + 2, 0, Math.PI * 2); ctx.fillStyle = col.surface; ctx.fill();
+      ctx.beginPath(); ctx.arc(x, y, rad, 0, Math.PI * 2); ctx.fillStyle = col[c]; ctx.fill();
+    };
+    (cfg.points || []).forEach((p) => {
+      if (p.x < cfg.x.min || p.x > cfg.x.max || p.y < cfg.y.min || p.y > cfg.y.max) return;
+      const x = X(p.x), y = Y(p.y);
+      dot(x, y, p.color || "c1", p.r || 4);
+      if (p.label) {
+        ctx.font = font(12, "500"); ctx.fillStyle = col.ink;
+        const right = x < L + pw - 110;
+        ctx.textAlign = right ? "left" : "right"; ctx.textBaseline = "alphabetic";
+        ctx.fillText(p.label, x + (right ? 10 : -10), y - 9);
+      }
+    });
+
+    // hover: crosshair and tooltip
+    const hv = this.hover;
+    if (!hv || hv.px < L || hv.px > L + pw || hv.py < T - 10 || hv.py > T + ph + 10) { this.tip.hidden = true; return; }
+    const xv = cfg.x.min + ((hv.px - L) / pw) * (cfg.x.max - cfg.x.min);
+    const rows = [];
+    let cx = null;
+    cfg.series.forEach((s) => {
+      if (s.hover === false || !s.data.length) return;
+      let lo = 0, hi = s.data.length - 1;
+      while (hi - lo > 1) { const m = (lo + hi) >> 1; if (s.data[m][0] < xv) lo = m; else hi = m; }
+      const p = Math.abs(s.data[lo][0] - xv) < Math.abs(s.data[hi][0] - xv) ? s.data[lo] : s.data[hi];
+      if (cx === null) cx = X(p[0]);
+      if (p[1] >= cfg.y.min && p[1] <= cfg.y.max) dot(X(p[0]), Y(p[1]), s.color, 4);
+      rows.push({ s: s, p: p });
+    });
+    if (cx === null) { this.tip.hidden = true; return; }
+    ctx.strokeStyle = col.muted; ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.moveTo(Math.round(cx) + 0.5, T); ctx.lineTo(Math.round(cx) + 0.5, T + ph); ctx.stroke();
+    rows.forEach((rw) => { if (rw.p[1] >= cfg.y.min && rw.p[1] <= cfg.y.max) dot(X(rw.p[0]), Y(rw.p[1]), rw.s.color, 4); });
+    const head = (cfg.x.hover || cfg.x.fmt || String)(rows[0].p[0]);
+    this.tip.innerHTML = '<p class="tip-h">' + head + "</p>" + rows.map((rw) =>
+      '<p><span class="key key-' + rw.s.color + (rw.s.dash ? " key-dash" : "") + '" aria-hidden="true"></span>' +
+      (rw.s.name ? rw.s.name + ": " : "") + "<b>" + (rw.s.fmt || cfg.y.hover || String)(rw.p[1]) + "</b></p>").join("");
+    this.tip.hidden = false;
+    const tw = this.tip.offsetWidth, th = this.tip.offsetHeight;
+    let tx = cx + 12; if (tx + tw > W - 4) tx = cx - 12 - tw;
+    let ty = Math.max(4, Math.min(hv.py - th / 2, H - th - 4));
+    this.tip.style.transform = "translate(" + Math.round(Math.max(4, tx)) + "px," + Math.round(ty) + "px)";
+  };
+
+  /* ------------------------------------------------------------- controls */
+  function slider(o) {
+    const input = $("input", { type: "range", id: o.id, min: o.min, max: o.max, step: o.step, value: o.value });
+    const out = $("output", { for: o.id });
+    const wrap = $("div", { class: "ctl" }, [$("label", { for: o.id, text: o.label }), input, out]);
+    const api = {
+      el: wrap, input: input,
+      get value() { return o.map ? o.map(+input.value) : +input.value; },
+      set: (v) => { input.value = v; api.show(); },
+      show: () => { out.textContent = o.fmt(api.value); }
+    };
+    input.addEventListener("input", api.show);
+    api.show();
+    return api;
+  }
+  function seg(o) {
+    let value = o.value;
+    const group = $("div", { class: "seg-mini", role: "radiogroup", "aria-labelledby": o.id + "-l" });
+    const btns = o.options.map((op) => {
+      const b = $("button", { type: "button", role: "radio", id: o.id + "-" + String(op.v).replace(/\W/g, ""), "aria-checked": String(op.v === value), text: op.t });
+      b.addEventListener("click", () => { value = op.v; btns.forEach((x, i) => x.setAttribute("aria-checked", String(o.options[i].v === value))); api.onchange && api.onchange(); });
+      group.appendChild(b);
+      return b;
+    });
+    const wrap = $("div", { class: "ctl ctl-seg" }, [$("span", { id: o.id + "-l", class: "ctl-l", text: o.label }), group]);
+    const api = { el: wrap, get value() { return value; }, onchange: null };
+    return api;
+  }
+  function button(id, text) { return $("button", { type: "button", class: "btn btn-quiet btn-small", id: id, text: text }); }
+  function legend(items) {
+    return $("ul", { class: "legend" }, items.map((it) => $("li", {}, [
+      $("span", { class: "key key-" + it[0] + (it[2] === true ? " key-dash" : it[2] === "dot" ? " key-dot" : ""), "aria-hidden": "true" }), document.createTextNode(it[1])
+    ])));
+  }
+  function readouts(defs) {
+    const dl = $("dl", { class: "demo-read" });
+    const vals = {};
+    defs.forEach((d) => {
+      const dd = $("dd", { text: "–" });
+      vals[d[0]] = dd;
+      dl.appendChild($("div", {}, [$("dt", { text: d[1] }), dd]));
+    });
+    return { el: dl, set: (k, v) => { vals[k].innerHTML = v; } };
+  }
+  function shell(root, parts) {
+    root.textContent = "";
+    const controls = $("div", { class: "demo-controls" }, parts.controls);
+    const plotBox = $("div", { class: "demo-plot" });
+    [controls, parts.legend, plotBox, parts.read && parts.read.el].forEach((x) => x && root.appendChild(x));
+    return new Plot(plotBox, parts.label);
+  }
+
+  /* ============================================================ the demos */
+  const DEMOS = {};
+
+  /* RIS: beam pattern of an N-element surface with b-bit phases */
+  DEMOS["ris-beam"] = function (root) {
+    const N = slider({ id: "ris-n", label: "Elements, N", min: 4, max: 64, step: 1, value: 16, fmt: (v) => String(v) });
+    const T = slider({ id: "ris-t", label: "Target angle", min: -60, max: 60, step: 1, value: 25, fmt: (v) => v + "°" });
+    const Bq = seg({ id: "ris-b", label: "Phase resolution", value: 2, options: [{ v: 1, t: "1 bit" }, { v: 2, t: "2 bits" }, { v: 3, t: "3 bits" }, { v: 0, t: "Continuous" }] });
+    const read = readouts([["g", "Gain toward target"], ["i", "Ideal, N²"], ["q", "Loss from quantized phases"], ["p", "Main beam at"]]);
+    const plot = shell(root, {
+      controls: [N.el, T.el, Bq.el], read: read,
+      legend: legend([["c1", "Configured surface"], ["ref", "Unconfigured surface (mirror)", true]]),
+      label: "Reflection gain of the surface against angle, with the target direction marked."
+    });
+    function af(phi, s) { let re = 0, im = 0; for (let i = 0; i < phi.length; i++) { const a = phi[i] + Math.PI * i * s; re += Math.cos(a); im += Math.sin(a); } return re * re + im * im; }
+    const run = frame(() => {
+      const n = N.value, th = T.value * Math.PI / 180, b = Bq.value;
+      const phi = [], zero = new Array(n).fill(0);
+      for (let i = 0; i < n; i++) {
+        let p = -Math.PI * i * Math.sin(th);
+        if (b) { const q = 2 * Math.PI / (1 << b); p = Math.round(p / q) * q; }
+        phi.push(p);
+      }
+      const cfgd = [], mirror = []; let best = -1, bestA = 0;
+      for (let a = -90; a <= 90.0001; a += 0.25) {
+        const s = Math.sin(a * Math.PI / 180), g = af(phi, s);
+        if (g > best) { best = g; bestA = a; }
+        cfgd.push([a, db(g)]); mirror.push([a, db(af(zero, s))]);
+      }
+      const gt = db(af(phi, Math.sin(th))), ideal = 20 * Math.log10(n);
+      plot.set({
+        x: { min: -90, max: 90, ticks: [-90, -60, -30, 0, 30, 60, 90], fmt: (v) => v + "°", label: "Reflection angle", hover: (v) => fmt(v, 1) + "°" },
+        y: { min: -10, max: 40, ticks: [-10, 0, 10, 20, 30, 40], label: "Gain over one element (dB)", hover: (v) => fmt(v, 1) + " dB" },
+        series: [{ name: "Configured", color: "c1", data: cfgd }, { name: "Mirror", color: "ref", data: mirror, dash: [6, 5], width: 1.5 }],
+        vlines: [{ x: T.value, label: "Target " + T.value + "°" }]
+      });
+      read.set("g", fmt(gt, 1) + " dB");
+      read.set("i", fmt(ideal, 1) + " dB");
+      read.set("q", fmt(Math.max(0, ideal - gt), 2) + " dB");
+      read.set("p", fmt(bestA, 1) + "°");
+    });
+    [N, T].forEach((s) => s.input.addEventListener("input", run));
+    Bq.onchange = run; run();
+  };
+
+  /* NOMA: two-user downlink rate region versus TDMA */
+  DEMOS["noma-region"] = function (root) {
+    const s1 = slider({ id: "noma-s1", label: "Near-user SNR", min: 0, max: 40, step: 1, value: 20, fmt: (v) => v + " dB" });
+    const s2 = slider({ id: "noma-s2", label: "Far-user SNR", min: -10, max: 30, step: 1, value: 5, fmt: (v) => v + " dB" });
+    const al = slider({ id: "noma-a", label: "Power to near user, α", min: 0.01, max: 0.5, step: 0.01, value: 0.2, fmt: (v) => v.toFixed(2) });
+    const read = readouts([["n", "NOMA rates (near, far)"], ["t", "TDMA, same near-user rate"], ["d", "Far user gains with NOMA"]]);
+    const plot = shell(root, {
+      controls: [s1.el, s2.el, al.el], read: read,
+      legend: legend([["c1", "NOMA (superposition and SIC)"], ["ref", "TDMA (time sharing)", true]]),
+      label: "Achievable rate pairs of the near and far user with NOMA and with TDMA."
+    });
+    const run = frame(() => {
+      if (s2.value > s1.value) s2.set(s1.value);
+      const S1 = Math.pow(10, s1.value / 10), S2 = Math.pow(10, s2.value / 10);
+      const C1 = Math.log2(1 + S1), C2 = Math.log2(1 + S2);
+      const R1 = (a) => Math.log2(1 + a * S1), R2 = (a) => Math.log2(1 + (1 - a) * S2 / (a * S2 + 1));
+      const noma = [], tdma = [];
+      for (let k = 0; k <= 400; k++) { const a = k / 400; noma.push([R1(a), R2(a)]); }
+      for (let k = 0; k <= 200; k++) { const t = k / 200; tdma.push([t * C1, (1 - t) * C2]); }
+      const a = al.value, r1 = R1(a), r2 = R2(a), r2t = (1 - r1 / C1) * C2;
+      const xm = niceMax(C1 * 1.04), ym = niceMax(C2 * 1.12);
+      plot.set({
+        x: { min: 0, max: xm, ticks: ticks(0, xm, 5), label: "Near-user rate R₁ (bit/s/Hz)", hover: (v) => "R₁ = " + fmt(v, 2) },
+        y: { min: 0, max: ym, ticks: ticks(0, ym, 4), label: "Far-user rate R₂ (bit/s/Hz)", fmt: (v) => String(+v.toFixed(2)), hover: (v) => fmt(v, 2) },
+        series: [{ name: "NOMA, R₂", color: "c1", data: noma }, { name: "TDMA, R₂", color: "ref", data: tdma, dash: [6, 5], width: 1.5 }],
+        points: [{ x: r1, y: r2, color: "c1", r: 5, label: "α = " + a.toFixed(2) }, { x: r1, y: r2t, color: "ref", r: 4 }]
+      });
+      read.set("n", fmt(r1, 2) + " and " + fmt(r2, 2) + " bit/s/Hz");
+      read.set("t", "far user " + fmt(r2t, 2) + " bit/s/Hz");
+      const gain = r2 - r2t;
+      read.set("d", (gain >= 0 ? "+" : "") + fmt(gain, 2) + " bit/s/Hz" + (r2t > 1e-6 ? " (" + (gain >= 0 ? "+" : "") + fmt(100 * gain / r2t, 0) + "%)" : ""));
+    });
+    [s1, s2, al].forEach((s) => s.input.addEventListener("input", run));
+    run();
+  };
+
+  /* ISAC: range profile of two equal targets after matched filtering */
+  DEMOS["isac-range"] = function (root) {
+    const BW = [[10e6, "10 MHz"], [20e6, "20 MHz, an LTE carrier"], [50e6, "50 MHz"], [100e6, "100 MHz, 5G NR in FR1"], [200e6, "200 MHz"],
+      [320e6, "320 MHz, Wi-Fi 7"], [400e6, "400 MHz, 5G NR in FR2"], [800e6, "800 MHz"], [1e9, "1 GHz"], [2e9, "2 GHz"], [4e9, "4 GHz, automotive radar"]];
+    const SEP = [0.05, 0.1, 0.2, 0.3, 0.5, 0.75, 1, 1.5, 2, 3, 5, 10];
+    const len = (m) => (m === 0 ? "0" : m < 1 ? +(m * 100).toPrecision(3) + " cm" : +m.toPrecision(3) + " m");
+    const b = slider({ id: "isac-b", label: "Bandwidth, B", min: 0, max: BW.length - 1, step: 1, value: 3, map: (i) => BW[i], fmt: (v) => v[1] });
+    const s = slider({ id: "isac-d", label: "Target separation", min: 0, max: SEP.length - 1, step: 1, value: 8, map: (i) => SEP[i], fmt: len });
+    const read = readouts([["r", "Range resolution, c/2B"], ["s", "Separation"], ["v", "Result"]]);
+    const plot = shell(root, {
+      controls: [b.el, s.el], read: read,
+      label: "Echo power against range for two equal targets, with their true positions marked."
+    });
+    const sinc2 = (x) => { if (Math.abs(x) < 1e-9) return 1; const v = Math.sin(Math.PI * x) / (Math.PI * x); return v * v; };
+    const run = frame(() => {
+      const B = b.value[0], d = s.value, dr = C0 / (2 * B);
+      const r1 = -d / 2, r2 = d / 2, span = 1.5 * d + 3 * dr;
+      const data = []; let mx = 0;
+      for (let k = 0; k <= 600; k++) {
+        const r = -span + (2 * span * k) / 600;
+        const p = sinc2(2 * B * (r - r1) / C0) + sinc2(2 * B * (r - r2) / C0);
+        mx = Math.max(mx, p); data.push([r, p]);
+      }
+      data.forEach((p) => { p[1] /= mx; });
+      const tk = ticks(-span, span, 6);
+      plot.set({
+        x: { min: -span, max: span, ticks: tk, label: "Range offset from the midpoint", fmt: (v) => (v < 0 ? "−" : "") + len(Math.abs(v)), hover: (v) => (v < 0 ? "−" : "") + len(Math.abs(v)) },
+        y: { min: 0, max: 1.05, ticks: [0, 0.25, 0.5, 0.75, 1], label: "Echo power (normalized)", fmt: (v) => v.toFixed(2), hover: (v) => v.toFixed(2) },
+        series: [{ name: "Echo", color: "c1", data: data }],
+        vlines: [{ x: r1 }, { x: r2 }]
+      });
+      read.set("r", len(dr));
+      read.set("s", len(d));
+      read.set("v", d >= dr ? '<span class="chip chip-ok">Two peaks: resolved</span>' : '<span class="chip chip-no">One peak: not resolved</span>');
+    });
+    [b, s].forEach((x) => x.input.addEventListener("input", run));
+    run();
+  };
+
+  /* V2X: Clarke fading envelope over time */
+  DEMOS["v2x-fading"] = function (root) {
+    const v = slider({ id: "v2x-v", label: "Speed", min: 0, max: 250, step: 5, value: 120, fmt: (x) => x + " km/h" });
+    const fc = seg({ id: "v2x-f", label: "Carrier frequency", value: 5.9, options: [{ v: 3.5, t: "3.5 GHz" }, { v: 5.9, t: "5.9 GHz" }, { v: 28, t: "28 GHz" }] });
+    const nb = button("v2x-new", "New channel");
+    const read = readouts([["d", "Maximum Doppler shift, f_D"], ["c", "Coherence time ≈ 0.423/f_D"], ["f", "Fades below −10 dB in 50 ms"]]);
+    const plot = shell(root, {
+      controls: [v.el, fc.el, $("div", { class: "ctl ctl-btn" }, [nb])], read: read,
+      label: "Received power of a mobile channel over 50 milliseconds."
+    });
+    let seed = 7;
+    const run = frame(() => {
+      const fD = (v.value / 3.6) * fc.value * 1e9 / C0, M = 32, rnd = rng(seed);
+      const ang = [], ph = [];
+      for (let m = 0; m < M; m++) { ang.push(2 * Math.PI * (m + rnd()) / M); ph.push(2 * Math.PI * rnd()); }
+      const data = []; let fades = 0, below = false;
+      for (let k = 0; k <= 1000; k++) {
+        const t = 0.05 * k / 1000; let re = 0, im = 0;
+        for (let m = 0; m < M; m++) { const a = 2 * Math.PI * fD * Math.cos(ang[m]) * t + ph[m]; re += Math.cos(a); im += Math.sin(a); }
+        const g = db((re * re + im * im) / M);
+        if (g < -10 && !below) fades++;
+        below = g < -10;
+        data.push([t * 1000, g]);
+      }
+      plot.set({
+        x: { min: 0, max: 50, ticks: [0, 10, 20, 30, 40, 50], label: "Time (ms)", hover: (x) => fmt(x, 2) + " ms" },
+        y: { min: -30, max: 10, ticks: [-30, -20, -10, 0, 10], label: "Received power (dB)", hover: (x) => fmt(x, 1) + " dB" },
+        series: [{ name: "Power", color: "c1", data: data }],
+        hlines: [{ y: -10, color: "ref", label: "−10 dB" }]
+      });
+      read.set("d", fD > 0 ? fmt(fD, fD < 100 ? 1 : 0) + " Hz" : "0 Hz");
+      const Tc = fD > 0 ? 0.423 / fD : Infinity;
+      read.set("c", isFinite(Tc) ? (Tc < 0.01 ? fmt(Tc * 1000, Tc < 0.001 ? 2 : 1) + " ms" : fmt(Tc, 2) + " s") : "unlimited (static channel)");
+      read.set("f", String(fades));
+    });
+    v.input.addEventListener("input", run);
+    fc.onchange = run;
+    nb.addEventListener("click", () => { seed = (seed * 9301 + 49297) % 233280; run(); });
+    run();
+  };
+
+  /* Fluid antenna: spatial fading along W wavelengths and port selection */
+  DEMOS["fas-ports"] = function (root) {
+    const w = slider({ id: "fas-w", label: "Antenna length, W", min: 0.5, max: 5, step: 0.5, value: 2, fmt: (x) => x + "λ" });
+    const n = slider({ id: "fas-n", label: "Ports, N", min: 2, max: 64, step: 1, value: 16, fmt: String });
+    const nb = button("fas-new", "New channel");
+    const read = readouts([["b", "Best port, this channel"], ["a", "Average gain of the best port"], ["o", "Outage below −10 dB"]]);
+    const plot = shell(root, {
+      controls: [w.el, n.el, $("div", { class: "ctl ctl-btn" }, [nb])], read: read,
+      legend: legend([["c1", "Channel gain along the antenna"], ["c2", "Best port", "dot"], ["ref", "Other ports", "dot"]]),
+      label: "Channel gain along a fluid antenna, with its ports and the best port marked."
+    });
+    let seed = 11;
+    function channel(rnd, M) {
+      const c = [], p = [];
+      for (let m = 0; m < M; m++) { c.push(2 * Math.PI * Math.cos(2 * Math.PI * rnd())); p.push(2 * Math.PI * rnd()); }
+      return (x) => { let re = 0, im = 0; for (let m = 0; m < M; m++) { const a = c[m] * x + p[m]; re += Math.cos(a); im += Math.sin(a); } return (re * re + im * im) / M; };
+    }
+    let mcKey = "", mcTimer = 0;
+    function monteCarlo(W, N) {
+      const key = W + ":" + N; if (key === mcKey) return; mcKey = key;
+      read.set("a", "computing…"); read.set("o", "computing…");
+      clearTimeout(mcTimer);
+      mcTimer = setTimeout(() => {
+        const rnd = rng(2024), trials = 1000; let sum = 0, out = 0;
+        for (let t = 0; t < trials; t++) {
+          const h = channel(rnd, 32); let best = 0;
+          for (let k = 0; k < N; k++) best = Math.max(best, h(k * W / (N - 1)));
+          sum += best; if (best < 0.1) out++;
+        }
+        read.set("a", "+" + fmt(db(sum / trials), 1) + " dB over a fixed antenna");
+        read.set("o", fmt(100 * out / trials, 1) + "% fluid, 9.5% fixed");
+      }, 140);
+    }
+    const run = frame(() => {
+      const W = w.value, N = n.value, h = channel(rng(seed), 64);
+      const data = [];
+      for (let k = 0; k <= 500; k++) { const x = W * k / 500; data.push([x, db(h(x))]); }
+      const ports = []; let bi = 0, bg = -1;
+      for (let k = 0; k < N; k++) { const x = k * W / (N - 1), g = h(x); ports.push([x, g]); if (g > bg) { bg = g; bi = k; } }
+      const pts = ports.map((p, k) => ({ x: p[0], y: Math.max(-30, db(p[1])), color: k === bi ? "c2" : "ref", r: k === bi ? 5.5 : 4 }));
+      pts.push(pts.splice(bi, 1)[0]);
+      pts[pts.length - 1].label = "Best port";
+      plot.set({
+        x: { min: 0, max: W, ticks: ticks(0, W, 5), label: "Position along the antenna (wavelengths)", fmt: (x) => String(+x.toFixed(2)), hover: (x) => fmt(x, 2) + "λ" },
+        y: { min: -30, max: 10, ticks: [-30, -20, -10, 0, 10], label: "Channel gain (dB)", hover: (x) => fmt(x, 1) + " dB" },
+        series: [{ name: "Gain", color: "c1", data: data }],
+        points: pts
+      });
+      read.set("b", "port " + (bi + 1) + ", " + (db(bg / ports[0][1]) >= 0 ? "+" : "") + fmt(db(bg / ports[0][1]), 1) + " dB over port 1");
+      monteCarlo(W, N);
+    });
+    [w, n].forEach((x) => x.input.addEventListener("input", run));
+    nb.addEventListener("click", () => { seed = (seed * 9301 + 49297) % 233280; run(); });
+    run();
+  };
+
+  /* Hardware impairments: spectral efficiency ceiling */
+  DEMOS["hwi-ceiling"] = function (root) {
+    const k = slider({ id: "hwi-k", label: "Impairment level κ (EVM)", min: 0, max: 25, step: 0.5, value: 8, fmt: (x) => x + "%" });
+    const presets = $("div", { class: "ctl ctl-presets" }, [$("span", { class: "ctl-l", text: "3GPP EVM limits" })]);
+    const row = $("div", { class: "seg-mini" });
+    [["QPSK", 17.5], ["16-QAM", 12.5], ["64-QAM", 8], ["256-QAM", 3.5]].forEach((p) => {
+      const bt = $("button", { type: "button", id: "hwi-" + p[0].replace(/\W/g, ""), text: p[0] + " " + p[1] + "%" });
+      bt.addEventListener("click", () => { k.set(p[1]); run(); });
+      row.appendChild(bt);
+    });
+    presets.appendChild(row);
+    const read = readouts([["s", "SNDR ceiling, 1/κ²"], ["c", "Capacity ceiling"], ["l", "Loss at 30 dB SNR"]]);
+    const plot = shell(root, {
+      controls: [k.el, presets], read: read,
+      legend: legend([["c1", "With impairments"], ["ref", "Ideal hardware", true]]),
+      label: "Spectral efficiency against SNR for ideal and impaired hardware."
+    });
+    const run = frame(() => {
+      const kk = k.value / 100, k2 = kk * kk;
+      const ideal = [], imp = [];
+      for (let s = -10; s <= 50.0001; s += 0.25) {
+        const S = Math.pow(10, s / 10);
+        ideal.push([s, Math.log2(1 + S)]);
+        imp.push([s, Math.log2(1 + S / (k2 * S + 1))]);
+      }
+      const ceil = k2 > 0 ? Math.log2(1 + 1 / k2) : null;
+      plot.set({
+        x: { min: -10, max: 50, ticks: [-10, 0, 10, 20, 30, 40, 50], label: "SNR (dB)", hover: (x) => "SNR " + fmt(x, 1) + " dB" },
+        y: { min: 0, max: 18, ticks: [0, 3, 6, 9, 12, 15, 18], label: "Spectral efficiency (bit/s/Hz)", hover: (x) => fmt(x, 2) + " bit/s/Hz" },
+        series: [{ name: "Impaired", color: "c1", data: imp }, { name: "Ideal", color: "ref", data: ideal, dash: [6, 5], width: 1.5 }],
+        hlines: ceil !== null ? [{ y: ceil, color: "c2", label: "Ceiling " + fmt(ceil, 2) + " bit/s/Hz" }] : []
+      });
+      read.set("s", ceil !== null ? fmt(db(1 / k2), 1) + " dB" : "none (ideal hardware)");
+      read.set("c", ceil !== null ? fmt(ceil, 2) + " bit/s/Hz" : "none");
+      const S30 = 1000;
+      read.set("l", fmt(Math.log2(1 + S30) - Math.log2(1 + S30 / (k2 * S30 + 1)), 2) + " bit/s/Hz");
+    });
+    k.input.addEventListener("input", run);
+    run();
+  };
+
+
+  /* Optimization: successive convex approximation on two-user power control */
+  DEMOS["opt-sca"] = function (root) {
+    const P = 100, a1 = 1, a2 = 0.4, LN2 = Math.LN2;
+    const bS = slider({ id: "sca-b", label: "Interference, cross-link gain", min: 0, max: 1, step: 0.01, value: 0.02, fmt: (v) => v.toFixed(2) });
+    const xS = slider({ id: "sca-x", label: "Starting point, power to user 1", min: 0, max: 1, step: 0.01, value: 0.05, fmt: (v) => Math.round(v * 100) + "%" });
+    const stepB = button("sca-step", "Next iteration"), runB = button("sca-run", "Run to convergence"), resetB = button("sca-reset", "Restart");
+    const btnRow = $("div", { class: "ctl ctl-btn" }, [$("div", { style: "display:flex;flex-wrap:wrap;gap:0.5rem" }, [stepB, runB, resetB])]);
+    const read = readouts([["t", "Iteration"], ["r", "Sum rate now"], ["g", "Best possible (grid search)"], ["s", "Status"]]);
+    const plot = shell(root, {
+      controls: [bS.el, xS.el, btnRow], read: read,
+      legend: legend([["c1", "Sum rate R(p)"], ["c2", "Concave surrogate at the current point"], ["ref", "Earlier iterates", "dot"]]),
+      label: "Sum rate of two interfering users against the share of power given to user 1, with the SCA surrogate and its iterates."
+    });
+    let x = 0.05, t = 0, trail = [], done = false;
+    const model = () => {
+      const b = bS.value;
+      const f = (u) => Math.log2(1 + P * (u * a1 + (1 - u) * b)) + Math.log2(1 + P * ((1 - u) * a2 + u * b));
+      const g = (u) => Math.log2(1 + P * (1 - u) * b) + Math.log2(1 + P * u * b);
+      const gp = (u) => (-P * b / (1 + P * (1 - u) * b) + P * b / (1 + P * u * b)) / LN2;
+      return { f: f, g: g, gp: gp, R: (u) => f(u) - g(u) };
+    };
+    function argmaxSurrogate(m, xk) {
+      const S = (u) => m.f(u) - m.g(xk) - m.gp(xk) * (u - xk);
+      let lo = 0, hi = 1;
+      for (let i = 0; i < 70; i++) {
+        const m1 = lo + (hi - lo) * 0.382, m2 = lo + (hi - lo) * 0.618;
+        if (S(m1) < S(m2)) lo = m1; else hi = m2;
+      }
+      const c = (lo + hi) / 2, cands = [0, 1, c];
+      return cands.reduce((best, u) => (S(u) > S(best) ? u : best), c);
+    }
+    function restart() { x = xS.value; t = 0; trail = []; done = false; draw(); }
+    function step() {
+      if (done) return;
+      const m = model(), xn = argmaxSurrogate(m, x);
+      trail.push(x); t++;
+      if (Math.abs(xn - x) < 1e-4) done = true;
+      x = xn;
+    }
+    const draw = frame(() => {
+      const m = model(), cur = [], sur = [];
+      let rmin = Infinity, rmax = -Infinity, xbest = 0;
+      for (let k = 0; k <= 400; k++) {
+        const u = k / 400, r = m.R(u);
+        cur.push([u, r]);
+        sur.push([u, m.f(u) - m.g(x) - m.gp(x) * (u - x)]);
+        if (r < rmin) rmin = r;
+        if (r > rmax) { rmax = r; xbest = u; }
+      }
+      const ymin = Math.max(0, Math.floor(rmin - 1)), ymax = Math.ceil(rmax + 0.6);
+      const pts = trail.slice(-8).map((u) => ({ x: u, y: m.R(u), color: "ref", r: 3.5 }));
+      pts.push({ x: x, y: m.R(x), color: "c1", r: 5.5, label: t ? "p after " + t + (t === 1 ? " step" : " steps") : "Start" });
+      plot.set({
+        x: { min: 0, max: 1, ticks: [0, 0.25, 0.5, 0.75, 1], fmt: (v) => Math.round(v * 100) + "%", label: "Share of total power given to user 1", hover: (v) => fmt(v * 100, 1) + "% to user 1" },
+        y: { min: ymin, max: ymax, ticks: ticks(ymin, ymax, 4), label: "Sum rate (bit/s/Hz)", fmt: (v) => String(+v.toFixed(1)), hover: (v) => fmt(v, 2) + " bit/s/Hz" },
+        series: [{ name: "Sum rate", color: "c1", data: cur }, { name: "Surrogate", color: "c2", data: sur, width: 1.75 }],
+        points: pts
+      });
+      const r = m.R(x), gap = rmax - r;
+      read.set("t", String(t));
+      read.set("r", fmt(r, 2) + " bit/s/Hz");
+      read.set("g", fmt(rmax, 2) + " bit/s/Hz at " + Math.round(xbest * 100) + "%");
+      read.set("s", !done ? (t ? "Improving" : "Press Next iteration")
+        : gap < 0.01 ? "Converged, global optimum"
+        : "Stuck at a local optimum, " + fmt(gap, 2) + " bit/s/Hz below best");
+    });
+    stepB.addEventListener("click", () => { step(); draw(); });
+    runB.addEventListener("click", () => { for (let i = 0; i < 60 && !done; i++) step(); draw(); });
+    resetB.addEventListener("click", restart);
+    bS.input.addEventListener("input", restart);
+    xS.input.addEventListener("input", restart);
+    restart();
+  };
+
+  /* ----------------------------------------------------------------- boot */
+  document.querySelectorAll(".demo[data-demo]").forEach((el) => {
+    const f = DEMOS[el.getAttribute("data-demo")];
+    if (f) f(el);
+  });
+  const redrawAll = () => plots.forEach((p) => p.redraw());
+  const mq = window.matchMedia("(prefers-color-scheme: dark)");
+  if (mq.addEventListener) mq.addEventListener("change", redrawAll);
+  new MutationObserver(redrawAll).observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
+})();
+</script>
+<script>
+(function () {
+  function tipFor(fig) {
+    let t = fig.querySelector(".ptip");
+    if (!t) { t = document.createElement("div"); t.className = "ptip"; t.hidden = true; fig.appendChild(t); }
+    return t;
+  }
+  function place(fig, tip, cx, cy) {
+    const fr = fig.getBoundingClientRect();
+    let x = cx - fr.left + 14, y = cy - fr.top + 14;
+    tip.hidden = false;
+    const w = tip.offsetWidth, h = tip.offsetHeight;
+    if (x + w > fr.width - 6) x = cx - fr.left - w - 14;
+    if (y + h > fr.height - 6) y = cy - fr.top - h - 14;
+    tip.style.transform = "translate(" + Math.max(4, x) + "px," + Math.max(4, y) + "px)";
+  }
+  // marks carrying their own tooltip
+  document.querySelectorAll("figure.viz").forEach(function (fig) {
+    const marks = fig.querySelectorAll("[data-tip]");
+    if (!marks.length) return;
+    const tip = tipFor(fig);
+    marks.forEach(function (m) {
+      m.classList.add("hov");
+      const show = function (e) { tip.innerHTML = m.getAttribute("data-tip"); place(fig, tip, e.clientX, e.clientY); };
+      m.addEventListener("pointermove", show);
+      m.addEventListener("pointerleave", function () { tip.hidden = true; });
+    });
+  });
+  // line plots: crosshair readout
+  document.querySelectorAll("figure.viz svg[data-plot]").forEach(function (svg) {
+    const fig = svg.closest("figure"), cfg = JSON.parse(svg.getAttribute("data-plot"));
+    const tip = tipFor(fig), ns = "http://www.w3.org/2000/svg";
+    const xh = document.createElementNS(ns, "line"); xh.setAttribute("class", "axis"); xh.setAttribute("y1", cfg.y0); xh.setAttribute("y2", cfg.y1); xh.style.display = "none";
+    svg.appendChild(xh);
+    const dots = cfg.series.map(function (s) { const c = document.createElementNS(ns, "circle"); c.setAttribute("r", 4.5); c.setAttribute("class", "f" + s.k); c.setAttribute("stroke", "var(--surface)"); c.setAttribute("stroke-width", 2); c.style.display = "none"; svg.appendChild(c); return c; });
+    const SUP = { "-": "⁻", "0": "⁰", "1": "¹", "2": "²", "3": "³", "4": "⁴", "5": "⁵", "6": "⁶", "7": "⁷", "8": "⁸", "9": "⁹" };
+    function fv(v) {
+      if (cfg.ypow) { const e = Math.pow(10, v).toExponential(1).split("e"); return e[0] + "×10" + String(+e[1]).split("").map(function (c) { return SUP[c] || c; }).join(""); }
+      return String(+v.toFixed(cfg.yd));
+    }
+    function sx(v) { return cfg.xlog ? Math.log10(v) : v; }
+    function px(v) { return cfg.x0 + (sx(v) - sx(cfg.xmin)) / (sx(cfg.xmax) - sx(cfg.xmin)) * (cfg.x1 - cfg.x0); }
+    function py(v) { return cfg.y1 - (v - cfg.ymin) / (cfg.ymax - cfg.ymin) * (cfg.y1 - cfg.y0); }
+    svg.addEventListener("pointermove", function (e) {
+      const pt = svg.createSVGPoint(); pt.x = e.clientX; pt.y = e.clientY;
+      const p = pt.matrixTransform(svg.getScreenCTM().inverse());
+      if (p.x < cfg.x0 - 4 || p.x > cfg.x1 + 4) { xh.style.display = "none"; dots.forEach(function (d) { d.style.display = "none"; }); tip.hidden = true; return; }
+      let rows = [], gx = null;
+      cfg.series.forEach(function (s, i) {
+        let best = null, bd = 1e9;
+        s.p.forEach(function (q) { const d = Math.abs(px(q[0]) - p.x); if (d < bd) { bd = d; best = q; } });
+        if (!best) return;
+        if (gx === null) gx = best;
+        const yy = py(best[1]);
+        if (yy >= cfg.y0 - 2 && yy <= cfg.y1 + 2) { dots[i].setAttribute("cx", px(best[0])); dots[i].setAttribute("cy", yy); dots[i].style.display = ""; } else dots[i].style.display = "none";
+        rows.push('<div><i style="--c:var(--k' + s.k + ')"></i>' + s.n + ": <b>" + fv(best[1]) + (cfg.yu || "") + "</b></div>");
+      });
+      if (gx === null) return;
+      xh.setAttribute("x1", px(gx[0])); xh.setAttribute("x2", px(gx[0])); xh.style.display = "";
+      tip.innerHTML = '<div><b>' + cfg.xl + " " + (+gx[0].toFixed(cfg.xd)) + (cfg.xu || "") + "</b></div>" + rows.join("");
+      place(fig, tip, e.clientX, e.clientY);
+    });
+    svg.addEventListener("pointerleave", function () { xh.style.display = "none"; dots.forEach(function (d) { d.style.display = "none"; }); tip.hidden = true; });
+  });
+})();
+</script>
 </body>
 </html>
