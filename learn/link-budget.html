@@ -1,0 +1,1598 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="How engineers work out whether a wireless link will work: decibels, the link budget, noise floors, SNR and data rate, and fade margins, with a calculator.">
+<meta name="author" content="Mohd Hamza Naim Shaikh">
+<meta name="theme-color" content="#F5F7FA" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0A1524" media="(prefers-color-scheme: dark)">
+<title>Link budgets | Wireless tutorials</title>
+<!-- share-meta -->
+<link rel="canonical" href="https://hamza-qub.github.io/learn/link-budget.html">
+<link rel="icon" href="../favicon.svg" type="image/svg+xml">
+<link rel="icon" href="../favicon-32.png" type="image/png" sizes="32x32">
+<link rel="apple-touch-icon" href="../apple-touch-icon.png">
+<meta property="og:site_name" content="Hamza Shaikh">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Link budgets | Wireless tutorials">
+<meta property="og:description" content="How engineers work out whether a wireless link will work: decibels, the link budget, noise floors, SNR and data rate, and fade margins, with a calculator.">
+<meta property="og:url" content="https://hamza-qub.github.io/learn/link-budget.html">
+<meta property="og:image" content="https://hamza-qub.github.io/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Mohd Hamza Naim Shaikh, Research Fellow at Queen’s University Belfast, beside the phase pattern of a reconfigurable intelligent surface.">
+<meta property="og:locale" content="en_GB">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Link budgets | Wireless tutorials">
+<meta name="twitter:description" content="How engineers work out whether a wireless link will work: decibels, the link budget, noise floors, SNR and data rate, and fade margins, with a calculator.">
+<meta name="twitter:image" content="https://hamza-qub.github.io/og-image.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&amp;family=STIX+Two+Text:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&amp;display=swap">
+<style>
+:root {
+  --bg: #F5F7FA;
+  --surface: #FFFFFF;
+  --ink: #0E1A2B;
+  --ink-2: #2C3B50;
+  --muted: #5A6779;
+  --line: #D8DFE8;
+  --accent: #00468C;
+  --accent-hover: #003468;
+  --on-accent: #FFFFFF;
+  --signal: #C98200;
+  --tile-lo: #0A2B57;
+  --tile-hi: #EAF0F7;
+  --serif: "STIX Two Text", "STIX Two", "Times New Roman", Times, serif;
+  --sans: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  color-scheme: light;
+  box-sizing: border-box;
+  padding-top: env(safe-area-inset-top, 0px);
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0A1524;
+    --surface: #0F1E31;
+    --ink: #E6ECF4;
+    --ink-2: #C4CEDB;
+    --muted: #94A2B5;
+    --line: #22344A;
+    --accent: #8DB9F2;
+    --accent-hover: #B7D3F8;
+    --on-accent: #06182E;
+    --signal: #F2B544;
+    --tile-lo: #0E2443;
+    --tile-hi: #A8C9F3;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0A1524;
+  --surface: #0F1E31;
+  --ink: #E6ECF4;
+  --ink-2: #C4CEDB;
+  --muted: #94A2B5;
+  --line: #22344A;
+  --accent: #8DB9F2;
+  --accent-hover: #B7D3F8;
+  --on-accent: #06182E;
+  --signal: #F2B544;
+  --tile-lo: #0E2443;
+  --tile-hi: #A8C9F3;
+  color-scheme: dark;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+html {
+  scroll-padding-top: calc(env(safe-area-inset-top, 0px) + 4.5rem);
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+@media (prefers-reduced-motion: no-preference) { html { scroll-behavior: smooth; } }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--serif);
+  font-size: 1.125rem;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+img { max-width: 100%; height: auto; }
+a { color: var(--accent); text-underline-offset: 0.18em; }
+a:hover { color: var(--accent-hover); }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 2px; }
+p { margin: 0 0 1em; }
+h1, h2, h3 { font-family: var(--serif); color: var(--ink); text-wrap: balance; }
+
+.wrap { max-width: 72rem; margin-inline: auto; padding-inline: clamp(1.25rem, 4vw, 2.5rem); }
+
+.skip {
+  position: absolute; left: 1rem; top: -4rem; z-index: 50;
+  background: var(--ink); color: var(--bg);
+  font-family: var(--sans); font-size: 0.875rem; padding: 0.6rem 0.9rem; text-decoration: none;
+}
+.skip:focus { top: calc(env(safe-area-inset-top, 0px) + 0.75rem); color: var(--bg); }
+
+/* Header */
+.site-header {
+  position: sticky;
+  top: env(safe-area-inset-top, 0px);
+  z-index: 20;
+  background: var(--bg);
+  background: color-mix(in srgb, var(--bg) 88%, transparent);
+  -webkit-backdrop-filter: saturate(1.4) blur(12px);
+  backdrop-filter: saturate(1.4) blur(12px);
+  border-bottom: 1px solid var(--line);
+}
+.header-inner { display: flex; align-items: center; justify-content: space-between; gap: 1.5rem; min-height: 3.5rem; }
+.brand { font-family: var(--serif); font-weight: 600; font-size: 1.125rem; color: var(--ink); text-decoration: none; white-space: nowrap; }
+.brand:hover { color: var(--ink); }
+.site-nav { min-width: 0; }
+.site-nav ul {
+  display: flex; gap: clamp(0.9rem, 2.4vw, 1.9rem);
+  list-style: none; margin: 0; padding: 0;
+  overflow-x: auto; scrollbar-width: none;
+}
+.site-nav ul::-webkit-scrollbar { display: none; }
+.site-nav a {
+  display: inline-block; padding: 1rem 0 0.9rem;
+  font-family: var(--sans); font-size: 0.9375rem; color: var(--muted);
+  text-decoration: none; white-space: nowrap;
+  border-bottom: 2px solid transparent;
+}
+.site-nav a:hover { color: var(--ink); }
+.site-nav a[aria-current="true"] { color: var(--ink); border-bottom-color: var(--accent); }
+@media (max-width: 560px) {
+  .brand { display: none; }
+  .site-nav { width: 100%; }
+  .site-nav ul { justify-content: space-between; }
+}
+
+/* Hero */
+.hero { padding-block: clamp(3rem, 8vw, 6.5rem) clamp(3rem, 7vw, 5.5rem); }
+.hero-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.12fr) minmax(0, 0.88fr);
+  gap: clamp(2.5rem, 6vw, 5rem);
+  align-items: center;
+}
+.hero h1 {
+  font-weight: 600;
+  font-size: clamp(2.6rem, 6.4vw, 4.6rem);
+  line-height: 1.02;
+  letter-spacing: -0.018em;
+  margin: 0 0 1.1rem;
+}
+.role { font-family: var(--sans); font-weight: 500; font-size: 1.0625rem; color: var(--ink-2); margin: 0 0 1.75rem; }
+.lede { font-size: clamp(1.25rem, 2.3vw, 1.5rem); line-height: 1.45; max-width: 31ch; margin: 0 0 1.25rem; }
+.metrics { font-family: var(--sans); font-size: 0.9375rem; color: var(--muted); margin: 0 0 2rem; }
+.actions { display: flex; flex-wrap: wrap; gap: 0.75rem; margin: 0 0 1.75rem; }
+.btn {
+  display: inline-flex; align-items: center; justify-content: center;
+  min-height: 2.75rem; padding: 0 1.2rem;
+  font-family: var(--sans); font-weight: 500; font-size: 0.9375rem;
+  background: var(--accent); color: var(--on-accent);
+  border: 1px solid var(--accent); border-radius: 3px; text-decoration: none;
+}
+.btn:hover { background: var(--accent-hover); border-color: var(--accent-hover); color: var(--on-accent); }
+.btn-quiet { background: transparent; color: var(--ink); border-color: var(--line); }
+.btn-quiet:hover { background: transparent; color: var(--ink); border-color: var(--ink-2); }
+.profiles {
+  list-style: none; margin: 0; padding: 0;
+  display: flex; flex-wrap: wrap; gap: 0.4rem 1.15rem;
+  font-family: var(--sans); font-size: 0.9375rem;
+}
+.profiles a { color: var(--ink-2); text-decoration: underline; text-decoration-color: var(--line); text-decoration-thickness: 1px; }
+.profiles a:hover { color: var(--accent); text-decoration-color: var(--accent); }
+
+.ris { margin: 0; width: 100%; max-width: 30rem; justify-self: end; }
+.ris canvas { display: block; width: 100%; aspect-ratio: 1 / 1; cursor: crosshair; touch-action: pan-y; }
+.ris figcaption { font-family: var(--sans); font-size: 0.8125rem; line-height: 1.55; color: var(--muted); margin-top: 0.9rem; max-width: 46ch; }
+@media (max-width: 880px) {
+  .hero-grid { grid-template-columns: minmax(0, 1fr); }
+  .ris { justify-self: start; max-width: 26rem; }
+}
+
+/* Sections */
+.section { padding-block: clamp(3.5rem, 8vw, 6rem); border-top: 1px solid var(--line); }
+.section-grid { display: grid; grid-template-columns: 11.5rem minmax(0, 1fr); gap: 2.5rem; }
+.section-grid > h2 {
+  position: sticky; top: calc(env(safe-area-inset-top, 0px) + 5rem); align-self: start;
+  margin: 0; font-size: 2rem; font-weight: 600; line-height: 1.15;
+}
+@media (max-width: 880px) {
+  .section-grid { grid-template-columns: minmax(0, 1fr); gap: 1.5rem; }
+  .section-grid > h2 { position: static; }
+}
+h3 { font-weight: 600; font-size: 1.3125rem; line-height: 1.3; margin: 0 0 0.5rem; }
+.intro { color: var(--ink-2); max-width: 62ch; margin-bottom: 1.75rem; }
+
+/* About */
+.about-grid { display: grid; grid-template-columns: minmax(0, 1fr) 17rem; gap: 3.5rem; }
+.prose p { max-width: 66ch; }
+.side h3 { font-family: var(--sans); font-size: 0.9375rem; font-weight: 600; margin: 0 0 0.6rem; }
+.side ul { list-style: none; margin: 0; padding: 0; }
+.side li { padding: 0.8rem 0; border-top: 1px solid var(--line); font-size: 1rem; line-height: 1.45; }
+.side .date { display: block; font-family: var(--sans); font-size: 0.8125rem; color: var(--muted); margin-bottom: 0.15rem; }
+.portrait { margin: 0 0 1.75rem; }
+.portrait img { display: block; width: 100%; max-width: 15rem; aspect-ratio: 4 / 5; object-fit: cover; border-radius: 2px; }
+@media (max-width: 1060px) { .about-grid { grid-template-columns: minmax(0, 1fr); gap: 2.5rem; } }
+
+/* Research */
+.themes { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 2.75rem; }
+.theme { border-top: 1px solid var(--line); padding: 1.3rem 0 1.6rem; }
+.theme p { font-size: 1.0625rem; color: var(--ink-2); margin: 0 0 0.7rem; max-width: 52ch; }
+@media (max-width: 720px) { .themes { grid-template-columns: minmax(0, 1fr); } }
+.linkish {
+  font-family: var(--sans); font-size: 0.875rem; font-weight: 500; color: var(--accent);
+  background: none; border: 0; padding: 0.3rem 0; cursor: pointer;
+  text-decoration: underline; text-underline-offset: 0.2em; text-decoration-thickness: 1px;
+}
+.linkish:hover { color: var(--accent-hover); }
+
+/* Publications */
+.pub-controls {
+  display: flex; flex-wrap: wrap; align-items: center; gap: 0.85rem 1.25rem;
+  font-family: var(--sans); font-size: 0.9375rem;
+  padding-bottom: 1.25rem; border-bottom: 1px solid var(--line);
+}
+.seg { display: flex; flex-wrap: wrap; gap: 0.4rem; width: 100%; }
+.seg button {
+  font-family: var(--sans); font-size: 0.875rem; color: var(--ink-2);
+  background: transparent; border: 1px solid var(--line); border-radius: 3px;
+  min-height: 2.25rem; padding: 0 0.75rem; cursor: pointer;
+}
+.seg button:hover { border-color: var(--ink-2); }
+.seg button[aria-checked="true"] { background: var(--ink); border-color: var(--ink); color: var(--bg); }
+.seg .n { margin-left: 0.35rem; opacity: 0.68; font-variant-numeric: tabular-nums; }
+.field { display: inline-flex; align-items: center; gap: 0.5rem; color: var(--ink-2); }
+.field select, .search input {
+  font-family: var(--sans); font-size: 0.875rem; color: var(--ink);
+  background: var(--surface); border: 1px solid var(--line); border-radius: 3px;
+  min-height: 2.25rem; padding: 0 0.6rem;
+}
+.field select { max-width: 15rem; }
+.check { display: inline-flex; align-items: center; gap: 0.45rem; color: var(--ink-2); cursor: pointer; }
+.check input { width: 1rem; height: 1rem; accent-color: var(--accent); margin: 0; }
+.search { flex: 1 1 13rem; min-width: 0; }
+.search input { width: 100%; }
+.pub-count { font-family: var(--sans); font-size: 0.8125rem; color: var(--muted); margin: 0.85rem 0 0; }
+.pub-empty { font-family: var(--sans); font-size: 0.9375rem; color: var(--ink-2); padding: 1.5rem 0; }
+.pub-empty[hidden] { display: none; }
+
+.pub-year { display: grid; grid-template-columns: 4.25rem minmax(0, 1fr); gap: 1rem; padding-top: 1.4rem; }
+.pub-year[hidden] { display: none; }
+.pub-year > h3 { font-family: var(--sans); font-size: 0.9375rem; font-weight: 600; color: var(--muted); margin: 1rem 0 0; font-variant-numeric: tabular-nums; }
+.pub-list { list-style: none; margin: 0; padding: 0; }
+.pub { display: grid; grid-template-columns: 2.6rem minmax(0, 1fr); gap: 0.6rem; padding: 0.95rem 0 1.05rem; border-bottom: 1px solid var(--line); }
+.pub:last-child { border-bottom: 0; }
+.pub[hidden] { display: none; }
+.pub-id { font-family: var(--sans); font-size: 0.8125rem; color: var(--muted); padding-top: 0.22rem; font-variant-numeric: tabular-nums; }
+.pub-title { font-size: 1.0625rem; font-weight: 600; line-height: 1.4; color: var(--ink); text-decoration: none; }
+.pub-title:hover { color: var(--accent); text-decoration: underline; text-decoration-thickness: 1px; }
+.pub-authors { font-size: 1rem; line-height: 1.5; color: var(--ink-2); margin: 0.3rem 0 0; }
+.pub-authors strong { color: var(--ink); font-weight: 600; }
+.pub-venue { font-size: 1rem; line-height: 1.5; color: var(--muted); margin: 0.1rem 0 0; }
+.pub-links { display: flex; flex-wrap: wrap; gap: 0.25rem 1.1rem; font-family: var(--sans); font-size: 0.8125rem; margin: 0.4rem 0 0; }
+@media (max-width: 600px) {
+  .pub-year { grid-template-columns: minmax(0, 1fr); gap: 0; }
+  .pub-year > h3 { margin-top: 0.5rem; }
+}
+
+/* CV */
+.cv-head { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 1rem; margin-bottom: 1.5rem; }
+.cv-head p { margin: 0; color: var(--ink-2); max-width: 54ch; }
+.cv-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 3.5rem; }
+@media (max-width: 980px) { .cv-grid { grid-template-columns: minmax(0, 1fr); } }
+.cv-block { margin-bottom: 2.5rem; }
+.timeline { list-style: none; margin: 0.4rem 0 0; padding: 0; }
+.timeline li { display: grid; grid-template-columns: 7rem minmax(0, 1fr); gap: 1rem; padding: 0.9rem 0; border-top: 1px solid var(--line); }
+.when { font-family: var(--sans); font-size: 0.875rem; color: var(--muted); padding-top: 0.2rem; font-variant-numeric: tabular-nums; }
+.when .now { display: inline-block; width: 0.5rem; height: 0.5rem; border-radius: 50%; background: var(--signal); margin-right: 0.4rem; vertical-align: 0.06em; }
+.what strong { display: block; font-weight: 600; }
+.what .where { display: block; color: var(--ink-2); }
+.what .note { display: block; color: var(--muted); font-size: 1rem; line-height: 1.5; margin-top: 0.25rem; }
+@media (max-width: 480px) { .timeline li { grid-template-columns: minmax(0, 1fr); gap: 0.2rem; } }
+.ruled { list-style: none; margin: 0.4rem 0 0; padding: 0; }
+.ruled li { padding: 0.65rem 0; border-top: 1px solid var(--line); line-height: 1.5; }
+.ruled .yr { font-family: var(--sans); font-size: 0.875rem; color: var(--muted); white-space: nowrap; }
+.dl { margin: 0.4rem 0 0; }
+.dl dt { font-family: var(--sans); font-size: 0.875rem; font-weight: 600; color: var(--ink); padding-top: 0.7rem; border-top: 1px solid var(--line); }
+.dl dd { margin: 0.2rem 0 0.8rem; color: var(--ink-2); line-height: 1.55; }
+[data-cv-pdf][hidden] { display: none; }
+
+/* Contact */
+.contact-mail {
+  display: inline-block; font-size: clamp(1.5rem, 3.6vw, 2.25rem); font-weight: 500; line-height: 1.2;
+  color: var(--ink); text-decoration: underline; text-decoration-color: var(--line); text-decoration-thickness: 2px;
+  overflow-wrap: anywhere; margin-bottom: 1rem;
+}
+.contact-mail:hover { color: var(--accent); text-decoration-color: var(--accent); }
+.contact-where { color: var(--ink-2); margin-bottom: 1.5rem; }
+
+.site-footer { border-top: 1px solid var(--line); padding-block: 2rem 2.5rem; font-family: var(--sans); font-size: 0.8125rem; color: var(--muted); }
+.site-footer p { margin: 0; }
+
+@media print {
+  .site-header, .skip, .ris, .actions, .pub-controls, .pub-count, .linkish, .pub-links { display: none !important; }
+  body { background: #fff; color: #000; font-size: 10.5pt; }
+  .section { border-top: 0; padding-block: 1rem; }
+  .section-grid { grid-template-columns: 1fr; gap: 0.5rem; }
+  .section-grid > h2 { position: static; }
+  .pub[hidden], .pub-year[hidden] { display: grid !important; }
+  a { color: inherit; text-decoration: none; }
+}
+/* ---- additions: tutorials, interactive models, diagrams, Urdu ---- */
+/* Chart colours validated for colour-vision deficiency on both surfaces. */
+:root {
+  --chart-1: #1F62AE;
+  --chart-2: #C98200;
+  --tint: #EAF0F7;
+  --ok-bg: #E3F1E8;
+  --ok-ink: #1D5B34;
+  --no-bg: #F7E8E2;
+  --no-ink: #7A2E14;
+  --urdu: "Noto Nastaliq Urdu", "Jameel Noori Nastaleeq", "Alvi Nastaleeq", "Urdu Typesetting", serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --chart-1: #4A8EE2;
+    --chart-2: #C4851E;
+    --tint: #12253D;
+    --ok-bg: #163524;
+    --ok-ink: #A9DDBA;
+    --no-bg: #3A2117;
+    --no-ink: #F2BBA4;
+  }
+}
+:root[data-theme="dark"] {
+  --chart-1: #4A8EE2;
+  --chart-2: #C4851E;
+  --tint: #12253D;
+  --ok-bg: #163524;
+  --ok-ink: #A9DDBA;
+  --no-bg: #3A2117;
+  --no-ink: #F2BBA4;
+}
+
+[hidden] { display: none !important; }
+.site-nav a[aria-current="page"] { color: var(--ink); border-bottom-color: var(--accent); }
+
+/* Shared page head for inner pages */
+.page-head { padding-block: clamp(2.5rem, 6vw, 4.5rem) clamp(1.5rem, 4vw, 2.5rem); }
+.crumbs { font-family: var(--sans); font-size: 0.875rem; color: var(--muted); margin: 0 0 1.25rem; display: flex; flex-wrap: wrap; gap: 0.4rem; }
+.crumbs a { color: var(--ink-2); }
+.page-head h1 { font-weight: 600; font-size: clamp(2.2rem, 5.2vw, 3.6rem); line-height: 1.05; letter-spacing: -0.015em; margin: 0 0 1rem; max-width: 22ch; }
+.page-head .lede { max-width: 40ch; }
+.meta-row { display: flex; flex-wrap: wrap; gap: 0.5rem 1.25rem; font-family: var(--sans); font-size: 0.875rem; color: var(--muted); margin: 0; padding: 0; list-style: none; }
+.meta-row li { display: inline-flex; align-items: center; gap: 0.4rem; }
+.meta-row .level { color: var(--ink-2); font-weight: 500; }
+
+/* Tutorial layout */
+.tut-grid { display: grid; grid-template-columns: 12.5rem minmax(0, 1fr); gap: 3.5rem; padding-bottom: clamp(3rem, 8vw, 5rem); border-top: 1px solid var(--line); padding-top: 2.5rem; }
+.toc { position: sticky; top: calc(env(safe-area-inset-top, 0px) + 5rem); align-self: start; font-family: var(--sans); font-size: 0.875rem; }
+.toc h2 { font-family: var(--sans); font-size: 0.75rem; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); margin: 0 0 0.75rem; }
+.toc ol { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.15rem; }
+.toc a { display: block; padding: 0.3rem 0 0.3rem 0.75rem; color: var(--ink-2); text-decoration: none; border-left: 2px solid var(--line); line-height: 1.35; }
+.toc a:hover { color: var(--ink); border-left-color: var(--ink-2); }
+.toc a[aria-current="true"] { color: var(--ink); border-left-color: var(--accent); }
+@media (max-width: 1000px) {
+  .tut-grid { grid-template-columns: minmax(0, 1fr); gap: 1.5rem; }
+  .toc { display: none; }
+}
+
+.prose { min-width: 0; max-width: 44rem; }
+.prose > * { max-width: 100%; }
+.prose h2 { font-size: 1.625rem; font-weight: 600; line-height: 1.2; margin: 3rem 0 0.9rem; scroll-margin-top: 5rem; }
+.prose > h2:first-child { margin-top: 0; }
+.prose h3 { font-size: 1.1875rem; margin: 1.75rem 0 0.5rem; }
+.prose p, .prose li { line-height: 1.65; }
+.prose ul, .prose ol { padding-left: 1.3rem; margin: 0 0 1.1em; }
+.prose li { margin-bottom: 0.4em; }
+.prose li::marker { color: var(--muted); }
+.prose strong { font-weight: 600; }
+.prose a { text-decoration-thickness: 1px; }
+.prose dl.terms { margin: 0 0 1.2em; display: grid; gap: 0.9rem; }
+.prose dl.terms dt { font-weight: 600; }
+.prose dl.terms dd { margin: 0.15rem 0 0; color: var(--ink-2); }
+
+/* Equations rendered to SVG at build time */
+svg.tex { display: inline-block; overflow: visible; }
+.eq { overflow-x: auto; overflow-y: hidden; text-align: center; margin: 1.25rem 0 1.4rem; padding-block: 0.2rem; font-size: 1.12em; }
+.eq svg.tex { margin-inline: auto; }
+
+.callout { background: var(--tint); border-radius: 4px; padding: 1.1rem 1.25rem; margin: 1.5rem 0; }
+.callout p:last-child, .callout ul:last-child { margin-bottom: 0; }
+.label { display: block; font-family: var(--sans); font-size: 0.75rem; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink-2); margin-bottom: 0.45rem; }
+
+/* Diagrams */
+figure.diagram { margin: 1.75rem 0; }
+.fig-scroll { overflow-x: auto; }
+.fig-scroll svg { display: block; width: 100%; height: auto; min-width: 34rem; }
+figure.diagram figcaption, figure.table-fig figcaption { font-family: var(--sans); font-size: 0.875rem; line-height: 1.55; color: var(--muted); margin-top: 0.6rem; }
+.dg { color: var(--ink); }
+.dg text { fill: currentColor; font-family: var(--sans); font-size: 13px; }
+.dg .sm { font-size: 11.5px; fill: var(--muted); }
+.dg .lbl { font-weight: 500; }
+.dg .stroke { stroke: currentColor; fill: none; stroke-width: 1.5; }
+.dg .thin { stroke: var(--muted); fill: none; stroke-width: 1; }
+.dg .c1 { stroke: var(--chart-1); fill: none; stroke-width: 2; }
+.dg .c2 { stroke: var(--chart-2); fill: none; stroke-width: 2; }
+.dg .ref { stroke: var(--muted); fill: none; stroke-width: 1.5; stroke-dasharray: 6 5; }
+.dg .fill-c1 { fill: var(--chart-1); }
+.dg .fill-c2 { fill: var(--chart-2); }
+.dg .fill-ink { fill: currentColor; }
+.dg .fill-muted { fill: var(--muted); }
+.dg .fill-line { fill: var(--line); }
+.dg .box { fill: var(--surface); stroke: var(--muted); stroke-width: 1; }
+.dg .box-tint { fill: var(--tint); stroke: none; }
+.dg .surf { fill: var(--surface); }
+
+/* Tables */
+figure.table-fig { margin: 1.5rem 0; }
+.table-scroll { overflow-x: auto; }
+table.cmp { width: 100%; border-collapse: collapse; font-family: var(--sans); font-size: 0.9375rem; min-width: 32rem; }
+table.cmp th, table.cmp td { text-align: left; padding: 0.6rem 0.75rem 0.6rem 0; border-bottom: 1px solid var(--line); vertical-align: top; }
+table.cmp thead th { font-size: 0.8125rem; font-weight: 600; color: var(--ink-2); border-bottom-color: var(--ink-2); }
+table.cmp td { font-variant-numeric: tabular-nums; color: var(--ink-2); }
+table.cmp td:first-child { color: var(--ink); font-weight: 500; }
+table.cmp td.new { color: var(--ink); }
+
+/* Interactive models */
+.demo { background: var(--surface); border: 1px solid var(--line); border-radius: 4px; padding: 1.1rem 1.1rem 1rem; margin: 1.5rem 0; font-family: var(--sans); }
+.demo-controls { display: grid; grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr)); gap: 0.9rem 1.5rem; margin-bottom: 0.9rem; }
+.ctl { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 0.25rem 0.75rem; min-width: 0; }
+.ctl label, .ctl .ctl-l { font-size: 0.8125rem; color: var(--ink-2); grid-column: 1; }
+.ctl output { grid-column: 2; grid-row: 1; font-size: 0.875rem; font-weight: 600; color: var(--ink); font-variant-numeric: tabular-nums; text-align: right; }
+.ctl input[type="range"] { grid-column: 1 / -1; width: 100%; margin: 0; accent-color: var(--chart-1); height: 1.75rem; }
+.ctl-seg, .ctl-presets { grid-template-columns: minmax(0, 1fr); }
+.ctl-btn { grid-template-columns: minmax(0, 1fr); align-content: end; }
+.seg-mini { display: flex; flex-wrap: wrap; gap: 0.35rem; }
+.seg-mini button { font: inherit; font-size: 0.8125rem; color: var(--ink-2); background: transparent; border: 1px solid var(--line); border-radius: 3px; min-height: 2rem; padding: 0 0.6rem; cursor: pointer; }
+.seg-mini button:hover { border-color: var(--ink-2); }
+.seg-mini button[aria-checked="true"] { background: var(--ink); border-color: var(--ink); color: var(--bg); }
+.btn-small { min-height: 2.1rem; font-size: 0.8125rem; padding: 0 0.85rem; justify-self: start; cursor: pointer; }
+.legend { list-style: none; margin: 0 0 0.5rem; padding: 0; display: flex; flex-wrap: wrap; gap: 0.3rem 1.25rem; font-size: 0.8125rem; color: var(--ink-2); }
+.legend li { display: inline-flex; align-items: center; gap: 0.45rem; }
+.key { display: inline-block; width: 1.1rem; height: 0; border-top: 2px solid var(--chart-1); flex: none; }
+.key-c1 { border-top-color: var(--chart-1); }
+.key-c2 { border-top-color: var(--chart-2); }
+.key-ref { border-top-color: var(--muted); }
+.key-dash { border-top-style: dashed; }
+.key-dot { width: 0.55rem; height: 0.55rem; border: 0; border-radius: 50%; background: var(--chart-1); }
+.key-dot.key-c2 { background: var(--chart-2); }
+.key-dot.key-ref { background: var(--muted); }
+.demo-plot { position: relative; width: 100%; aspect-ratio: 16 / 9; max-width: 100%; }
+.demo-plot canvas { display: block; width: 100%; height: 100%; touch-action: pan-y; cursor: crosshair; }
+@media (max-width: 600px) { .demo-plot { aspect-ratio: 4 / 3.4; } }
+.tip { position: absolute; left: 0; top: 0; pointer-events: none; background: var(--surface); border: 1px solid var(--line); border-radius: 3px; padding: 0.45rem 0.6rem; font-size: 0.8125rem; line-height: 1.45; color: var(--ink-2); box-shadow: 0 4px 14px rgba(10, 21, 36, 0.12); white-space: nowrap; z-index: 2; }
+.tip p { margin: 0; display: flex; align-items: center; gap: 0.4rem; }
+.tip .tip-h { color: var(--ink); font-weight: 600; margin-bottom: 0.15rem; }
+.tip b { color: var(--ink); font-weight: 600; font-variant-numeric: tabular-nums; }
+.demo-read { display: grid; grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr)); gap: 0.75rem 1.5rem; margin: 0.9rem 0 0; padding-top: 0.85rem; border-top: 1px solid var(--line); }
+.demo-read dt { font-size: 0.75rem; color: var(--muted); margin-bottom: 0.15rem; }
+.demo-read dd { margin: 0; font-size: 0.9375rem; font-weight: 600; color: var(--ink); font-variant-numeric: tabular-nums; }
+.chip { display: inline-block; font-size: 0.8125rem; font-weight: 600; border-radius: 999px; padding: 0.1rem 0.6rem; }
+.chip-ok { background: var(--ok-bg); color: var(--ok-ink); }
+.chip-no { background: var(--no-bg); color: var(--no-ink); }
+.demo-note { font-family: var(--sans); font-size: 0.875rem; color: var(--muted); margin-top: -0.6rem; }
+
+/* Takeaways, self-check, references, papers */
+.takeaways { border-top: 2px solid var(--ink); padding-top: 1rem; margin-top: 3rem; }
+.takeaways ul { margin-bottom: 0; }
+details.qa { border-bottom: 1px solid var(--line); padding: 0.85rem 0; }
+details.qa:first-of-type { border-top: 1px solid var(--line); }
+details.qa summary { cursor: pointer; font-weight: 600; line-height: 1.5; list-style-position: outside; margin-left: 1.1rem; }
+details.qa summary::marker { color: var(--muted); }
+details.qa .ans { margin: 0.6rem 0 0 1.1rem; color: var(--ink-2); }
+details.qa .ans p:last-child { margin-bottom: 0; }
+ol.refs { padding-left: 1.5rem; }
+ol.refs li { font-size: 1rem; line-height: 1.55; color: var(--ink-2); margin-bottom: 0.7rem; }
+ol.refs a { font-family: var(--sans); font-size: 0.8125rem; white-space: nowrap; }
+.paper-list { list-style: none; margin: 0; padding: 0; }
+.paper-list li { padding: 0.8rem 0; border-bottom: 1px solid var(--line); }
+.paper-list li:first-child { border-top: 1px solid var(--line); }
+.paper-list a.t { font-weight: 600; color: var(--ink); text-decoration: none; line-height: 1.4; }
+.paper-list a.t:hover { color: var(--accent); text-decoration: underline; text-decoration-thickness: 1px; }
+.paper-list .v { display: block; font-size: 0.9375rem; color: var(--muted); margin-top: 0.2rem; }
+.prevnext { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; margin-top: 3.5rem; font-family: var(--sans); }
+.prevnext a { display: block; padding: 0.9rem 1rem; border: 1px solid var(--line); border-radius: 4px; text-decoration: none; color: var(--ink); }
+.prevnext a:hover { border-color: var(--ink-2); color: var(--ink); }
+.prevnext .dir { display: block; font-size: 0.75rem; color: var(--muted); margin-bottom: 0.2rem; }
+.prevnext .nm { font-weight: 600; font-size: 0.9375rem; }
+.prevnext .next { text-align: right; grid-column: 2; }
+@media (max-width: 560px) { .prevnext { grid-template-columns: minmax(0, 1fr); } .prevnext .next { grid-column: 1; } }
+
+/* Tutorial hub */
+.hub-list { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--line); }
+.hub-item a { display: grid; grid-template-columns: 2.5rem minmax(0, 1fr) auto; gap: 0.25rem 1.25rem; align-items: baseline; padding: 1.35rem 0; border-bottom: 1px solid var(--line); text-decoration: none; color: var(--ink); }
+.hub-item a:hover .nm { color: var(--accent); text-decoration: underline; text-decoration-thickness: 1px; }
+.hub-item .no { font-family: var(--sans); font-size: 0.875rem; color: var(--muted); font-variant-numeric: tabular-nums; }
+.hub-item .nm { font-size: 1.375rem; font-weight: 600; line-height: 1.25; }
+.hub-item .sm { grid-column: 2; color: var(--ink-2); font-size: 1.0625rem; max-width: 52ch; }
+.hub-item .mt { grid-column: 3; grid-row: 1; font-family: var(--sans); font-size: 0.8125rem; color: var(--muted); white-space: nowrap; text-align: right; }
+.hub-item .dm { grid-column: 2; font-family: var(--sans); font-size: 0.8125rem; color: var(--muted); }
+@media (max-width: 640px) {
+  .hub-item a { grid-template-columns: 2rem minmax(0, 1fr); }
+  .hub-item .mt { grid-column: 2; grid-row: auto; text-align: left; }
+}
+.hub-note { font-family: var(--sans); font-size: 0.875rem; color: var(--muted); margin-top: 1.5rem; max-width: 60ch; }
+
+/* Home page teasers */
+.tut-teaser { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 2.75rem; }
+.tut-teaser li { border-top: 1px solid var(--line); padding: 1rem 0 1.15rem; }
+.tut-teaser a { font-weight: 600; font-size: 1.125rem; color: var(--ink); text-decoration: none; }
+.tut-teaser a:hover { color: var(--accent); text-decoration: underline; text-decoration-thickness: 1px; }
+.tut-teaser p { margin: 0.25rem 0 0; font-size: 1rem; color: var(--ink-2); }
+@media (max-width: 720px) { .tut-teaser { grid-template-columns: minmax(0, 1fr); } }
+.more { font-family: var(--sans); font-size: 0.9375rem; margin-top: 1.5rem; }
+.theme .theme-links { display: flex; flex-wrap: wrap; gap: 0.25rem 1.25rem; align-items: baseline; }
+.theme .theme-links a { font-family: var(--sans); font-size: 0.875rem; font-weight: 500; }
+
+/* Urdu */
+.ur { font-family: var(--urdu); direction: rtl; unicode-bidi: isolate; line-height: 2.3; font-weight: 400; }
+.urdu-teaser { display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); gap: 2.5rem; align-items: center; }
+.urdu-teaser .ur { font-size: clamp(1.2rem, 2vw, 1.4rem); margin: 0; text-align: right; }
+.urdu-teaser .ur span, .urdu-teaser .en span { display: block; }
+.urdu-teaser .en { color: var(--ink-2); font-style: italic; margin: 0 0 0.5rem; }
+.urdu-teaser .who { font-family: var(--sans); font-size: 0.875rem; color: var(--muted); margin: 0 0 1rem; }
+@media (max-width: 820px) { .urdu-teaser { grid-template-columns: minmax(0, 1fr); gap: 1rem; } }
+
+.urdu-head h1 .ur { display: block; font-size: clamp(2.4rem, 6vw, 3.6rem); line-height: 1.9; font-weight: 400; margin-bottom: 0.2rem; letter-spacing: 0; }
+.urdu-head h1 .en-t { display: block; font-size: clamp(1.6rem, 3.6vw, 2.25rem); }
+.urdu-sec { padding-block: clamp(2.5rem, 6vw, 4rem); border-top: 1px solid var(--line); }
+.urdu-sec > .wrap > h2 { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.25rem 1rem; font-size: 2rem; font-weight: 600; margin: 0 0 0.5rem; }
+.urdu-sec > .wrap > h2 .ur { font-size: 1.6rem; font-weight: 400; line-height: 1.8; color: var(--ink-2); }
+.urdu-sec .intro { margin-bottom: 1.25rem; }
+.toggles { display: flex; flex-wrap: wrap; gap: 0.5rem 1.5rem; font-family: var(--sans); font-size: 0.9375rem; color: var(--ink-2); margin: 0 0 1.75rem; }
+.toggles label { display: inline-flex; align-items: center; gap: 0.45rem; cursor: pointer; }
+.toggles input { width: 1rem; height: 1rem; accent-color: var(--accent); margin: 0; }
+.couplets { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 22rem), 1fr)); gap: 1.25rem; }
+.couplet { background: var(--surface); border: 1px solid var(--line); border-radius: 4px; padding: 1.25rem 1.4rem 1.1rem; display: grid; gap: 0.75rem; align-content: start; }
+.couplet .ur { font-size: clamp(1.25rem, 2.2vw, 1.5rem); margin: 0; text-align: right; color: var(--ink); }
+.couplet .ur span, .couplet .ro span, .couplet .en span { display: block; }
+.couplet .ro { font-family: var(--sans); font-size: 0.9375rem; color: var(--ink-2); margin: 0; line-height: 1.6; }
+.couplet .en { font-style: italic; color: var(--ink-2); margin: 0; line-height: 1.55; }
+.couplet .who { font-family: var(--sans); font-size: 0.8125rem; color: var(--muted); margin: 0.25rem 0 0; display: flex; justify-content: space-between; gap: 1rem; border-top: 1px solid var(--line); padding-top: 0.65rem; }
+.couplet .who .ur { font-size: 1rem; line-height: 1.6; color: var(--muted); text-align: left; }
+.hide-roman .ro, .hide-en .en { display: none; }
+.books { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 16rem), 1fr)); gap: 0 2.25rem; }
+.book { border-top: 1px solid var(--line); padding: 1.1rem 0 1.4rem; }
+.book .ur { font-size: 1.5rem; margin: 0; text-align: right; }
+.book h3 { font-size: 1.125rem; margin: 0.1rem 0 0.15rem; }
+.book .by { font-family: var(--sans); font-size: 0.875rem; color: var(--muted); margin: 0 0 0.6rem; }
+.book p.nt { font-size: 1rem; color: var(--ink-2); margin: 0; }
+
+/* Contact copy button */
+.mail-row { display: flex; flex-wrap: wrap; align-items: center; gap: 0.75rem 1rem; margin-bottom: 1rem; }
+.mail-row .contact-mail { margin-bottom: 0; }
+.copy-status { font-family: var(--sans); font-size: 0.875rem; color: var(--muted); }
+.prose dl.terms dt .tag { font-family: var(--sans); font-size: 0.8125rem; font-weight: 500; color: var(--muted); margin-left: 0.5rem; }
+@media (max-width: 560px) { .site-nav ul { gap: 0.7rem; } .site-nav a { font-size: 0.8125rem; } }
+
+/* Footer links */
+.foot { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 0.75rem 2rem; }
+.foot nav { display: flex; flex-wrap: wrap; gap: 0.5rem 1.25rem; }
+.foot a { color: var(--ink-2); }
+
+/* Places */
+.place-head .local { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.25rem 1.5rem; margin: -0.35rem 0 0.6rem; color: var(--ink-2); font-size: 1.375rem; }
+.place-head .local .ur { font-size: 1.375rem; line-height: 2; }
+.place-head .local .hi { font-family: "Noto Serif Devanagari", var(--serif); }
+.place-head .local .en-full { font-size: 1.125rem; font-style: italic; }
+.place-head .where { font-family: var(--sans); font-size: 0.9375rem; color: var(--muted); margin: 0 0 1.25rem; }
+.conn { background: var(--tint); border-radius: 4px; padding: 0.9rem 1.15rem; max-width: 44rem; margin: 1.5rem 0 0; color: var(--ink); }
+.conn .label { margin-bottom: 0.25rem; }
+.place-grid { display: grid; grid-template-columns: minmax(0, 19rem) minmax(0, 1fr); gap: 3.5rem; padding-block: 2.5rem clamp(3rem, 8vw, 5rem); border-top: 1px solid var(--line); }
+.place-grid h2 { font-size: 1.375rem; margin: 0 0 0.9rem; }
+.fact-list { margin: 0; }
+.fact-list div { padding: 0.7rem 0; border-top: 1px solid var(--line); }
+.fact-list dt { font-family: var(--sans); font-size: 0.75rem; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; color: var(--muted); }
+.fact-list dd { margin: 0.2rem 0 0; font-size: 1.0625rem; line-height: 1.45; color: var(--ink); font-variant-numeric: tabular-nums; }
+.ext-links { display: flex; flex-wrap: wrap; gap: 0.5rem 1.25rem; font-family: var(--sans); font-size: 0.9375rem; margin: 1.25rem 0 0; }
+.notes ul { list-style: none; margin: 0; padding: 0; max-width: 44rem; }
+.notes li { padding: 0.9rem 0; border-top: 1px solid var(--line); line-height: 1.6; }
+.see-also { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.5rem 1.25rem; font-family: var(--sans); font-size: 0.9375rem; margin-top: 1.75rem; }
+.see-also .label { margin: 0; }
+@media (max-width: 860px) { .place-grid { grid-template-columns: minmax(0, 1fr); gap: 2.5rem; } }
+
+.places-wrap { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr); gap: 3.5rem; padding-block: 2.5rem clamp(3rem, 8vw, 5rem); border-top: 1px solid var(--line); }
+.places-wrap h2 { font-size: 1.625rem; margin: 0 0 0.6rem; }
+.places-wrap h3 { font-family: var(--sans); font-size: 0.75rem; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); margin: 1.5rem 0 0.25rem; }
+@media (max-width: 900px) { .places-wrap { grid-template-columns: minmax(0, 1fr); } }
+.route { list-style: none; margin: 1.25rem 0 0; padding: 0; }
+.route .stop { display: grid; grid-template-columns: 1.4rem minmax(0, 1fr) auto; gap: 0 0.9rem; align-items: start; }
+.route .dot { width: 0.85rem; height: 0.85rem; border-radius: 50%; border: 2px solid var(--ink); background: var(--bg); margin-top: 0.5rem; justify-self: center; }
+.route .stop.now .dot { background: var(--signal); border-color: var(--signal); }
+.route .stop-body { display: grid; gap: 0.1rem; min-width: 0; }
+.route .city { font-size: 1.375rem; font-weight: 600; color: var(--ink); text-decoration: none; line-height: 1.35; }
+.route .city:hover { color: var(--accent); text-decoration: underline; text-decoration-thickness: 1px; }
+.route .sub { font-family: var(--sans); font-size: 0.875rem; color: var(--muted); }
+.route .role { font-size: 1rem; color: var(--ink-2); }
+.route .yrs { font-family: var(--sans); font-size: 0.875rem; color: var(--ink-2); font-variant-numeric: tabular-nums; padding-top: 0.35rem; white-space: nowrap; }
+.route .leg { display: grid; grid-template-columns: 1.4rem minmax(0, 1fr); gap: 0 0.9rem; min-height: 2.6rem; }
+.route .leg .line { justify-self: center; width: 0; border-left: 2px dashed var(--line); }
+.route .leg .km { align-self: center; font-family: var(--sans); font-size: 0.8125rem; color: var(--muted); font-variant-numeric: tabular-nums; }
+.place-index { list-style: none; margin: 0; padding: 0; }
+.place-index li { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 0.15rem 1rem; padding: 0.6rem 0; border-top: 1px solid var(--line); }
+.place-index a { font-weight: 600; color: var(--ink); text-decoration: none; }
+.place-index a:hover { color: var(--accent); text-decoration: underline; text-decoration-thickness: 1px; }
+.place-index span { font-family: var(--sans); font-size: 0.8125rem; color: var(--muted); }
+</style>
+<style>
+:root { --k1: #2a78d6; --k2: #eb6834; --k3: #1baf7a; --k4: #eda100; --k5: #e87ba4; --k6: #008300; --k7: #6250d6; --k8: #e34948; --t: #2a78d6; --t-deep: #1c5cab; }
+body.t-found { --t: #1baf7a; --t-deep: #0d7550; }
+body.t-tech { --t: #2a78d6; --t-deep: #1c5cab; }
+body.t-tools { --t: #eb6834; --t-deep: #b4461b; }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) { --k1: #3987e5; --k2: #d95926; --k3: #199e70; --k4: #c98500; --k5: #d55181; --k6: #2f9e2f; --k7: #9085e9; --k8: #e66767; }
+  :root:not([data-theme="light"]) body.t-found { --t: #22b383; --t-deep: #7fdcb6; }
+:root:not([data-theme="light"]) body.t-tech { --t: #3987e5; --t-deep: #9ec5f4; }
+:root:not([data-theme="light"]) body.t-tools { --t: #e0682f; --t-deep: #f5a983; }
+}
+:root[data-theme="dark"] { --k1: #3987e5; --k2: #d95926; --k3: #199e70; --k4: #c98500; --k5: #d55181; --k6: #2f9e2f; --k7: #9085e9; --k8: #e66767; }
+:root[data-theme="dark"] body.t-found { --t: #22b383; --t-deep: #7fdcb6; }
+:root[data-theme="dark"] body.t-tech { --t: #3987e5; --t-deep: #9ec5f4; }
+:root[data-theme="dark"] body.t-tools { --t: #e0682f; --t-deep: #f5a983; }
+
+/* ================= picture-first tutorials ================= */
+body { --t-soft: color-mix(in srgb, var(--t) 11%, var(--surface)); --t-soft2: color-mix(in srgb, var(--t) 22%, var(--surface)); --t-line: color-mix(in srgb, var(--t) 40%, var(--line)); }
+.site-header { border-bottom-color: var(--line); }
+.t-band { height: 6px; background: linear-gradient(90deg, var(--t), color-mix(in srgb, var(--t) 45%, var(--k4))); }
+
+/* page head with hero illustration */
+.page-head.hero2 { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 25rem); gap: clamp(1.5rem, 4vw, 3.5rem); align-items: center; }
+.page-head.hero2 .hero-art { margin: 0; }
+.page-head.hero2 .hero-art svg { display: block; width: 100%; height: auto; }
+.page-head .kicker { display: inline-flex; align-items: center; gap: 0.5rem; font-family: var(--sans); font-size: 0.8125rem; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; color: var(--t-deep); margin: 0 0 0.75rem; }
+.page-head .kicker::before { content: ""; width: 0.65rem; height: 0.65rem; border-radius: 50%; background: var(--t); }
+.meta-row .pill { background: var(--t-soft); color: var(--ink); border-radius: 999px; padding: 0.15rem 0.7rem; font-weight: 500; }
+@media (max-width: 880px) { .page-head.hero2 { grid-template-columns: minmax(0, 1fr); } .page-head.hero2 .hero-art { max-width: 26rem; } }
+
+/* at a glance */
+.glance { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 12.5rem), 1fr)); gap: 0.9rem; margin: 0 0 2.75rem; }
+.glance .g { background: var(--surface); border: 1px solid var(--line); border-top: 4px solid var(--gc, var(--t)); border-radius: 6px; padding: 0.95rem 1rem 1rem; }
+.glance .g svg { width: 2.4rem; height: 2.4rem; display: block; margin-bottom: 0.55rem; }
+.glance .g b { display: block; font-family: var(--sans); font-size: 0.9375rem; font-weight: 600; color: var(--ink); margin-bottom: 0.2rem; }
+.glance .g span { display: block; font-size: 0.975rem; line-height: 1.45; color: var(--ink-2); }
+.glance-h { font-family: var(--sans); font-size: 0.75rem; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); margin: 0 0 0.75rem; }
+
+/* numbered section headings */
+.prose { counter-reset: sec; }
+.prose h2.sec { counter-increment: sec; display: flex; align-items: baseline; gap: 0.75rem; }
+.prose h2.sec::before { content: counter(sec); flex: none; display: inline-grid; place-items: center; width: 2rem; height: 2rem; border-radius: 50%; background: var(--t-deep); color: var(--surface); font-family: var(--sans); font-size: 0.95rem; font-weight: 600; transform: translateY(-0.12rem); }
+.prose .lead { font-size: 1.125rem; color: var(--ink); }
+.toc a[aria-current="true"] { border-left-color: var(--t); }
+
+/* figures */
+figure.viz { margin: 1.5rem 0 1.75rem; background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 1rem 1rem 0.85rem; }
+figure.viz .fig-scroll { overflow-x: auto; }
+figure.viz svg { display: block; width: 100%; height: auto; }
+figure.viz .fig-scroll svg { min-width: 0; }
+figure.viz.wide .fig-scroll svg { min-width: 34rem; }
+figure.viz figcaption { font-family: var(--sans); font-size: 0.875rem; line-height: 1.55; color: var(--ink-2); margin-top: 0.7rem; }
+figure.viz figcaption b { color: var(--ink); font-weight: 600; }
+figure.viz .legend2 { list-style: none; display: flex; flex-wrap: wrap; gap: 0.3rem 1.1rem; margin: 0 0 0.4rem; padding: 0; font-family: var(--sans); font-size: 0.8125rem; color: var(--ink-2); }
+figure.viz .legend2 li { display: inline-flex; align-items: center; gap: 0.4rem; margin: 0; }
+figure.viz .legend2 i { width: 1rem; height: 0; border-top: 3px solid var(--c); border-radius: 2px; }
+figure.viz .legend2 i.sq { width: 0.7rem; height: 0.7rem; border: 0; background: var(--c); border-radius: 2px; }
+figure.viz .legend2 i.dash { border-top-style: dashed; }
+.fig-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 15rem), 1fr)); gap: 1rem; margin: 1.5rem 0 1.75rem; }
+.fig-row figure.viz { margin: 0; }
+
+/* photos */
+figure.photo { margin: 1.5rem 0 1.75rem; }
+figure.photo img { display: block; width: 100%; height: auto; border-radius: 8px; background: var(--tint); }
+figure.photo figcaption { font-family: var(--sans); font-size: 0.875rem; line-height: 1.55; color: var(--ink-2); margin-top: 0.55rem; }
+figure.photo .credit { display: block; font-size: 0.75rem; color: var(--muted); margin-top: 0.2rem; }
+figure.photo .credit a { color: var(--muted); }
+.photo-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 13rem), 1fr)); gap: 1rem; margin: 1.5rem 0 1.75rem; }
+.photo-row figure.photo { margin: 0; }
+.photo-row figure.photo img { aspect-ratio: 4 / 3; object-fit: cover; }
+
+figure.photo.tall img { max-width: 21rem; }
+.photo-row figure.photo.tall img { max-width: none; }
+/* key idea */
+.keyidea { position: relative; background: var(--t-soft); border-left: 4px solid var(--t); border-radius: 0 6px 6px 0; padding: 0.95rem 1.15rem 1rem; margin: 1.5rem 0; }
+.keyidea .label { display: block; font-family: var(--sans); font-size: 0.75rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--t-deep); margin-bottom: 0.3rem; }
+.keyidea p { margin: 0 0 0.5rem; color: var(--ink); }
+.keyidea p:last-child { margin-bottom: 0; }
+.keyidea .eq { margin: 0.6rem 0 0.2rem; }
+
+/* more detail */
+details.more { border: 1px solid var(--t-line); border-radius: 6px; margin: 1.25rem 0 1.5rem; background: var(--surface); }
+details.more > summary { cursor: pointer; list-style: none; display: flex; align-items: center; gap: 0.6rem; padding: 0.7rem 1rem; font-family: var(--sans); font-size: 0.9375rem; font-weight: 600; color: var(--ink); }
+details.more > summary::-webkit-details-marker { display: none; }
+details.more > summary::before { content: "+"; display: inline-grid; place-items: center; width: 1.35rem; height: 1.35rem; border-radius: 50%; background: var(--t-soft2); color: var(--t-deep); font-weight: 700; flex: none; }
+details.more[open] > summary::before { content: "\2212"; }
+details.more > summary .hint { font-weight: 400; color: var(--muted); font-size: 0.8125rem; }
+details.more > .body { padding: 0.25rem 1.1rem 1rem; border-top: 1px dashed var(--line); }
+details.more > .body > :first-child { margin-top: 0.75rem; }
+
+/* concept cards */
+.prose ul.cards, .prose ul.learn, .prose ul.tcards { padding-left: 0; }
+.cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 13rem), 1fr)); gap: 0.85rem; margin: 1.25rem 0 1.75rem; padding: 0; list-style: none; }
+.cards > li, .cards > a, .cards > div { margin: 0; background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 0.9rem 1rem 1rem; position: relative; overflow: hidden; }
+.cards > li::before, .cards > a::before, .cards > div::before { content: ""; position: absolute; inset: 0 0 auto 0; height: 4px; background: var(--c, var(--t)); }
+.cards svg.ic { width: 2.6rem; height: 2.6rem; display: block; margin: 0.15rem 0 0.5rem; }
+.cards b { display: block; font-family: var(--sans); font-size: 0.9375rem; font-weight: 600; color: var(--ink); margin-bottom: 0.2rem; }
+.cards span { display: block; font-size: 0.975rem; line-height: 1.45; color: var(--ink-2); }
+.cards .tag { font-style: normal; display: inline-block; font-family: var(--sans); font-size: 0.6875rem; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; color: var(--ink); background: color-mix(in srgb, var(--c, var(--t)) 18%, var(--surface)); border-radius: 999px; padding: 0.1rem 0.5rem; margin-bottom: 0.4rem; }
+.cards > a { text-decoration: none; color: inherit; transition: border-color .15s; }
+.cards > a:hover { border-color: var(--c, var(--t)); }
+.cards > a:hover b { color: var(--accent); }
+
+.cards.c4 { grid-template-columns: repeat(auto-fit, minmax(min(100%, 9.5rem), 1fr)); }
+/* learn more */
+.learn { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 15.5rem), 1fr)); gap: 0.85rem; margin: 1rem 0 0; padding: 0; list-style: none; }
+.learn li { margin: 0; }
+.learn a { display: grid; grid-template-columns: 2.4rem minmax(0, 1fr); gap: 0.15rem 0.8rem; height: 100%; box-sizing: border-box; padding: 0.85rem 1rem; background: var(--surface); border: 1px solid var(--line); border-radius: 8px; text-decoration: none; color: var(--ink); }
+.learn a:hover { border-color: var(--c); }
+.learn .av { grid-row: 1 / span 3; width: 2.4rem; height: 2.4rem; border-radius: 8px; display: grid; place-items: center; background: color-mix(in srgb, var(--c) 18%, var(--surface)); color: var(--ink); font-family: var(--sans); font-weight: 700; font-size: 0.875rem; }
+.learn .ty { font-family: var(--sans); font-size: 0.6875rem; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; color: var(--ink-2); }
+.learn .nm { font-family: var(--sans); font-weight: 600; font-size: 0.9375rem; line-height: 1.35; }
+.learn .ds { font-size: 0.9375rem; line-height: 1.45; color: var(--ink-2); }
+.learn .dm { font-family: var(--sans); font-size: 0.75rem; color: var(--muted); margin-top: 0.15rem; }
+
+/* compact further reading */
+details.reading > summary { cursor: pointer; font-family: var(--sans); font-weight: 600; font-size: 0.9375rem; color: var(--ink-2); padding: 0.4rem 0; }
+
+/* diagram styling (inline SVG) */
+.viz svg { color: var(--ink); overflow: visible; }
+.viz text { fill: currentColor; font-family: var(--sans); font-size: 13px; }
+.viz text.s { font-size: 11.5px; fill: var(--ink-2); }
+.viz text.xs { font-size: 10.5px; fill: var(--muted); }
+.viz text.b { font-weight: 600; }
+.viz text.h { font-weight: 600; font-size: 14px; }
+.viz text.w { fill: #fff; font-weight: 600; }
+.viz text.m { fill: var(--muted); }
+.viz text.ser { font-family: var(--serif); font-style: italic; font-size: 15px; }
+.viz .ink { fill: var(--ink); } .viz .ink2 { fill: var(--ink-2); } .viz .mut { fill: var(--muted); }
+.viz .srf { fill: var(--surface); } .viz .bg { fill: var(--bg); } .viz .lnf { fill: var(--line); } .viz .tnt { fill: var(--tint); }
+.viz .st { stroke: currentColor; fill: none; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+.viz .st-m { stroke: var(--muted); fill: none; stroke-width: 1.3; stroke-linecap: round; }
+.viz .st-l { stroke: var(--line); fill: none; stroke-width: 1; }
+.viz .grid { stroke: var(--line); stroke-width: 1; fill: none; }
+.viz .axis { stroke: var(--muted); stroke-width: 1.2; fill: none; }
+.viz .dash { stroke-dasharray: 5 4; }
+.viz .dot { stroke-dasharray: 1.5 4; }
+.viz .f1 { fill: var(--k1); } .viz .s1 { stroke: var(--k1); fill: none; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; } .viz .l1 { fill: color-mix(in srgb, var(--k1) 20%, var(--surface)); } .viz .ll1 { fill: color-mix(in srgb, var(--k1) 10%, var(--surface)); } .viz .tx1 { fill: color-mix(in srgb, var(--k1) 70%, var(--ink)); }
+.viz .f2 { fill: var(--k2); } .viz .s2 { stroke: var(--k2); fill: none; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; } .viz .l2 { fill: color-mix(in srgb, var(--k2) 20%, var(--surface)); } .viz .ll2 { fill: color-mix(in srgb, var(--k2) 10%, var(--surface)); } .viz .tx2 { fill: color-mix(in srgb, var(--k2) 70%, var(--ink)); }
+.viz .f3 { fill: var(--k3); } .viz .s3 { stroke: var(--k3); fill: none; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; } .viz .l3 { fill: color-mix(in srgb, var(--k3) 20%, var(--surface)); } .viz .ll3 { fill: color-mix(in srgb, var(--k3) 10%, var(--surface)); } .viz .tx3 { fill: color-mix(in srgb, var(--k3) 70%, var(--ink)); }
+.viz .f4 { fill: var(--k4); } .viz .s4 { stroke: var(--k4); fill: none; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; } .viz .l4 { fill: color-mix(in srgb, var(--k4) 20%, var(--surface)); } .viz .ll4 { fill: color-mix(in srgb, var(--k4) 10%, var(--surface)); } .viz .tx4 { fill: color-mix(in srgb, var(--k4) 70%, var(--ink)); }
+.viz .f5 { fill: var(--k5); } .viz .s5 { stroke: var(--k5); fill: none; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; } .viz .l5 { fill: color-mix(in srgb, var(--k5) 20%, var(--surface)); } .viz .ll5 { fill: color-mix(in srgb, var(--k5) 10%, var(--surface)); } .viz .tx5 { fill: color-mix(in srgb, var(--k5) 70%, var(--ink)); }
+.viz .f6 { fill: var(--k6); } .viz .s6 { stroke: var(--k6); fill: none; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; } .viz .l6 { fill: color-mix(in srgb, var(--k6) 20%, var(--surface)); } .viz .ll6 { fill: color-mix(in srgb, var(--k6) 10%, var(--surface)); } .viz .tx6 { fill: color-mix(in srgb, var(--k6) 70%, var(--ink)); }
+.viz .f7 { fill: var(--k7); } .viz .s7 { stroke: var(--k7); fill: none; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; } .viz .l7 { fill: color-mix(in srgb, var(--k7) 20%, var(--surface)); } .viz .ll7 { fill: color-mix(in srgb, var(--k7) 10%, var(--surface)); } .viz .tx7 { fill: color-mix(in srgb, var(--k7) 70%, var(--ink)); }
+.viz .f8 { fill: var(--k8); } .viz .s8 { stroke: var(--k8); fill: none; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; } .viz .l8 { fill: color-mix(in srgb, var(--k8) 20%, var(--surface)); } .viz .ll8 { fill: color-mix(in srgb, var(--k8) 10%, var(--surface)); } .viz .tx8 { fill: color-mix(in srgb, var(--k8) 70%, var(--ink)); }
+.viz .ft { fill: var(--t); } .viz .st-t { stroke: var(--t); fill: none; stroke-width: 2.2; } .viz .lt { fill: var(--t-soft2); } .viz .llt { fill: var(--t-soft); }
+.viz .hov { cursor: help; }
+.viz .hov:hover { opacity: 0.85; }
+
+/* plot hover */
+.ptip { position: absolute; left: 0; top: 0; pointer-events: none; background: var(--surface); border: 1px solid var(--line); border-radius: 4px; padding: 0.4rem 0.55rem; font-family: var(--sans); font-size: 0.8125rem; line-height: 1.45; color: var(--ink-2); box-shadow: 0 2px 10px rgba(0,0,0,.08); z-index: 3; white-space: nowrap; }
+.ptip b { color: var(--ink); font-variant-numeric: tabular-nums; }
+.ptip i { display: inline-block; width: 0.6rem; height: 0.6rem; border-radius: 50%; background: var(--c); margin-right: 0.35rem; vertical-align: -0.02rem; }
+figure.viz { position: relative; }
+
+/* track tab bar */
+.tabs { border-bottom: 1px solid var(--line); background: var(--bg); position: sticky; top: calc(env(safe-area-inset-top, 0px) + 3.5rem); z-index: 15; }
+.tabs .wrap { display: flex; align-items: stretch; gap: 0.25rem; overflow-x: auto; scrollbar-width: thin; }
+.tabs .trk { flex: none; display: inline-flex; align-items: center; gap: 0.45rem; padding: 0.65rem 0.9rem 0.65rem 0; margin-right: 0.4rem; border-right: 1px solid var(--line); font-family: var(--sans); font-size: 0.8125rem; font-weight: 700; color: var(--t-deep); text-decoration: none; white-space: nowrap; }
+.tabs .trk::before { content: ""; width: 0.6rem; height: 0.6rem; border-radius: 50%; background: var(--t); }
+.tabs a.tab { flex: none; display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.65rem 0.75rem; font-family: var(--sans); font-size: 0.875rem; color: var(--ink-2); text-decoration: none; white-space: nowrap; border-bottom: 3px solid transparent; }
+.tabs a.tab .n { font-size: 0.75rem; color: var(--muted); font-variant-numeric: tabular-nums; }
+.tabs a.tab:hover { color: var(--ink); background: var(--t-soft); }
+.tabs a.tab[aria-current="page"] { color: var(--ink); font-weight: 600; border-bottom-color: var(--t); }
+@media (max-width: 880px) { .tabs { position: static; } }
+
+/* track landing cards */
+.tcards { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 17rem), 1fr)); gap: 1.1rem; list-style: none; margin: 1.5rem 0 0; padding: 0; }
+.tcards li { margin: 0; }
+.tcards a { display: flex; flex-direction: column; height: 100%; box-sizing: border-box; background: var(--surface); border: 1px solid var(--line); border-radius: 10px; overflow: hidden; text-decoration: none; color: var(--ink); transition: border-color .15s, transform .15s; }
+.tcards a:hover { border-color: var(--t); transform: translateY(-2px); }
+.tcards .art { background: var(--t-soft); border-bottom: 1px solid var(--line); padding: 0.6rem; }
+.tcards .art { height: 11.5rem; box-sizing: border-box; overflow: hidden; }
+.tcards .art svg { display: block; width: 100%; height: 100%; }
+.tcards .txt { padding: 0.85rem 1rem 1rem; display: flex; flex-direction: column; gap: 0.3rem; flex: 1; }
+.tcards .tg { align-self: flex-start; font-family: var(--sans); font-size: 0.6875rem; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; color: var(--ink); background: var(--t-soft2); border-radius: 999px; padding: 0.1rem 0.55rem; }
+.tcards b { font-family: var(--serif); font-size: 1.1875rem; font-weight: 600; line-height: 1.25; }
+.tcards span.d { font-size: 0.975rem; line-height: 1.45; color: var(--ink-2); }
+.tcards span.m { margin-top: auto; padding-top: 0.4rem; font-family: var(--sans); font-size: 0.75rem; color: var(--muted); }
+
+/* tutorial-to-tutorial chips */
+a.tchip { display: inline-flex; align-items: center; gap: 0.35rem; font-family: var(--sans); font-size: 0.8125rem; font-weight: 600; text-decoration: none; color: var(--ink); background: color-mix(in srgb, var(--c) 16%, var(--surface)); border-radius: 999px; padding: 0.12rem 0.6rem 0.12rem 0.45rem; white-space: nowrap; }
+a.tchip::before { content: ""; width: 0.55rem; height: 0.55rem; border-radius: 50%; background: var(--c); }
+a.tchip:hover { color: var(--accent); }
+
+/* takeaways in colour */
+.takeaways { border-top-color: var(--t); }
+.takeaways ul { list-style: none; padding-left: 0; }
+.takeaways li { position: relative; padding-left: 1.6rem; }
+.takeaways li::before { content: ""; position: absolute; left: 0.1rem; top: 0.55em; width: 0.7rem; height: 0.7rem; border-radius: 3px; background: var(--t); }
+details.qa summary::marker { color: var(--t); }
+.prevnext a:hover { border-color: var(--t); }
+
+.hubtrack { --t-soft: color-mix(in srgb, var(--t) 11%, var(--surface)); --t-soft2: color-mix(in srgb, var(--t) 22%, var(--surface)); }
+.hubtrack { border-top: 1px solid var(--line); padding: 2.25rem 0 0.5rem; }
+.hubtrack .hub-h { display: flex; gap: 1rem; align-items: flex-start; }
+.hubtrack .hub-h .num { flex: none; display: grid; place-items: center; width: 2.4rem; height: 2.4rem; border-radius: 50%; background: var(--t); color: #fff; font-family: var(--sans); font-weight: 700; }
+.hubtrack h2 { margin: 0 0 0.3rem; font-size: 1.75rem; }
+.hubtrack h2 a { color: var(--ink); text-decoration: none; }
+.hubtrack h2 a:hover { color: var(--accent); }
+.hubtrack .hub-h p { margin: 0; color: var(--ink-2); max-width: 62ch; }
+</style>
+</head>
+<body class="t-found">
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="site-header">
+  <div class="wrap header-inner">
+    <a class="brand" href="../index.html">Hamza Shaikh</a>
+    <nav class="site-nav" aria-label="Site">
+      <ul>
+        <li><a href="../index.html#research">Research</a></li>
+        <li><a href="../index.html#publications">Publications</a></li>
+        <li><a href="index.html" aria-current="page">Tutorials</a></li>
+        <li><a href="../urdu.html">Urdu</a></li>
+        <li><a href="../index.html#cv">CV</a></li>
+        <li><a href="../index.html#contact">Contact</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+<div class="t-band" aria-hidden="true"></div>
+<nav class="tabs" aria-label="Wireless foundations tutorials"><div class="wrap"><a class="trk" href="foundations.html">Wireless foundations</a><a class="tab" href="communication-model.html"><span class="n">1</span>Communication model</a><a class="tab" href="propagation.html"><span class="n">2</span>Propagation</a><a class="tab" href="link-budget.html" aria-current="page"><span class="n">3</span>Link budget</a><a class="tab" href="antennas.html"><span class="n">4</span>Antennas</a><a class="tab" href="metrics.html"><span class="n">5</span>Performance metrics</a><a class="tab" href="hardware-impairments.html"><span class="n">6</span>Hardware impairments</a></div></nav>
+<main id="main">
+  <div class="wrap page-head hero2">
+    <div>
+      <p class="kicker">Wireless foundations · 3 of 6</p>
+      <h1>Link budgets</h1>
+      <p class="lede">A link budget adds up every gain and loss between two radios to answer one question: will the signal arrive strong enough to beat the noise?</p>
+      <ul class="meta-row"><li class="pill">Foundations</li><li>8 min</li><li>Interactive model: Link budget calculator</li></ul>
+    </div>
+    <figure class="hero-art viz" aria-hidden="false"><svg viewBox="0 0 420 250" role="img" aria-label="A small waterfall chart of a link budget." class="" xmlns="http://www.w3.org/2000/svg"><rect x="30.0" y="68.6" width="44.0" height="41.4" rx="4" class="f7"/><rect x="92.0" y="53.3" width="44.0" height="15.3" rx="4" class="f3"/><rect x="154.0" y="53.3" width="44.0" height="1.8" rx="4" class="f8"/><rect x="216.0" y="55.1" width="44.0" height="112.5" rx="4" class="f8"/><rect x="278.0" y="167.6" width="44.0" height="9.0" rx="4" class="f8"/><rect x="340.0" y="110.0" width="44.0" height="73.8" rx="4" class="f1"/><line x1="20.0" y1="110.0" x2="400.0" y2="110.0" class="axis"/></svg></figure>
+  </div>
+  <div class="wrap tut-grid">
+    <nav class="toc" aria-labelledby="toc-h"><h2 id="toc-h">On this page</h2><ol><li><a href="#decibels">Decibels: the language of links</a></li><li><a href="#budget">The budget, step by step</a></li><li><a href="#noise">Noise sets the floor</a></li><li><a href="#snr">From power to data rate</a></li><li><a href="#margins">Margins: designing for bad days</a></li><li><a href="#check">Check your understanding</a></li><li><a href="#learn">Learn more</a></li><li><a href="#reading">Further reading</a></li></ol></nav>
+    <article class="prose">
+<p class="glance-h">The idea in 30 seconds</p><div class="glance viz"><div class="g" style="--gc:var(--k7)"><svg class="ic" viewBox="0 0 48 48" aria-hidden="true"><rect x="6.0" y="28.0" width="8.0" height="14.0" rx="1.5" class="l7"/><rect x="18.0" y="18.0" width="8.0" height="24.0" rx="1.5" class="f7"/><rect x="30.0" y="8.0" width="8.0" height="34.0" rx="1.5" class="l7"/><line x1="4.0" y1="43.0" x2="44.0" y2="43.0" class="axis"/></svg><b>Add in decibels</b><span>Transmit power plus gains minus losses gives the received power.</span></div><div class="g" style="--gc:var(--k8)"><svg class="ic" viewBox="0 0 48 48" aria-hidden="true"><path d="M4 24 Q10 10 16 24 T28 24 T40 24" class="s8" style="stroke-width:3"/><circle cx="44.0" cy="24.0" r="2.5" class="f8"/></svg><b>Noise is the floor</b><span>−174 dBm/Hz plus 10·log₁₀(bandwidth) plus the noise figure.</span></div><div class="g" style="--gc:var(--k3)"><svg class="ic" viewBox="0 0 48 48" aria-hidden="true"><path d="M24 4 L40 10 L40 22 Q40 36 24 44 Q8 36 8 22 L8 10 Z" class="l3"/><path d="M24 4 L40 10 L40 22 Q40 36 24 44 Q8 36 8 22 L8 10 Z" class="s3"/><path d="M17 24 L22 29 L31 18" class="s3" style="stroke-width:3"/></svg><b>Margins for bad days</b><span>Extra decibels held back against shadowing and fading.</span></div></div>
+<h2 class="sec" id="decibels">Decibels: the language of links</h2>
+<p class="lead">Powers in a wireless link span more than 20 orders of magnitude. Engineers use decibels so they can add and subtract instead of multiplying.</p><figure class="viz wide "><div class="fig-scroll"><svg viewBox="0 0 712 198" role="img" aria-label="A scale of powers in dBm from thermal noise in one hertz, −174 dBm, to a 40 W base station, 46 dBm." class="" xmlns="http://www.w3.org/2000/svg"><line x1="40.0" y1="78.0" x2="670.0" y2="78.0" class="axis"/><line x1="40.0" y1="74.0" x2="40.0" y2="82.0" class="axis"/><text x="40.0" y="96.0" text-anchor="middle" class="xs">-180</text><line x1="92.5" y1="74.0" x2="92.5" y2="82.0" class="axis"/><text x="92.5" y="96.0" text-anchor="middle" class="xs">-160</text><line x1="145.0" y1="74.0" x2="145.0" y2="82.0" class="axis"/><text x="145.0" y="96.0" text-anchor="middle" class="xs">-140</text><line x1="197.5" y1="74.0" x2="197.5" y2="82.0" class="axis"/><text x="197.5" y="96.0" text-anchor="middle" class="xs">-120</text><line x1="250.0" y1="74.0" x2="250.0" y2="82.0" class="axis"/><text x="250.0" y="96.0" text-anchor="middle" class="xs">-100</text><line x1="302.5" y1="74.0" x2="302.5" y2="82.0" class="axis"/><text x="302.5" y="96.0" text-anchor="middle" class="xs">-80</text><line x1="355.0" y1="74.0" x2="355.0" y2="82.0" class="axis"/><text x="355.0" y="96.0" text-anchor="middle" class="xs">-60</text><line x1="407.5" y1="74.0" x2="407.5" y2="82.0" class="axis"/><text x="407.5" y="96.0" text-anchor="middle" class="xs">-40</text><line x1="460.0" y1="74.0" x2="460.0" y2="82.0" class="axis"/><text x="460.0" y="96.0" text-anchor="middle" class="xs">-20</text><line x1="512.5" y1="74.0" x2="512.5" y2="82.0" class="axis"/><text x="512.5" y="96.0" text-anchor="middle" class="xs">0</text><line x1="565.0" y1="74.0" x2="565.0" y2="82.0" class="axis"/><text x="565.0" y="96.0" text-anchor="middle" class="xs">20</text><line x1="617.5" y1="74.0" x2="617.5" y2="82.0" class="axis"/><text x="617.5" y="96.0" text-anchor="middle" class="xs">40</text><line x1="670.0" y1="74.0" x2="670.0" y2="82.0" class="axis"/><text x="670.0" y="96.0" text-anchor="middle" class="xs">60</text><line x1="633.2" y1="78.0" x2="633.2" y2="54.0" class="st-l"/><circle cx="633.2" cy="78.0" r="6.0" class="f7" stroke="var(--surface)" stroke-width="2"/><text x="633.2" y="48.0" text-anchor="end" class="s b">Macro base station, 40 W</text><text x="633.2" y="62.0" text-anchor="end" class="xs">46 dBm</text><line x1="572.9" y1="78.0" x2="572.9" y2="136.0" class="st-l"/><circle cx="572.9" cy="78.0" r="6.0" class="f1" stroke="var(--surface)" stroke-width="2"/><text x="572.9" y="150.0" class="s b">Phone, 200 mW</text><text x="572.9" y="164.0" class="xs">23 dBm</text><line x1="512.5" y1="78.0" x2="512.5" y2="24.0" class="st-l"/><circle cx="512.5" cy="78.0" r="6.0" class="f6" stroke="var(--surface)" stroke-width="2"/><text x="512.5" y="18.0" text-anchor="middle" class="s b">1 mW</text><text x="512.5" y="32.0" text-anchor="middle" class="xs">0 dBm</text><line x1="381.2" y1="78.0" x2="381.2" y2="136.0" class="st-l"/><circle cx="381.2" cy="78.0" r="6.0" class="f3" stroke="var(--surface)" stroke-width="2"/><text x="381.2" y="150.0" text-anchor="middle" class="s b">Strong signal, near a mast</text><text x="381.2" y="164.0" text-anchor="middle" class="xs">-50 dBm</text><line x1="265.8" y1="78.0" x2="265.8" y2="54.0" class="st-l"/><circle cx="265.8" cy="78.0" r="6.0" class="f8" stroke="var(--surface)" stroke-width="2"/><text x="265.8" y="48.0" text-anchor="middle" class="s b">Noise in 20 MHz</text><text x="265.8" y="62.0" text-anchor="middle" class="xs">-94 dBm</text><line x1="223.8" y1="78.0" x2="223.8" y2="106.0" class="st-l"/><circle cx="223.8" cy="78.0" r="6.0" class="f2" stroke="var(--surface)" stroke-width="2"/><text x="223.8" y="120.0" text-anchor="end" class="s b">Weak 4G signal at the cell edge</text><text x="223.8" y="134.0" text-anchor="end" class="xs">-110 dBm</text><line x1="55.8" y1="78.0" x2="55.8" y2="24.0" class="st-l"/><circle cx="55.8" cy="78.0" r="6.0" class="f8" stroke="var(--surface)" stroke-width="2"/><text x="55.8" y="18.0" class="s b">Thermal noise in 1 Hz</text><text x="55.8" y="32.0" class="xs">-174 dBm</text><text x="355.0" y="190.0" text-anchor="middle" class="s b">Power in dBm (every 10 dB is a factor of ten)</text></svg></div><figcaption>dBm is power relative to 1 milliwatt: 0 dBm = 1 mW, 30 dBm = 1 W. A gain of 3 dB doubles the power; 10 dB multiplies it by ten.</figcaption></figure><div class="keyidea"><span class="label">Key idea</span><p>In decibels, a link budget is just a sum: start from the transmit power, add every gain, subtract every loss.</p></div>
+<h2 class="sec" id="budget">The budget, step by step</h2>
+<p class="lead">Here is a typical 5G downlink at 3.5 GHz, about a kilometre from the base station, to a phone just inside a building.</p><figure class="viz wide "><div class="fig-scroll"><svg viewBox="0 0 712 360" role="img" aria-label="Waterfall of a downlink link budget: 46 dBm transmitted, plus 17 dB of antenna gain, minus cable, path, building and shadowing losses, leaving −82 dBm at the receiver, 12 dB above the noise floor." class="" xmlns="http://www.w3.org/2000/svg"><line x1="70.0" y1="290.0" x2="692.0" y2="290.0" class="grid"/><text x="62.0" y="294.0" text-anchor="end" class="xs">-100</text><line x1="70.0" y1="258.7" x2="692.0" y2="258.7" class="grid"/><text x="62.0" y="262.7" text-anchor="end" class="xs">-80</text><line x1="70.0" y1="227.4" x2="692.0" y2="227.4" class="grid"/><text x="62.0" y="231.4" text-anchor="end" class="xs">-60</text><line x1="70.0" y1="196.1" x2="692.0" y2="196.1" class="grid"/><text x="62.0" y="200.1" text-anchor="end" class="xs">-40</text><line x1="70.0" y1="164.8" x2="692.0" y2="164.8" class="grid"/><text x="62.0" y="168.8" text-anchor="end" class="xs">-20</text><line x1="70.0" y1="133.5" x2="692.0" y2="133.5" class="grid"/><text x="62.0" y="137.5" text-anchor="end" class="xs">0</text><line x1="70.0" y1="102.2" x2="692.0" y2="102.2" class="grid"/><text x="62.0" y="106.2" text-anchor="end" class="xs">20</text><line x1="70.0" y1="70.9" x2="692.0" y2="70.9" class="grid"/><text x="62.0" y="74.9" text-anchor="end" class="xs">40</text><line x1="70.0" y1="39.6" x2="692.0" y2="39.6" class="grid"/><text x="62.0" y="43.6" text-anchor="end" class="xs">60</text><line x1="70.0" y1="133.5" x2="692.0" y2="133.5" class="axis"/><text x="14.0" y="14.0" class="s b">Power (dBm)</text><rect x="80.0" y="61.6" width="68.9" height="72.0" rx="3" class="f7" data-tip="Transmit power: +46 dB, level now 46 dBm"/><text x="114.4" y="55.6" text-anchor="middle" class="s b">46 dBm</text><line x1="148.9" y1="61.6" x2="178.9" y2="61.6" class="st-m dash"/><text x="114.4" y="308.0" text-anchor="middle" class="s"><tspan x="114.4" dy="0">Transmit</tspan><tspan x="114.4" dy="15">power</tspan></text><rect x="168.9" y="35.0" width="68.9" height="26.6" rx="3" class="f3" data-tip="Antenna gains: +17 dB, level now 63 dBm"/><text x="203.3" y="29.0" text-anchor="middle" class="s b">+17</text><line x1="237.7" y1="35.0" x2="267.7" y2="35.0" class="st-m dash"/><text x="203.3" y="308.0" text-anchor="middle" class="s"><tspan x="203.3" dy="0">Antenna</tspan><tspan x="203.3" dy="15">gains</tspan></text><rect x="257.7" y="35.0" width="68.9" height="3.1" rx="3" class="f8" data-tip="Cables and connectors: -2 dB, level now 61 dBm"/><text x="292.1" y="29.0" text-anchor="middle" class="s b">-2</text><line x1="326.6" y1="38.1" x2="356.6" y2="38.1" class="st-m dash"/><text x="292.1" y="308.0" text-anchor="middle" class="s"><tspan x="292.1" dy="0">Cables</tspan><tspan x="292.1" dy="15">and connectors</tspan></text><rect x="346.6" y="38.1" width="68.9" height="195.6" rx="3" class="f8" data-tip="Path loss: -125 dB, level now -64 dBm"/><text x="381.0" y="32.1" text-anchor="middle" class="s b">-125</text><line x1="415.4" y1="233.7" x2="445.4" y2="233.7" class="st-m dash"/><text x="381.0" y="308.0" text-anchor="middle" class="s"><tspan x="381.0" dy="0">Path</tspan><tspan x="381.0" dy="15">loss</tspan></text><rect x="435.4" y="233.7" width="68.9" height="15.6" rx="3" class="f8" data-tip="Building entry: -10 dB, level now -74 dBm"/><text x="469.9" y="227.7" text-anchor="middle" class="s b">-10</text><line x1="504.3" y1="249.3" x2="534.3" y2="249.3" class="st-m dash"/><text x="469.9" y="308.0" text-anchor="middle" class="s"><tspan x="469.9" dy="0">Building</tspan><tspan x="469.9" dy="15">entry</tspan></text><rect x="524.3" y="249.3" width="68.9" height="12.5" rx="3" class="f2" data-tip="Shadowing margin: -8 dB, level now -82 dBm"/><text x="558.7" y="243.3" text-anchor="middle" class="s b">-8</text><text x="558.7" y="308.0" text-anchor="middle" class="s"><tspan x="558.7" dy="0">Shadowing</tspan><tspan x="558.7" dy="15">margin</tspan></text><rect x="613.1" y="133.5" width="68.9" height="128.3" rx="3" class="f1" data-tip="Received power: -82 dBm"/><text x="647.6" y="277.8" text-anchor="middle" class="s b">-82 dBm</text><text x="647.6" y="308.0" text-anchor="middle" class="s b"><tspan x="647.6" dy="0">Received</tspan><tspan x="647.6" dy="15">power</tspan></text><line x1="70.0" y1="280.6" x2="692.0" y2="280.6" class="s8 dash" style="stroke-width:1.6"/><text x="688.0" y="295.6" text-anchor="end" class="s b tx8">noise floor, 20 MHz: −94 dBm</text></svg></div><figcaption>Path loss dwarfs everything else. The phone still ends up 12 dB above the noise floor, enough for a solid connection. Hover over a bar for its value.</figcaption></figure><div class="eq"><svg class="tex" xmlns="http://www.w3.org/2000/svg" viewBox="-6 -73 1513 109" style="width:15.128em;height:1.088em" role="img" aria-label="received power equals transmit power plus antenna gains minus path loss minus other losses minus margins" focusable="false"><path fill="currentColor" d="M14.6 -65.7L38.7 -65.7Q60.5 -65.7 60.5 -50.9Q60.5 -46.9 58.6 -43.0Q56.8 -39.2 53.7 -36.6Q46.8 -30.9 33.2 -30.9Q27.7 -30.9 24.2 -31.7L18.9 -12.4Q17.5 -7.0 17.5 -6.1Q17.5 -4.3 19.0 -3.4Q20.5 -2.4 24.4 -2.0L24.4 -0.4L0.0 -0.4L0.0 -2.0Q4.3 -2.6 5.6 -4.0Q7.0 -5.3 8.4 -10.2L20.0 -51.6Q21.7 -57.7 21.7 -59.9Q21.7 -61.9 20.3 -62.8Q18.9 -63.6 14.6 -64.1L14.6 -65.7ZM32.0 -59.6L25.1 -35.1Q28.0 -34.6 30.3 -34.6Q39.0 -34.6 43.1 -37.0Q50.2 -41.0 50.2 -50.4Q50.2 -62.7 37.2 -62.7Q32.8 -62.7 32.0 -59.6ZM73.4 -1.0L74.5 -3.5Q76.9 -8.7 81.1 -13.1Q84.1 -16.3 86.6 -16.3Q88.1 -16.3 89.0 -15.3Q89.9 -14.3 89.9 -12.7Q89.9 -11.1 89.1 -10.0Q88.2 -8.9 86.6 -8.9Q85.3 -8.9 84.2 -10.7Q83.6 -11.7 83.1 -11.7Q81.2 -11.7 77.3 -5.1Q75.0 -1.1 73.5 2.5Q72.1 6.1 69.6 14.6L64.2 14.6L69.9 -5.8Q71.0 -10.0 71.0 -11.6Q71.0 -13.4 68.4 -13.4Q67.8 -13.4 66.2 -13.2L66.2 -14.4L77.1 -16.3L77.3 -16.1L73.4 -1.0ZM176.5 -32.4L117.6 -32.4L117.6 -39.0L176.5 -39.0L176.5 -32.4ZM176.5 -12.4L117.6 -12.4L117.6 -19.0L176.5 -19.0L176.5 -12.4ZM215.9 -65.7L240.0 -65.7Q261.8 -65.7 261.8 -50.9Q261.8 -46.9 260.0 -43.0Q258.1 -39.2 255.0 -36.6Q248.1 -30.9 234.5 -30.9Q229.0 -30.9 225.5 -31.7L220.2 -12.4Q218.8 -7.0 218.8 -6.1Q218.8 -4.3 220.3 -3.4Q221.8 -2.4 225.7 -2.0L225.7 -0.4L201.3 -0.4L201.3 -2.0Q205.6 -2.6 207.0 -4.0Q208.3 -5.3 209.7 -10.2L221.3 -51.6Q223.0 -57.7 223.0 -59.9Q223.0 -61.9 221.6 -62.8Q220.2 -63.6 215.9 -64.1L215.9 -65.7ZM233.3 -59.6L226.4 -35.1Q229.3 -34.6 231.6 -34.6Q240.3 -34.6 244.4 -37.0Q251.5 -41.0 251.5 -50.4Q251.5 -62.7 238.5 -62.7Q234.1 -62.7 233.3 -59.6ZM283.1 -15.4L282.8 -13.1L276.9 -13.1L270.8 9.8Q270.7 10.4 270.7 10.8Q270.7 11.9 271.7 11.9Q272.6 11.9 273.7 10.9Q274.8 9.8 277.4 6.4L278.3 6.9Q275.1 11.8 273.0 13.6Q271.0 15.4 268.3 15.4Q265.1 15.4 265.1 12.8Q265.1 12.1 266.2 7.6L271.7 -13.1L266.4 -13.1L266.3 -13.5Q266.3 -14.8 268.7 -15.3Q270.4 -15.7 273.3 -18.0Q276.1 -20.3 278.0 -23.0Q278.4 -23.6 278.9 -23.6Q279.6 -23.6 279.6 -23.1Q279.6 -22.7 279.5 -22.6L277.5 -15.4L283.1 -15.4ZM370.0 -22.4L343.9 -22.4L343.9 3.7L337.3 3.7L337.3 -22.4L311.2 -22.4L311.2 -29.0L337.3 -29.0L337.3 -55.1L343.9 -55.1L343.9 -29.0L370.0 -29.0L370.0 -22.4ZM467.1 -32.3L467.1 -30.7Q462.2 -30.4 460.3 -29.0Q458.5 -27.7 457.4 -23.5L452.5 -4.8Q441.4 1.4 428.8 1.4Q415.1 1.4 407.5 -6.2Q404.0 -9.7 402.0 -15.0Q400.1 -20.3 400.1 -25.5Q400.1 -35.8 405.1 -44.9Q410.1 -54.0 418.4 -59.8Q428.8 -67.0 440.4 -67.0Q447.6 -67.0 453.8 -64.6Q456.4 -63.6 458.2 -63.6Q461.8 -63.6 464.2 -67.0L465.7 -66.5L460.8 -46.8L459.0 -47.1Q458.7 -53.5 455.3 -57.7Q450.5 -63.6 441.2 -63.6Q429.5 -63.6 421.7 -53.7Q416.7 -47.4 413.9 -39.4Q411.1 -31.4 411.1 -23.2Q411.1 -13.3 416.4 -7.8Q421.7 -2.3 431.3 -2.3Q438.4 -2.3 441.8 -5.7Q442.7 -6.6 443.4 -8.4Q444.1 -10.1 445.7 -15.8Q448.3 -24.5 448.3 -27.1Q448.3 -30.0 443.6 -30.4L440.4 -30.7L440.4 -32.3L467.1 -32.3ZM487.8 -15.4L487.5 -13.1L481.6 -13.1L475.5 9.8Q475.3 10.4 475.3 10.8Q475.3 11.9 476.4 11.9Q477.2 11.9 478.4 10.9Q479.5 9.8 482.1 6.4L483.0 6.9Q479.8 11.8 477.7 13.6Q475.6 15.4 473.0 15.4Q469.7 15.4 469.7 12.8Q469.7 12.1 470.9 7.6L476.3 -13.1L471.1 -13.1L471.0 -13.5Q471.0 -14.8 473.3 -15.3Q475.1 -15.7 477.9 -18.0Q480.8 -20.3 482.6 -23.0Q483.0 -23.6 483.6 -23.6Q484.2 -23.6 484.2 -23.1Q484.2 -22.7 484.2 -22.6L482.2 -15.4L487.8 -15.4ZM574.6 -22.4L548.5 -22.4L548.5 3.7L542.0 3.7L542.0 -22.4L515.8 -22.4L515.8 -29.0L542.0 -29.0L542.0 -55.1L548.5 -55.1L548.5 -29.0L574.6 -29.0L574.6 -22.4ZM671.8 -32.3L671.8 -30.7Q666.8 -30.4 665.0 -29.0Q663.1 -27.7 662.0 -23.5L657.1 -4.8Q646.0 1.4 633.5 1.4Q619.8 1.4 612.1 -6.2Q608.6 -9.7 606.7 -15.0Q604.8 -20.3 604.8 -25.5Q604.8 -35.8 609.8 -44.9Q614.8 -54.0 623.0 -59.8Q633.5 -67.0 645.0 -67.0Q652.3 -67.0 658.5 -64.6Q661.0 -63.6 662.8 -63.6Q666.5 -63.6 668.8 -67.0L670.3 -66.5L665.5 -46.8L663.6 -47.1Q663.3 -53.5 660.0 -57.7Q655.1 -63.6 645.8 -63.6Q634.1 -63.6 626.3 -53.7Q621.3 -47.4 618.5 -39.4Q615.8 -31.4 615.8 -23.2Q615.8 -13.3 621.0 -7.8Q626.3 -2.3 636.0 -2.3Q643.0 -2.3 646.5 -5.7Q647.3 -6.6 648.0 -8.4Q648.8 -10.1 650.3 -15.8Q653.0 -24.5 653.0 -27.1Q653.0 -30.0 648.3 -30.4L645.0 -30.7L645.0 -32.3L671.8 -32.3ZM684.1 -1.0L685.2 -3.5Q687.6 -8.7 691.8 -13.1Q694.8 -16.3 697.3 -16.3Q698.8 -16.3 699.7 -15.3Q700.6 -14.3 700.6 -12.7Q700.6 -11.1 699.7 -10.0Q698.8 -8.9 697.3 -8.9Q696.0 -8.9 694.8 -10.7Q694.3 -11.7 693.7 -11.7Q691.8 -11.7 688.0 -5.1Q685.6 -1.1 684.2 2.5Q682.7 6.1 680.2 14.6L674.9 14.6L680.6 -5.8Q681.7 -10.0 681.7 -11.6Q681.7 -13.4 679.0 -13.4Q678.5 -13.4 676.9 -13.2L676.9 -14.4L687.7 -16.3L687.9 -16.1L684.1 -1.0ZM785.6 -22.4L729.9 -22.4L729.9 -29.0L785.6 -29.0L785.6 -22.4ZM867.9 -18.4L862.1 -0.4L811.2 -0.4L811.2 -2.0Q815.4 -2.4 816.7 -3.7Q818.0 -5.0 819.4 -9.8L831.6 -53.6Q832.7 -57.3 832.7 -59.8Q832.7 -62.0 831.1 -62.9Q829.6 -63.8 825.0 -64.1L825.0 -65.7L852.3 -65.7L852.3 -64.1Q847.7 -63.8 845.5 -62.2Q843.4 -60.6 842.2 -56.4L830.2 -13.5Q829.2 -9.7 829.2 -8.1Q829.2 -5.8 831.4 -4.9Q833.6 -4.0 839.7 -4.0Q847.4 -4.0 850.7 -4.7Q854.1 -5.4 857.7 -7.8Q861.8 -10.5 865.9 -19.0L867.9 -18.4ZM878.7 -17.5L878.7 -12.1Q883.1 -17.6 888.8 -17.6Q893.9 -17.6 897.2 -13.4Q900.5 -9.2 900.5 -2.7Q900.5 4.9 896.2 10.1Q892.0 15.3 885.8 15.3Q883.6 15.3 882.1 14.7Q880.6 14.0 878.7 12.3L878.7 23.3Q878.7 26.6 879.8 27.5Q880.9 28.5 884.9 28.5L884.9 29.8L867.9 29.8L867.9 28.6Q871.0 28.3 871.9 27.4Q872.8 26.5 872.8 23.8L872.8 -9.0Q872.8 -11.4 872.3 -12.2Q871.7 -13.0 870.0 -13.0Q868.8 -13.0 868.2 -12.9L868.2 -14.0Q873.1 -15.5 878.3 -17.6L878.7 -17.5ZM878.7 -8.8L878.7 8.4Q878.7 10.0 881.1 11.5Q883.5 13.1 886.0 13.1Q889.8 13.1 892.1 9.5Q894.5 5.9 894.5 0.1Q894.5 -6.1 892.1 -9.7Q889.8 -13.4 885.8 -13.4Q883.4 -13.4 881.1 -11.9Q878.7 -10.3 878.7 -8.8ZM933.5 10.0L933.5 11.9Q930.9 15.3 927.2 15.3Q923.2 15.3 922.7 10.2L922.7 10.2Q918.2 15.3 912.5 15.3Q909.2 15.3 907.2 13.4Q905.2 11.4 905.2 8.0Q905.2 3.1 910.1 -0.2Q913.4 -2.4 922.7 -5.8L922.7 -9.6Q922.7 -12.8 921.2 -14.3Q919.7 -15.9 917.2 -15.9Q915.1 -15.9 913.7 -14.9Q912.3 -13.9 912.3 -12.5Q912.3 -11.9 912.5 -11.1Q912.7 -10.3 912.7 -9.6Q912.7 -8.5 911.8 -7.6Q910.8 -6.7 909.5 -6.7Q908.3 -6.7 907.4 -7.6Q906.5 -8.5 906.5 -9.9Q906.5 -13.3 910.1 -15.5Q913.4 -17.6 918.1 -17.6Q923.8 -17.6 926.4 -14.5Q927.6 -13.0 928.0 -11.5Q928.3 -10.0 928.3 -6.7L928.3 6.7Q928.3 11.3 930.5 11.3Q931.9 11.3 933.5 10.0ZM922.7 5.7L922.7 -4.2Q916.2 -1.9 913.7 0.5Q911.3 2.6 911.3 5.8Q911.3 8.5 912.7 9.9Q914.0 11.2 916.2 11.2Q918.5 11.2 920.2 10.1Q921.7 9.1 922.2 8.2Q922.7 7.2 922.7 5.7ZM952.3 9.2L953.2 10.0Q949.8 15.3 944.7 15.3Q938.6 15.3 938.6 6.4L938.6 -14.7L934.9 -14.7Q934.6 -14.9 934.6 -15.2Q934.6 -15.7 935.8 -16.5Q938.4 -18.0 942.6 -24.0Q942.7 -24.2 943.2 -24.8Q943.7 -25.5 944.0 -25.9Q944.4 -25.9 944.4 -25.0L944.4 -16.9L951.5 -16.9L951.5 -14.7L944.4 -14.7L944.4 5.4Q944.4 8.7 945.3 10.2Q946.1 11.7 948.1 11.7Q950.2 11.7 952.3 9.2ZM987.2 14.6L972.4 14.6L972.4 13.5Q975.5 13.2 976.3 12.1Q977.1 11.1 977.1 7.5L977.1 -6.4Q977.1 -13.8 972.0 -13.8Q969.9 -13.8 968.1 -12.8Q966.4 -11.9 964.1 -9.4L964.1 7.5Q964.1 11.1 964.9 12.1Q965.8 13.2 968.9 13.5L968.9 14.6L953.8 14.6L953.8 13.5Q956.8 13.1 957.5 12.1Q958.2 11.2 958.2 7.5L958.2 -25.5Q958.2 -27.8 957.6 -28.4Q956.9 -29.1 954.7 -29.1Q954.0 -29.1 953.8 -29.0L953.8 -30.1L955.7 -30.7Q961.1 -32.3 963.8 -33.2L964.1 -33.0L964.1 -11.7Q966.6 -14.9 968.9 -16.2Q971.3 -17.6 974.4 -17.6Q983.0 -17.6 983.0 -6.5L983.0 7.5Q983.0 11.1 983.7 12.0Q984.3 13.0 987.2 13.5L987.2 14.6ZM1074.7 -22.4L1019.0 -22.4L1019.0 -29.0L1074.7 -29.0L1074.7 -22.4ZM1157.0 -18.4L1151.2 -0.4L1100.3 -0.4L1100.3 -2.0Q1104.5 -2.4 1105.8 -3.7Q1107.1 -5.0 1108.5 -9.8L1120.7 -53.6Q1121.8 -57.3 1121.8 -59.8Q1121.8 -62.0 1120.3 -62.9Q1118.7 -63.8 1114.1 -64.1L1114.1 -65.7L1141.4 -65.7L1141.4 -64.1Q1136.8 -63.8 1134.7 -62.2Q1132.5 -60.6 1131.3 -56.4L1119.3 -13.5Q1118.3 -9.7 1118.3 -8.1Q1118.3 -5.8 1120.5 -4.9Q1122.7 -4.0 1128.8 -4.0Q1136.5 -4.0 1139.9 -4.7Q1143.2 -5.4 1146.8 -7.8Q1150.9 -10.5 1155.0 -19.0L1157.0 -18.4ZM1189.6 -1.6Q1189.6 5.8 1185.2 10.5Q1180.9 15.3 1173.9 15.3Q1167.4 15.3 1163.1 10.6Q1158.8 5.8 1158.8 -1.4Q1158.8 -8.6 1163.1 -13.1Q1167.4 -17.6 1174.5 -17.6Q1181.0 -17.6 1185.3 -13.2Q1189.6 -8.7 1189.6 -1.6ZM1183.3 0.3Q1183.3 -7.7 1179.8 -12.1Q1177.0 -15.6 1173.2 -15.6Q1169.5 -15.6 1167.3 -12.7Q1165.1 -9.7 1165.1 -4.5Q1165.1 4.4 1168.8 9.8Q1171.1 13.3 1175.1 13.3Q1178.9 13.3 1181.1 9.9Q1183.3 6.4 1183.3 0.3ZM1210.3 9.2L1211.3 10.0Q1207.9 15.3 1202.8 15.3Q1196.6 15.3 1196.6 6.4L1196.6 -14.7L1192.9 -14.7Q1192.6 -14.9 1192.6 -15.2Q1192.6 -15.7 1193.8 -16.5Q1196.5 -18.0 1200.6 -24.0Q1200.8 -24.2 1201.3 -24.8Q1201.8 -25.5 1202.0 -25.9Q1202.5 -25.9 1202.5 -25.0L1202.5 -16.9L1209.6 -16.9L1209.6 -14.7L1202.5 -14.7L1202.5 5.4Q1202.5 8.7 1203.3 10.2Q1204.2 11.7 1206.1 11.7Q1208.2 11.7 1210.3 9.2ZM1245.3 14.6L1230.4 14.6L1230.4 13.5Q1233.5 13.2 1234.3 12.1Q1235.2 11.1 1235.2 7.5L1235.2 -6.4Q1235.2 -13.8 1230.0 -13.8Q1227.9 -13.8 1226.2 -12.8Q1224.4 -11.9 1222.2 -9.4L1222.2 7.5Q1222.2 11.1 1223.0 12.1Q1223.8 13.2 1226.9 13.5L1226.9 14.6L1211.8 14.6L1211.8 13.5Q1214.8 13.1 1215.6 12.1Q1216.3 11.2 1216.3 7.5L1216.3 -25.5Q1216.3 -27.8 1215.6 -28.4Q1215.0 -29.1 1212.7 -29.1Q1212.1 -29.1 1211.9 -29.0L1211.9 -30.1L1213.8 -30.7Q1219.2 -32.3 1221.8 -33.2L1222.2 -33.0L1222.2 -11.7Q1224.6 -14.9 1227.0 -16.2Q1229.4 -17.6 1232.5 -17.6Q1241.1 -17.6 1241.1 -6.5L1241.1 7.5Q1241.1 11.1 1241.7 12.0Q1242.4 13.0 1245.3 13.5L1245.3 14.6ZM1274.7 3.1L1275.9 3.6Q1271.7 15.3 1261.2 15.3Q1255.1 15.3 1251.5 11.0Q1247.9 6.7 1247.9 -0.6Q1247.9 -8.1 1251.9 -12.8Q1255.9 -17.6 1262.4 -17.6Q1268.7 -17.6 1272.1 -12.8Q1274.2 -10.0 1274.5 -4.8L1253.0 -4.8Q1253.2 -0.4 1253.8 1.9Q1254.4 4.2 1256.2 6.6Q1259.1 10.5 1264.0 10.5Q1267.4 10.5 1269.7 8.8Q1272.1 7.1 1274.7 3.1ZM1253.1 -7.0L1267.4 -7.0Q1266.8 -11.4 1265.3 -13.3Q1263.9 -15.1 1260.5 -15.1Q1257.6 -15.1 1255.6 -13.0Q1253.7 -11.0 1253.1 -7.0ZM1288.5 -17.5L1288.5 -11.0Q1291.1 -14.8 1292.9 -16.2Q1294.7 -17.6 1296.9 -17.6Q1298.7 -17.6 1299.7 -16.6Q1300.7 -15.6 1300.7 -13.9Q1300.7 -12.4 1300.0 -11.6Q1299.2 -10.7 1298.0 -10.7Q1296.7 -10.7 1295.2 -12.1Q1294.1 -13.2 1293.4 -13.2Q1291.9 -13.2 1290.2 -11.2Q1288.5 -9.1 1288.5 -7.5L1288.5 8.3Q1288.5 11.3 1289.7 12.4Q1290.8 13.4 1294.4 13.5L1294.4 14.6L1277.6 14.6L1277.6 13.5Q1281.0 12.9 1281.8 12.1Q1282.6 11.4 1282.6 8.7L1282.6 -8.8Q1282.6 -11.1 1282.0 -12.0Q1281.5 -13.0 1280.2 -13.0Q1279.1 -13.0 1277.8 -12.7L1277.8 -13.8Q1282.2 -15.2 1288.1 -17.6L1288.5 -17.5ZM1387.2 -22.4L1331.5 -22.4L1331.5 -29.0L1387.2 -29.0L1387.2 -22.4ZM1500.8 -65.7L1500.8 -64.1Q1496.7 -63.4 1495.2 -62.0Q1493.8 -60.7 1492.7 -56.7L1480.4 -12.4Q1479.0 -7.4 1479.0 -6.2Q1479.0 -4.2 1480.8 -3.2Q1482.6 -2.1 1487.1 -2.0L1487.0 -0.4L1459.9 -0.4L1459.9 -2.0Q1464.8 -2.5 1466.8 -4.2Q1468.8 -5.9 1470.1 -10.6L1482.7 -56.5L1445.1 -0.4L1443.4 -0.4L1437.2 -55.0L1425.4 -12.2Q1424.5 -9.0 1424.5 -6.8Q1424.5 -2.5 1431.5 -2.0L1431.5 -0.4L1411.8 -0.4L1411.8 -2.0Q1415.8 -2.5 1417.6 -4.8Q1419.5 -7.2 1421.8 -15.4L1433.2 -55.5Q1434.4 -59.6 1434.4 -60.7Q1434.4 -63.7 1427.0 -64.1L1427.0 -65.7L1445.1 -65.7L1450.7 -16.5L1484.2 -65.7L1500.8 -65.7Z"/></svg></div><details class="more"><summary>More detail: <span class="hint">the Friis equation</span></summary><div class="body"><p>In linear units this is the Friis transmission equation, extended with extra losses:</p><div class="eq"><svg class="tex" xmlns="http://www.w3.org/2000/svg" viewBox="-6 -110 773 149" style="width:7.729em;height:1.487em" role="img" aria-label="P r equals P t G t G r times lambda over 4 pi d squared" focusable="false"><path fill="currentColor" d="M14.6 -66.1L38.7 -66.1Q60.5 -66.1 60.5 -51.3Q60.5 -47.3 58.6 -43.4Q56.8 -39.6 53.7 -37.0Q46.8 -31.3 33.2 -31.3Q27.7 -31.3 24.2 -32.1L18.9 -12.8Q17.5 -7.3 17.5 -6.5Q17.5 -4.7 19.0 -3.7Q20.5 -2.8 24.4 -2.3L24.4 -0.8L0.0 -0.8L0.0 -2.3Q4.3 -3.0 5.6 -4.3Q7.0 -5.7 8.4 -10.6L20.0 -52.0Q21.7 -58.1 21.7 -60.3Q21.7 -62.3 20.3 -63.1Q18.9 -64.0 14.6 -64.5L14.6 -66.1ZM32.0 -60.0L25.1 -35.5Q28.0 -35.0 30.3 -35.0Q39.0 -35.0 43.1 -37.3Q50.2 -41.3 50.2 -50.8Q50.2 -63.1 37.2 -63.1Q32.8 -63.1 32.0 -60.0ZM73.4 -1.4L74.5 -3.8Q76.9 -9.1 81.1 -13.5Q84.1 -16.6 86.6 -16.6Q88.1 -16.6 89.0 -15.6Q89.9 -14.7 89.9 -13.1Q89.9 -11.4 89.1 -10.4Q88.2 -9.3 86.6 -9.3Q85.3 -9.3 84.2 -11.1Q83.6 -12.1 83.1 -12.1Q81.2 -12.1 77.3 -5.5Q75.0 -1.4 73.5 2.2Q72.1 5.8 69.6 14.2L64.2 14.2L69.9 -6.2Q71.0 -10.3 71.0 -11.9Q71.0 -13.8 68.4 -13.8Q67.8 -13.8 66.2 -13.5L66.2 -14.7L77.1 -16.6L77.3 -16.5L73.4 -1.4ZM176.5 -32.8L117.6 -32.8L117.6 -39.3L176.5 -39.3L176.5 -32.8ZM176.5 -12.8L117.6 -12.8L117.6 -19.3L176.5 -19.3L176.5 -12.8ZM215.9 -66.1L240.0 -66.1Q261.8 -66.1 261.8 -51.3Q261.8 -47.3 260.0 -43.4Q258.1 -39.6 255.0 -37.0Q248.1 -31.3 234.5 -31.3Q229.0 -31.3 225.5 -32.1L220.2 -12.8Q218.8 -7.3 218.8 -6.5Q218.8 -4.7 220.3 -3.7Q221.8 -2.8 225.7 -2.3L225.7 -0.8L201.3 -0.8L201.3 -2.3Q205.6 -3.0 207.0 -4.3Q208.3 -5.7 209.7 -10.6L221.3 -52.0Q223.0 -58.1 223.0 -60.3Q223.0 -62.3 221.6 -63.1Q220.2 -64.0 215.9 -64.5L215.9 -66.1ZM233.3 -60.0L226.4 -35.5Q229.3 -35.0 231.6 -35.0Q240.3 -35.0 244.4 -37.3Q251.5 -41.3 251.5 -50.8Q251.5 -63.1 238.5 -63.1Q234.1 -63.1 233.3 -60.0ZM283.1 -15.7L282.8 -13.5L276.9 -13.5L270.8 9.5Q270.7 10.0 270.7 10.5Q270.7 11.6 271.7 11.6Q272.6 11.6 273.7 10.5Q274.8 9.4 277.4 6.1L278.3 6.5Q275.1 11.4 273.0 13.2Q271.0 15.0 268.3 15.0Q265.1 15.0 265.1 12.4Q265.1 11.7 266.2 7.2L271.7 -13.5L266.4 -13.5L266.3 -13.9Q266.3 -15.2 268.7 -15.6Q270.4 -16.1 273.3 -18.3Q276.1 -20.6 278.0 -23.3Q278.4 -24.0 278.9 -24.0Q279.6 -24.0 279.6 -23.4Q279.6 -23.1 279.5 -22.9L277.5 -15.7L283.1 -15.7ZM375.3 -32.7L375.3 -31.1Q370.4 -30.8 368.5 -29.4Q366.7 -28.1 365.6 -23.8L360.7 -5.2Q349.6 1.0 337.0 1.0Q323.3 1.0 315.7 -6.6Q312.2 -10.1 310.2 -15.3Q308.3 -20.7 308.3 -25.8Q308.3 -36.2 313.3 -45.3Q318.3 -54.3 326.6 -60.2Q337.0 -67.3 348.6 -67.3Q355.8 -67.3 362.0 -65.0Q364.6 -64.0 366.4 -64.0Q370.0 -64.0 372.4 -67.3L373.9 -66.8L369.0 -47.2L367.2 -47.5Q366.9 -53.8 363.5 -58.1Q358.7 -64.0 349.4 -64.0Q337.7 -64.0 329.9 -54.1Q324.9 -47.8 322.1 -39.8Q319.3 -31.8 319.3 -23.6Q319.3 -13.7 324.6 -8.2Q329.9 -2.7 339.5 -2.7Q346.6 -2.7 350.0 -6.1Q350.9 -7.0 351.6 -8.7Q352.3 -10.5 353.9 -16.2Q356.5 -24.8 356.5 -27.5Q356.5 -30.3 351.8 -30.8L348.6 -31.1L348.6 -32.7L375.3 -32.7ZM396.0 -15.7L395.6 -13.5L389.7 -13.5L383.7 9.5Q383.5 10.0 383.5 10.5Q383.5 11.6 384.6 11.6Q385.4 11.6 386.5 10.5Q387.6 9.4 390.2 6.1L391.1 6.5Q387.9 11.4 385.9 13.2Q383.8 15.0 381.1 15.0Q377.9 15.0 377.9 12.4Q377.9 11.7 379.0 7.2L384.5 -13.5L379.2 -13.5L379.2 -13.9Q379.2 -15.2 381.5 -15.6Q383.2 -16.1 386.1 -18.3Q389.0 -20.6 390.8 -23.3Q391.2 -24.0 391.8 -24.0Q392.4 -24.0 392.4 -23.4Q392.4 -23.1 392.3 -22.9L390.4 -15.7L396.0 -15.7ZM488.1 -32.7L488.1 -31.1Q483.2 -30.8 481.3 -29.4Q479.5 -28.1 478.4 -23.8L473.5 -5.2Q462.4 1.0 449.8 1.0Q436.1 1.0 428.5 -6.6Q425.0 -10.1 423.0 -15.3Q421.1 -20.7 421.1 -25.8Q421.1 -36.2 426.1 -45.3Q431.1 -54.3 439.4 -60.2Q449.8 -67.3 461.4 -67.3Q468.6 -67.3 474.8 -65.0Q477.4 -64.0 479.2 -64.0Q482.8 -64.0 485.2 -67.3L486.7 -66.8L481.8 -47.2L480.0 -47.5Q479.7 -53.8 476.3 -58.1Q471.5 -64.0 462.2 -64.0Q450.5 -64.0 442.7 -54.1Q437.7 -47.8 434.9 -39.8Q432.1 -31.8 432.1 -23.6Q432.1 -13.7 437.4 -8.2Q442.7 -2.7 452.3 -2.7Q459.4 -2.7 462.8 -6.1Q463.7 -7.0 464.4 -8.7Q465.1 -10.5 466.7 -16.2Q469.3 -24.8 469.3 -27.5Q469.3 -30.3 464.6 -30.8L461.4 -31.1L461.4 -32.7L488.1 -32.7ZM500.4 -1.4L501.5 -3.8Q503.9 -9.1 508.1 -13.5Q511.1 -16.6 513.6 -16.6Q515.1 -16.6 516.0 -15.6Q516.9 -14.7 516.9 -13.1Q516.9 -11.4 516.1 -10.4Q515.2 -9.3 513.6 -9.3Q512.3 -9.3 511.2 -11.1Q510.6 -12.1 510.1 -12.1Q508.2 -12.1 504.3 -5.5Q501.9 -1.4 500.5 2.2Q499.1 5.8 496.5 14.2L491.2 14.2L496.9 -6.2Q498.0 -10.3 498.0 -11.9Q498.0 -13.8 495.4 -13.8Q494.8 -13.8 493.2 -13.5L493.2 -14.7L504.0 -16.6L504.2 -16.5L500.4 -1.4ZM556.0 29.9L556.0 32.7Q545.4 22.7 539.2 7.9Q533.0 -7.0 533.0 -25.5Q533.0 -43.8 539.2 -58.8Q545.4 -73.8 556.0 -83.7L556.0 -80.9Q540.6 -62.1 540.6 -25.5Q540.6 11.1 556.0 29.9ZM636.4 -44.9L637.5 -44.9Q635.3 -35.1 630.4 -35.1Q628.8 -35.1 627.8 -36.8Q626.7 -38.4 626.7 -41.7Q626.7 -43.6 626.9 -46.0Q627.1 -48.4 627.4 -52.1Q627.7 -55.8 627.9 -58.3L613.2 -36.2L606.5 -36.2L628.2 -66.2Q628.5 -68.7 628.5 -71.7Q628.5 -79.3 625.1 -79.3Q624.1 -79.3 622.7 -78.0Q621.4 -76.8 620.5 -74.1L619.4 -74.1Q621.7 -83.7 626.5 -83.7Q628.4 -83.7 629.7 -81.3Q630.9 -78.8 630.9 -74.3Q630.9 -69.5 630.2 -60.2Q629.5 -50.9 629.5 -46.5Q629.5 -42.8 630.2 -41.2Q630.9 -39.5 632.4 -39.5Q634.5 -39.5 636.4 -44.9ZM603.5 19.7L596.2 19.7L596.2 31.4L590.8 31.4L590.8 19.7L571.2 19.7L571.2 15.3L593.2 -15.9L596.2 -15.9L596.2 15.3L603.5 15.3L603.5 19.7ZM590.8 15.3L590.8 -8.8L574.0 15.3L590.8 15.3ZM642.9 1.5L641.4 6.6L634.3 6.6Q634.0 7.4 632.7 11.9Q631.4 16.4 630.5 19.7Q629.6 23.0 629.6 23.6Q629.6 26.5 631.7 26.5Q634.8 26.5 636.7 22.3L637.8 22.3Q636.9 26.1 634.4 29.2Q631.8 32.2 628.2 32.2Q626.1 32.2 625.1 30.7Q624.1 29.2 624.1 26.9Q624.1 24.6 625.3 21.3L630.6 6.6L623.3 6.6Q622.5 8.9 620.7 15.4Q618.9 21.8 617.0 25.8Q615.2 29.8 612.7 31.8Q611.5 32.7 610.2 32.7Q608.8 32.7 607.7 31.8Q606.7 30.9 606.7 29.6Q606.7 26.7 608.8 26.2Q612.3 25.3 613.8 21.3L619.6 6.6L619.1 6.6Q616.0 6.6 614.3 7.3Q612.6 7.9 610.5 10.5L609.4 10.5Q612.3 5.6 615.5 3.5Q618.7 1.5 623.9 1.5L642.9 1.5ZM677.1 -16.4L677.5 -16.0L674.8 -5.3L670.6 10.0Q666.0 26.7 666.0 27.2Q666.0 28.6 667.3 28.6Q668.2 28.6 669.2 27.8Q670.2 26.9 673.0 23.7L673.9 24.4Q668.5 32.3 663.6 32.3Q662.3 32.3 661.5 31.5Q660.7 30.7 660.7 29.2Q660.7 27.1 661.6 23.0Q658.6 28.1 655.7 30.1Q652.8 32.2 649.2 32.2Q645.7 32.2 643.7 30.1Q641.7 27.9 641.7 24.0Q641.7 15.7 648.4 8.1Q655.2 0.6 662.1 0.6Q664.3 0.6 665.3 1.5Q666.3 2.5 666.7 4.6L666.7 4.6L669.9 -6.8Q670.9 -10.2 670.9 -11.8Q670.9 -12.9 670.1 -13.2Q669.3 -13.4 666.4 -13.6L666.4 -14.8Q671.8 -15.3 677.1 -16.4ZM665.5 6.2Q665.5 4.3 664.5 3.3Q663.5 2.2 662.3 2.2Q659.0 2.2 655.9 5.4Q652.4 9.1 650.1 14.2Q647.8 19.4 647.8 23.7Q647.8 26.1 648.9 27.5Q649.9 28.8 651.8 28.8Q655.0 28.8 658.2 25.4Q661.4 22.0 663.5 16.7Q665.5 11.3 665.5 6.2ZM690.0 -80.9L690.0 -83.7Q700.6 -73.7 706.8 -58.9Q713.0 -44.1 713.0 -25.5Q713.0 -7.2 706.8 7.8Q700.6 22.8 690.0 32.7L690.0 29.9Q705.3 11.1 705.3 -25.5Q705.3 -62.1 690.0 -80.9ZM760.9 -66.3L757.1 -56.7L729.8 -56.7L729.8 -57.5L742.2 -70.8Q747.1 -75.9 749.2 -80.1Q751.3 -84.4 751.3 -89.0Q751.3 -93.6 748.7 -96.2Q746.1 -98.8 741.6 -98.8Q737.8 -98.8 735.6 -96.9Q733.4 -94.9 731.3 -89.7L729.8 -90.1Q731.0 -96.6 734.6 -100.3Q738.2 -104.0 744.4 -104.0Q750.2 -104.0 753.8 -100.5Q757.3 -97.0 757.3 -91.7Q757.3 -83.8 748.4 -74.3L736.8 -62.0L753.2 -62.0Q755.5 -62.0 756.9 -62.9Q758.3 -63.8 759.9 -66.7L760.9 -66.3ZM570.3 -22.6L570.3 -28.9L675.6 -28.9L675.6 -22.6L570.3 -22.6Z"/></svg></div><p>The free-space term applies only with a clear line of sight. Real budgets replace it with a measured or standardised path-loss model, such as those in 3GPP TR 38.901, and add losses for buildings, bodies, rain or foliage as the scenario needs. The <a href="propagation.html">propagation</a> tab explains where these come from.</p></div></details>
+<h2 class="sec" id="noise">Noise sets the floor</h2>
+<p class="lead">A receiver is only as good as its noise. Thermal noise grows with bandwidth, and the receiver’s own electronics add a little more, measured by the <b>noise figure</b>.</p><div class="eq"><svg class="tex" xmlns="http://www.w3.org/2000/svg" viewBox="-8 -75 1274 102" style="width:12.738em;height:1.021em" role="img" aria-label="noise in dBm equals minus 174 plus 10 log10 B plus the noise figure" focusable="false"><path fill="currentColor" d="M72.7 -66.0L72.7 -64.4Q70.0 -63.8 69.0 -63.5Q67.9 -63.1 66.7 -61.4Q65.4 -59.6 64.8 -57.5Q64.1 -55.4 62.5 -49.9L47.9 0.8L46.1 0.8L23.1 -54.2L11.7 -12.0Q10.8 -8.9 10.8 -6.6Q10.8 -4.5 12.3 -3.5Q13.9 -2.6 17.8 -2.3L17.8 -0.7L-2.0 -0.7L-2.0 -2.3Q2.3 -2.9 4.1 -5.5Q5.9 -8.0 8.6 -17.5L20.3 -59.0Q18.0 -64.4 11.7 -64.4L11.7 -66.0L27.7 -66.0L48.4 -16.1L59.0 -54.9Q59.8 -57.7 59.8 -59.3Q59.8 -62.0 58.4 -63.0Q57.1 -64.0 52.9 -64.4L52.9 -66.0L72.7 -66.0ZM101.1 11.4L90.8 15.0L90.5 14.8L90.5 10.3Q87.1 15.0 81.5 15.0Q75.7 15.0 72.2 10.8Q68.6 6.7 68.6 -0.1Q68.6 -7.5 72.9 -12.7Q77.1 -17.9 83.1 -17.9Q86.9 -17.9 90.5 -14.9L90.5 -25.8Q90.5 -28.0 89.9 -28.7Q89.2 -29.4 87.3 -29.4Q86.3 -29.4 85.7 -29.3L85.7 -30.4Q92.1 -32.1 96.0 -33.5L96.4 -33.4L96.4 6.3Q96.4 8.8 97.0 9.5Q97.6 10.3 99.5 10.3Q99.9 10.3 101.1 10.2L101.1 11.4ZM90.5 7.2L90.5 -8.9Q90.5 -11.7 88.4 -13.8Q86.2 -15.9 83.4 -15.9Q79.4 -15.9 77.0 -12.4Q74.6 -8.8 74.6 -2.9Q74.6 3.6 77.2 7.5Q79.9 11.4 84.3 11.4Q87.6 11.4 89.4 9.1Q90.5 7.9 90.5 7.2ZM131.2 -10.1L131.2 -10.1Q136.5 -9.2 139.8 -6.2Q143.2 -3.1 143.2 1.8Q143.2 7.6 138.7 11.0Q134.1 14.3 126.5 14.3L102.9 14.3L102.9 13.0Q107.0 12.8 108.3 11.6Q109.6 10.4 109.6 6.4L109.6 -24.2Q109.6 -28.3 108.4 -29.3Q107.2 -30.4 102.9 -30.7L102.9 -32.0L122.5 -32.0Q131.5 -32.0 136.2 -29.0Q140.8 -26.0 140.8 -20.4Q140.8 -15.6 138.0 -13.1Q135.9 -11.3 131.2 -10.1ZM116.7 -11.3L123.2 -11.3Q133.7 -11.3 133.7 -20.0Q133.7 -24.5 130.6 -27.0Q127.5 -29.5 121.3 -29.5L118.4 -29.5Q116.7 -29.5 116.7 -27.2L116.7 -11.3ZM116.7 -8.5L116.7 8.6Q116.7 10.3 117.7 11.0Q118.6 11.7 121.1 11.7Q125.8 11.7 128.1 11.2Q130.3 10.7 132.5 8.7Q135.2 6.4 135.2 1.8Q135.2 -3.6 131.9 -5.7Q131.1 -6.3 130.3 -6.7Q129.6 -7.1 129.0 -7.3Q128.4 -7.5 127.4 -7.8Q126.4 -8.0 125.9 -8.1Q125.4 -8.2 124.0 -8.2Q122.7 -8.3 122.1 -8.3Q121.4 -8.4 119.6 -8.5Q117.7 -8.5 116.7 -8.5ZM202.6 14.3L187.4 14.3L187.4 13.2Q190.3 13.0 191.1 12.0Q191.9 11.1 191.9 8.0L191.9 -6.4Q191.9 -10.6 190.7 -12.4Q189.5 -14.3 186.5 -14.3Q184.1 -14.3 182.4 -13.3Q180.7 -12.3 179.0 -10.0L179.0 7.6Q179.0 11.0 180.1 12.1Q181.1 13.2 184.1 13.2L184.1 14.3L168.4 14.3L168.4 13.2Q171.5 13.0 172.3 12.2Q173.2 11.4 173.2 8.3L173.2 -6.5Q173.2 -14.3 168.6 -14.3Q166.7 -14.3 164.4 -13.4Q162.2 -12.5 161.2 -11.3Q160.3 -10.2 160.3 -10.1L160.3 9.4Q160.3 11.6 161.3 12.4Q162.2 13.1 165.0 13.2L165.0 14.3L149.5 14.3L149.5 13.2Q152.4 13.2 153.4 12.2Q154.4 11.1 154.4 8.1L154.4 -9.2Q154.4 -11.8 153.8 -12.8Q153.3 -13.8 152.0 -13.8Q150.9 -13.8 149.7 -13.6L149.7 -14.8Q154.5 -16.1 159.4 -17.9L160.0 -17.7L160.0 -12.5L160.1 -12.5Q163.3 -15.8 165.7 -16.9Q168.1 -17.9 170.9 -17.9Q176.4 -17.9 178.3 -12.0Q183.7 -17.9 189.7 -17.9Q197.8 -17.9 197.8 -5.3L197.8 8.9Q197.8 11.2 198.5 12.1Q199.2 13.0 200.8 13.1L202.6 13.2L202.6 14.3ZM291.1 -32.7L232.1 -32.7L232.1 -39.3L291.1 -39.3L291.1 -32.7ZM291.1 -12.7L232.1 -12.7L232.1 -19.3L291.1 -19.3L291.1 -12.7ZM377.9 -22.7L322.3 -22.7L322.3 -29.3L377.9 -29.3L377.9 -22.7ZM423.8 -0.7L396.1 -0.7L396.1 -2.2Q401.6 -2.5 403.6 -4.2Q405.6 -6.0 405.6 -10.2L405.6 -55.1Q405.6 -60.0 402.6 -60.0Q401.3 -60.0 398.1 -58.8L395.4 -57.8L395.4 -59.2L413.3 -68.3L414.3 -68.0L414.3 -8.3Q414.3 -5.0 416.3 -3.6Q418.3 -2.2 423.8 -2.2L423.8 -0.7ZM479.3 -65.3L458.1 0.1L451.6 0.1L471.3 -59.5L449.8 -59.5Q445.6 -59.5 443.4 -58.0Q441.3 -56.5 438.1 -51.3L436.3 -52.2L442.3 -66.9L479.3 -66.9L479.3 -65.3ZM531.6 -17.4L521.3 -17.4L521.3 -0.7L513.6 -0.7L513.6 -17.4L485.6 -17.4L485.6 -23.8L516.9 -68.3L521.3 -68.3L521.3 -23.8L531.6 -23.8L531.6 -17.4ZM513.6 -23.8L513.6 -58.1L489.6 -23.8L513.6 -23.8ZM617.9 -22.7L591.8 -22.7L591.8 3.4L585.3 3.4L585.3 -22.7L559.1 -22.7L559.1 -29.3L585.3 -29.3L585.3 -55.4L591.8 -55.4L591.8 -29.3L617.9 -29.3L617.9 -22.7ZM682.3 -0.7L654.6 -0.7L654.6 -2.2Q660.1 -2.5 662.1 -4.2Q664.1 -6.0 664.1 -10.2L664.1 -55.1Q664.1 -60.0 661.1 -60.0Q659.8 -60.0 656.6 -58.8L653.9 -57.8L653.9 -59.2L671.8 -68.3L672.8 -68.0L672.8 -8.3Q672.8 -5.0 674.8 -3.6Q676.8 -2.2 682.3 -2.2L682.3 -0.7ZM740.4 -33.7Q740.4 -27.0 739.1 -21.0Q737.8 -15.1 735.3 -10.1Q732.8 -5.1 728.3 -2.2Q723.8 0.7 717.8 0.7Q711.8 0.7 707.1 -2.4Q702.6 -5.5 700.1 -10.7Q697.6 -15.9 696.4 -21.8Q695.3 -27.7 695.3 -34.3Q695.3 -43.6 697.6 -51.0Q699.8 -58.5 705.2 -63.4Q710.6 -68.3 718.3 -68.3Q728.1 -68.3 734.2 -58.7Q740.4 -49.1 740.4 -33.7ZM730.8 -33.2Q730.8 -49.0 727.5 -57.3Q724.1 -65.7 717.6 -65.7Q711.4 -65.7 708.1 -57.3Q704.8 -48.9 704.8 -33.6Q704.8 -18.2 708.1 -10.0Q711.4 -1.9 717.8 -1.9Q724.1 -1.9 727.5 -10.0Q730.8 -18.2 730.8 -33.2ZM768.6 -0.7L744.9 -0.7L744.9 -2.2Q749.6 -2.6 751.1 -4.2Q752.6 -5.7 752.6 -9.9L752.6 -56.8Q752.6 -60.4 751.7 -61.8Q750.8 -63.2 748.4 -63.2Q746.3 -63.2 744.8 -63.0L744.8 -64.6Q754.3 -66.9 760.6 -69.0L761.1 -68.6L761.1 -9.4Q761.1 -5.2 762.4 -3.8Q763.8 -2.5 768.6 -2.2L768.6 -0.7ZM817.6 -23.8Q817.6 -13.3 811.4 -6.5Q805.1 0.3 795.1 0.3Q785.9 0.3 779.7 -6.5Q773.6 -13.2 773.6 -23.5Q773.6 -33.9 779.7 -40.3Q785.9 -46.7 796.1 -46.7Q805.4 -46.7 811.5 -40.3Q817.6 -34.0 817.6 -23.8ZM808.6 -21.1Q808.6 -32.5 803.6 -38.9Q799.6 -43.9 794.1 -43.9Q788.9 -43.9 785.7 -39.7Q782.6 -35.4 782.6 -28.0Q782.6 -15.2 787.9 -7.5Q791.2 -2.5 796.9 -2.5Q802.4 -2.5 805.5 -7.5Q808.6 -12.4 808.6 -21.1ZM867.6 -39.5L859.4 -39.5Q861.2 -35.2 861.2 -31.1Q861.2 -23.4 856.0 -19.5Q850.9 -15.6 845.6 -15.6Q844.6 -15.6 841.9 -15.9L839.9 -16.1Q837.9 -15.5 835.9 -13.4Q833.9 -11.3 833.9 -9.8Q833.9 -7.5 841.7 -7.1L854.6 -6.5Q860.1 -6.3 863.4 -3.4Q866.7 -0.5 866.7 4.2Q866.7 10.0 860.7 14.7Q852.4 21.1 840.7 21.1Q833.6 21.1 828.5 18.2Q823.4 15.4 823.4 11.4Q823.4 8.6 825.6 5.8Q827.9 3.1 833.2 -0.8Q830.1 -2.3 829.0 -3.4Q827.9 -4.5 827.9 -6.1Q827.9 -9.0 832.6 -13.0Q834.9 -15.0 836.9 -17.0Q831.9 -19.5 829.7 -22.6Q827.6 -25.7 827.6 -30.4Q827.6 -37.2 832.4 -42.0Q837.2 -46.7 844.2 -46.7Q848.2 -46.7 852.2 -45.2L854.4 -44.4Q857.4 -43.4 859.9 -43.4L867.6 -43.4L867.6 -39.5ZM835.9 -34.5L835.9 -34.2Q835.9 -27.0 838.7 -22.5Q841.6 -18.1 846.1 -18.1Q849.6 -18.1 851.6 -20.5Q853.6 -23.0 853.6 -27.1Q853.6 -33.7 850.6 -39.2Q848.1 -43.9 843.2 -43.9Q839.7 -43.9 837.8 -41.4Q835.9 -38.9 835.9 -34.5ZM863.9 5.7Q863.9 2.9 861.2 1.8Q858.4 0.8 851.6 0.8Q841.6 0.8 835.4 -0.5Q832.4 3.1 831.4 4.7Q830.4 6.4 830.4 8.1Q830.4 11.4 834.4 13.4Q838.4 15.4 844.9 15.4Q853.4 15.4 858.7 12.7Q863.9 10.1 863.9 5.7ZM899.8 14.3L880.5 14.3L880.5 13.2Q884.3 13.0 885.7 11.8Q887.1 10.6 887.1 7.6L887.1 -23.8Q887.1 -27.2 885.0 -27.2Q884.1 -27.2 881.9 -26.4L880.0 -25.7L880.0 -26.7L892.5 -33.0L893.2 -32.8L893.2 9.0Q893.2 11.3 894.6 12.3Q896.0 13.2 899.8 13.2L899.8 14.3ZM940.5 -8.8Q940.5 -4.1 939.6 0.1Q938.7 4.2 936.9 7.7Q935.2 11.2 932.0 13.2Q928.9 15.3 924.7 15.3Q920.5 15.3 917.2 13.1Q914.0 10.9 912.3 7.3Q910.5 3.7 909.7 -0.5Q908.9 -4.6 908.9 -9.2Q908.9 -15.7 910.5 -20.9Q912.1 -26.2 915.9 -29.6Q919.6 -33.0 925.0 -33.0Q931.9 -33.0 936.2 -26.3Q940.5 -19.6 940.5 -8.8ZM933.8 -8.5Q933.8 -19.5 931.5 -25.4Q929.1 -31.2 924.6 -31.2Q920.2 -31.2 917.9 -25.3Q915.6 -19.4 915.6 -8.7Q915.6 2.0 917.9 7.8Q920.2 13.5 924.7 13.5Q929.1 13.5 931.5 7.8Q933.8 2.0 933.8 -8.5ZM976.4 -66.0L1001.4 -66.0Q1022.2 -66.0 1022.2 -51.0Q1022.2 -44.0 1015.8 -39.7Q1012.4 -37.4 1004.7 -35.8L1004.7 -35.7Q1017.3 -31.9 1017.3 -20.7Q1017.3 -10.9 1009.8 -5.8Q1002.4 -0.7 989.8 -0.7L962.6 -0.7L962.6 -2.3Q966.7 -2.9 968.1 -4.3Q969.6 -5.7 970.9 -10.3L983.0 -53.9Q984.1 -57.8 984.1 -60.3Q984.1 -62.5 982.6 -63.2Q981.1 -64.0 976.4 -64.4L976.4 -66.0ZM988.2 -37.0L992.0 -37.0Q1001.8 -37.0 1006.9 -40.9Q1012.1 -44.8 1012.1 -52.2Q1012.1 -57.8 1009.3 -60.4Q1006.5 -63.0 1000.4 -63.0Q998.1 -63.0 997.2 -62.8Q996.4 -62.7 995.7 -62.0Q995.0 -61.2 994.5 -59.4L988.2 -37.0ZM987.2 -33.8L984.0 -21.9Q980.5 -8.6 980.5 -7.9Q980.5 -3.7 987.2 -3.7Q996.0 -3.7 1001.2 -8.1Q1006.5 -12.5 1006.5 -20.7Q1006.5 -25.2 1004.6 -28.4Q1002.7 -31.6 999.8 -32.6Q996.4 -33.8 987.2 -33.8ZM1108.1 -22.7L1082.0 -22.7L1082.0 3.4L1075.4 3.4L1075.4 -22.7L1049.3 -22.7L1049.3 -29.3L1075.4 -29.3L1075.4 -55.4L1082.0 -55.4L1082.0 -29.3L1108.1 -29.3L1108.1 -22.7ZM1203.7 -66.9L1203.7 -65.0Q1198.6 -64.5 1197.1 -63.2Q1195.5 -61.8 1194.8 -59.4Q1194.2 -57.0 1194.2 -51.4L1194.2 0.4L1192.4 0.4L1148.3 -54.5L1148.3 -15.7Q1148.3 -8.1 1150.0 -5.8Q1151.7 -3.4 1157.6 -2.6L1157.6 -0.7L1134.2 -0.7L1134.2 -2.6Q1140.4 -3.3 1142.1 -5.5Q1143.9 -7.8 1143.9 -15.7L1143.9 -59.7Q1141.3 -62.9 1139.5 -64.0Q1137.7 -65.0 1134.2 -65.0L1134.2 -66.9L1151.2 -66.9L1189.8 -18.6L1189.8 -52.6Q1189.8 -60.2 1187.9 -62.4Q1186.7 -63.7 1185.2 -64.2Q1183.8 -64.6 1180.0 -65.0L1180.0 -66.9L1203.7 -66.9ZM1259.8 -52.6L1257.3 -52.6Q1256.2 -59.4 1253.5 -61.2Q1250.9 -63.1 1241.9 -63.1L1228.7 -63.1Q1226.6 -63.1 1225.9 -62.4Q1225.3 -61.6 1225.3 -59.2L1225.3 -37.5L1239.5 -37.5Q1245.8 -37.5 1247.9 -39.3Q1250.1 -41.1 1250.8 -47.0L1253.1 -47.0L1253.1 -23.7L1250.8 -23.7Q1250.2 -29.8 1248.1 -31.6Q1246.0 -33.4 1239.5 -33.4L1225.3 -33.4L1225.3 -11.9Q1225.3 -6.2 1226.9 -4.5Q1228.6 -2.9 1234.4 -2.6L1234.4 -0.7L1206.3 -0.7L1206.3 -2.6Q1212.0 -3.0 1213.5 -4.8Q1215.1 -6.5 1215.1 -13.0L1215.1 -55.8Q1215.1 -61.3 1213.6 -63.0Q1212.1 -64.6 1206.4 -65.0L1206.4 -66.9L1259.3 -66.9L1259.8 -52.6Z"/></svg></div><figure class="viz "><div class="fig-scroll"><svg data-plot='{&quot;x0&quot;:56,&quot;x1&quot;:618,&quot;y0&quot;:26,&quot;y1&quot;:234,&quot;xmin&quot;:1,&quot;xmax&quot;:10000.0,&quot;ymin&quot;:-110,&quot;ymax&quot;:-60,&quot;xlog&quot;:true,&quot;series&quot;:[{&quot;n&quot;:&quot;Noise floor&quot;,&quot;k&quot;:8,&quot;p&quot;:[[1.0,-107.0],[1.0593,-106.75],[1.122,-106.5],[1.1885,-106.25],[1.2589,-106.0],[1.3335,-105.75],[1.4125,-105.5],[1.4962,-105.25],[1.5849,-105.0],[1.6788,-104.75],[1.7783,-104.5],[1.8836,-104.25],[1.9953,-104.0],[2.1135,-103.75],[2.2387,-103.5],[2.3714,-103.25],[2.5119,-103.0],[2.6607,-102.75],[2.8184,-102.5],[2.9854,-102.25],[3.1623,-102.0],[3.3497,-101.75],[3.5481,-101.5],[3.7584,-101.25],[3.9811,-101.0],[4.217,-100.75],[4.4668,-100.5],[4.7315,-100.25],[5.0119,-100.0],[5.3088,-99.75],[5.6234,-99.5],[5.9566,-99.25],[6.3096,-99.0],[6.6834,-98.75],[7.0795,-98.5],[7.4989,-98.25],[7.9433,-98.0],[8.414,-97.75],[8.9125,-97.5],[9.4406,-97.25],[10.0,-97.0],[10.5925,-96.75],[11.2202,-96.5],[11.885,-96.25],[12.5893,-96.0],[13.3352,-95.75],[14.1254,-95.5],[14.9624,-95.25],[15.8489,-95.0],[16.788,-94.75],[17.7828,-94.5],[18.8365,-94.25],[19.9526,-94.0],[21.1349,-93.75],[22.3872,-93.5],[23.7137,-93.25],[25.1189,-93.0],[26.6073,-92.75],[28.1838,-92.5],[29.8538,-92.25],[31.6228,-92.0],[33.4965,-91.75],[35.4813,-91.5],[37.5837,-91.25],[39.8107,-91.0],[42.1697,-90.75],[44.6684,-90.5],[47.3151,-90.25],[50.1187,-90.0],[53.0884,-89.75],[56.2341,-89.5],[59.5662,-89.25],[63.0957,-89.0],[66.8344,-88.75],[70.7946,-88.5],[74.9894,-88.25],[79.4328,-88.0],[84.1395,-87.75],[89.1251,-87.5],[94.4061,-87.25],[100.0,-87.0],[105.9254,-86.75],[112.2018,-86.5],[118.8502,-86.25],[125.8925,-86.0],[133.3521,-85.75],[141.2538,-85.5],[149.6236,-85.25],[158.4893,-85.0],[167.8804,-84.75],[177.8279,-84.5],[188.3649,-84.25],[199.5262,-84.0],[211.3489,-83.75],[223.8721,-83.5],[237.1374,-83.25],[251.1886,-83.0],[266.0725,-82.75],[281.8383,-82.5],[298.5383,-82.25],[316.2278,-82.0],[334.9654,-81.75],[354.8134,-81.5],[375.8374,-81.25],[398.1072,-81.0],[421.6965,-80.75],[446.6836,-80.5],[473.1513,-80.25],[501.1872,-80.0],[530.8844,-79.75],[562.3413,-79.5],[595.6621,-79.25],[630.9573,-79.0],[668.3439,-78.75],[707.9458,-78.5],[749.8942,-78.25],[794.3282,-78.0],[841.3951,-77.75],[891.2509,-77.5],[944.0609,-77.25],[1000.0,-77.0],[1059.2537,-76.75],[1122.0185,-76.5],[1188.5022,-76.25],[1258.9254,-76.0],[1333.5214,-75.75],[1412.5375,-75.5],[1496.2357,-75.25],[1584.8932,-75.0],[1678.804,-74.75],[1778.2794,-74.5],[1883.6491,-74.25],[1995.2623,-74.0],[2113.489,-73.75],[2238.7211,-73.5],[2371.3737,-73.25],[2511.8864,-73.0],[2660.7251,-72.75],[2818.3829,-72.5],[2985.3826,-72.25],[3162.2777,-72.0],[3349.6544,-71.75],[3548.1339,-71.5],[3758.374,-71.25],[3981.0717,-71.0],[4216.965,-70.75],[4466.8359,-70.5],[4731.5126,-70.25],[5011.8723,-70.0],[5308.8444,-69.75],[5623.4133,-69.5],[5956.6214,-69.25],[6309.5734,-69.0],[6683.4392,-68.75],[7079.4578,-68.5],[7498.9421,-68.25],[7943.2823,-68.0],[8413.9514,-67.75],[8912.5094,-67.5],[9440.6088,-67.25],[10000.0,-67.0]]}],&quot;xl&quot;:&quot;bandwidth&quot;,&quot;xu&quot;:&quot; MHz&quot;,&quot;xd&quot;:0,&quot;yd&quot;:1,&quot;yu&quot;:&quot; dBm&quot;}' viewBox="0 0 640 280" role="img" aria-label="Receiver noise power against bandwidth for a 7 dB noise figure: ten times the bandwidth means ten times the noise." class="" xmlns="http://www.w3.org/2000/svg"><line x1="56.0" y1="234.0" x2="618.0" y2="234.0" class="grid"/><text x="48.0" y="238.0" text-anchor="end" class="xs">-110</text><line x1="56.0" y1="192.4" x2="618.0" y2="192.4" class="grid"/><text x="48.0" y="196.4" text-anchor="end" class="xs">-100</text><line x1="56.0" y1="150.8" x2="618.0" y2="150.8" class="grid"/><text x="48.0" y="154.8" text-anchor="end" class="xs">-90</text><line x1="56.0" y1="109.2" x2="618.0" y2="109.2" class="grid"/><text x="48.0" y="113.2" text-anchor="end" class="xs">-80</text><line x1="56.0" y1="67.6" x2="618.0" y2="67.6" class="grid"/><text x="48.0" y="71.6" text-anchor="end" class="xs">-70</text><line x1="56.0" y1="26.0" x2="618.0" y2="26.0" class="grid"/><text x="48.0" y="30.0" text-anchor="end" class="xs">-60</text><line x1="56.0" y1="234.0" x2="56.0" y2="239.0" class="axis"/><text x="56.0" y="252.0" text-anchor="middle" class="xs">1 MHz</text><line x1="196.5" y1="234.0" x2="196.5" y2="239.0" class="axis"/><text x="196.5" y="252.0" text-anchor="middle" class="xs">10 MHz</text><line x1="337.0" y1="234.0" x2="337.0" y2="239.0" class="axis"/><text x="337.0" y="252.0" text-anchor="middle" class="xs">100 MHz</text><line x1="477.5" y1="234.0" x2="477.5" y2="239.0" class="axis"/><text x="477.5" y="252.0" text-anchor="middle" class="xs">1 GHz</text><line x1="618.0" y1="234.0" x2="618.0" y2="239.0" class="axis"/><text x="618.0" y="252.0" text-anchor="middle" class="xs">10 GHz</text><line x1="56.0" y1="234.0" x2="618.0" y2="234.0" class="axis"/><text x="12.0" y="16.0" class="s b">Noise power (dBm)</text><text x="337.0" y="272.0" text-anchor="middle" class="s b">Bandwidth (log scale)</text><clipPath id="cp139693267206464"><rect x="56" y="23" width="562" height="214"/></clipPath><g clip-path="url(#cp139693267206464)"><path d="M56.0 221.5 L59.5 220.5 L63.0 219.4 L66.5 218.4 L70.0 217.4 L73.6 216.3 L77.1 215.3 L80.6 214.2 L84.1 213.2 L87.6 212.2 L91.1 211.1 L94.6 210.1 L98.1 209.0 L101.7 208.0 L105.2 207.0 L108.7 205.9 L112.2 204.9 L115.7 203.8 L119.2 202.8 L122.7 201.8 L126.2 200.7 L129.8 199.7 L133.3 198.6 L136.8 197.6 L140.3 196.6 L143.8 195.5 L147.3 194.5 L150.8 193.4 L154.3 192.4 L157.9 191.4 L161.4 190.3 L164.9 189.3 L168.4 188.2 L171.9 187.2 L175.4 186.2 L178.9 185.1 L182.4 184.1 L186.0 183.0 L189.5 182.0 L193.0 181.0 L196.5 179.9 L200.0 178.9 L203.5 177.8 L207.0 176.8 L210.6 175.8 L214.1 174.7 L217.6 173.7 L221.1 172.6 L224.6 171.6 L228.1 170.6 L231.6 169.5 L235.1 168.5 L238.7 167.4 L242.2 166.4 L245.7 165.4 L249.2 164.3 L252.7 163.3 L256.2 162.2 L259.7 161.2 L263.2 160.2 L266.8 159.1 L270.3 158.1 L273.8 157.0 L277.3 156.0 L280.8 155.0 L284.3 153.9 L287.8 152.9 L291.3 151.8 L294.9 150.8 L298.4 149.8 L301.9 148.7 L305.4 147.7 L308.9 146.6 L312.4 145.6 L315.9 144.6 L319.4 143.5 L322.9 142.5 L326.5 141.4 L330.0 140.4 L333.5 139.4 L337.0 138.3 L340.5 137.3 L344.0 136.2 L347.5 135.2 L351.1 134.2 L354.6 133.1 L358.1 132.1 L361.6 131.0 L365.1 130.0 L368.6 129.0 L372.1 127.9 L375.6 126.9 L379.1 125.8 L382.7 124.8 L386.2 123.8 L389.7 122.7 L393.2 121.7 L396.7 120.6 L400.2 119.6 L403.7 118.6 L407.2 117.5 L410.8 116.5 L414.3 115.4 L417.8 114.4 L421.3 113.4 L424.8 112.3 L428.3 111.3 L431.8 110.2 L435.4 109.2 L438.9 108.2 L442.4 107.1 L445.9 106.1 L449.4 105.0 L452.9 104.0 L456.4 103.0 L459.9 101.9 L463.4 100.9 L467.0 99.8 L470.5 98.8 L474.0 97.8 L477.5 96.7 L481.0 95.7 L484.5 94.6 L488.0 93.6 L491.6 92.6 L495.1 91.5 L498.6 90.5 L502.1 89.4 L505.6 88.4 L509.1 87.4 L512.6 86.3 L516.1 85.3 L519.6 84.2 L523.2 83.2 L526.7 82.2 L530.2 81.1 L533.7 80.1 L537.2 79.0 L540.7 78.0 L544.2 77.0 L547.8 75.9 L551.3 74.9 L554.8 73.8 L558.3 72.8 L561.8 71.8 L565.3 70.7 L568.8 69.7 L572.3 68.6 L575.9 67.6 L579.4 66.6 L582.9 65.5 L586.4 64.5 L589.9 63.4 L593.4 62.4 L596.9 61.4 L600.4 60.3 L603.9 59.3 L607.5 58.2 L611.0 57.2 L614.5 56.2 L618.0 55.1" class="s8" style="stroke-width:2.2"/></g><circle cx="238.8" cy="167.4" r="5.5" class="f8" stroke="var(--surface)" stroke-width="2"/><text x="230.8" y="159.4" text-anchor="end" class="s b">20 MHz, 4G: -94 dBm</text><circle cx="337.0" cy="138.3" r="5.5" class="f8" stroke="var(--surface)" stroke-width="2"/><text x="329.0" y="130.3" text-anchor="end" class="s b">100 MHz, 5G: -87 dBm</text><circle cx="421.6" cy="113.3" r="5.5" class="f8" stroke="var(--surface)" stroke-width="2"/><text x="413.6" y="105.3" text-anchor="end" class="s b">400 MHz, mmWave: -81 dBm</text></svg></div><figcaption>Every tenfold increase in bandwidth adds 10 dB of noise. This is the hidden cost of the wide channels used at millimetre wave.</figcaption></figure><details class="more"><summary>More detail: <span class="hint">where −174 comes from</span></summary><div class="body"><p>The −174 dBm/Hz is <svg class="tex" xmlns="http://www.w3.org/2000/svg" viewBox="-5 -75 118 81" style="width:1.183em;height:0.814em;vertical-align:-0.064em" role="img" aria-label="kT" focusable="false"><path fill="currentColor" d="M46.1 -43.5L46.1 -41.9Q42.5 -41.7 38.5 -39.0Q34.5 -36.2 23.6 -26.5L27.3 -17.7Q32.8 -4.8 35.4 -4.8Q37.5 -4.8 39.9 -9.0Q40.4 -9.8 41.4 -11.6L42.9 -10.5Q39.4 -4.2 37.1 -1.9Q34.8 0.4 31.8 0.4Q29.6 0.4 27.8 -1.4Q26.1 -3.1 23.7 -7.8Q20.7 -13.6 17.7 -21.9L13.7 -18.7L8.9 -0.7L1.4 -0.7L15.5 -53.5Q16.9 -58.5 17.3 -62.3Q17.0 -64.7 12.2 -64.7L10.4 -64.7L10.4 -66.3Q17.9 -67.2 26.1 -69.0L26.7 -68.4L14.7 -22.8L19.0 -26.1Q33.3 -37.1 33.3 -40.1Q33.3 -41.9 29.6 -41.9L28.2 -41.9L28.2 -43.5L46.1 -43.5ZM107.7 -66.0L103.3 -49.6L101.6 -49.8Q101.9 -52.3 101.9 -54.4Q101.9 -62.5 91.8 -62.5L86.0 -62.5L72.3 -13.5Q70.9 -8.6 70.9 -6.9Q70.9 -4.6 72.0 -3.8Q73.1 -2.9 76.2 -2.6L79.7 -2.3L79.7 -0.7L50.9 -0.7L50.9 -2.3Q56.1 -2.8 58.3 -4.3Q60.5 -5.8 61.6 -9.8L75.9 -62.5Q64.0 -62.5 59.8 -60.3Q55.7 -58.2 52.1 -50.1L50.3 -50.5L54.5 -66.0L107.7 -66.0Z"/></svg>: Boltzmann’s constant, <svg class="tex" xmlns="http://www.w3.org/2000/svg" viewBox="5 -95 495 103" style="width:4.946em;height:1.031em;vertical-align:-0.081em" role="img" aria-label="1.38\times10^{-23}" focusable="false"><path fill="currentColor" d="M39.4 -0.4L11.8 -0.4L11.8 -1.9Q17.3 -2.2 19.3 -3.9Q21.3 -5.7 21.3 -9.9L21.3 -54.8Q21.3 -59.7 18.3 -59.7Q16.9 -59.7 13.8 -58.5L11.1 -57.5L11.1 -58.9L29.0 -68.0L29.9 -67.7L29.9 -8.0Q29.9 -4.7 31.9 -3.3Q33.9 -1.9 39.4 -1.9L39.4 -0.4ZM68.1 -4.7Q68.1 -2.5 66.4 -0.9Q64.8 0.7 62.5 0.7Q60.2 0.7 58.6 -0.9Q57.0 -2.5 57.0 -4.8Q57.0 -7.1 58.6 -8.7Q60.3 -10.4 62.6 -10.4Q64.8 -10.4 66.4 -8.7Q68.1 -7.0 68.1 -4.7ZM81.1 -51.4L79.5 -51.8Q81.8 -59.3 86.7 -63.6Q91.6 -68.0 99.1 -68.0Q106.1 -68.0 110.4 -64.2Q114.7 -60.4 114.7 -54.3Q114.7 -46.1 105.4 -40.5Q110.9 -38.1 113.7 -35.2Q118.1 -30.3 118.1 -22.3Q118.1 -14.3 113.5 -8.3Q110.1 -3.7 103.7 -1.3Q97.4 1.0 90.3 1.0Q79.1 1.0 79.1 -4.7Q79.1 -6.3 80.3 -7.3Q81.5 -8.3 83.2 -8.3Q85.7 -8.3 89.3 -5.7Q93.7 -2.6 97.9 -2.6Q103.4 -2.6 107.2 -7.0Q110.9 -11.5 110.9 -17.9Q110.9 -29.4 100.5 -32.4Q97.4 -33.4 90.3 -33.4L90.3 -34.8Q95.9 -36.7 98.7 -38.4Q106.8 -43.0 106.8 -51.8Q106.8 -56.8 103.9 -59.4Q101.1 -62.0 96.0 -62.0Q87.0 -62.0 81.1 -51.4ZM169.5 -15.9Q169.5 -8.2 164.1 -3.6Q158.8 1.0 149.8 1.0Q141.4 1.0 136.0 -3.6Q130.6 -8.2 130.6 -15.3Q130.6 -20.6 133.2 -24.3Q135.8 -28.1 143.6 -33.6Q136.1 -39.8 133.6 -43.6Q131.2 -47.4 131.2 -52.4Q131.2 -59.5 136.6 -63.7Q142.1 -68.0 150.6 -68.0Q157.9 -68.0 162.7 -63.8Q167.4 -59.7 167.4 -53.7Q167.4 -48.2 164.5 -44.9Q161.7 -41.6 154.0 -37.5Q163.0 -31.5 166.2 -26.8Q169.5 -22.1 169.5 -15.9ZM160.5 -53.7Q160.5 -58.9 157.6 -62.0Q154.7 -65.2 149.6 -65.2Q144.5 -65.2 141.5 -62.5Q138.6 -59.9 138.6 -55.3Q138.6 -50.7 141.5 -46.9Q144.5 -43.2 151.1 -39.3Q156.2 -42.3 158.3 -45.6Q160.5 -49.0 160.5 -53.7ZM152.1 -27.6L146.2 -31.6Q141.8 -28.0 140.0 -24.5Q138.2 -21.1 138.2 -16.2Q138.2 -9.4 141.6 -5.6Q145.1 -1.8 150.9 -1.8Q155.8 -1.8 158.8 -4.8Q161.9 -7.9 161.9 -12.8Q161.9 -17.3 159.6 -20.7Q157.3 -24.1 152.1 -27.6ZM254.7 -2.6L250.1 2.1L227.0 -20.9L203.9 2.1L199.3 -2.5L222.3 -25.6L199.3 -48.7L204.0 -53.3L227.0 -30.3L250.1 -53.3L254.7 -48.8L231.7 -25.6L254.7 -2.6ZM318.4 -0.4L290.8 -0.4L290.8 -1.9Q296.3 -2.2 298.3 -3.9Q300.3 -5.7 300.3 -9.9L300.3 -54.8Q300.3 -59.7 297.3 -59.7Q295.9 -59.7 292.8 -58.5L290.1 -57.5L290.1 -58.9L308.0 -68.0L308.9 -67.7L308.9 -8.0Q308.9 -4.7 310.9 -3.3Q312.9 -1.9 318.4 -1.9L318.4 -0.4ZM376.6 -33.4Q376.6 -26.7 375.3 -20.7Q374.0 -14.8 371.5 -9.8Q368.9 -4.8 364.4 -1.9Q359.9 1.0 354.0 1.0Q347.9 1.0 343.3 -2.1Q338.7 -5.2 336.2 -10.4Q333.7 -15.6 332.5 -21.5Q331.4 -27.4 331.4 -34.0Q331.4 -43.3 333.7 -50.7Q336.0 -58.2 341.3 -63.1Q346.7 -68.0 354.4 -68.0Q364.2 -68.0 370.4 -58.4Q376.6 -48.8 376.6 -33.4ZM367.0 -32.9Q367.0 -48.7 363.6 -57.0Q360.3 -65.4 353.8 -65.4Q347.6 -65.4 344.3 -57.0Q341.0 -48.6 341.0 -33.3Q341.0 -17.9 344.3 -9.7Q347.6 -1.6 354.0 -1.6Q360.3 -1.6 363.6 -9.7Q367.0 -17.9 367.0 -32.9ZM424.0 -57.1L385.1 -57.1L385.1 -61.7L424.0 -61.7L424.0 -57.1ZM461.7 -51.3L457.9 -41.7L430.6 -41.7L430.6 -42.5L443.0 -55.8Q447.9 -60.9 450.0 -65.1Q452.1 -69.4 452.1 -74.0Q452.1 -78.6 449.5 -81.2Q446.9 -83.8 442.4 -83.8Q438.6 -83.8 436.4 -81.9Q434.2 -79.9 432.1 -74.7L430.6 -75.1Q431.8 -81.6 435.4 -85.3Q439.0 -89.0 445.2 -89.0Q451.0 -89.0 454.6 -85.5Q458.1 -82.0 458.1 -76.7Q458.1 -68.8 449.2 -59.3L437.6 -47.0L454.0 -47.0Q456.3 -47.0 457.7 -47.9Q459.0 -48.8 460.7 -51.7L461.7 -51.3ZM467.8 -77.4L466.7 -77.7Q468.3 -82.9 471.7 -86.0Q475.1 -89.0 480.4 -89.0Q485.3 -89.0 488.3 -86.3Q491.3 -83.7 491.3 -79.4Q491.3 -73.7 484.8 -69.8Q488.7 -68.1 490.6 -66.0Q493.7 -62.6 493.7 -57.0Q493.7 -51.4 490.5 -47.2Q488.1 -44.0 483.6 -42.3Q479.2 -40.7 474.2 -40.7Q466.4 -40.7 466.4 -44.7Q466.4 -45.8 467.2 -46.5Q468.1 -47.2 469.3 -47.2Q471.0 -47.2 473.5 -45.4Q476.6 -43.2 479.6 -43.2Q483.4 -43.2 486.0 -46.3Q488.7 -49.5 488.7 -53.9Q488.7 -62.0 481.4 -64.1Q479.2 -64.8 474.2 -64.8L474.2 -65.8Q478.2 -67.1 480.1 -68.3Q485.8 -71.5 485.8 -77.7Q485.8 -81.2 483.8 -83.0Q481.8 -84.8 478.2 -84.8Q471.9 -84.8 467.8 -77.4Z"/></svg> J/K, times a room temperature of 290 K, expressed in dBm per hertz. A phone’s noise figure is typically 5 to 9 dB; a base station’s, 2 to 5 dB.</p></div></details>
+<h2 class="sec" id="snr">From power to data rate</h2>
+<p class="lead">Subtract the noise from the received power and you have the SNR. Put that into Shannon’s formula and you have the best possible data rate.</p><figure class="viz wide "><div class="fig-scroll"><svg viewBox="0 0 712 120" role="img" aria-label="Received power of −82 dBm minus noise of −94 dBm gives an SNR of 12 dB and a Shannon rate of about 81 Mbit/s in 20 MHz." class="" xmlns="http://www.w3.org/2000/svg"><rect x="10.0" y="20.0" width="150.0" height="62.0" rx="6" class="l1"/><rect x="10.0" y="20.0" width="150.0" height="62.0" rx="6" class="s1" style="stroke-width:1.4"/><text x="85.0" y="48.0" text-anchor="middle" class="b">Received power</text><text x="85.0" y="63.0" text-anchor="middle" class="s">−82 dBm</text><defs><marker id="ah26" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" class="ink"/></marker></defs><line x1="162.0" y1="51.0" x2="182.0" y2="51.0" class="st" style="stroke-width:2.2" marker-end="url(#ah26)"/><rect x="186.0" y="20.0" width="150.0" height="62.0" rx="6" class="l8"/><rect x="186.0" y="20.0" width="150.0" height="62.0" rx="6" class="s8" style="stroke-width:1.4"/><text x="261.0" y="48.0" text-anchor="middle" class="b">minus noise</text><text x="261.0" y="63.0" text-anchor="middle" class="s">−94 dBm</text><defs><marker id="ah27" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" class="ink"/></marker></defs><line x1="338.0" y1="51.0" x2="358.0" y2="51.0" class="st" style="stroke-width:2.2" marker-end="url(#ah27)"/><rect x="362.0" y="20.0" width="150.0" height="62.0" rx="6" class="l3"/><rect x="362.0" y="20.0" width="150.0" height="62.0" rx="6" class="s3" style="stroke-width:1.4"/><text x="437.0" y="48.0" text-anchor="middle" class="b">SNR</text><text x="437.0" y="63.0" text-anchor="middle" class="s">12 dB</text><defs><marker id="ah28" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" class="ink"/></marker></defs><line x1="514.0" y1="51.0" x2="534.0" y2="51.0" class="st" style="stroke-width:2.2" marker-end="url(#ah28)"/><rect x="538.0" y="20.0" width="150.0" height="62.0" rx="6" class="f7"/><text x="613.0" y="48.0" text-anchor="middle" class="w">Shannon rate</text><text x="613.0" y="63.0" text-anchor="middle" class="w">≈ 81 Mbit/s</text><text x="356.0" y="110.0" text-anchor="middle" class="s">20 MHz × log₂(1 + 10^1.2) ≈ 81 Mbit/s</text></svg></div><figcaption>The same SNR gives more data in a wider channel, as long as the extra noise doesn’t push the SNR too low.</figcaption></figure><div class="demo" data-demo="lb-calc"></div><p>Things to try:</p><ul><li>Switch from 20 MHz to 400 MHz at 28 GHz. The noise rises 13 dB, but the rate can still grow because there is so much more bandwidth.</li><li>At 28 GHz, raise the antenna gains to 35 dBi. Large arrays at both ends win back the extra path loss; this is how millimetre-wave 5G works.</li><li>Find the distance where the SNR crosses 0 dB. Beyond it, the link still works, but only at low rates.</li></ul>
+<h2 class="sec" id="margins">Margins: designing for bad days</h2>
+<p class="lead">The budget so far is for an average day. Fading and shadowing make the signal dip, so designers add <b>margins</b>: extra decibels held in reserve.</p><figure class="viz "><div class="fig-scroll"><svg viewBox="0 0 640 168" role="img" aria-label="Fade margins for Rayleigh fading: about 10 dB for 90% reliability, 20 dB for 99% and 30 dB for 99.9%." class="" xmlns="http://www.w3.org/2000/svg"><line x1="160.0" y1="18.0" x2="160.0" y2="132.0" class="grid"/><text x="160.0" y="146.0" text-anchor="middle" class="xs">0</text><line x1="277.1" y1="18.0" x2="277.1" y2="132.0" class="grid"/><text x="277.1" y="146.0" text-anchor="middle" class="xs">10</text><line x1="394.3" y1="18.0" x2="394.3" y2="132.0" class="grid"/><text x="394.3" y="146.0" text-anchor="middle" class="xs">20</text><line x1="511.4" y1="18.0" x2="511.4" y2="132.0" class="grid"/><text x="511.4" y="146.0" text-anchor="middle" class="xs">30</text><text x="150.0" y="51.0" text-anchor="end">90% of the time</text><rect x="160" y="36.0" width="114.5" height="22" rx="4" class="f3" data-tip="Rayleigh fading: 9.8 dB margin keeps the link up 90% of the time"/><text x="282.5" y="51.0" class="b">10 dB</text><text x="150.0" y="85.0" text-anchor="end">99% of the time</text><rect x="160" y="70.0" width="234.0" height="22" rx="4" class="f1" data-tip="Rayleigh fading: 20.0 dB margin keeps the link up 99% of the time"/><text x="402.0" y="85.0" class="b">20 dB</text><text x="150.0" y="119.0" text-anchor="end">99.9% of the time</text><rect x="160" y="104.0" width="351.4" height="22" rx="4" class="f7" data-tip="Rayleigh fading: 30.0 dB margin keeps the link up 99.9% of the time"/><text x="519.4" y="119.0" class="b">30 dB</text><line x1="160.0" y1="18.0" x2="160.0" y2="132.0" class="axis"/><text x="365.0" y="160.0" text-anchor="middle" class="s b">Fade margin needed in Rayleigh fading (dB)</text></svg></div><figcaption>Each extra 9 of reliability in a Rayleigh-fading channel costs about 10 dB more margin. Diversity, from multiple antennas or frequencies, cuts these numbers sharply.</figcaption></figure><ul class="cards viz "><li style="--c:var(--k2)"><svg class="ic" viewBox="0 0 48 48" aria-hidden="true"><rect x="6.0" y="28.0" width="8.0" height="14.0" rx="1.5" class="l2"/><rect x="18.0" y="18.0" width="8.0" height="24.0" rx="1.5" class="f2"/><rect x="30.0" y="8.0" width="8.0" height="34.0" rx="1.5" class="l2"/><line x1="4.0" y1="43.0" x2="44.0" y2="43.0" class="axis"/></svg><em class="tag">slow</em><b>Shadowing margin</b><span>About 1.28σ for 90% coverage at the cell edge: 8 dB when σ = 6 dB.</span></li><li style="--c:var(--k1)"><svg class="ic" viewBox="0 0 48 48" aria-hidden="true"><path d="M4 24 Q10 10 16 24 T28 24 T40 24" class="s1" style="stroke-width:3"/><circle cx="44.0" cy="24.0" r="2.5" class="f1"/></svg><em class="tag">fast</em><b>Fade margin</b><span>10 to 30 dB against fast fading, unless diversity or coding handles it.</span></li><li style="--c:var(--k5)"><svg class="ic" viewBox="0 0 48 48" aria-hidden="true"><g transform="translate(24.0,44.0) scale(0.95)"><circle cx="0" cy="-33" r="6" class="f5"/><path d="M-9 0 L-9 -16 Q-9 -25 0 -25 Q9 -25 9 -16 L9 0 Z" class="f5"/></g></svg><em class="tag">local</em><b>Body and entry loss</b><span>A hand, a head or a wall can cost 3 to 20 dB, more at high frequencies.</span></li></ul><figure class="photo"><img src="https://thumb.wikimedia.org/wikipedia/commons/thumb/f/f9/Dawn_in_the_Apollo_Valley%2C_Goldstone_Deep_Space_Communications_Complex.jpg/1280px-Dawn_in_the_Apollo_Valley%2C_Goldstone_Deep_Space_Communications_Complex.jpg" alt="NASA’s Goldstone Deep Space Communications Complex. Deep-space links run the tightest budgets of all: huge dishes, cryogenically cooled receivers and very low data rates." width="1280" height="853" loading="lazy" decoding="async" referrerpolicy="no-referrer"><figcaption>NASA’s Goldstone Deep Space Communications Complex. Deep-space links run the tightest budgets of all: huge dishes, cryogenically cooled receivers and very low data rates.<span class="credit">Photo: NASA/JPL-Caltech, <a href="https://commons.wikimedia.org/w/index.php?curid=30257009" target="_blank" rel="noopener noreferrer">Public domain</a>, via Wikimedia Commons</span></figcaption></figure>
+<div class="takeaways"><span class="label">Key takeaways</span><ul><li>In decibels, a link budget is a sum: transmit power plus gains minus losses minus margins.</li><li>Path loss is by far the largest term, typically 100 to 150 dB for cellular links.</li><li>Noise power is −174 dBm/Hz plus 10·log₁₀ B plus the noise figure, so wider bands bring more noise.</li><li>Margins of several to tens of decibels protect against shadowing and fading.</li></ul></div>
+<h2 id="check">Check your understanding</h2><details class="qa"><summary>What is 2 W in dBm?</summary><div class="ans"><p>10·log₁₀(2000 mW) ≈ 33 dBm.</p></div></details><details class="qa"><summary>A receiver has a 9 dB noise figure and a 100 MHz bandwidth. What is its noise floor?</summary><div class="ans"><p>−174 + 80 + 9 = −85 dBm.</p></div></details><details class="qa"><summary>A link has 15 dB of SNR to spare in Rayleigh fading. Roughly how reliable is it?</summary><div class="ans"><p>About 15 dB of fade margin corresponds to an outage probability of about 3%, so it works roughly 97% of the time.</p></div></details>
+<h2 id="learn">Learn more</h2><p>Trusted places to go further, outside this site.</p><ul class="learn"><li><a href="https://en.wikipedia.org/wiki/Link_budget" target="_blank" rel="noopener noreferrer" style="--c:var(--k3)"><span class="av">LB</span><span class="ty">Article</span><span class="nm">Link budget</span><span class="ds">Worked examples of adding up gains and losses.</span><span class="dm">en.wikipedia.org</span></a></li><li><a href="https://en.wikipedia.org/wiki/Friis_transmission_equation" target="_blank" rel="noopener noreferrer" style="--c:var(--k3)"><span class="av">FT</span><span class="ty">Article</span><span class="nm">Friis transmission equation</span><span class="ds">Where the free-space link equation comes from.</span><span class="dm">en.wikipedia.org</span></a></li><li><a href="https://en.wikipedia.org/wiki/Johnson%E2%80%93Nyquist_noise" target="_blank" rel="noopener noreferrer" style="--c:var(--k3)"><span class="av">JN</span><span class="ty">Article</span><span class="nm">Johnson–Nyquist noise</span><span class="ds">Why every receiver starts at −174 dBm/Hz.</span><span class="dm">en.wikipedia.org</span></a></li><li><a href="https://www.itu.int/rec/R-REC-P.525/en" target="_blank" rel="noopener noreferrer" style="--c:var(--k2)"><span class="av">IR</span><span class="ty">Standard</span><span class="nm">ITU-R P.525: free-space attenuation</span><span class="ds">Reference formulas for free-space loss.</span><span class="dm">itu.int</span></a></li><li><a href="https://3gpp.org/DynaReport/38901.htm" target="_blank" rel="noopener noreferrer" style="--c:var(--k2)"><span class="av">3T</span><span class="ty">Standard</span><span class="nm">3GPP TR 38.901 channel model</span><span class="ds">Path-loss models for urban, rural and indoor link budgets.</span><span class="dm">3gpp.org</span></a></li></ul>
+<h2 id="reading">Further reading</h2><ol class="refs"><li>H. T. Friis, “A note on a simple transmission formula,” <i>Proc. IRE</i>, vol. 34, no. 5, pp. 254–256, 1946.</li><li>T. S. Rappaport, <i>Wireless Communications: Principles and Practice</i>, 2nd ed. Prentice Hall, 2002, ch. 4.</li></ol>
+<nav class="prevnext" aria-label="More tutorials"><a class="prev" href="propagation.html"><span class="dir">Previous</span><span class="nm">Propagation</span></a><a class="next" href="antennas.html"><span class="dir">Next</span><span class="nm">Antennas</span></a></nav>
+    </article>
+  </div>
+</main>
+<footer class="site-footer">
+  <div class="wrap foot"><p>&copy; 2026 Mohd Hamza Naim Shaikh. Last updated October 2026.</p>
+    <nav aria-label="More pages"><a href="index.html">Tutorials</a><a href="../urdu.html">Urdu</a><a href="../places/index.html">Places</a></nav>
+  </div>
+</footer>
+<script>(function () {
+  const links = Array.from(document.querySelectorAll('.toc a[href^="#"]'));
+  if (!("IntersectionObserver" in window) || !links.length) return;
+  const byId = new Map(links.map(function (a) { return [a.getAttribute("href").slice(1), a]; }));
+  const io = new IntersectionObserver(function (entries) {
+    entries.forEach(function (e) {
+      if (!e.isIntersecting) return;
+      links.forEach(function (l) { l.removeAttribute("aria-current"); });
+      const a = byId.get(e.target.id); if (a) a.setAttribute("aria-current", "true");
+    });
+  }, { rootMargin: "-20% 0px -70% 0px" });
+  byId.forEach(function (_a, id) { const s = document.getElementById(id); if (s) io.observe(s); });
+})();</script>
+<script>/* Interactive models for the tutorials.
+   Each <div class="demo" data-demo="..."> is built here: controls, a canvas
+   plot with a hover read-out, and a row of computed values. */
+(function () {
+  "use strict";
+
+  /* ---------------------------------------------------------------- utils */
+  const C0 = 299792458;
+  const $ = (tag, attrs, kids) => {
+    const el = document.createElement(tag);
+    if (attrs) for (const k in attrs) {
+      if (k === "text") el.textContent = attrs[k];
+      else if (k === "html") el.innerHTML = attrs[k];
+      else el.setAttribute(k, attrs[k]);
+    }
+    (kids || []).forEach((c) => c && el.appendChild(c));
+    return el;
+  };
+  const token = (name) => getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+  const fmt = (v, d) => (Math.abs(v) < 1e-12 ? 0 : v).toFixed(d);
+  const db = (p) => 10 * Math.log10(Math.max(p, 1e-12));
+  function rng(seed) { // mulberry32
+    let a = seed >>> 0;
+    return function () {
+      a = (a + 0x6D2B79F5) >>> 0;
+      let t = a;
+      t = Math.imul(t ^ (t >>> 15), t | 1);
+      t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+      return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+    };
+  }
+  function niceMax(v) {
+    if (!(v > 0)) return 1;
+    const p = Math.pow(10, Math.floor(Math.log10(v)));
+    for (const m of [1, 1.2, 1.5, 2, 2.5, 3, 4, 5, 6, 8, 10]) if (m * p >= v) return m * p;
+    return 10 * p;
+  }
+  function ticks(min, max, n) {
+    const span = max - min, raw = span / n;
+    const p = Math.pow(10, Math.floor(Math.log10(raw)));
+    const step = [1, 2, 2.5, 5, 10].map((m) => m * p).find((s) => s >= raw) || raw;
+    const out = [];
+    for (let v = Math.ceil(min / step) * step; v <= max + step * 1e-6; v += step) out.push(+v.toFixed(10));
+    return out;
+  }
+  function frame(fn) { let q = false; return () => { if (q) return; q = true; requestAnimationFrame(() => { q = false; fn(); }); }; }
+
+  /* ----------------------------------------------------------------- Plot */
+  const plots = [];
+  function Plot(box, label) {
+    this.box = box;
+    this.canvas = $("canvas", { role: "img", "aria-label": label });
+    this.tip = $("div", { class: "tip", hidden: "" });
+    box.appendChild(this.canvas);
+    box.appendChild(this.tip);
+    this.ctx = this.canvas.getContext("2d");
+    this.cfg = null; this.hover = null; this.W = 0; this.H = 0;
+    const redraw = frame(() => this.draw());
+    this.redraw = redraw;
+    if ("ResizeObserver" in window) new ResizeObserver(redraw).observe(box);
+    else window.addEventListener("resize", redraw);
+    const move = (e) => {
+      const r = this.canvas.getBoundingClientRect();
+      this.hover = { px: e.clientX - r.left, py: e.clientY - r.top };
+      redraw();
+    };
+    this.canvas.addEventListener("pointermove", move);
+    this.canvas.addEventListener("pointerdown", move);
+    this.canvas.addEventListener("pointerleave", () => { this.hover = null; this.tip.hidden = true; redraw(); });
+    plots.push(this);
+  }
+  Plot.prototype.set = function (cfg) { this.cfg = cfg; this.redraw(); };
+  Plot.prototype.draw = function () {
+    const cfg = this.cfg; if (!cfg) return;
+    const r = this.box.getBoundingClientRect();
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    const W = Math.max(1, Math.round(r.width)), H = Math.max(1, Math.round(r.height));
+    if (this.canvas.width !== Math.round(W * dpr) || this.canvas.height !== Math.round(H * dpr)) {
+      this.canvas.width = Math.round(W * dpr); this.canvas.height = Math.round(H * dpr);
+    }
+    const ctx = this.ctx;
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    ctx.clearRect(0, 0, W, H);
+    const col = {
+      ink: token("--ink"), ink2: token("--ink-2"), muted: token("--muted"), line: token("--line"),
+      surface: token("--surface"), c1: token("--chart-1"), c2: token("--chart-2"), ref: token("--muted")
+    };
+    const font = (s, w) => (w || "400") + " " + s + 'px "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif';
+    const L = 50, R = 16, T = 28, B = 42;
+    const pw = W - L - R, ph = H - T - B;
+    const X = (v) => L + ((v - cfg.x.min) / (cfg.x.max - cfg.x.min)) * pw;
+    const Y = (v) => T + (1 - (v - cfg.y.min) / (cfg.y.max - cfg.y.min)) * ph;
+    this.X = X; this.Y = Y; this.L = L; this.T = T; this.pw = pw; this.ph = ph;
+
+    // grid and axes
+    ctx.lineWidth = 1; ctx.strokeStyle = col.line; ctx.fillStyle = col.muted;
+    ctx.font = font(12); ctx.textBaseline = "middle"; ctx.textAlign = "right";
+    (cfg.y.ticks || ticks(cfg.y.min, cfg.y.max, 5)).forEach((v) => {
+      const y = Math.round(Y(v)) + 0.5;
+      ctx.beginPath(); ctx.moveTo(L, y); ctx.lineTo(L + pw, y); ctx.stroke();
+      ctx.fillText((cfg.y.fmt || String)(v), L - 8, y);
+    });
+    ctx.textAlign = "center"; ctx.textBaseline = "top";
+    (cfg.x.ticks || ticks(cfg.x.min, cfg.x.max, 6)).forEach((v) => {
+      const x = Math.round(X(v)) + 0.5;
+      ctx.beginPath(); ctx.moveTo(x, T + ph); ctx.lineTo(x, T + ph + 5); ctx.stroke();
+      ctx.fillText((cfg.x.fmt || String)(v), x, T + ph + 9);
+    });
+    ctx.strokeStyle = col.muted;
+    ctx.beginPath(); ctx.moveTo(L, Math.round(T + ph) + 0.5); ctx.lineTo(L + pw, Math.round(T + ph) + 0.5); ctx.stroke();
+    ctx.fillStyle = col.ink2; ctx.font = font(12, "500");
+    ctx.textAlign = "left"; ctx.textBaseline = "alphabetic";
+    ctx.fillText(cfg.y.label, 4, 16);
+    ctx.textAlign = "center";
+    ctx.fillText(cfg.x.label, L + pw / 2, H - 6);
+
+    ctx.save();
+    ctx.beginPath(); ctx.rect(L, T - 2, pw, ph + 4); ctx.clip();
+    // reference lines
+    (cfg.hlines || []).forEach((h) => {
+      if (h.y < cfg.y.min || h.y > cfg.y.max) return;
+      ctx.strokeStyle = col[h.color || "c2"]; ctx.lineWidth = 1.5; ctx.setLineDash([5, 4]);
+      ctx.beginPath(); ctx.moveTo(L, Y(h.y)); ctx.lineTo(L + pw, Y(h.y)); ctx.stroke(); ctx.setLineDash([]);
+    });
+    (cfg.vlines || []).forEach((v) => {
+      ctx.strokeStyle = col[v.color || "c2"]; ctx.lineWidth = 1.5;
+      ctx.beginPath(); ctx.moveTo(X(v.x), T); ctx.lineTo(X(v.x), T + ph); ctx.stroke();
+    });
+    // series
+    cfg.series.forEach((s) => {
+      ctx.strokeStyle = col[s.color]; ctx.lineWidth = s.width || 2;
+      ctx.lineJoin = "round"; ctx.lineCap = "round";
+      ctx.setLineDash(s.dash || []);
+      ctx.beginPath();
+      s.data.forEach((p, i) => { const x = X(p[0]), y = Y(Math.max(cfg.y.min - 1, Math.min(cfg.y.max + 1, p[1]))); i ? ctx.lineTo(x, y) : ctx.moveTo(x, y); });
+      ctx.stroke(); ctx.setLineDash([]);
+    });
+    ctx.restore();
+
+    // labels for reference lines (text tokens, not series colours)
+    ctx.font = font(12, "500"); ctx.fillStyle = col.ink2; ctx.textBaseline = "alphabetic";
+    (cfg.hlines || []).forEach((h) => {
+      if (!h.label || h.y < cfg.y.min || h.y > cfg.y.max) return;
+      ctx.textAlign = "right"; ctx.fillText(h.label, L + pw - 4, Y(h.y) - 6);
+    });
+    (cfg.vlines || []).forEach((v) => {
+      if (!v.label) return;
+      const x = X(v.x), right = x < L + pw - 80;
+      ctx.textAlign = right ? "left" : "right";
+      ctx.fillText(v.label, x + (right ? 6 : -6), T + 12);
+    });
+    // points
+    const dot = (x, y, c, rad) => {
+      ctx.beginPath(); ctx.arc(x, y, rad + 2, 0, Math.PI * 2); ctx.fillStyle = col.surface; ctx.fill();
+      ctx.beginPath(); ctx.arc(x, y, rad, 0, Math.PI * 2); ctx.fillStyle = col[c]; ctx.fill();
+    };
+    (cfg.points || []).forEach((p) => {
+      if (p.x < cfg.x.min || p.x > cfg.x.max || p.y < cfg.y.min || p.y > cfg.y.max) return;
+      const x = X(p.x), y = Y(p.y);
+      dot(x, y, p.color || "c1", p.r || 4);
+      if (p.label) {
+        ctx.font = font(12, "500"); ctx.fillStyle = col.ink;
+        const right = x < L + pw - 110;
+        ctx.textAlign = right ? "left" : "right"; ctx.textBaseline = "alphabetic";
+        ctx.fillText(p.label, x + (right ? 10 : -10), y - 9);
+      }
+    });
+
+    // hover: crosshair and tooltip
+    const hv = this.hover;
+    if (!hv || hv.px < L || hv.px > L + pw || hv.py < T - 10 || hv.py > T + ph + 10) { this.tip.hidden = true; return; }
+    const xv = cfg.x.min + ((hv.px - L) / pw) * (cfg.x.max - cfg.x.min);
+    const rows = [];
+    let cx = null;
+    cfg.series.forEach((s) => {
+      if (s.hover === false || !s.data.length) return;
+      let lo = 0, hi = s.data.length - 1;
+      while (hi - lo > 1) { const m = (lo + hi) >> 1; if (s.data[m][0] < xv) lo = m; else hi = m; }
+      const p = Math.abs(s.data[lo][0] - xv) < Math.abs(s.data[hi][0] - xv) ? s.data[lo] : s.data[hi];
+      if (cx === null) cx = X(p[0]);
+      if (p[1] >= cfg.y.min && p[1] <= cfg.y.max) dot(X(p[0]), Y(p[1]), s.color, 4);
+      rows.push({ s: s, p: p });
+    });
+    if (cx === null) { this.tip.hidden = true; return; }
+    ctx.strokeStyle = col.muted; ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.moveTo(Math.round(cx) + 0.5, T); ctx.lineTo(Math.round(cx) + 0.5, T + ph); ctx.stroke();
+    rows.forEach((rw) => { if (rw.p[1] >= cfg.y.min && rw.p[1] <= cfg.y.max) dot(X(rw.p[0]), Y(rw.p[1]), rw.s.color, 4); });
+    const head = (cfg.x.hover || cfg.x.fmt || String)(rows[0].p[0]);
+    this.tip.innerHTML = '<p class="tip-h">' + head + "</p>" + rows.map((rw) =>
+      '<p><span class="key key-' + rw.s.color + (rw.s.dash ? " key-dash" : "") + '" aria-hidden="true"></span>' +
+      (rw.s.name ? rw.s.name + ": " : "") + "<b>" + (rw.s.fmt || cfg.y.hover || String)(rw.p[1]) + "</b></p>").join("");
+    this.tip.hidden = false;
+    const tw = this.tip.offsetWidth, th = this.tip.offsetHeight;
+    let tx = cx + 12; if (tx + tw > W - 4) tx = cx - 12 - tw;
+    let ty = Math.max(4, Math.min(hv.py - th / 2, H - th - 4));
+    this.tip.style.transform = "translate(" + Math.round(Math.max(4, tx)) + "px," + Math.round(ty) + "px)";
+  };
+
+  /* ------------------------------------------------------------- controls */
+  function slider(o) {
+    const input = $("input", { type: "range", id: o.id, min: o.min, max: o.max, step: o.step, value: o.value });
+    const out = $("output", { for: o.id });
+    const wrap = $("div", { class: "ctl" }, [$("label", { for: o.id, text: o.label }), input, out]);
+    const api = {
+      el: wrap, input: input,
+      get value() { return o.map ? o.map(+input.value) : +input.value; },
+      set: (v) => { input.value = v; api.show(); },
+      show: () => { out.textContent = o.fmt(api.value); }
+    };
+    input.addEventListener("input", api.show);
+    api.show();
+    return api;
+  }
+  function seg(o) {
+    let value = o.value;
+    const group = $("div", { class: "seg-mini", role: "radiogroup", "aria-labelledby": o.id + "-l" });
+    const btns = o.options.map((op) => {
+      const b = $("button", { type: "button", role: "radio", id: o.id + "-" + String(op.v).replace(/\W/g, ""), "aria-checked": String(op.v === value), text: op.t });
+      b.addEventListener("click", () => { value = op.v; btns.forEach((x, i) => x.setAttribute("aria-checked", String(o.options[i].v === value))); api.onchange && api.onchange(); });
+      group.appendChild(b);
+      return b;
+    });
+    const wrap = $("div", { class: "ctl ctl-seg" }, [$("span", { id: o.id + "-l", class: "ctl-l", text: o.label }), group]);
+    const api = { el: wrap, get value() { return value; }, onchange: null };
+    return api;
+  }
+  function button(id, text) { return $("button", { type: "button", class: "btn btn-quiet btn-small", id: id, text: text }); }
+  function legend(items) {
+    return $("ul", { class: "legend" }, items.map((it) => $("li", {}, [
+      $("span", { class: "key key-" + it[0] + (it[2] === true ? " key-dash" : it[2] === "dot" ? " key-dot" : ""), "aria-hidden": "true" }), document.createTextNode(it[1])
+    ])));
+  }
+  function readouts(defs) {
+    const dl = $("dl", { class: "demo-read" });
+    const vals = {};
+    defs.forEach((d) => {
+      const dd = $("dd", { text: "–" });
+      vals[d[0]] = dd;
+      dl.appendChild($("div", {}, [$("dt", { text: d[1] }), dd]));
+    });
+    return { el: dl, set: (k, v) => { vals[k].innerHTML = v; } };
+  }
+  function shell(root, parts) {
+    root.textContent = "";
+    const controls = $("div", { class: "demo-controls" }, parts.controls);
+    const plotBox = $("div", { class: "demo-plot" });
+    [controls, parts.legend, plotBox, parts.read && parts.read.el].forEach((x) => x && root.appendChild(x));
+    return new Plot(plotBox, parts.label);
+  }
+
+  /* ============================================================ the demos */
+  const DEMOS = {};
+
+  /* RIS: beam pattern of an N-element surface with b-bit phases */
+  DEMOS["ris-beam"] = function (root) {
+    const N = slider({ id: "ris-n", label: "Elements, N", min: 4, max: 64, step: 1, value: 16, fmt: (v) => String(v) });
+    const T = slider({ id: "ris-t", label: "Target angle", min: -60, max: 60, step: 1, value: 25, fmt: (v) => v + "°" });
+    const Bq = seg({ id: "ris-b", label: "Phase resolution", value: 2, options: [{ v: 1, t: "1 bit" }, { v: 2, t: "2 bits" }, { v: 3, t: "3 bits" }, { v: 0, t: "Continuous" }] });
+    const read = readouts([["g", "Gain toward target"], ["i", "Ideal, N²"], ["q", "Loss from quantized phases"], ["p", "Main beam at"]]);
+    const plot = shell(root, {
+      controls: [N.el, T.el, Bq.el], read: read,
+      legend: legend([["c1", "Configured surface"], ["ref", "Unconfigured surface (mirror)", true]]),
+      label: "Reflection gain of the surface against angle, with the target direction marked."
+    });
+    function af(phi, s) { let re = 0, im = 0; for (let i = 0; i < phi.length; i++) { const a = phi[i] + Math.PI * i * s; re += Math.cos(a); im += Math.sin(a); } return re * re + im * im; }
+    const run = frame(() => {
+      const n = N.value, th = T.value * Math.PI / 180, b = Bq.value;
+      const phi = [], zero = new Array(n).fill(0);
+      for (let i = 0; i < n; i++) {
+        let p = -Math.PI * i * Math.sin(th);
+        if (b) { const q = 2 * Math.PI / (1 << b); p = Math.round(p / q) * q; }
+        phi.push(p);
+      }
+      const cfgd = [], mirror = []; let best = -1, bestA = 0;
+      for (let a = -90; a <= 90.0001; a += 0.25) {
+        const s = Math.sin(a * Math.PI / 180), g = af(phi, s);
+        if (g > best) { best = g; bestA = a; }
+        cfgd.push([a, db(g)]); mirror.push([a, db(af(zero, s))]);
+      }
+      const gt = db(af(phi, Math.sin(th))), ideal = 20 * Math.log10(n);
+      plot.set({
+        x: { min: -90, max: 90, ticks: [-90, -60, -30, 0, 30, 60, 90], fmt: (v) => v + "°", label: "Reflection angle", hover: (v) => fmt(v, 1) + "°" },
+        y: { min: -10, max: 40, ticks: [-10, 0, 10, 20, 30, 40], label: "Gain over one element (dB)", hover: (v) => fmt(v, 1) + " dB" },
+        series: [{ name: "Configured", color: "c1", data: cfgd }, { name: "Mirror", color: "ref", data: mirror, dash: [6, 5], width: 1.5 }],
+        vlines: [{ x: T.value, label: "Target " + T.value + "°" }]
+      });
+      read.set("g", fmt(gt, 1) + " dB");
+      read.set("i", fmt(ideal, 1) + " dB");
+      read.set("q", fmt(Math.max(0, ideal - gt), 2) + " dB");
+      read.set("p", fmt(bestA, 1) + "°");
+    });
+    [N, T].forEach((s) => s.input.addEventListener("input", run));
+    Bq.onchange = run; run();
+  };
+
+  /* NOMA: two-user downlink rate region versus TDMA */
+  DEMOS["noma-region"] = function (root) {
+    const s1 = slider({ id: "noma-s1", label: "Near-user SNR", min: 0, max: 40, step: 1, value: 20, fmt: (v) => v + " dB" });
+    const s2 = slider({ id: "noma-s2", label: "Far-user SNR", min: -10, max: 30, step: 1, value: 5, fmt: (v) => v + " dB" });
+    const al = slider({ id: "noma-a", label: "Power to near user, α", min: 0.01, max: 0.5, step: 0.01, value: 0.2, fmt: (v) => v.toFixed(2) });
+    const read = readouts([["n", "NOMA rates (near, far)"], ["t", "TDMA, same near-user rate"], ["d", "Far user gains with NOMA"]]);
+    const plot = shell(root, {
+      controls: [s1.el, s2.el, al.el], read: read,
+      legend: legend([["c1", "NOMA (superposition and SIC)"], ["ref", "TDMA (time sharing)", true]]),
+      label: "Achievable rate pairs of the near and far user with NOMA and with TDMA."
+    });
+    const run = frame(() => {
+      if (s2.value > s1.value) s2.set(s1.value);
+      const S1 = Math.pow(10, s1.value / 10), S2 = Math.pow(10, s2.value / 10);
+      const C1 = Math.log2(1 + S1), C2 = Math.log2(1 + S2);
+      const R1 = (a) => Math.log2(1 + a * S1), R2 = (a) => Math.log2(1 + (1 - a) * S2 / (a * S2 + 1));
+      const noma = [], tdma = [];
+      for (let k = 0; k <= 400; k++) { const a = k / 400; noma.push([R1(a), R2(a)]); }
+      for (let k = 0; k <= 200; k++) { const t = k / 200; tdma.push([t * C1, (1 - t) * C2]); }
+      const a = al.value, r1 = R1(a), r2 = R2(a), r2t = (1 - r1 / C1) * C2;
+      const xm = niceMax(C1 * 1.04), ym = niceMax(C2 * 1.12);
+      plot.set({
+        x: { min: 0, max: xm, ticks: ticks(0, xm, 5), label: "Near-user rate R₁ (bit/s/Hz)", hover: (v) => "R₁ = " + fmt(v, 2) },
+        y: { min: 0, max: ym, ticks: ticks(0, ym, 4), label: "Far-user rate R₂ (bit/s/Hz)", fmt: (v) => String(+v.toFixed(2)), hover: (v) => fmt(v, 2) },
+        series: [{ name: "NOMA, R₂", color: "c1", data: noma }, { name: "TDMA, R₂", color: "ref", data: tdma, dash: [6, 5], width: 1.5 }],
+        points: [{ x: r1, y: r2, color: "c1", r: 5, label: "α = " + a.toFixed(2) }, { x: r1, y: r2t, color: "ref", r: 4 }]
+      });
+      read.set("n", fmt(r1, 2) + " and " + fmt(r2, 2) + " bit/s/Hz");
+      read.set("t", "far user " + fmt(r2t, 2) + " bit/s/Hz");
+      const gain = r2 - r2t;
+      read.set("d", (gain >= 0 ? "+" : "") + fmt(gain, 2) + " bit/s/Hz" + (r2t > 1e-6 ? " (" + (gain >= 0 ? "+" : "") + fmt(100 * gain / r2t, 0) + "%)" : ""));
+    });
+    [s1, s2, al].forEach((s) => s.input.addEventListener("input", run));
+    run();
+  };
+
+  /* ISAC: range profile of two equal targets after matched filtering */
+  DEMOS["isac-range"] = function (root) {
+    const BW = [[10e6, "10 MHz"], [20e6, "20 MHz, an LTE carrier"], [50e6, "50 MHz"], [100e6, "100 MHz, 5G NR in FR1"], [200e6, "200 MHz"],
+      [320e6, "320 MHz, Wi-Fi 7"], [400e6, "400 MHz, 5G NR in FR2"], [800e6, "800 MHz"], [1e9, "1 GHz"], [2e9, "2 GHz"], [4e9, "4 GHz, automotive radar"]];
+    const SEP = [0.05, 0.1, 0.2, 0.3, 0.5, 0.75, 1, 1.5, 2, 3, 5, 10];
+    const len = (m) => (m === 0 ? "0" : m < 1 ? +(m * 100).toPrecision(3) + " cm" : +m.toPrecision(3) + " m");
+    const b = slider({ id: "isac-b", label: "Bandwidth, B", min: 0, max: BW.length - 1, step: 1, value: 3, map: (i) => BW[i], fmt: (v) => v[1] });
+    const s = slider({ id: "isac-d", label: "Target separation", min: 0, max: SEP.length - 1, step: 1, value: 8, map: (i) => SEP[i], fmt: len });
+    const read = readouts([["r", "Range resolution, c/2B"], ["s", "Separation"], ["v", "Result"]]);
+    const plot = shell(root, {
+      controls: [b.el, s.el], read: read,
+      label: "Echo power against range for two equal targets, with their true positions marked."
+    });
+    const sinc2 = (x) => { if (Math.abs(x) < 1e-9) return 1; const v = Math.sin(Math.PI * x) / (Math.PI * x); return v * v; };
+    const run = frame(() => {
+      const B = b.value[0], d = s.value, dr = C0 / (2 * B);
+      const r1 = -d / 2, r2 = d / 2, span = 1.5 * d + 3 * dr;
+      const data = []; let mx = 0;
+      for (let k = 0; k <= 600; k++) {
+        const r = -span + (2 * span * k) / 600;
+        const p = sinc2(2 * B * (r - r1) / C0) + sinc2(2 * B * (r - r2) / C0);
+        mx = Math.max(mx, p); data.push([r, p]);
+      }
+      data.forEach((p) => { p[1] /= mx; });
+      const tk = ticks(-span, span, 6);
+      plot.set({
+        x: { min: -span, max: span, ticks: tk, label: "Range offset from the midpoint", fmt: (v) => (v < 0 ? "−" : "") + len(Math.abs(v)), hover: (v) => (v < 0 ? "−" : "") + len(Math.abs(v)) },
+        y: { min: 0, max: 1.05, ticks: [0, 0.25, 0.5, 0.75, 1], label: "Echo power (normalized)", fmt: (v) => v.toFixed(2), hover: (v) => v.toFixed(2) },
+        series: [{ name: "Echo", color: "c1", data: data }],
+        vlines: [{ x: r1 }, { x: r2 }]
+      });
+      read.set("r", len(dr));
+      read.set("s", len(d));
+      read.set("v", d >= dr ? '<span class="chip chip-ok">Two peaks: resolved</span>' : '<span class="chip chip-no">One peak: not resolved</span>');
+    });
+    [b, s].forEach((x) => x.input.addEventListener("input", run));
+    run();
+  };
+
+  /* V2X: Clarke fading envelope over time */
+  DEMOS["v2x-fading"] = function (root) {
+    const v = slider({ id: "v2x-v", label: "Speed", min: 0, max: 250, step: 5, value: 120, fmt: (x) => x + " km/h" });
+    const fc = seg({ id: "v2x-f", label: "Carrier frequency", value: 5.9, options: [{ v: 3.5, t: "3.5 GHz" }, { v: 5.9, t: "5.9 GHz" }, { v: 28, t: "28 GHz" }] });
+    const nb = button("v2x-new", "New channel");
+    const read = readouts([["d", "Maximum Doppler shift, f_D"], ["c", "Coherence time ≈ 0.423/f_D"], ["f", "Fades below −10 dB in 50 ms"]]);
+    const plot = shell(root, {
+      controls: [v.el, fc.el, $("div", { class: "ctl ctl-btn" }, [nb])], read: read,
+      label: "Received power of a mobile channel over 50 milliseconds."
+    });
+    let seed = 7;
+    const run = frame(() => {
+      const fD = (v.value / 3.6) * fc.value * 1e9 / C0, M = 32, rnd = rng(seed);
+      const ang = [], ph = [];
+      for (let m = 0; m < M; m++) { ang.push(2 * Math.PI * (m + rnd()) / M); ph.push(2 * Math.PI * rnd()); }
+      const data = []; let fades = 0, below = false;
+      for (let k = 0; k <= 1000; k++) {
+        const t = 0.05 * k / 1000; let re = 0, im = 0;
+        for (let m = 0; m < M; m++) { const a = 2 * Math.PI * fD * Math.cos(ang[m]) * t + ph[m]; re += Math.cos(a); im += Math.sin(a); }
+        const g = db((re * re + im * im) / M);
+        if (g < -10 && !below) fades++;
+        below = g < -10;
+        data.push([t * 1000, g]);
+      }
+      plot.set({
+        x: { min: 0, max: 50, ticks: [0, 10, 20, 30, 40, 50], label: "Time (ms)", hover: (x) => fmt(x, 2) + " ms" },
+        y: { min: -30, max: 10, ticks: [-30, -20, -10, 0, 10], label: "Received power (dB)", hover: (x) => fmt(x, 1) + " dB" },
+        series: [{ name: "Power", color: "c1", data: data }],
+        hlines: [{ y: -10, color: "ref", label: "−10 dB" }]
+      });
+      read.set("d", fD > 0 ? fmt(fD, fD < 100 ? 1 : 0) + " Hz" : "0 Hz");
+      const Tc = fD > 0 ? 0.423 / fD : Infinity;
+      read.set("c", isFinite(Tc) ? (Tc < 0.01 ? fmt(Tc * 1000, Tc < 0.001 ? 2 : 1) + " ms" : fmt(Tc, 2) + " s") : "unlimited (static channel)");
+      read.set("f", String(fades));
+    });
+    v.input.addEventListener("input", run);
+    fc.onchange = run;
+    nb.addEventListener("click", () => { seed = (seed * 9301 + 49297) % 233280; run(); });
+    run();
+  };
+
+  /* Fluid antenna: spatial fading along W wavelengths and port selection */
+  DEMOS["fas-ports"] = function (root) {
+    const w = slider({ id: "fas-w", label: "Antenna length, W", min: 0.5, max: 5, step: 0.5, value: 2, fmt: (x) => x + "λ" });
+    const n = slider({ id: "fas-n", label: "Ports, N", min: 2, max: 64, step: 1, value: 16, fmt: String });
+    const nb = button("fas-new", "New channel");
+    const read = readouts([["b", "Best port, this channel"], ["a", "Average gain of the best port"], ["o", "Outage below −10 dB"]]);
+    const plot = shell(root, {
+      controls: [w.el, n.el, $("div", { class: "ctl ctl-btn" }, [nb])], read: read,
+      legend: legend([["c1", "Channel gain along the antenna"], ["c2", "Best port", "dot"], ["ref", "Other ports", "dot"]]),
+      label: "Channel gain along a fluid antenna, with its ports and the best port marked."
+    });
+    let seed = 11;
+    function channel(rnd, M) {
+      const c = [], p = [];
+      for (let m = 0; m < M; m++) { c.push(2 * Math.PI * Math.cos(2 * Math.PI * rnd())); p.push(2 * Math.PI * rnd()); }
+      return (x) => { let re = 0, im = 0; for (let m = 0; m < M; m++) { const a = c[m] * x + p[m]; re += Math.cos(a); im += Math.sin(a); } return (re * re + im * im) / M; };
+    }
+    let mcKey = "", mcTimer = 0;
+    function monteCarlo(W, N) {
+      const key = W + ":" + N; if (key === mcKey) return; mcKey = key;
+      read.set("a", "computing…"); read.set("o", "computing…");
+      clearTimeout(mcTimer);
+      mcTimer = setTimeout(() => {
+        const rnd = rng(2024), trials = 1000; let sum = 0, out = 0;
+        for (let t = 0; t < trials; t++) {
+          const h = channel(rnd, 32); let best = 0;
+          for (let k = 0; k < N; k++) best = Math.max(best, h(k * W / (N - 1)));
+          sum += best; if (best < 0.1) out++;
+        }
+        read.set("a", "+" + fmt(db(sum / trials), 1) + " dB over a fixed antenna");
+        read.set("o", fmt(100 * out / trials, 1) + "% fluid, 9.5% fixed");
+      }, 140);
+    }
+    const run = frame(() => {
+      const W = w.value, N = n.value, h = channel(rng(seed), 64);
+      const data = [];
+      for (let k = 0; k <= 500; k++) { const x = W * k / 500; data.push([x, db(h(x))]); }
+      const ports = []; let bi = 0, bg = -1;
+      for (let k = 0; k < N; k++) { const x = k * W / (N - 1), g = h(x); ports.push([x, g]); if (g > bg) { bg = g; bi = k; } }
+      const pts = ports.map((p, k) => ({ x: p[0], y: Math.max(-30, db(p[1])), color: k === bi ? "c2" : "ref", r: k === bi ? 5.5 : 4 }));
+      pts.push(pts.splice(bi, 1)[0]);
+      pts[pts.length - 1].label = "Best port";
+      plot.set({
+        x: { min: 0, max: W, ticks: ticks(0, W, 5), label: "Position along the antenna (wavelengths)", fmt: (x) => String(+x.toFixed(2)), hover: (x) => fmt(x, 2) + "λ" },
+        y: { min: -30, max: 10, ticks: [-30, -20, -10, 0, 10], label: "Channel gain (dB)", hover: (x) => fmt(x, 1) + " dB" },
+        series: [{ name: "Gain", color: "c1", data: data }],
+        points: pts
+      });
+      read.set("b", "port " + (bi + 1) + ", " + (db(bg / ports[0][1]) >= 0 ? "+" : "") + fmt(db(bg / ports[0][1]), 1) + " dB over port 1");
+      monteCarlo(W, N);
+    });
+    [w, n].forEach((x) => x.input.addEventListener("input", run));
+    nb.addEventListener("click", () => { seed = (seed * 9301 + 49297) % 233280; run(); });
+    run();
+  };
+
+  /* Hardware impairments: spectral efficiency ceiling */
+  DEMOS["hwi-ceiling"] = function (root) {
+    const k = slider({ id: "hwi-k", label: "Impairment level κ (EVM)", min: 0, max: 25, step: 0.5, value: 8, fmt: (x) => x + "%" });
+    const presets = $("div", { class: "ctl ctl-presets" }, [$("span", { class: "ctl-l", text: "3GPP EVM limits" })]);
+    const row = $("div", { class: "seg-mini" });
+    [["QPSK", 17.5], ["16-QAM", 12.5], ["64-QAM", 8], ["256-QAM", 3.5]].forEach((p) => {
+      const bt = $("button", { type: "button", id: "hwi-" + p[0].replace(/\W/g, ""), text: p[0] + " " + p[1] + "%" });
+      bt.addEventListener("click", () => { k.set(p[1]); run(); });
+      row.appendChild(bt);
+    });
+    presets.appendChild(row);
+    const read = readouts([["s", "SNDR ceiling, 1/κ²"], ["c", "Capacity ceiling"], ["l", "Loss at 30 dB SNR"]]);
+    const plot = shell(root, {
+      controls: [k.el, presets], read: read,
+      legend: legend([["c1", "With impairments"], ["ref", "Ideal hardware", true]]),
+      label: "Spectral efficiency against SNR for ideal and impaired hardware."
+    });
+    const run = frame(() => {
+      const kk = k.value / 100, k2 = kk * kk;
+      const ideal = [], imp = [];
+      for (let s = -10; s <= 50.0001; s += 0.25) {
+        const S = Math.pow(10, s / 10);
+        ideal.push([s, Math.log2(1 + S)]);
+        imp.push([s, Math.log2(1 + S / (k2 * S + 1))]);
+      }
+      const ceil = k2 > 0 ? Math.log2(1 + 1 / k2) : null;
+      plot.set({
+        x: { min: -10, max: 50, ticks: [-10, 0, 10, 20, 30, 40, 50], label: "SNR (dB)", hover: (x) => "SNR " + fmt(x, 1) + " dB" },
+        y: { min: 0, max: 18, ticks: [0, 3, 6, 9, 12, 15, 18], label: "Spectral efficiency (bit/s/Hz)", hover: (x) => fmt(x, 2) + " bit/s/Hz" },
+        series: [{ name: "Impaired", color: "c1", data: imp }, { name: "Ideal", color: "ref", data: ideal, dash: [6, 5], width: 1.5 }],
+        hlines: ceil !== null ? [{ y: ceil, color: "c2", label: "Ceiling " + fmt(ceil, 2) + " bit/s/Hz" }] : []
+      });
+      read.set("s", ceil !== null ? fmt(db(1 / k2), 1) + " dB" : "none (ideal hardware)");
+      read.set("c", ceil !== null ? fmt(ceil, 2) + " bit/s/Hz" : "none");
+      const S30 = 1000;
+      read.set("l", fmt(Math.log2(1 + S30) - Math.log2(1 + S30 / (k2 * S30 + 1)), 2) + " bit/s/Hz");
+    });
+    k.input.addEventListener("input", run);
+    run();
+  };
+
+
+  /* Optimization: successive convex approximation on two-user power control */
+  DEMOS["opt-sca"] = function (root) {
+    const P = 100, a1 = 1, a2 = 0.4, LN2 = Math.LN2;
+    const bS = slider({ id: "sca-b", label: "Interference, cross-link gain", min: 0, max: 1, step: 0.01, value: 0.02, fmt: (v) => v.toFixed(2) });
+    const xS = slider({ id: "sca-x", label: "Starting point, power to user 1", min: 0, max: 1, step: 0.01, value: 0.05, fmt: (v) => Math.round(v * 100) + "%" });
+    const stepB = button("sca-step", "Next iteration"), runB = button("sca-run", "Run to convergence"), resetB = button("sca-reset", "Restart");
+    const btnRow = $("div", { class: "ctl ctl-btn" }, [$("div", { style: "display:flex;flex-wrap:wrap;gap:0.5rem" }, [stepB, runB, resetB])]);
+    const read = readouts([["t", "Iteration"], ["r", "Sum rate now"], ["g", "Best possible (grid search)"], ["s", "Status"]]);
+    const plot = shell(root, {
+      controls: [bS.el, xS.el, btnRow], read: read,
+      legend: legend([["c1", "Sum rate R(p)"], ["c2", "Concave surrogate at the current point"], ["ref", "Earlier iterates", "dot"]]),
+      label: "Sum rate of two interfering users against the share of power given to user 1, with the SCA surrogate and its iterates."
+    });
+    let x = 0.05, t = 0, trail = [], done = false;
+    const model = () => {
+      const b = bS.value;
+      const f = (u) => Math.log2(1 + P * (u * a1 + (1 - u) * b)) + Math.log2(1 + P * ((1 - u) * a2 + u * b));
+      const g = (u) => Math.log2(1 + P * (1 - u) * b) + Math.log2(1 + P * u * b);
+      const gp = (u) => (-P * b / (1 + P * (1 - u) * b) + P * b / (1 + P * u * b)) / LN2;
+      return { f: f, g: g, gp: gp, R: (u) => f(u) - g(u) };
+    };
+    function argmaxSurrogate(m, xk) {
+      const S = (u) => m.f(u) - m.g(xk) - m.gp(xk) * (u - xk);
+      let lo = 0, hi = 1;
+      for (let i = 0; i < 70; i++) {
+        const m1 = lo + (hi - lo) * 0.382, m2 = lo + (hi - lo) * 0.618;
+        if (S(m1) < S(m2)) lo = m1; else hi = m2;
+      }
+      const c = (lo + hi) / 2, cands = [0, 1, c];
+      return cands.reduce((best, u) => (S(u) > S(best) ? u : best), c);
+    }
+    function restart() { x = xS.value; t = 0; trail = []; done = false; draw(); }
+    function step() {
+      if (done) return;
+      const m = model(), xn = argmaxSurrogate(m, x);
+      trail.push(x); t++;
+      if (Math.abs(xn - x) < 1e-4) done = true;
+      x = xn;
+    }
+    const draw = frame(() => {
+      const m = model(), cur = [], sur = [];
+      let rmin = Infinity, rmax = -Infinity, xbest = 0;
+      for (let k = 0; k <= 400; k++) {
+        const u = k / 400, r = m.R(u);
+        cur.push([u, r]);
+        sur.push([u, m.f(u) - m.g(x) - m.gp(x) * (u - x)]);
+        if (r < rmin) rmin = r;
+        if (r > rmax) { rmax = r; xbest = u; }
+      }
+      const ymin = Math.max(0, Math.floor(rmin - 1)), ymax = Math.ceil(rmax + 0.6);
+      const pts = trail.slice(-8).map((u) => ({ x: u, y: m.R(u), color: "ref", r: 3.5 }));
+      pts.push({ x: x, y: m.R(x), color: "c1", r: 5.5, label: t ? "p after " + t + (t === 1 ? " step" : " steps") : "Start" });
+      plot.set({
+        x: { min: 0, max: 1, ticks: [0, 0.25, 0.5, 0.75, 1], fmt: (v) => Math.round(v * 100) + "%", label: "Share of total power given to user 1", hover: (v) => fmt(v * 100, 1) + "% to user 1" },
+        y: { min: ymin, max: ymax, ticks: ticks(ymin, ymax, 4), label: "Sum rate (bit/s/Hz)", fmt: (v) => String(+v.toFixed(1)), hover: (v) => fmt(v, 2) + " bit/s/Hz" },
+        series: [{ name: "Sum rate", color: "c1", data: cur }, { name: "Surrogate", color: "c2", data: sur, width: 1.75 }],
+        points: pts
+      });
+      const r = m.R(x), gap = rmax - r;
+      read.set("t", String(t));
+      read.set("r", fmt(r, 2) + " bit/s/Hz");
+      read.set("g", fmt(rmax, 2) + " bit/s/Hz at " + Math.round(xbest * 100) + "%");
+      read.set("s", !done ? (t ? "Improving" : "Press Next iteration")
+        : gap < 0.01 ? "Converged, global optimum"
+        : "Stuck at a local optimum, " + fmt(gap, 2) + " bit/s/Hz below best");
+    });
+    stepB.addEventListener("click", () => { step(); draw(); });
+    runB.addEventListener("click", () => { for (let i = 0; i < 60 && !done; i++) step(); draw(); });
+    resetB.addEventListener("click", restart);
+    bS.input.addEventListener("input", restart);
+    xS.input.addEventListener("input", restart);
+    restart();
+  };
+
+  /* Link budget calculator */
+  DEMOS["lb-calc"] = function (root) {
+    const pt = slider({ id: "lb-p", label: "Transmit power", min: 0, max: 46, step: 1, value: 46, fmt: (v) => v + " dBm" });
+    const fq = seg({ id: "lb-f", label: "Frequency", value: 3.5, options: [{ v: 0.9, t: "0.9 GHz" }, { v: 3.5, t: "3.5 GHz" }, { v: 28, t: "28 GHz" }] });
+    const ga = slider({ id: "lb-g", label: "Antenna gains, total", min: 0, max: 40, step: 1, value: 17, fmt: (v) => v + " dBi" });
+    const bw = seg({ id: "lb-b", label: "Bandwidth", value: 20, options: [{ v: 5, t: "5 MHz" }, { v: 20, t: "20 MHz" }, { v: 100, t: "100 MHz" }, { v: 400, t: "400 MHz" }] });
+    const ne = slider({ id: "lb-n", label: "Path-loss exponent, n", min: 2, max: 4, step: 0.1, value: 3, fmt: (v) => v.toFixed(1) });
+    const dd = slider({ id: "lb-d", label: "Distance", min: 1, max: 4, step: 0.01, value: 2.7, fmt: (v) => { const d = Math.pow(10, v); return d < 1000 ? fmt(d, 0) + " m" : fmt(d / 1000, 2) + " km"; } });
+    const read = readouts([["r", "Received power"], ["n", "Noise floor (NF 7 dB)"], ["s", "SNR"], ["c", "Shannon rate"]]);
+    const plot = shell(root, {
+      controls: [pt.el, fq.el, ga.el, bw.el, ne.el, dd.el], read: read,
+      legend: legend([["c1", "SNR along the link"], ["c2", "Your receiver", "dot"], ["ref", "0 dB: signal equals noise", true]]),
+      label: "SNR against distance for the chosen link parameters, with the selected distance marked."
+    });
+    const run = frame(() => {
+      const f = fq.value * 1e9, B = bw.value * 1e6, n = ne.value;
+      const L1 = 20 * Math.log10(4 * Math.PI * f / C0);
+      const N = -174 + 10 * Math.log10(B) + 7;
+      const snr = (x) => pt.value + ga.value - (L1 + 10 * n * x) - N;
+      const data = []; for (let k = 0; k <= 300; k++) { const x = k / 100 + 1; data.push([x, snr(x)]); }
+      const x = dd.value, s = snr(x);
+      plot.set({
+        x: { min: 1, max: 4, ticks: [1, 2, 3, 4], fmt: (v) => ["10 m", "100 m", "1 km", "10 km"][v - 1], label: "Distance (log scale)", hover: (v) => { const d = Math.pow(10, v); return d < 1000 ? fmt(d, 0) + " m" : fmt(d / 1000, 2) + " km"; } },
+        y: { min: -40, max: 100, ticks: [-40, -20, 0, 20, 40, 60, 80, 100], label: "SNR (dB)", hover: (v) => fmt(v, 1) + " dB" },
+        series: [{ name: "SNR", color: "c1", data: data }],
+        hlines: [{ y: 0, color: "ref", label: "0 dB" }],
+        points: [{ x: x, y: Math.max(-40, Math.min(100, s)), color: "c2", r: 6, label: fmt(s, 1) + " dB" }]
+      });
+      const rate = B * Math.log2(1 + Math.pow(10, s / 10));
+      read.set("r", fmt(s + N, 1) + " dBm");
+      read.set("n", fmt(N, 1) + " dBm");
+      read.set("s", fmt(s, 1) + " dB");
+      read.set("c", rate >= 1e9 ? fmt(rate / 1e9, 2) + " Gbit/s" : fmt(rate / 1e6, 1) + " Mbit/s");
+    });
+    [pt, ga, ne, dd].forEach((c) => c.input.addEventListener("input", run)); fq.onchange = run; bw.onchange = run;
+    run();
+  };
+
+  /* ----------------------------------------------------------------- boot */
+  document.querySelectorAll(".demo[data-demo]").forEach((el) => {
+    const f = DEMOS[el.getAttribute("data-demo")];
+    if (f) f(el);
+  });
+  const redrawAll = () => plots.forEach((p) => p.redraw());
+  const mq = window.matchMedia("(prefers-color-scheme: dark)");
+  if (mq.addEventListener) mq.addEventListener("change", redrawAll);
+  new MutationObserver(redrawAll).observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
+})();
+</script>
+<script>
+(function () {
+  function tipFor(fig) {
+    let t = fig.querySelector(".ptip");
+    if (!t) { t = document.createElement("div"); t.className = "ptip"; t.hidden = true; fig.appendChild(t); }
+    return t;
+  }
+  function place(fig, tip, cx, cy) {
+    const fr = fig.getBoundingClientRect();
+    let x = cx - fr.left + 14, y = cy - fr.top + 14;
+    tip.hidden = false;
+    const w = tip.offsetWidth, h = tip.offsetHeight;
+    if (x + w > fr.width - 6) x = cx - fr.left - w - 14;
+    if (y + h > fr.height - 6) y = cy - fr.top - h - 14;
+    tip.style.transform = "translate(" + Math.max(4, x) + "px," + Math.max(4, y) + "px)";
+  }
+  // marks carrying their own tooltip
+  document.querySelectorAll("figure.viz").forEach(function (fig) {
+    const marks = fig.querySelectorAll("[data-tip]");
+    if (!marks.length) return;
+    const tip = tipFor(fig);
+    marks.forEach(function (m) {
+      m.classList.add("hov");
+      const show = function (e) { tip.innerHTML = m.getAttribute("data-tip"); place(fig, tip, e.clientX, e.clientY); };
+      m.addEventListener("pointermove", show);
+      m.addEventListener("pointerleave", function () { tip.hidden = true; });
+    });
+  });
+  // line plots: crosshair readout
+  document.querySelectorAll("figure.viz svg[data-plot]").forEach(function (svg) {
+    const fig = svg.closest("figure"), cfg = JSON.parse(svg.getAttribute("data-plot"));
+    const tip = tipFor(fig), ns = "http://www.w3.org/2000/svg";
+    const xh = document.createElementNS(ns, "line"); xh.setAttribute("class", "axis"); xh.setAttribute("y1", cfg.y0); xh.setAttribute("y2", cfg.y1); xh.style.display = "none";
+    svg.appendChild(xh);
+    const dots = cfg.series.map(function (s) { const c = document.createElementNS(ns, "circle"); c.setAttribute("r", 4.5); c.setAttribute("class", "f" + s.k); c.setAttribute("stroke", "var(--surface)"); c.setAttribute("stroke-width", 2); c.style.display = "none"; svg.appendChild(c); return c; });
+    const SUP = { "-": "⁻", "0": "⁰", "1": "¹", "2": "²", "3": "³", "4": "⁴", "5": "⁵", "6": "⁶", "7": "⁷", "8": "⁸", "9": "⁹" };
+    function fv(v) {
+      if (cfg.ypow) { const e = Math.pow(10, v).toExponential(1).split("e"); return e[0] + "×10" + String(+e[1]).split("").map(function (c) { return SUP[c] || c; }).join(""); }
+      return String(+v.toFixed(cfg.yd));
+    }
+    function sx(v) { return cfg.xlog ? Math.log10(v) : v; }
+    function px(v) { return cfg.x0 + (sx(v) - sx(cfg.xmin)) / (sx(cfg.xmax) - sx(cfg.xmin)) * (cfg.x1 - cfg.x0); }
+    function py(v) { return cfg.y1 - (v - cfg.ymin) / (cfg.ymax - cfg.ymin) * (cfg.y1 - cfg.y0); }
+    svg.addEventListener("pointermove", function (e) {
+      const pt = svg.createSVGPoint(); pt.x = e.clientX; pt.y = e.clientY;
+      const p = pt.matrixTransform(svg.getScreenCTM().inverse());
+      if (p.x < cfg.x0 - 4 || p.x > cfg.x1 + 4) { xh.style.display = "none"; dots.forEach(function (d) { d.style.display = "none"; }); tip.hidden = true; return; }
+      let rows = [], gx = null;
+      cfg.series.forEach(function (s, i) {
+        let best = null, bd = 1e9;
+        s.p.forEach(function (q) { const d = Math.abs(px(q[0]) - p.x); if (d < bd) { bd = d; best = q; } });
+        if (!best) return;
+        if (gx === null) gx = best;
+        const yy = py(best[1]);
+        if (yy >= cfg.y0 - 2 && yy <= cfg.y1 + 2) { dots[i].setAttribute("cx", px(best[0])); dots[i].setAttribute("cy", yy); dots[i].style.display = ""; } else dots[i].style.display = "none";
+        rows.push('<div><i style="--c:var(--k' + s.k + ')"></i>' + s.n + ": <b>" + fv(best[1]) + (cfg.yu || "") + "</b></div>");
+      });
+      if (gx === null) return;
+      xh.setAttribute("x1", px(gx[0])); xh.setAttribute("x2", px(gx[0])); xh.style.display = "";
+      tip.innerHTML = '<div><b>' + cfg.xl + " " + (+gx[0].toFixed(cfg.xd)) + (cfg.xu || "") + "</b></div>" + rows.join("");
+      place(fig, tip, e.clientX, e.clientY);
+    });
+    svg.addEventListener("pointerleave", function () { xh.style.display = "none"; dots.forEach(function (d) { d.style.display = "none"; }); tip.hidden = true; });
+  });
+})();
+</script>
+</body>
+</html>

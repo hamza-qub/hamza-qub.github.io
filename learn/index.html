@@ -3,11 +3,11 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="description" content="Tutorials on 6G, reconfigurable intelligent surfaces, NOMA, ISAC, vehicular communications, fluid antennas and hardware impairments.">
+<meta name="description" content="Picture-first tutorials on wireless foundations, 6G technologies and research tools, with diagrams, photos and interactive models.">
 <meta name="author" content="Mohd Hamza Naim Shaikh">
 <meta name="theme-color" content="#F5F7FA" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#0A1524" media="(prefers-color-scheme: dark)">
-<title>Wireless Tutorials</title>
+<title>Wireless tutorials</title>
 <!-- share-meta -->
 <link rel="canonical" href="https://hamza-qub.github.io/learn/">
 <link rel="icon" href="../favicon.svg" type="image/svg+xml">
@@ -15,8 +15,8 @@
 <link rel="apple-touch-icon" href="../apple-touch-icon.png">
 <meta property="og:site_name" content="Hamza Shaikh">
 <meta property="og:type" content="website">
-<meta property="og:title" content="Wireless Tutorials">
-<meta property="og:description" content="Tutorials on 6G, reconfigurable intelligent surfaces, NOMA, ISAC, vehicular communications, fluid antennas and hardware impairments.">
+<meta property="og:title" content="Wireless tutorials">
+<meta property="og:description" content="Picture-first tutorials on wireless foundations, 6G technologies and research tools, with diagrams, photos and interactive models.">
 <meta property="og:url" content="https://hamza-qub.github.io/learn/">
 <meta property="og:image" content="https://hamza-qub.github.io/og-image.png">
 <meta property="og:image:width" content="1200">
@@ -24,8 +24,8 @@
 <meta property="og:image:alt" content="Mohd Hamza Naim Shaikh, Research Fellow at Queen’s University Belfast, beside the phase pattern of a reconfigurable intelligent surface.">
 <meta property="og:locale" content="en_GB">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Wireless Tutorials">
-<meta name="twitter:description" content="Tutorials on 6G, reconfigurable intelligent surfaces, NOMA, ISAC, vehicular communications, fluid antennas and hardware impairments.">
+<meta name="twitter:title" content="Wireless tutorials">
+<meta name="twitter:description" content="Picture-first tutorials on wireless foundations, 6G technologies and research tools, with diagrams, photos and interactive models.">
 <meta name="twitter:image" content="https://hamza-qub.github.io/og-image.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -623,8 +623,210 @@ ol.refs a { font-family: var(--sans); font-size: 0.8125rem; white-space: nowrap;
 .place-index a:hover { color: var(--accent); text-decoration: underline; text-decoration-thickness: 1px; }
 .place-index span { font-family: var(--sans); font-size: 0.8125rem; color: var(--muted); }
 </style>
+<style>
+:root { --k1: #2a78d6; --k2: #eb6834; --k3: #1baf7a; --k4: #eda100; --k5: #e87ba4; --k6: #008300; --k7: #6250d6; --k8: #e34948; --t: #2a78d6; --t-deep: #1c5cab; }
+body.t-found { --t: #1baf7a; --t-deep: #0d7550; }
+body.t-tech { --t: #2a78d6; --t-deep: #1c5cab; }
+body.t-tools { --t: #eb6834; --t-deep: #b4461b; }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) { --k1: #3987e5; --k2: #d95926; --k3: #199e70; --k4: #c98500; --k5: #d55181; --k6: #2f9e2f; --k7: #9085e9; --k8: #e66767; }
+  :root:not([data-theme="light"]) body.t-found { --t: #22b383; --t-deep: #7fdcb6; }
+:root:not([data-theme="light"]) body.t-tech { --t: #3987e5; --t-deep: #9ec5f4; }
+:root:not([data-theme="light"]) body.t-tools { --t: #e0682f; --t-deep: #f5a983; }
+}
+:root[data-theme="dark"] { --k1: #3987e5; --k2: #d95926; --k3: #199e70; --k4: #c98500; --k5: #d55181; --k6: #2f9e2f; --k7: #9085e9; --k8: #e66767; }
+:root[data-theme="dark"] body.t-found { --t: #22b383; --t-deep: #7fdcb6; }
+:root[data-theme="dark"] body.t-tech { --t: #3987e5; --t-deep: #9ec5f4; }
+:root[data-theme="dark"] body.t-tools { --t: #e0682f; --t-deep: #f5a983; }
+
+/* ================= picture-first tutorials ================= */
+body { --t-soft: color-mix(in srgb, var(--t) 11%, var(--surface)); --t-soft2: color-mix(in srgb, var(--t) 22%, var(--surface)); --t-line: color-mix(in srgb, var(--t) 40%, var(--line)); }
+.site-header { border-bottom-color: var(--line); }
+.t-band { height: 6px; background: linear-gradient(90deg, var(--t), color-mix(in srgb, var(--t) 45%, var(--k4))); }
+
+/* page head with hero illustration */
+.page-head.hero2 { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 25rem); gap: clamp(1.5rem, 4vw, 3.5rem); align-items: center; }
+.page-head.hero2 .hero-art { margin: 0; }
+.page-head.hero2 .hero-art svg { display: block; width: 100%; height: auto; }
+.page-head .kicker { display: inline-flex; align-items: center; gap: 0.5rem; font-family: var(--sans); font-size: 0.8125rem; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; color: var(--t-deep); margin: 0 0 0.75rem; }
+.page-head .kicker::before { content: ""; width: 0.65rem; height: 0.65rem; border-radius: 50%; background: var(--t); }
+.meta-row .pill { background: var(--t-soft); color: var(--ink); border-radius: 999px; padding: 0.15rem 0.7rem; font-weight: 500; }
+@media (max-width: 880px) { .page-head.hero2 { grid-template-columns: minmax(0, 1fr); } .page-head.hero2 .hero-art { max-width: 26rem; } }
+
+/* at a glance */
+.glance { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 12.5rem), 1fr)); gap: 0.9rem; margin: 0 0 2.75rem; }
+.glance .g { background: var(--surface); border: 1px solid var(--line); border-top: 4px solid var(--gc, var(--t)); border-radius: 6px; padding: 0.95rem 1rem 1rem; }
+.glance .g svg { width: 2.4rem; height: 2.4rem; display: block; margin-bottom: 0.55rem; }
+.glance .g b { display: block; font-family: var(--sans); font-size: 0.9375rem; font-weight: 600; color: var(--ink); margin-bottom: 0.2rem; }
+.glance .g span { display: block; font-size: 0.975rem; line-height: 1.45; color: var(--ink-2); }
+.glance-h { font-family: var(--sans); font-size: 0.75rem; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); margin: 0 0 0.75rem; }
+
+/* numbered section headings */
+.prose { counter-reset: sec; }
+.prose h2.sec { counter-increment: sec; display: flex; align-items: baseline; gap: 0.75rem; }
+.prose h2.sec::before { content: counter(sec); flex: none; display: inline-grid; place-items: center; width: 2rem; height: 2rem; border-radius: 50%; background: var(--t-deep); color: var(--surface); font-family: var(--sans); font-size: 0.95rem; font-weight: 600; transform: translateY(-0.12rem); }
+.prose .lead { font-size: 1.125rem; color: var(--ink); }
+.toc a[aria-current="true"] { border-left-color: var(--t); }
+
+/* figures */
+figure.viz { margin: 1.5rem 0 1.75rem; background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 1rem 1rem 0.85rem; }
+figure.viz .fig-scroll { overflow-x: auto; }
+figure.viz svg { display: block; width: 100%; height: auto; }
+figure.viz .fig-scroll svg { min-width: 0; }
+figure.viz.wide .fig-scroll svg { min-width: 34rem; }
+figure.viz figcaption { font-family: var(--sans); font-size: 0.875rem; line-height: 1.55; color: var(--ink-2); margin-top: 0.7rem; }
+figure.viz figcaption b { color: var(--ink); font-weight: 600; }
+figure.viz .legend2 { list-style: none; display: flex; flex-wrap: wrap; gap: 0.3rem 1.1rem; margin: 0 0 0.4rem; padding: 0; font-family: var(--sans); font-size: 0.8125rem; color: var(--ink-2); }
+figure.viz .legend2 li { display: inline-flex; align-items: center; gap: 0.4rem; margin: 0; }
+figure.viz .legend2 i { width: 1rem; height: 0; border-top: 3px solid var(--c); border-radius: 2px; }
+figure.viz .legend2 i.sq { width: 0.7rem; height: 0.7rem; border: 0; background: var(--c); border-radius: 2px; }
+figure.viz .legend2 i.dash { border-top-style: dashed; }
+.fig-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 15rem), 1fr)); gap: 1rem; margin: 1.5rem 0 1.75rem; }
+.fig-row figure.viz { margin: 0; }
+
+/* photos */
+figure.photo { margin: 1.5rem 0 1.75rem; }
+figure.photo img { display: block; width: 100%; height: auto; border-radius: 8px; background: var(--tint); }
+figure.photo figcaption { font-family: var(--sans); font-size: 0.875rem; line-height: 1.55; color: var(--ink-2); margin-top: 0.55rem; }
+figure.photo .credit { display: block; font-size: 0.75rem; color: var(--muted); margin-top: 0.2rem; }
+figure.photo .credit a { color: var(--muted); }
+.photo-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 13rem), 1fr)); gap: 1rem; margin: 1.5rem 0 1.75rem; }
+.photo-row figure.photo { margin: 0; }
+.photo-row figure.photo img { aspect-ratio: 4 / 3; object-fit: cover; }
+
+figure.photo.tall img { max-width: 21rem; }
+.photo-row figure.photo.tall img { max-width: none; }
+/* key idea */
+.keyidea { position: relative; background: var(--t-soft); border-left: 4px solid var(--t); border-radius: 0 6px 6px 0; padding: 0.95rem 1.15rem 1rem; margin: 1.5rem 0; }
+.keyidea .label { display: block; font-family: var(--sans); font-size: 0.75rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--t-deep); margin-bottom: 0.3rem; }
+.keyidea p { margin: 0 0 0.5rem; color: var(--ink); }
+.keyidea p:last-child { margin-bottom: 0; }
+.keyidea .eq { margin: 0.6rem 0 0.2rem; }
+
+/* more detail */
+details.more { border: 1px solid var(--t-line); border-radius: 6px; margin: 1.25rem 0 1.5rem; background: var(--surface); }
+details.more > summary { cursor: pointer; list-style: none; display: flex; align-items: center; gap: 0.6rem; padding: 0.7rem 1rem; font-family: var(--sans); font-size: 0.9375rem; font-weight: 600; color: var(--ink); }
+details.more > summary::-webkit-details-marker { display: none; }
+details.more > summary::before { content: "+"; display: inline-grid; place-items: center; width: 1.35rem; height: 1.35rem; border-radius: 50%; background: var(--t-soft2); color: var(--t-deep); font-weight: 700; flex: none; }
+details.more[open] > summary::before { content: "\2212"; }
+details.more > summary .hint { font-weight: 400; color: var(--muted); font-size: 0.8125rem; }
+details.more > .body { padding: 0.25rem 1.1rem 1rem; border-top: 1px dashed var(--line); }
+details.more > .body > :first-child { margin-top: 0.75rem; }
+
+/* concept cards */
+.prose ul.cards, .prose ul.learn, .prose ul.tcards { padding-left: 0; }
+.cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 13rem), 1fr)); gap: 0.85rem; margin: 1.25rem 0 1.75rem; padding: 0; list-style: none; }
+.cards > li, .cards > a, .cards > div { margin: 0; background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 0.9rem 1rem 1rem; position: relative; overflow: hidden; }
+.cards > li::before, .cards > a::before, .cards > div::before { content: ""; position: absolute; inset: 0 0 auto 0; height: 4px; background: var(--c, var(--t)); }
+.cards svg.ic { width: 2.6rem; height: 2.6rem; display: block; margin: 0.15rem 0 0.5rem; }
+.cards b { display: block; font-family: var(--sans); font-size: 0.9375rem; font-weight: 600; color: var(--ink); margin-bottom: 0.2rem; }
+.cards span { display: block; font-size: 0.975rem; line-height: 1.45; color: var(--ink-2); }
+.cards .tag { font-style: normal; display: inline-block; font-family: var(--sans); font-size: 0.6875rem; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; color: var(--ink); background: color-mix(in srgb, var(--c, var(--t)) 18%, var(--surface)); border-radius: 999px; padding: 0.1rem 0.5rem; margin-bottom: 0.4rem; }
+.cards > a { text-decoration: none; color: inherit; transition: border-color .15s; }
+.cards > a:hover { border-color: var(--c, var(--t)); }
+.cards > a:hover b { color: var(--accent); }
+
+.cards.c4 { grid-template-columns: repeat(auto-fit, minmax(min(100%, 9.5rem), 1fr)); }
+/* learn more */
+.learn { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 15.5rem), 1fr)); gap: 0.85rem; margin: 1rem 0 0; padding: 0; list-style: none; }
+.learn li { margin: 0; }
+.learn a { display: grid; grid-template-columns: 2.4rem minmax(0, 1fr); gap: 0.15rem 0.8rem; height: 100%; box-sizing: border-box; padding: 0.85rem 1rem; background: var(--surface); border: 1px solid var(--line); border-radius: 8px; text-decoration: none; color: var(--ink); }
+.learn a:hover { border-color: var(--c); }
+.learn .av { grid-row: 1 / span 3; width: 2.4rem; height: 2.4rem; border-radius: 8px; display: grid; place-items: center; background: color-mix(in srgb, var(--c) 18%, var(--surface)); color: var(--ink); font-family: var(--sans); font-weight: 700; font-size: 0.875rem; }
+.learn .ty { font-family: var(--sans); font-size: 0.6875rem; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; color: var(--ink-2); }
+.learn .nm { font-family: var(--sans); font-weight: 600; font-size: 0.9375rem; line-height: 1.35; }
+.learn .ds { font-size: 0.9375rem; line-height: 1.45; color: var(--ink-2); }
+.learn .dm { font-family: var(--sans); font-size: 0.75rem; color: var(--muted); margin-top: 0.15rem; }
+
+/* compact further reading */
+details.reading > summary { cursor: pointer; font-family: var(--sans); font-weight: 600; font-size: 0.9375rem; color: var(--ink-2); padding: 0.4rem 0; }
+
+/* diagram styling (inline SVG) */
+.viz svg { color: var(--ink); overflow: visible; }
+.viz text { fill: currentColor; font-family: var(--sans); font-size: 13px; }
+.viz text.s { font-size: 11.5px; fill: var(--ink-2); }
+.viz text.xs { font-size: 10.5px; fill: var(--muted); }
+.viz text.b { font-weight: 600; }
+.viz text.h { font-weight: 600; font-size: 14px; }
+.viz text.w { fill: #fff; font-weight: 600; }
+.viz text.m { fill: var(--muted); }
+.viz text.ser { font-family: var(--serif); font-style: italic; font-size: 15px; }
+.viz .ink { fill: var(--ink); } .viz .ink2 { fill: var(--ink-2); } .viz .mut { fill: var(--muted); }
+.viz .srf { fill: var(--surface); } .viz .bg { fill: var(--bg); } .viz .lnf { fill: var(--line); } .viz .tnt { fill: var(--tint); }
+.viz .st { stroke: currentColor; fill: none; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+.viz .st-m { stroke: var(--muted); fill: none; stroke-width: 1.3; stroke-linecap: round; }
+.viz .st-l { stroke: var(--line); fill: none; stroke-width: 1; }
+.viz .grid { stroke: var(--line); stroke-width: 1; fill: none; }
+.viz .axis { stroke: var(--muted); stroke-width: 1.2; fill: none; }
+.viz .dash { stroke-dasharray: 5 4; }
+.viz .dot { stroke-dasharray: 1.5 4; }
+.viz .f1 { fill: var(--k1); } .viz .s1 { stroke: var(--k1); fill: none; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; } .viz .l1 { fill: color-mix(in srgb, var(--k1) 20%, var(--surface)); } .viz .ll1 { fill: color-mix(in srgb, var(--k1) 10%, var(--surface)); } .viz .tx1 { fill: color-mix(in srgb, var(--k1) 70%, var(--ink)); }
+.viz .f2 { fill: var(--k2); } .viz .s2 { stroke: var(--k2); fill: none; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; } .viz .l2 { fill: color-mix(in srgb, var(--k2) 20%, var(--surface)); } .viz .ll2 { fill: color-mix(in srgb, var(--k2) 10%, var(--surface)); } .viz .tx2 { fill: color-mix(in srgb, var(--k2) 70%, var(--ink)); }
+.viz .f3 { fill: var(--k3); } .viz .s3 { stroke: var(--k3); fill: none; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; } .viz .l3 { fill: color-mix(in srgb, var(--k3) 20%, var(--surface)); } .viz .ll3 { fill: color-mix(in srgb, var(--k3) 10%, var(--surface)); } .viz .tx3 { fill: color-mix(in srgb, var(--k3) 70%, var(--ink)); }
+.viz .f4 { fill: var(--k4); } .viz .s4 { stroke: var(--k4); fill: none; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; } .viz .l4 { fill: color-mix(in srgb, var(--k4) 20%, var(--surface)); } .viz .ll4 { fill: color-mix(in srgb, var(--k4) 10%, var(--surface)); } .viz .tx4 { fill: color-mix(in srgb, var(--k4) 70%, var(--ink)); }
+.viz .f5 { fill: var(--k5); } .viz .s5 { stroke: var(--k5); fill: none; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; } .viz .l5 { fill: color-mix(in srgb, var(--k5) 20%, var(--surface)); } .viz .ll5 { fill: color-mix(in srgb, var(--k5) 10%, var(--surface)); } .viz .tx5 { fill: color-mix(in srgb, var(--k5) 70%, var(--ink)); }
+.viz .f6 { fill: var(--k6); } .viz .s6 { stroke: var(--k6); fill: none; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; } .viz .l6 { fill: color-mix(in srgb, var(--k6) 20%, var(--surface)); } .viz .ll6 { fill: color-mix(in srgb, var(--k6) 10%, var(--surface)); } .viz .tx6 { fill: color-mix(in srgb, var(--k6) 70%, var(--ink)); }
+.viz .f7 { fill: var(--k7); } .viz .s7 { stroke: var(--k7); fill: none; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; } .viz .l7 { fill: color-mix(in srgb, var(--k7) 20%, var(--surface)); } .viz .ll7 { fill: color-mix(in srgb, var(--k7) 10%, var(--surface)); } .viz .tx7 { fill: color-mix(in srgb, var(--k7) 70%, var(--ink)); }
+.viz .f8 { fill: var(--k8); } .viz .s8 { stroke: var(--k8); fill: none; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; } .viz .l8 { fill: color-mix(in srgb, var(--k8) 20%, var(--surface)); } .viz .ll8 { fill: color-mix(in srgb, var(--k8) 10%, var(--surface)); } .viz .tx8 { fill: color-mix(in srgb, var(--k8) 70%, var(--ink)); }
+.viz .ft { fill: var(--t); } .viz .st-t { stroke: var(--t); fill: none; stroke-width: 2.2; } .viz .lt { fill: var(--t-soft2); } .viz .llt { fill: var(--t-soft); }
+.viz .hov { cursor: help; }
+.viz .hov:hover { opacity: 0.85; }
+
+/* plot hover */
+.ptip { position: absolute; left: 0; top: 0; pointer-events: none; background: var(--surface); border: 1px solid var(--line); border-radius: 4px; padding: 0.4rem 0.55rem; font-family: var(--sans); font-size: 0.8125rem; line-height: 1.45; color: var(--ink-2); box-shadow: 0 2px 10px rgba(0,0,0,.08); z-index: 3; white-space: nowrap; }
+.ptip b { color: var(--ink); font-variant-numeric: tabular-nums; }
+.ptip i { display: inline-block; width: 0.6rem; height: 0.6rem; border-radius: 50%; background: var(--c); margin-right: 0.35rem; vertical-align: -0.02rem; }
+figure.viz { position: relative; }
+
+/* track tab bar */
+.tabs { border-bottom: 1px solid var(--line); background: var(--bg); position: sticky; top: calc(env(safe-area-inset-top, 0px) + 3.5rem); z-index: 15; }
+.tabs .wrap { display: flex; align-items: stretch; gap: 0.25rem; overflow-x: auto; scrollbar-width: thin; }
+.tabs .trk { flex: none; display: inline-flex; align-items: center; gap: 0.45rem; padding: 0.65rem 0.9rem 0.65rem 0; margin-right: 0.4rem; border-right: 1px solid var(--line); font-family: var(--sans); font-size: 0.8125rem; font-weight: 700; color: var(--t-deep); text-decoration: none; white-space: nowrap; }
+.tabs .trk::before { content: ""; width: 0.6rem; height: 0.6rem; border-radius: 50%; background: var(--t); }
+.tabs a.tab { flex: none; display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.65rem 0.75rem; font-family: var(--sans); font-size: 0.875rem; color: var(--ink-2); text-decoration: none; white-space: nowrap; border-bottom: 3px solid transparent; }
+.tabs a.tab .n { font-size: 0.75rem; color: var(--muted); font-variant-numeric: tabular-nums; }
+.tabs a.tab:hover { color: var(--ink); background: var(--t-soft); }
+.tabs a.tab[aria-current="page"] { color: var(--ink); font-weight: 600; border-bottom-color: var(--t); }
+@media (max-width: 880px) { .tabs { position: static; } }
+
+/* track landing cards */
+.tcards { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 17rem), 1fr)); gap: 1.1rem; list-style: none; margin: 1.5rem 0 0; padding: 0; }
+.tcards li { margin: 0; }
+.tcards a { display: flex; flex-direction: column; height: 100%; box-sizing: border-box; background: var(--surface); border: 1px solid var(--line); border-radius: 10px; overflow: hidden; text-decoration: none; color: var(--ink); transition: border-color .15s, transform .15s; }
+.tcards a:hover { border-color: var(--t); transform: translateY(-2px); }
+.tcards .art { background: var(--t-soft); border-bottom: 1px solid var(--line); padding: 0.6rem; }
+.tcards .art { height: 11.5rem; box-sizing: border-box; overflow: hidden; }
+.tcards .art svg { display: block; width: 100%; height: 100%; }
+.tcards .txt { padding: 0.85rem 1rem 1rem; display: flex; flex-direction: column; gap: 0.3rem; flex: 1; }
+.tcards .tg { align-self: flex-start; font-family: var(--sans); font-size: 0.6875rem; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; color: var(--ink); background: var(--t-soft2); border-radius: 999px; padding: 0.1rem 0.55rem; }
+.tcards b { font-family: var(--serif); font-size: 1.1875rem; font-weight: 600; line-height: 1.25; }
+.tcards span.d { font-size: 0.975rem; line-height: 1.45; color: var(--ink-2); }
+.tcards span.m { margin-top: auto; padding-top: 0.4rem; font-family: var(--sans); font-size: 0.75rem; color: var(--muted); }
+
+/* tutorial-to-tutorial chips */
+a.tchip { display: inline-flex; align-items: center; gap: 0.35rem; font-family: var(--sans); font-size: 0.8125rem; font-weight: 600; text-decoration: none; color: var(--ink); background: color-mix(in srgb, var(--c) 16%, var(--surface)); border-radius: 999px; padding: 0.12rem 0.6rem 0.12rem 0.45rem; white-space: nowrap; }
+a.tchip::before { content: ""; width: 0.55rem; height: 0.55rem; border-radius: 50%; background: var(--c); }
+a.tchip:hover { color: var(--accent); }
+
+/* takeaways in colour */
+.takeaways { border-top-color: var(--t); }
+.takeaways ul { list-style: none; padding-left: 0; }
+.takeaways li { position: relative; padding-left: 1.6rem; }
+.takeaways li::before { content: ""; position: absolute; left: 0.1rem; top: 0.55em; width: 0.7rem; height: 0.7rem; border-radius: 3px; background: var(--t); }
+details.qa summary::marker { color: var(--t); }
+.prevnext a:hover { border-color: var(--t); }
+
+.hubtrack { --t-soft: color-mix(in srgb, var(--t) 11%, var(--surface)); --t-soft2: color-mix(in srgb, var(--t) 22%, var(--surface)); }
+.hubtrack { border-top: 1px solid var(--line); padding: 2.25rem 0 0.5rem; }
+.hubtrack .hub-h { display: flex; gap: 1rem; align-items: flex-start; }
+.hubtrack .hub-h .num { flex: none; display: grid; place-items: center; width: 2.4rem; height: 2.4rem; border-radius: 50%; background: var(--t); color: #fff; font-family: var(--sans); font-weight: 700; }
+.hubtrack h2 { margin: 0 0 0.3rem; font-size: 1.75rem; }
+.hubtrack h2 a { color: var(--ink); text-decoration: none; }
+.hubtrack h2 a:hover { color: var(--accent); }
+.hubtrack .hub-h p { margin: 0; color: var(--ink-2); max-width: 62ch; }
+</style>
 </head>
-<body>
+<body class="t-found">
 <a class="skip" href="#main">Skip to content</a>
 
 <header class="site-header">
@@ -642,24 +844,25 @@ ol.refs a { font-family: var(--sans); font-size: 0.8125rem; white-space: nowrap;
     </nav>
   </div>
 </header>
+<div class="t-band" aria-hidden="true" style="background: linear-gradient(90deg, var(--k3), var(--k1), var(--k2));"></div>
 <main id="main">
-  <div class="wrap page-head">
-    <h1>Tutorials</h1>
-    <p class="lede">Short introductions to the physical-layer ideas behind 6G, written for students and engineers new to the area.</p>
-    <ul class="meta-row"><li>8 tutorials</li><li>Equations, diagrams and interactive models</li><li>Self-check questions in each</li></ul>
+  <div class="wrap page-head hero2">
+    <div>
+      <h1>Wireless tutorials</h1>
+      <p class="lede">Picture-first introductions to how wireless works and where 6G is going, in three tracks: foundations, 6G technologies and the tools researchers use.</p>
+      <ul class="meta-row"><li class="pill">19 tutorials</li><li>Diagrams, photos and interactive models</li><li>Self-checks and links to go further</li></ul>
+    </div>
+    <figure class="hero-art viz"><svg viewBox="0 0 420 210" role="img" aria-label="The three tutorial tracks: foundations, 6G technologies and tools." class="" xmlns="http://www.w3.org/2000/svg"><rect x="20.0" y="30.0" width="120.0" height="150.0" rx="12" class="l3"/><rect x="20.0" y="30.0" width="120.0" height="6.0" rx="3" class="f3"/><text x="80.0" y="200.0" text-anchor="middle" class="s b">Foundations</text><rect x="155.0" y="30.0" width="120.0" height="150.0" rx="12" class="l1"/><rect x="155.0" y="30.0" width="120.0" height="6.0" rx="3" class="f1"/><text x="215.0" y="200.0" text-anchor="middle" class="s b">6G technologies</text><rect x="290.0" y="30.0" width="120.0" height="150.0" rx="12" class="l2"/><rect x="290.0" y="30.0" width="120.0" height="6.0" rx="3" class="f2"/><text x="350.0" y="200.0" text-anchor="middle" class="s b">Tools</text><g transform="translate(80.0,160.0)"><g transform="translate(0.0,0.0) scale(0.9)"><path d="M-14 0 L-3 -62 L3 -62 L14 0" class="st" style="stroke-width:2"/><path d="M-11 -16 L9 -30 M11 -16 L-9 -30 M-8 -34 L6 -46 M8 -34 L-6 -46 M-5 -50 L4 -58 M5 -50 L-4 -58" class="st-m"/><rect x="-9" y="-74" width="5" height="16" rx="1.5" class="f3"/><rect x="4" y="-74" width="5" height="16" rx="1.5" class="f3"/><rect x="-2.5" y="-77" width="5" height="17" rx="1.5" class="f3"/><path d="M15.2 -75.4 A9 9 0 0 1 18.7 -65.7" class="s3" style="stroke-width:2;opacity:1.00"/><path d="M19.2 -81.1 A16 16 0 0 1 25.5 -63.9" class="s3" style="stroke-width:2;opacity:0.78"/><path d="M23.2 -86.8 A23 23 0 0 1 32.2 -62.0" class="s3" style="stroke-width:2;opacity:0.56"/><path d="M-18.7 -65.7 A9 9 0 0 1 -15.2 -75.4" class="s3" style="stroke-width:2;opacity:1.00"/><path d="M-25.5 -63.9 A16 16 0 0 1 -19.2 -81.1" class="s3" style="stroke-width:2;opacity:0.78"/><path d="M-32.2 -62.0 A23 23 0 0 1 -23.2 -86.8" class="s3" style="stroke-width:2;opacity:0.56"/></g></g><g transform="translate(190.0,70.0)"><g transform="translate(0.0,0.0)"><rect x="0" y="0" width="50" height="70" rx="2" class="ink"/><rect x="3.3" y="3.3" width="7.4" height="7.7" rx="0.8" class="l1"/><rect x="3.3" y="12.6" width="7.4" height="7.7" rx="0.8" class="l1"/><rect x="4.5" y="13.8" width="5.0" height="5.3" rx="0.6" class="f1" opacity="0.55"/><rect x="3.3" y="21.9" width="7.4" height="7.7" rx="0.8" class="f1"/><rect x="3.3" y="31.2" width="7.4" height="7.7" rx="0.8" class="l1"/><rect x="3.3" y="40.4" width="7.4" height="7.7" rx="0.8" class="l1"/><rect x="4.5" y="41.6" width="5.0" height="5.3" rx="0.6" class="f1" opacity="0.55"/><rect x="3.3" y="49.7" width="7.4" height="7.7" rx="0.8" class="f1"/><rect x="3.3" y="59.0" width="7.4" height="7.7" rx="0.8" class="l1"/><rect x="12.3" y="3.3" width="7.4" height="7.7" rx="0.8" class="l1"/><rect x="13.5" y="4.5" width="5.0" height="5.3" rx="0.6" class="f1" opacity="0.55"/><rect x="12.3" y="12.6" width="7.4" height="7.7" rx="0.8" class="f1"/><rect x="12.3" y="21.9" width="7.4" height="7.7" rx="0.8" class="l1"/><rect x="12.3" y="31.2" width="7.4" height="7.7" rx="0.8" class="l1"/><rect x="13.5" y="32.4" width="5.0" height="5.3" rx="0.6" class="f1" opacity="0.55"/><rect x="12.3" y="40.4" width="7.4" height="7.7" rx="0.8" class="f1"/><rect x="12.3" y="49.7" width="7.4" height="7.7" rx="0.8" class="l1"/><rect x="12.3" y="59.0" width="7.4" height="7.7" rx="0.8" class="l1"/><rect x="13.5" y="60.2" width="5.0" height="5.3" rx="0.6" class="f1" opacity="0.55"/><rect x="21.3" y="3.3" width="7.4" height="7.7" rx="0.8" class="f1"/><rect x="21.3" y="12.6" width="7.4" height="7.7" rx="0.8" class="l1"/><rect x="21.3" y="21.9" width="7.4" height="7.7" rx="0.8" class="l1"/><rect x="22.5" y="23.1" width="5.0" height="5.3" rx="0.6" class="f1" opacity="0.55"/><rect x="21.3" y="31.2" width="7.4" height="7.7" rx="0.8" class="f1"/><rect x="21.3" y="40.4" width="7.4" height="7.7" rx="0.8" class="l1"/><rect x="21.3" y="49.7" width="7.4" height="7.7" rx="0.8" class="l1"/><rect x="22.5" y="50.9" width="5.0" height="5.3" rx="0.6" class="f1" opacity="0.55"/><rect x="21.3" y="59.0" width="7.4" height="7.7" rx="0.8" class="f1"/><rect x="30.3" y="3.3" width="7.4" height="7.7" rx="0.8" class="l1"/><rect x="30.3" y="12.6" width="7.4" height="7.7" rx="0.8" class="l1"/><rect x="31.5" y="13.8" width="5.0" height="5.3" rx="0.6" class="f1" opacity="0.55"/><rect x="30.3" y="21.9" width="7.4" height="7.7" rx="0.8" class="f1"/><rect x="30.3" y="31.2" width="7.4" height="7.7" rx="0.8" class="l1"/><rect x="30.3" y="40.4" width="7.4" height="7.7" rx="0.8" class="l1"/><rect x="31.5" y="41.6" width="5.0" height="5.3" rx="0.6" class="f1" opacity="0.55"/><rect x="30.3" y="49.7" width="7.4" height="7.7" rx="0.8" class="f1"/><rect x="30.3" y="59.0" width="7.4" height="7.7" rx="0.8" class="l1"/><rect x="39.3" y="3.3" width="7.4" height="7.7" rx="0.8" class="l1"/><rect x="40.5" y="4.5" width="5.0" height="5.3" rx="0.6" class="f1" opacity="0.55"/><rect x="39.3" y="12.6" width="7.4" height="7.7" rx="0.8" class="f1"/><rect x="39.3" y="21.9" width="7.4" height="7.7" rx="0.8" class="l1"/><rect x="39.3" y="31.2" width="7.4" height="7.7" rx="0.8" class="l1"/><rect x="40.5" y="32.4" width="5.0" height="5.3" rx="0.6" class="f1" opacity="0.55"/><rect x="39.3" y="40.4" width="7.4" height="7.7" rx="0.8" class="f1"/><rect x="39.3" y="49.7" width="7.4" height="7.7" rx="0.8" class="l1"/><rect x="39.3" y="59.0" width="7.4" height="7.7" rx="0.8" class="l1"/><rect x="40.5" y="60.2" width="5.0" height="5.3" rx="0.6" class="f1" opacity="0.55"/></g></g><g transform="translate(310.0,80.0)"><path d="M0 60 L20 30 L40 45 L60 10 L80 20" class="s2" style="stroke-width:3"/></g></svg></figure>
   </div>
   <div class="wrap" style="padding-bottom: clamp(3rem, 8vw, 5rem)">
-    <ol class="hub-list">
-      <li class="hub-item"><a href="6g.html"><span class="no">1</span><span class="nm">6G networks</span><span class="mt">Start here, 10 min</span><span class="sm">What 6G is meant to deliver, how its targets compare with 5G, and where standardisation stands.</span><span class="dm">Includes a side-by-side table of 5G and 6G targets</span></a></li>
-      <li class="hub-item"><a href="ris.html"><span class="no">2</span><span class="nm">Reconfigurable intelligent surfaces</span><span class="mt">Introductory, 15 min</span><span class="sm">Panels of passive elements that reflect with controllable phase, so the network can shape the channel itself.</span><span class="dm">Interactive model: Steer a reflected beam</span></a></li>
-      <li class="hub-item"><a href="noma.html"><span class="no">3</span><span class="nm">Non-orthogonal multiple access</span><span class="mt">Introductory, 14 min</span><span class="sm">Several users share one time slot and band, separated by power and successive interference cancellation.</span><span class="dm">Interactive model: Compare NOMA and TDMA rate regions</span></a></li>
-      <li class="hub-item"><a href="isac.html"><span class="no">4</span><span class="nm">Integrated sensing and communication</span><span class="mt">Introductory, 13 min</span><span class="sm">One radio, one band and often one signal that both carries data and senses the surroundings.</span><span class="dm">Interactive model: Resolve two targets</span></a></li>
-      <li class="hub-item"><a href="v2x.html"><span class="no">5</span><span class="nm">Vehicular communications</span><span class="mt">Introductory, 12 min</span><span class="sm">V2V, V2I, V2P and V2N links, and why speed makes the channel change within a millisecond.</span><span class="dm">Interactive model: See Doppler fading</span></a></li>
-      <li class="hub-item"><a href="fluid-antennas.html"><span class="no">6</span><span class="nm">Fluid antenna systems</span><span class="mt">Intermediate, 13 min</span><span class="sm">Antennas that switch position within a few wavelengths to find a strong spot in the fading pattern.</span><span class="dm">Interactive model: Pick the best port</span></a></li>
-      <li class="hub-item"><a href="hardware-impairments.html"><span class="no">7</span><span class="nm">Hardware impairments</span><span class="mt">Intermediate, 14 min</span><span class="sm">Why distortion that grows with the signal puts a ceiling on every link, and what it means for RIS and NOMA.</span><span class="dm">Interactive model: Find the capacity ceiling</span></a></li>
-      <li class="hub-item"><a href="optimization.html"><span class="no">8</span><span class="nm">Optimization for wireless networks</span><span class="mt">Intermediate, 16 min</span><span class="sm">How networks choose powers, beams and phases: convex problems, duality, and the methods used when problems are not convex.</span><span class="dm">Interactive model: Watch SCA climb, and get stuck</span></a></li>
-    </ol>
-    <p class="hub-note">The order suggests a reading path, but each tutorial stands on its own. Corrections and suggestions are welcome at h.shaikh@qub.ac.uk.</p>
+    <section class="t-found hubtrack" style="--t:var(--k3)">
+      <div class="hub-h"><span class="num">1</span><div><h2><a href="foundations.html">Wireless foundations</a></h2><p>How a wireless link works, from bits to antennas: the communication model, propagation, link budgets, antennas, the metrics everyone uses, and what real hardware does.</p></div></div>
+      <ul class="tcards"><li><a href="communication-model.html"><div class="art viz"><svg viewBox="0 0 450 200" role="img" aria-label="Bits enter a transmitter, travel as radio waves through noise and come out of a phone as the same bits." class="" xmlns="http://www.w3.org/2000/svg"><text x="14.0" y="112.0" class="b tx7" style="font-size:18px;letter-spacing:2px">0 1 1 0</text><defs><marker id="ah12" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" class="f7"/></marker></defs><line x1="84.0" y1="106.0" x2="118.0" y2="106.0" class="s7" style="stroke-width:2.2" marker-end="url(#ah12)"/><g transform="translate(150.0,190.0) scale(1.15)"><path d="M-14 0 L-3 -62 L3 -62 L14 0" class="st" style="stroke-width:2"/><path d="M-11 -16 L9 -30 M11 -16 L-9 -30 M-8 -34 L6 -46 M8 -34 L-6 -46 M-5 -50 L4 -58 M5 -50 L-4 -58" class="st-m"/><rect x="-9" y="-74" width="5" height="16" rx="1.5" class="f1"/><rect x="4" y="-74" width="5" height="16" rx="1.5" class="f1"/><rect x="-2.5" y="-77" width="5" height="17" rx="1.5" class="f1"/></g><path d="M176.4 102.0 A12 12 0 0 1 176.4 114.0" class="s1" style="stroke-width:2.6;opacity:1.00"/><path d="M187.7 95.5 A25 25 0 0 1 187.7 120.5" class="s1" style="stroke-width:2.6;opacity:0.78"/><path d="M198.9 89.0 A38 38 0 0 1 198.9 127.0" class="s1" style="stroke-width:2.6;opacity:0.56"/><path d="M210.2 82.5 A51 51 0 0 1 210.2 133.5" class="s1" style="stroke-width:2.6;opacity:0.34"/><circle cx="231.7" cy="113.5" r="2.2" class="f2" opacity="0.70"/><circle cx="258.8" cy="75.2" r="1.6" class="f2" opacity="0.82"/><circle cx="233.2" cy="88.7" r="3.2" class="f2" opacity="0.64"/><circle cx="273.6" cy="108.1" r="2.6" class="f2" opacity="0.48"/><circle cx="259.4" cy="139.4" r="2.4" class="f2" opacity="0.77"/><circle cx="262.0" cy="75.1" r="2.8" class="f2" opacity="0.70"/><circle cx="236.1" cy="72.5" r="3.0" class="f2" opacity="0.64"/><circle cx="265.3" cy="140.3" r="2.7" class="f2" opacity="0.86"/><circle cx="242.6" cy="134.1" r="2.3" class="f2" opacity="0.87"/><circle cx="276.5" cy="77.8" r="1.8" class="f2" opacity="0.51"/><circle cx="282.6" cy="104.9" r="2.6" class="f2" opacity="0.55"/><circle cx="250.5" cy="100.9" r="2.2" class="f2" opacity="0.69"/><circle cx="255.9" cy="142.3" r="2.7" class="f2" opacity="0.86"/><circle cx="274.9" cy="149.3" r="2.7" class="f2" opacity="0.48"/><circle cx="275.2" cy="147.2" r="3.0" class="f2" opacity="0.68"/><circle cx="265.0" cy="86.9" r="2.9" class="f2" opacity="0.69"/><circle cx="234.9" cy="75.1" r="3.0" class="f2" opacity="0.89"/><circle cx="221.2" cy="134.0" r="2.3" class="f2" opacity="0.48"/><text x="250.0" y="168.0" text-anchor="middle" class="s tx2">noise</text><path d="M285.6 114.0 A12 12 0 0 1 285.6 102.0" class="s1" style="stroke-width:2.2;opacity:1.00"/><path d="M276.9 119.0 A22 22 0 0 1 276.9 97.0" class="s1" style="stroke-width:2.2;opacity:0.78"/><path d="M268.3 124.0 A32 32 0 0 1 268.3 92.0" class="s1" style="stroke-width:2.2;opacity:0.56"/><g transform="translate(322.0,128.0) scale(1.5)"><rect x="-9" y="-30" width="18" height="30" rx="3.5" class="f1"/><rect x="-6.5" y="-26.5" width="13" height="21" rx="1.5" class="srf"/><circle cx="0" cy="-2.7" r="1.4" class="srf"/></g><defs><marker id="ah13" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" class="f7"/></marker></defs><line x1="342.0" y1="106.0" x2="368.0" y2="106.0" class="s7" style="stroke-width:2.2" marker-end="url(#ah13)"/><text x="372.0" y="112.0" class="b tx7" style="font-size:18px;letter-spacing:2px">0 1 1 0</text><line x1="100" y1="190" x2="200" y2="190" class="axis"/></svg></div><div class="txt"><span class="tg">1. Communication model</span><b>The communication model</b><span class="d">Every wireless link turns bits into a radio wave, sends it through a channel that distorts it and adds noise, and turns it back into bits.</span><span class="m">9 min · model: Noisy constellations</span></div></a></li><li><a href="propagation.html"><div class="art viz"><svg viewBox="0 0 440 250" role="img" aria-label="A base station reaches a person through a direct path, a ground reflection, a path diffracted over a roof and a path scattered by a tree." class="" xmlns="http://www.w3.org/2000/svg"><line x1="10" y1="230" x2="430" y2="230" class="axis"/><g transform="translate(46.0,230.0) scale(1.1)"><path d="M-14 0 L-3 -62 L3 -62 L14 0" class="st" style="stroke-width:2"/><path d="M-11 -16 L9 -30 M11 -16 L-9 -30 M-8 -34 L6 -46 M8 -34 L-6 -46 M-5 -50 L4 -58 M5 -50 L-4 -58" class="st-m"/><rect x="-9" y="-74" width="5" height="16" rx="1.5" class="f7"/><rect x="4" y="-74" width="5" height="16" rx="1.5" class="f7"/><rect x="-2.5" y="-77" width="5" height="17" rx="1.5" class="f7"/></g><g transform="translate(170.0,230.0)"><rect x="0" y="-150" width="74" height="150" rx="2" class="l4"/><rect x="0" y="-150" width="74" height="150" rx="2" class="st-m"/><rect x="7.6" y="-140" width="9" height="8" rx="1" class="srf"/><rect x="24.2" y="-140" width="9" height="8" rx="1" class="srf"/><rect x="40.8" y="-140" width="9" height="8" rx="1" class="srf"/><rect x="57.4" y="-140" width="9" height="8" rx="1" class="srf"/><rect x="7.6" y="-124" width="9" height="8" rx="1" class="srf"/><rect x="24.2" y="-124" width="9" height="8" rx="1" class="srf"/><rect x="40.8" y="-124" width="9" height="8" rx="1" class="srf"/><rect x="57.4" y="-124" width="9" height="8" rx="1" class="srf"/><rect x="7.6" y="-108" width="9" height="8" rx="1" class="srf"/><rect x="24.2" y="-108" width="9" height="8" rx="1" class="srf"/><rect x="40.8" y="-108" width="9" height="8" rx="1" class="srf"/><rect x="57.4" y="-108" width="9" height="8" rx="1" class="srf"/><rect x="7.6" y="-92" width="9" height="8" rx="1" class="srf"/><rect x="24.2" y="-92" width="9" height="8" rx="1" class="srf"/><rect x="40.8" y="-92" width="9" height="8" rx="1" class="srf"/><rect x="57.4" y="-92" width="9" height="8" rx="1" class="srf"/><rect x="7.6" y="-76" width="9" height="8" rx="1" class="srf"/><rect x="24.2" y="-76" width="9" height="8" rx="1" class="srf"/><rect x="40.8" y="-76" width="9" height="8" rx="1" class="srf"/><rect x="57.4" y="-76" width="9" height="8" rx="1" class="srf"/><rect x="7.6" y="-60" width="9" height="8" rx="1" class="srf"/><rect x="24.2" y="-60" width="9" height="8" rx="1" class="srf"/><rect x="40.8" y="-60" width="9" height="8" rx="1" class="srf"/><rect x="57.4" y="-60" width="9" height="8" rx="1" class="srf"/><rect x="7.6" y="-44" width="9" height="8" rx="1" class="srf"/><rect x="24.2" y="-44" width="9" height="8" rx="1" class="srf"/><rect x="40.8" y="-44" width="9" height="8" rx="1" class="srf"/><rect x="57.4" y="-44" width="9" height="8" rx="1" class="srf"/><rect x="7.6" y="-28" width="9" height="8" rx="1" class="srf"/><rect x="24.2" y="-28" width="9" height="8" rx="1" class="srf"/><rect x="40.8" y="-28" width="9" height="8" rx="1" class="srf"/><rect x="57.4" y="-28" width="9" height="8" rx="1" class="srf"/></g><g transform="translate(330.0,230.0) scale(1.25)"><rect x="-2.5" y="-14" width="5" height="14" class="mut"/><circle cx="0" cy="-24" r="12" class="l6"/><circle cx="0" cy="-24" r="12" class="s6" style="stroke-width:1.4"/></g><g transform="translate(390.0,230.0)"><circle cx="0" cy="-33" r="6" class="f1"/><path d="M-9 0 L-9 -16 Q-9 -25 0 -25 Q9 -25 9 -16 L9 0 Z" class="f1"/></g><g transform="translate(404.0,206.0) scale(0.6)"><rect x="-9" y="-30" width="18" height="30" rx="3.5" class="f1"/><rect x="-6.5" y="-26.5" width="13" height="21" rx="1.5" class="srf"/><circle cx="0" cy="-2.7" r="1.4" class="srf"/></g><defs><marker id="ah25" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" class="f1"/></marker></defs><line x1="52.0" y1="150.0" x2="394.0" y2="196.0" class="s1" style="stroke-width:2.4" marker-end="url(#ah25)"/><path d="M52 150 L206.0 229 L392 202" class="s2" style="stroke-width:2.2" /><path d="M52 150 L208 78 Q300 110 394 192" class="s7 dash" style="stroke-width:2.2"/><path d="M52 150 L330 200" class="s3" style="stroke-width:2"/><path d="M330 200 L392 198" class="s3" style="stroke-width:2"/><line x1="330.0" y1="200.0" x2="342.3" y2="189.7" class="s3" style="stroke-width:1.4"/><line x1="330.0" y1="200.0" x2="345.8" y2="197.2" class="s3" style="stroke-width:1.4"/><line x1="330.0" y1="200.0" x2="345.0" y2="205.5" class="s3" style="stroke-width:1.4"/><line x1="330.0" y1="200.0" x2="315.0" y2="194.5" class="s3" style="stroke-width:1.4"/><line x1="330.0" y1="200.0" x2="319.7" y2="187.7" class="s3" style="stroke-width:1.4"/><text x="150.0" y="142.0" class="b tx1">direct</text><text x="118.0" y="244.0" class="s b tx2">reflected off the ground</text><text x="224.0" y="68.0" class="s b tx7">diffracted over the roof</text><text x="354.0" y="176.0" class="s b tx3">scattered</text></svg></div><div class="txt"><span class="tg">2. Propagation</span><b>Wireless propagation</b><span class="d">Between two antennas, a radio wave spreads out, bounces, bends and scatters. The result is a channel that loses power with distance and fades as you move.</span><span class="m">10 min · model: Coverage explorer</span></div></a></li><li><a href="link-budget.html"><div class="art viz"><svg viewBox="0 0 420 250" role="img" aria-label="A small waterfall chart of a link budget." class="" xmlns="http://www.w3.org/2000/svg"><rect x="30.0" y="68.6" width="44.0" height="41.4" rx="4" class="f7"/><rect x="92.0" y="53.3" width="44.0" height="15.3" rx="4" class="f3"/><rect x="154.0" y="53.3" width="44.0" height="1.8" rx="4" class="f8"/><rect x="216.0" y="55.1" width="44.0" height="112.5" rx="4" class="f8"/><rect x="278.0" y="167.6" width="44.0" height="9.0" rx="4" class="f8"/><rect x="340.0" y="110.0" width="44.0" height="73.8" rx="4" class="f1"/><line x1="20.0" y1="110.0" x2="400.0" y2="110.0" class="axis"/></svg></div><div class="txt"><span class="tg">3. Link budget</span><b>Link budgets</b><span class="d">A link budget adds up every gain and loss between two radios to answer one question: will the signal arrive strong enough to beat the noise?</span><span class="m">8 min · model: Link budget calculator</span></div></a></li><li><a href="antennas.html"><div class="art viz"><svg viewBox="0 0 420 220" role="img" aria-label="An eight-element antenna array and its narrow beam." class="" xmlns="http://www.w3.org/2000/svg"><path d="M210.0 160.0 L210.0 160.0 L210.0 160.0 L210.0 160.0 L210.0 160.0 L210.0 160.0 L210.0 160.0 L210.0 160.0 L210.0 160.0 L210.0 160.0 L210.0 160.0 L210.0 160.0 L207.6 159.5 L202.4 158.2 L197.6 156.9 L193.3 155.5 L189.4 154.1 L185.9 152.6 L182.7 151.1 L179.8 149.6 L177.2 148.1 L175.0 146.6 L173.0 145.1 L171.3 143.6 L170.0 142.2 L168.9 140.8 L168.1 139.6 L167.6 138.4 L167.5 137.4 L167.6 136.5 L168.2 135.8 L169.1 135.4 L170.4 135.2 L172.2 135.4 L174.5 136.0 L177.4 137.2 L181.1 139.0 L185.9 141.8 L192.1 146.0 L200.8 152.5 L210.0 160.0 L210.0 160.0 L210.0 160.0 L209.8 159.9 L197.6 148.0 L189.9 139.9 L184.7 133.8 L181.0 128.9 L178.5 125.0 L177.0 122.0 L176.2 119.7 L176.0 118.1 L176.6 117.2 L177.8 117.2 L179.6 118.2 L182.2 120.4 L185.8 124.1 L190.6 130.1 L197.6 140.1 L209.5 159.2 L210.0 160.0 L208.6 157.5 L197.1 135.8 L191.2 123.0 L187.6 114.1 L185.5 107.5 L184.4 102.6 L184.1 99.0 L184.4 96.8 L185.3 95.8 L186.8 96.1 L188.7 98.2 L191.3 102.4 L194.7 109.8 L199.5 123.5 L209.1 156.6 L209.4 157.4 L200.1 117.2 L196.8 97.9 L195.4 84.8 L195.0 74.9 L195.3 67.1 L196.0 60.7 L197.2 55.4 L198.6 51.1 L200.2 47.6 L201.9 44.8 L203.9 42.7 L205.9 41.2 L207.9 40.3 L210.0 40.0 L212.1 40.3 L214.1 41.2 L216.1 42.7 L218.1 44.8 L219.8 47.6 L221.4 51.1 L222.8 55.4 L224.0 60.7 L224.7 67.1 L225.0 74.9 L224.6 84.8 L223.2 97.9 L219.9 117.2 L210.6 157.4 L210.9 156.6 L220.5 123.5 L225.3 109.8 L228.7 102.4 L231.3 98.2 L233.2 96.1 L234.7 95.8 L235.6 96.8 L235.9 99.0 L235.6 102.6 L234.5 107.5 L232.4 114.1 L228.8 123.0 L222.9 135.8 L211.4 157.5 L210.0 160.0 L210.5 159.2 L222.4 140.1 L229.4 130.1 L234.2 124.1 L237.8 120.4 L240.4 118.2 L242.2 117.2 L243.4 117.2 L244.0 118.1 L243.8 119.7 L243.0 122.0 L241.5 125.0 L239.0 128.9 L235.3 133.8 L230.1 139.9 L222.4 148.0 L210.2 159.9 L210.0 160.0 L210.0 160.0 L210.0 160.0 L219.2 152.5 L227.9 146.0 L234.1 141.8 L238.9 139.0 L242.6 137.2 L245.5 136.0 L247.8 135.4 L249.6 135.2 L250.9 135.4 L251.8 135.8 L252.4 136.5 L252.5 137.4 L252.4 138.4 L251.9 139.6 L251.1 140.8 L250.0 142.2 L248.7 143.6 L247.0 145.1 L245.0 146.6 L242.8 148.1 L240.2 149.6 L237.3 151.1 L234.1 152.6 L230.6 154.1 L226.7 155.5 L222.4 156.9 L217.6 158.2 L212.4 159.5 L210.0 160.0 L210.0 160.0 L210.0 160.0 L210.0 160.0 L210.0 160.0 L210.0 160.0 L210.0 160.0 L210.0 160.0 L210.0 160.0 L210.0 160.0 L210.0 160.0 L210.0 160.0 Z" class="l8"/><path d="M210.0 160.0 L210.0 160.0 L210.0 160.0 L210.0 160.0 L210.0 160.0 L210.0 160.0 L210.0 160.0 L210.0 160.0 L210.0 160.0 L210.0 160.0 L210.0 160.0 L210.0 160.0 L207.6 159.5 L202.4 158.2 L197.6 156.9 L193.3 155.5 L189.4 154.1 L185.9 152.6 L182.7 151.1 L179.8 149.6 L177.2 148.1 L175.0 146.6 L173.0 145.1 L171.3 143.6 L170.0 142.2 L168.9 140.8 L168.1 139.6 L167.6 138.4 L167.5 137.4 L167.6 136.5 L168.2 135.8 L169.1 135.4 L170.4 135.2 L172.2 135.4 L174.5 136.0 L177.4 137.2 L181.1 139.0 L185.9 141.8 L192.1 146.0 L200.8 152.5 L210.0 160.0 L210.0 160.0 L210.0 160.0 L209.8 159.9 L197.6 148.0 L189.9 139.9 L184.7 133.8 L181.0 128.9 L178.5 125.0 L177.0 122.0 L176.2 119.7 L176.0 118.1 L176.6 117.2 L177.8 117.2 L179.6 118.2 L182.2 120.4 L185.8 124.1 L190.6 130.1 L197.6 140.1 L209.5 159.2 L210.0 160.0 L208.6 157.5 L197.1 135.8 L191.2 123.0 L187.6 114.1 L185.5 107.5 L184.4 102.6 L184.1 99.0 L184.4 96.8 L185.3 95.8 L186.8 96.1 L188.7 98.2 L191.3 102.4 L194.7 109.8 L199.5 123.5 L209.1 156.6 L209.4 157.4 L200.1 117.2 L196.8 97.9 L195.4 84.8 L195.0 74.9 L195.3 67.1 L196.0 60.7 L197.2 55.4 L198.6 51.1 L200.2 47.6 L201.9 44.8 L203.9 42.7 L205.9 41.2 L207.9 40.3 L210.0 40.0 L212.1 40.3 L214.1 41.2 L216.1 42.7 L218.1 44.8 L219.8 47.6 L221.4 51.1 L222.8 55.4 L224.0 60.7 L224.7 67.1 L225.0 74.9 L224.6 84.8 L223.2 97.9 L219.9 117.2 L210.6 157.4 L210.9 156.6 L220.5 123.5 L225.3 109.8 L228.7 102.4 L231.3 98.2 L233.2 96.1 L234.7 95.8 L235.6 96.8 L235.9 99.0 L235.6 102.6 L234.5 107.5 L232.4 114.1 L228.8 123.0 L222.9 135.8 L211.4 157.5 L210.0 160.0 L210.5 159.2 L222.4 140.1 L229.4 130.1 L234.2 124.1 L237.8 120.4 L240.4 118.2 L242.2 117.2 L243.4 117.2 L244.0 118.1 L243.8 119.7 L243.0 122.0 L241.5 125.0 L239.0 128.9 L235.3 133.8 L230.1 139.9 L222.4 148.0 L210.2 159.9 L210.0 160.0 L210.0 160.0 L210.0 160.0 L219.2 152.5 L227.9 146.0 L234.1 141.8 L238.9 139.0 L242.6 137.2 L245.5 136.0 L247.8 135.4 L249.6 135.2 L250.9 135.4 L251.8 135.8 L252.4 136.5 L252.5 137.4 L252.4 138.4 L251.9 139.6 L251.1 140.8 L250.0 142.2 L248.7 143.6 L247.0 145.1 L245.0 146.6 L242.8 148.1 L240.2 149.6 L237.3 151.1 L234.1 152.6 L230.6 154.1 L226.7 155.5 L222.4 156.9 L217.6 158.2 L212.4 159.5 L210.0 160.0 L210.0 160.0 L210.0 160.0 L210.0 160.0 L210.0 160.0 L210.0 160.0 L210.0 160.0 L210.0 160.0 L210.0 160.0 L210.0 160.0 L210.0 160.0 L210.0 160.0 Z" class="s8"/><rect x="140.0" y="164.0" width="12.0" height="12.0" rx="2" class="f8"/><rect x="158.0" y="164.0" width="12.0" height="12.0" rx="2" class="f8"/><rect x="176.0" y="164.0" width="12.0" height="12.0" rx="2" class="f8"/><rect x="194.0" y="164.0" width="12.0" height="12.0" rx="2" class="f8"/><rect x="212.0" y="164.0" width="12.0" height="12.0" rx="2" class="f8"/><rect x="230.0" y="164.0" width="12.0" height="12.0" rx="2" class="f8"/><rect x="248.0" y="164.0" width="12.0" height="12.0" rx="2" class="f8"/><rect x="266.0" y="164.0" width="12.0" height="12.0" rx="2" class="f8"/><line x1="130.0" y1="182.0" x2="290.0" y2="182.0" class="axis"/><text x="210.0" y="204.0" text-anchor="middle" class="s">8 elements, half a wavelength apart</text></svg></div><div class="txt"><span class="tg">4. Antennas</span><b>Antennas</b><span class="d">Antennas turn currents into radio waves and decide where the energy goes. Put many together and you can steer a beam without moving anything.</span><span class="m">9 min · model: Steer an array</span></div></a></li><li><a href="metrics.html"><div class="art viz"><svg viewBox="0 0 420 160" role="img" aria-label="Four gauges for SINR, rate, outage and energy efficiency." class="" xmlns="http://www.w3.org/2000/svg"><path d="M22 110 A38 38 0 0 1 98 110" class="l1" style="stroke:none"/><path d="M22 110 A38 38 0 0 1 98 110" class="st-l" style="stroke-width:10;stroke:color-mix(in srgb, var(--k1) 18%, var(--surface))"/><path d="M22 110 A38 38 0 0 1 84.2 80.7" class="s1" style="stroke-width:10"/><text x="60.0" y="136.0" text-anchor="middle" class="b">SINR</text><path d="M122 110 A38 38 0 0 1 198 110" class="l3" style="stroke:none"/><path d="M122 110 A38 38 0 0 1 198 110" class="st-l" style="stroke-width:10;stroke:color-mix(in srgb, var(--k3) 18%, var(--surface))"/><path d="M122 110 A38 38 0 0 1 165.9 72.5" class="s3" style="stroke-width:10"/><text x="160.0" y="136.0" text-anchor="middle" class="b">Rate</text><path d="M222 110 A38 38 0 0 1 298 110" class="l8" style="stroke:none"/><path d="M222 110 A38 38 0 0 1 298 110" class="st-l" style="stroke-width:10;stroke:color-mix(in srgb, var(--k8) 18%, var(--surface))"/><path d="M222 110 A38 38 0 0 1 233.1 83.1" class="s8" style="stroke-width:10"/><text x="260.0" y="136.0" text-anchor="middle" class="b">Outage</text><path d="M322 110 A38 38 0 0 1 398 110" class="l6" style="stroke:none"/><path d="M322 110 A38 38 0 0 1 398 110" class="st-l" style="stroke-width:10;stroke:color-mix(in srgb, var(--k6) 18%, var(--surface))"/><path d="M322 110 A38 38 0 0 1 374.0 74.7" class="s6" style="stroke-width:10"/><text x="360.0" y="136.0" text-anchor="middle" class="b">bit/J</text></svg></div><div class="txt"><span class="tg">5. Performance metrics</span><b>Performance metrics</b><span class="d">SNR, SINR, BLER, spectral efficiency, outage, bits per joule: the measures that papers, standards and engineers use to say whether a wireless system is any good.</span><span class="m">8 min · model: Outage explorer</span></div></a></li><li><a href="hardware-impairments.html"><div class="art viz"><svg viewBox="0 0 420 200" role="img" aria-label="A power amplifier and the distorted constellation it produces." class="" xmlns="http://www.w3.org/2000/svg"><rect x="20.0" y="70.0" width="100.0" height="50.0" rx="8" class="l8"/><rect x="20.0" y="70.0" width="100.0" height="50.0" rx="8" class="s8" style="stroke-width:1.4"/><text x="70.0" y="92.0" text-anchor="middle" class="b">Power</text><text x="70.0" y="108.0" text-anchor="middle" class="b">amplifier</text><defs><marker id="ah50" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" class="ink"/></marker></defs><line x1="122.0" y1="95.0" x2="168.0" y2="95.0" class="st" style="stroke-width:2.2" marker-end="url(#ah50)"/><circle cx="212.4" cy="164.8" r="2.0" class="f8" opacity="0.75"/><circle cx="197.1" cy="151.5" r="2.0" class="f8" opacity="0.75"/><circle cx="202.2" cy="156.6" r="2.0" class="f8" opacity="0.75"/><circle cx="200.9" cy="155.5" r="2.0" class="f8" opacity="0.75"/><circle cx="204.4" cy="158.6" r="2.0" class="f8" opacity="0.75"/><circle cx="193.9" cy="147.7" r="2.0" class="f8" opacity="0.75"/><circle cx="198.3" cy="152.8" r="2.0" class="f8" opacity="0.75"/><circle cx="196.8" cy="151.1" r="2.0" class="f8" opacity="0.75"/><circle cx="195.3" cy="149.4" r="2.0" class="f8" opacity="0.75"/><circle cx="196.3" cy="150.6" r="2.0" class="f8" opacity="0.75"/><circle cx="193.6" cy="161.4" r="2.6" class="ink"/><circle cx="192.7" cy="114.4" r="2.0" class="f8" opacity="0.75"/><circle cx="193.1" cy="115.6" r="2.0" class="f8" opacity="0.75"/><circle cx="192.2" cy="112.3" r="2.0" class="f8" opacity="0.75"/><circle cx="194.4" cy="119.4" r="2.0" class="f8" opacity="0.75"/><circle cx="192.7" cy="114.2" r="2.0" class="f8" opacity="0.75"/><circle cx="190.2" cy="99.6" r="2.0" class="f8" opacity="0.75"/><circle cx="196.0" cy="123.4" r="2.0" class="f8" opacity="0.75"/><circle cx="192.9" cy="115.0" r="2.0" class="f8" opacity="0.75"/><circle cx="192.4" cy="113.1" r="2.0" class="f8" opacity="0.75"/><circle cx="194.1" cy="118.6" r="2.0" class="f8" opacity="0.75"/><circle cx="193.6" cy="117.1" r="2.6" class="ink"/><circle cx="193.2" cy="74.1" r="2.0" class="f8" opacity="0.75"/><circle cx="193.5" cy="73.1" r="2.0" class="f8" opacity="0.75"/><circle cx="195.3" cy="68.4" r="2.0" class="f8" opacity="0.75"/><circle cx="193.3" cy="73.9" r="2.0" class="f8" opacity="0.75"/><circle cx="196.8" cy="64.9" r="2.0" class="f8" opacity="0.75"/><circle cx="191.5" cy="80.7" r="2.0" class="f8" opacity="0.75"/><circle cx="196.2" cy="66.3" r="2.0" class="f8" opacity="0.75"/><circle cx="194.0" cy="71.8" r="2.0" class="f8" opacity="0.75"/><circle cx="193.6" cy="73.0" r="2.0" class="f8" opacity="0.75"/><circle cx="193.2" cy="74.0" r="2.0" class="f8" opacity="0.75"/><circle cx="193.6" cy="72.9" r="2.6" class="ink"/><circle cx="201.4" cy="34.1" r="2.0" class="f8" opacity="0.75"/><circle cx="198.0" cy="37.6" r="2.0" class="f8" opacity="0.75"/><circle cx="219.9" cy="20.6" r="2.0" class="f8" opacity="0.75"/><circle cx="201.4" cy="34.1" r="2.0" class="f8" opacity="0.75"/><circle cx="201.6" cy="33.9" r="2.0" class="f8" opacity="0.75"/><circle cx="203.0" cy="32.6" r="2.0" class="f8" opacity="0.75"/><circle cx="193.9" cy="42.3" r="2.0" class="f8" opacity="0.75"/><circle cx="205.8" cy="30.2" r="2.0" class="f8" opacity="0.75"/><circle cx="201.3" cy="34.2" r="2.0" class="f8" opacity="0.75"/><circle cx="211.4" cy="25.8" r="2.0" class="f8" opacity="0.75"/><circle cx="193.6" cy="28.6" r="2.6" class="ink"/><circle cx="238.6" cy="161.7" r="2.0" class="f8" opacity="0.75"/><circle cx="228.8" cy="157.6" r="2.0" class="f8" opacity="0.75"/><circle cx="229.0" cy="157.8" r="2.0" class="f8" opacity="0.75"/><circle cx="250.0" cy="164.3" r="2.0" class="f8" opacity="0.75"/><circle cx="240.9" cy="162.4" r="2.0" class="f8" opacity="0.75"/><circle cx="237.1" cy="161.2" r="2.0" class="f8" opacity="0.75"/><circle cx="238.1" cy="161.5" r="2.0" class="f8" opacity="0.75"/><circle cx="229.6" cy="158.1" r="2.0" class="f8" opacity="0.75"/><circle cx="231.6" cy="159.0" r="2.0" class="f8" opacity="0.75"/><circle cx="239.4" cy="161.9" r="2.0" class="f8" opacity="0.75"/><circle cx="237.9" cy="161.4" r="2.6" class="ink"/><circle cx="234.2" cy="112.8" r="2.0" class="f8" opacity="0.75"/><circle cx="238.1" cy="117.4" r="2.0" class="f8" opacity="0.75"/><circle cx="234.8" cy="113.6" r="2.0" class="f8" opacity="0.75"/><circle cx="237.8" cy="117.1" r="2.0" class="f8" opacity="0.75"/><circle cx="235.8" cy="114.8" r="2.0" class="f8" opacity="0.75"/><circle cx="241.0" cy="119.8" r="2.0" class="f8" opacity="0.75"/><circle cx="239.5" cy="118.7" r="2.0" class="f8" opacity="0.75"/><circle cx="236.7" cy="115.9" r="2.0" class="f8" opacity="0.75"/><circle cx="234.5" cy="113.2" r="2.0" class="f8" opacity="0.75"/><circle cx="236.3" cy="115.4" r="2.0" class="f8" opacity="0.75"/><circle cx="237.9" cy="117.1" r="2.6" class="ink"/><circle cx="238.2" cy="72.5" r="2.0" class="f8" opacity="0.75"/><circle cx="240.0" cy="70.9" r="2.0" class="f8" opacity="0.75"/><circle cx="237.6" cy="73.1" r="2.0" class="f8" opacity="0.75"/><circle cx="236.4" cy="74.5" r="2.0" class="f8" opacity="0.75"/><circle cx="238.2" cy="72.5" r="2.0" class="f8" opacity="0.75"/><circle cx="238.9" cy="71.9" r="2.0" class="f8" opacity="0.75"/><circle cx="236.7" cy="74.1" r="2.0" class="f8" opacity="0.75"/><circle cx="238.6" cy="72.1" r="2.0" class="f8" opacity="0.75"/><circle cx="236.6" cy="74.2" r="2.0" class="f8" opacity="0.75"/><circle cx="238.7" cy="72.1" r="2.0" class="f8" opacity="0.75"/><circle cx="237.9" cy="72.9" r="2.6" class="ink"/><circle cx="230.0" cy="31.7" r="2.0" class="f8" opacity="0.75"/><circle cx="240.1" cy="27.9" r="2.0" class="f8" opacity="0.75"/><circle cx="244.4" cy="26.8" r="2.0" class="f8" opacity="0.75"/><circle cx="238.0" cy="28.5" r="2.0" class="f8" opacity="0.75"/><circle cx="242.0" cy="27.4" r="2.0" class="f8" opacity="0.75"/><circle cx="243.7" cy="26.9" r="2.0" class="f8" opacity="0.75"/><circle cx="239.2" cy="28.1" r="2.0" class="f8" opacity="0.75"/><circle cx="234.5" cy="29.8" r="2.0" class="f8" opacity="0.75"/><circle cx="250.5" cy="25.6" r="2.0" class="f8" opacity="0.75"/><circle cx="238.8" cy="28.3" r="2.0" class="f8" opacity="0.75"/><circle cx="237.9" cy="28.6" r="2.6" class="ink"/><circle cx="280.6" cy="161.9" r="2.0" class="f8" opacity="0.75"/><circle cx="280.7" cy="161.9" r="2.0" class="f8" opacity="0.75"/><circle cx="285.8" cy="160.1" r="2.0" class="f8" opacity="0.75"/><circle cx="274.3" cy="163.5" r="2.0" class="f8" opacity="0.75"/><circle cx="285.0" cy="160.4" r="2.0" class="f8" opacity="0.75"/><circle cx="280.2" cy="162.0" r="2.0" class="f8" opacity="0.75"/><circle cx="282.1" cy="161.4" r="2.0" class="f8" opacity="0.75"/><circle cx="280.3" cy="162.0" r="2.0" class="f8" opacity="0.75"/><circle cx="279.7" cy="162.2" r="2.0" class="f8" opacity="0.75"/><circle cx="278.6" cy="162.5" r="2.0" class="f8" opacity="0.75"/><circle cx="282.1" cy="161.4" r="2.6" class="ink"/><circle cx="282.7" cy="116.6" r="2.0" class="f8" opacity="0.75"/><circle cx="285.4" cy="113.3" r="2.0" class="f8" opacity="0.75"/><circle cx="283.8" cy="115.4" r="2.0" class="f8" opacity="0.75"/><circle cx="283.4" cy="115.8" r="2.0" class="f8" opacity="0.75"/><circle cx="282.9" cy="116.3" r="2.0" class="f8" opacity="0.75"/><circle cx="281.1" cy="118.2" r="2.0" class="f8" opacity="0.75"/><circle cx="283.0" cy="116.2" r="2.0" class="f8" opacity="0.75"/><circle cx="285.4" cy="113.3" r="2.0" class="f8" opacity="0.75"/><circle cx="279.5" cy="119.5" r="2.0" class="f8" opacity="0.75"/><circle cx="283.4" cy="115.8" r="2.0" class="f8" opacity="0.75"/><circle cx="282.1" cy="117.1" r="2.6" class="ink"/><circle cx="280.4" cy="71.3" r="2.0" class="f8" opacity="0.75"/><circle cx="281.8" cy="72.5" r="2.0" class="f8" opacity="0.75"/><circle cx="280.9" cy="71.7" r="2.0" class="f8" opacity="0.75"/><circle cx="279.7" cy="70.7" r="2.0" class="f8" opacity="0.75"/><circle cx="278.0" cy="69.4" r="2.0" class="f8" opacity="0.75"/><circle cx="279.8" cy="70.8" r="2.0" class="f8" opacity="0.75"/><circle cx="279.1" cy="70.2" r="2.0" class="f8" opacity="0.75"/><circle cx="281.7" cy="72.4" r="2.0" class="f8" opacity="0.75"/><circle cx="280.7" cy="71.6" r="2.0" class="f8" opacity="0.75"/><circle cx="282.0" cy="72.7" r="2.0" class="f8" opacity="0.75"/><circle cx="282.1" cy="72.9" r="2.6" class="ink"/><circle cx="280.9" cy="28.2" r="2.0" class="f8" opacity="0.75"/><circle cx="285.0" cy="29.6" r="2.0" class="f8" opacity="0.75"/><circle cx="278.8" cy="27.6" r="2.0" class="f8" opacity="0.75"/><circle cx="274.6" cy="26.5" r="2.0" class="f8" opacity="0.75"/><circle cx="283.3" cy="29.0" r="2.0" class="f8" opacity="0.75"/><circle cx="281.1" cy="28.3" r="2.0" class="f8" opacity="0.75"/><circle cx="279.1" cy="27.6" r="2.0" class="f8" opacity="0.75"/><circle cx="282.3" cy="28.7" r="2.0" class="f8" opacity="0.75"/><circle cx="277.3" cy="27.2" r="2.0" class="f8" opacity="0.75"/><circle cx="281.0" cy="28.2" r="2.0" class="f8" opacity="0.75"/><circle cx="282.1" cy="28.6" r="2.6" class="ink"/><circle cx="313.6" cy="160.4" r="2.0" class="f8" opacity="0.75"/><circle cx="314.3" cy="159.8" r="2.0" class="f8" opacity="0.75"/><circle cx="323.0" cy="151.4" r="2.0" class="f8" opacity="0.75"/><circle cx="322.5" cy="151.9" r="2.0" class="f8" opacity="0.75"/><circle cx="324.7" cy="149.4" r="2.0" class="f8" opacity="0.75"/><circle cx="320.8" cy="153.8" r="2.0" class="f8" opacity="0.75"/><circle cx="320.5" cy="154.0" r="2.0" class="f8" opacity="0.75"/><circle cx="311.5" cy="162.0" r="2.0" class="f8" opacity="0.75"/><circle cx="325.9" cy="147.9" r="2.0" class="f8" opacity="0.75"/><circle cx="315.0" cy="159.2" r="2.0" class="f8" opacity="0.75"/><circle cx="326.4" cy="161.4" r="2.6" class="ink"/><circle cx="328.0" cy="111.7" r="2.0" class="f8" opacity="0.75"/><circle cx="324.0" cy="123.3" r="2.0" class="f8" opacity="0.75"/><circle cx="325.1" cy="120.8" r="2.0" class="f8" opacity="0.75"/><circle cx="326.6" cy="116.5" r="2.0" class="f8" opacity="0.75"/><circle cx="325.5" cy="119.6" r="2.0" class="f8" opacity="0.75"/><circle cx="325.0" cy="121.0" r="2.0" class="f8" opacity="0.75"/><circle cx="327.8" cy="112.4" r="2.0" class="f8" opacity="0.75"/><circle cx="327.5" cy="113.6" r="2.0" class="f8" opacity="0.75"/><circle cx="327.0" cy="115.2" r="2.0" class="f8" opacity="0.75"/><circle cx="325.7" cy="119.1" r="2.0" class="f8" opacity="0.75"/><circle cx="326.4" cy="117.1" r="2.6" class="ink"/><circle cx="327.8" cy="77.5" r="2.0" class="f8" opacity="0.75"/><circle cx="327.3" cy="75.6" r="2.0" class="f8" opacity="0.75"/><circle cx="327.3" cy="75.8" r="2.0" class="f8" opacity="0.75"/><circle cx="326.5" cy="73.1" r="2.0" class="f8" opacity="0.75"/><circle cx="325.0" cy="68.9" r="2.0" class="f8" opacity="0.75"/><circle cx="326.7" cy="73.9" r="2.0" class="f8" opacity="0.75"/><circle cx="327.7" cy="77.3" r="2.0" class="f8" opacity="0.75"/><circle cx="327.5" cy="76.3" r="2.0" class="f8" opacity="0.75"/><circle cx="323.8" cy="66.2" r="2.0" class="f8" opacity="0.75"/><circle cx="326.1" cy="72.1" r="2.0" class="f8" opacity="0.75"/><circle cx="326.4" cy="72.9" r="2.6" class="ink"/><circle cx="318.7" cy="34.2" r="2.0" class="f8" opacity="0.75"/><circle cx="318.5" cy="34.0" r="2.0" class="f8" opacity="0.75"/><circle cx="316.9" cy="32.5" r="2.0" class="f8" opacity="0.75"/><circle cx="319.2" cy="34.6" r="2.0" class="f8" opacity="0.75"/><circle cx="313.9" cy="29.9" r="2.0" class="f8" opacity="0.75"/><circle cx="315.8" cy="31.5" r="2.0" class="f8" opacity="0.75"/><circle cx="331.8" cy="50.3" r="2.0" class="f8" opacity="0.75"/><circle cx="320.5" cy="35.9" r="2.0" class="f8" opacity="0.75"/><circle cx="304.1" cy="22.9" r="2.0" class="f8" opacity="0.75"/><circle cx="325.6" cy="41.7" r="2.0" class="f8" opacity="0.75"/><circle cx="326.4" cy="28.6" r="2.6" class="ink"/></svg></div><div class="txt"><span class="tg">6. Hardware impairments</span><b>Hardware impairments</b><span class="d">Real radios add distortion that grows with the signal itself. Raising the power can’t remove it, so it sets a ceiling on every link.</span><span class="m">9 min · model: Find the capacity ceiling</span></div></a></li></ul></section><section class="t-tech hubtrack" style="--t:var(--k1)">
+      <div class="hub-h"><span class="num">2</span><div><h2><a href="6g.html">6G technologies</a></h2><p>The physical-layer ideas behind 6G: networks that sense, surfaces that shape the channel, radios that talk and listen at once, new spectrum, light, and new ways to share it.</p></div></div>
+      <ul class="tcards"></ul></section><section class="t-tools hubtrack" style="--t:var(--k2)">
+      <div class="hub-h"><span class="num">3</span><div><h2><a href="tools.html">Tools</a></h2><p>The methods researchers use to design and analyse wireless systems: optimization, performance analysis, machine learning and simulation.</p></div></div>
+      <ul class="tcards"></ul></section>
+    <p class="hub-note">Each track can be read in order, but every tutorial stands on its own. Corrections and suggestions are welcome at h.shaikh@qub.ac.uk.</p>
   </div>
 </main>
 <footer class="site-footer">
@@ -667,5 +870,678 @@ ol.refs a { font-family: var(--sans); font-size: 0.8125rem; white-space: nowrap;
     <nav aria-label="More pages"><a href="index.html">Tutorials</a><a href="../urdu.html">Urdu</a><a href="../places/index.html">Places</a></nav>
   </div>
 </footer>
+<script>(function () {
+  const links = Array.from(document.querySelectorAll('.toc a[href^="#"]'));
+  if (!("IntersectionObserver" in window) || !links.length) return;
+  const byId = new Map(links.map(function (a) { return [a.getAttribute("href").slice(1), a]; }));
+  const io = new IntersectionObserver(function (entries) {
+    entries.forEach(function (e) {
+      if (!e.isIntersecting) return;
+      links.forEach(function (l) { l.removeAttribute("aria-current"); });
+      const a = byId.get(e.target.id); if (a) a.setAttribute("aria-current", "true");
+    });
+  }, { rootMargin: "-20% 0px -70% 0px" });
+  byId.forEach(function (_a, id) { const s = document.getElementById(id); if (s) io.observe(s); });
+})();</script>
+<script>/* Interactive models for the tutorials.
+   Each <div class="demo" data-demo="..."> is built here: controls, a canvas
+   plot with a hover read-out, and a row of computed values. */
+(function () {
+  "use strict";
+
+  /* ---------------------------------------------------------------- utils */
+  const C0 = 299792458;
+  const $ = (tag, attrs, kids) => {
+    const el = document.createElement(tag);
+    if (attrs) for (const k in attrs) {
+      if (k === "text") el.textContent = attrs[k];
+      else if (k === "html") el.innerHTML = attrs[k];
+      else el.setAttribute(k, attrs[k]);
+    }
+    (kids || []).forEach((c) => c && el.appendChild(c));
+    return el;
+  };
+  const token = (name) => getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+  const fmt = (v, d) => (Math.abs(v) < 1e-12 ? 0 : v).toFixed(d);
+  const db = (p) => 10 * Math.log10(Math.max(p, 1e-12));
+  function rng(seed) { // mulberry32
+    let a = seed >>> 0;
+    return function () {
+      a = (a + 0x6D2B79F5) >>> 0;
+      let t = a;
+      t = Math.imul(t ^ (t >>> 15), t | 1);
+      t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+      return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+    };
+  }
+  function niceMax(v) {
+    if (!(v > 0)) return 1;
+    const p = Math.pow(10, Math.floor(Math.log10(v)));
+    for (const m of [1, 1.2, 1.5, 2, 2.5, 3, 4, 5, 6, 8, 10]) if (m * p >= v) return m * p;
+    return 10 * p;
+  }
+  function ticks(min, max, n) {
+    const span = max - min, raw = span / n;
+    const p = Math.pow(10, Math.floor(Math.log10(raw)));
+    const step = [1, 2, 2.5, 5, 10].map((m) => m * p).find((s) => s >= raw) || raw;
+    const out = [];
+    for (let v = Math.ceil(min / step) * step; v <= max + step * 1e-6; v += step) out.push(+v.toFixed(10));
+    return out;
+  }
+  function frame(fn) { let q = false; return () => { if (q) return; q = true; requestAnimationFrame(() => { q = false; fn(); }); }; }
+
+  /* ----------------------------------------------------------------- Plot */
+  const plots = [];
+  function Plot(box, label) {
+    this.box = box;
+    this.canvas = $("canvas", { role: "img", "aria-label": label });
+    this.tip = $("div", { class: "tip", hidden: "" });
+    box.appendChild(this.canvas);
+    box.appendChild(this.tip);
+    this.ctx = this.canvas.getContext("2d");
+    this.cfg = null; this.hover = null; this.W = 0; this.H = 0;
+    const redraw = frame(() => this.draw());
+    this.redraw = redraw;
+    if ("ResizeObserver" in window) new ResizeObserver(redraw).observe(box);
+    else window.addEventListener("resize", redraw);
+    const move = (e) => {
+      const r = this.canvas.getBoundingClientRect();
+      this.hover = { px: e.clientX - r.left, py: e.clientY - r.top };
+      redraw();
+    };
+    this.canvas.addEventListener("pointermove", move);
+    this.canvas.addEventListener("pointerdown", move);
+    this.canvas.addEventListener("pointerleave", () => { this.hover = null; this.tip.hidden = true; redraw(); });
+    plots.push(this);
+  }
+  Plot.prototype.set = function (cfg) { this.cfg = cfg; this.redraw(); };
+  Plot.prototype.draw = function () {
+    const cfg = this.cfg; if (!cfg) return;
+    const r = this.box.getBoundingClientRect();
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    const W = Math.max(1, Math.round(r.width)), H = Math.max(1, Math.round(r.height));
+    if (this.canvas.width !== Math.round(W * dpr) || this.canvas.height !== Math.round(H * dpr)) {
+      this.canvas.width = Math.round(W * dpr); this.canvas.height = Math.round(H * dpr);
+    }
+    const ctx = this.ctx;
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    ctx.clearRect(0, 0, W, H);
+    const col = {
+      ink: token("--ink"), ink2: token("--ink-2"), muted: token("--muted"), line: token("--line"),
+      surface: token("--surface"), c1: token("--chart-1"), c2: token("--chart-2"), ref: token("--muted")
+    };
+    const font = (s, w) => (w || "400") + " " + s + 'px "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif';
+    const L = 50, R = 16, T = 28, B = 42;
+    const pw = W - L - R, ph = H - T - B;
+    const X = (v) => L + ((v - cfg.x.min) / (cfg.x.max - cfg.x.min)) * pw;
+    const Y = (v) => T + (1 - (v - cfg.y.min) / (cfg.y.max - cfg.y.min)) * ph;
+    this.X = X; this.Y = Y; this.L = L; this.T = T; this.pw = pw; this.ph = ph;
+
+    // grid and axes
+    ctx.lineWidth = 1; ctx.strokeStyle = col.line; ctx.fillStyle = col.muted;
+    ctx.font = font(12); ctx.textBaseline = "middle"; ctx.textAlign = "right";
+    (cfg.y.ticks || ticks(cfg.y.min, cfg.y.max, 5)).forEach((v) => {
+      const y = Math.round(Y(v)) + 0.5;
+      ctx.beginPath(); ctx.moveTo(L, y); ctx.lineTo(L + pw, y); ctx.stroke();
+      ctx.fillText((cfg.y.fmt || String)(v), L - 8, y);
+    });
+    ctx.textAlign = "center"; ctx.textBaseline = "top";
+    (cfg.x.ticks || ticks(cfg.x.min, cfg.x.max, 6)).forEach((v) => {
+      const x = Math.round(X(v)) + 0.5;
+      ctx.beginPath(); ctx.moveTo(x, T + ph); ctx.lineTo(x, T + ph + 5); ctx.stroke();
+      ctx.fillText((cfg.x.fmt || String)(v), x, T + ph + 9);
+    });
+    ctx.strokeStyle = col.muted;
+    ctx.beginPath(); ctx.moveTo(L, Math.round(T + ph) + 0.5); ctx.lineTo(L + pw, Math.round(T + ph) + 0.5); ctx.stroke();
+    ctx.fillStyle = col.ink2; ctx.font = font(12, "500");
+    ctx.textAlign = "left"; ctx.textBaseline = "alphabetic";
+    ctx.fillText(cfg.y.label, 4, 16);
+    ctx.textAlign = "center";
+    ctx.fillText(cfg.x.label, L + pw / 2, H - 6);
+
+    ctx.save();
+    ctx.beginPath(); ctx.rect(L, T - 2, pw, ph + 4); ctx.clip();
+    // reference lines
+    (cfg.hlines || []).forEach((h) => {
+      if (h.y < cfg.y.min || h.y > cfg.y.max) return;
+      ctx.strokeStyle = col[h.color || "c2"]; ctx.lineWidth = 1.5; ctx.setLineDash([5, 4]);
+      ctx.beginPath(); ctx.moveTo(L, Y(h.y)); ctx.lineTo(L + pw, Y(h.y)); ctx.stroke(); ctx.setLineDash([]);
+    });
+    (cfg.vlines || []).forEach((v) => {
+      ctx.strokeStyle = col[v.color || "c2"]; ctx.lineWidth = 1.5;
+      ctx.beginPath(); ctx.moveTo(X(v.x), T); ctx.lineTo(X(v.x), T + ph); ctx.stroke();
+    });
+    // series
+    cfg.series.forEach((s) => {
+      ctx.strokeStyle = col[s.color]; ctx.lineWidth = s.width || 2;
+      ctx.lineJoin = "round"; ctx.lineCap = "round";
+      ctx.setLineDash(s.dash || []);
+      ctx.beginPath();
+      s.data.forEach((p, i) => { const x = X(p[0]), y = Y(Math.max(cfg.y.min - 1, Math.min(cfg.y.max + 1, p[1]))); i ? ctx.lineTo(x, y) : ctx.moveTo(x, y); });
+      ctx.stroke(); ctx.setLineDash([]);
+    });
+    ctx.restore();
+
+    // labels for reference lines (text tokens, not series colours)
+    ctx.font = font(12, "500"); ctx.fillStyle = col.ink2; ctx.textBaseline = "alphabetic";
+    (cfg.hlines || []).forEach((h) => {
+      if (!h.label || h.y < cfg.y.min || h.y > cfg.y.max) return;
+      ctx.textAlign = "right"; ctx.fillText(h.label, L + pw - 4, Y(h.y) - 6);
+    });
+    (cfg.vlines || []).forEach((v) => {
+      if (!v.label) return;
+      const x = X(v.x), right = x < L + pw - 80;
+      ctx.textAlign = right ? "left" : "right";
+      ctx.fillText(v.label, x + (right ? 6 : -6), T + 12);
+    });
+    // points
+    const dot = (x, y, c, rad) => {
+      ctx.beginPath(); ctx.arc(x, y, rad + 2, 0, Math.PI * 2); ctx.fillStyle = col.surface; ctx.fill();
+      ctx.beginPath(); ctx.arc(x, y, rad, 0, Math.PI * 2); ctx.fillStyle = col[c]; ctx.fill();
+    };
+    (cfg.points || []).forEach((p) => {
+      if (p.x < cfg.x.min || p.x > cfg.x.max || p.y < cfg.y.min || p.y > cfg.y.max) return;
+      const x = X(p.x), y = Y(p.y);
+      dot(x, y, p.color || "c1", p.r || 4);
+      if (p.label) {
+        ctx.font = font(12, "500"); ctx.fillStyle = col.ink;
+        const right = x < L + pw - 110;
+        ctx.textAlign = right ? "left" : "right"; ctx.textBaseline = "alphabetic";
+        ctx.fillText(p.label, x + (right ? 10 : -10), y - 9);
+      }
+    });
+
+    // hover: crosshair and tooltip
+    const hv = this.hover;
+    if (!hv || hv.px < L || hv.px > L + pw || hv.py < T - 10 || hv.py > T + ph + 10) { this.tip.hidden = true; return; }
+    const xv = cfg.x.min + ((hv.px - L) / pw) * (cfg.x.max - cfg.x.min);
+    const rows = [];
+    let cx = null;
+    cfg.series.forEach((s) => {
+      if (s.hover === false || !s.data.length) return;
+      let lo = 0, hi = s.data.length - 1;
+      while (hi - lo > 1) { const m = (lo + hi) >> 1; if (s.data[m][0] < xv) lo = m; else hi = m; }
+      const p = Math.abs(s.data[lo][0] - xv) < Math.abs(s.data[hi][0] - xv) ? s.data[lo] : s.data[hi];
+      if (cx === null) cx = X(p[0]);
+      if (p[1] >= cfg.y.min && p[1] <= cfg.y.max) dot(X(p[0]), Y(p[1]), s.color, 4);
+      rows.push({ s: s, p: p });
+    });
+    if (cx === null) { this.tip.hidden = true; return; }
+    ctx.strokeStyle = col.muted; ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.moveTo(Math.round(cx) + 0.5, T); ctx.lineTo(Math.round(cx) + 0.5, T + ph); ctx.stroke();
+    rows.forEach((rw) => { if (rw.p[1] >= cfg.y.min && rw.p[1] <= cfg.y.max) dot(X(rw.p[0]), Y(rw.p[1]), rw.s.color, 4); });
+    const head = (cfg.x.hover || cfg.x.fmt || String)(rows[0].p[0]);
+    this.tip.innerHTML = '<p class="tip-h">' + head + "</p>" + rows.map((rw) =>
+      '<p><span class="key key-' + rw.s.color + (rw.s.dash ? " key-dash" : "") + '" aria-hidden="true"></span>' +
+      (rw.s.name ? rw.s.name + ": " : "") + "<b>" + (rw.s.fmt || cfg.y.hover || String)(rw.p[1]) + "</b></p>").join("");
+    this.tip.hidden = false;
+    const tw = this.tip.offsetWidth, th = this.tip.offsetHeight;
+    let tx = cx + 12; if (tx + tw > W - 4) tx = cx - 12 - tw;
+    let ty = Math.max(4, Math.min(hv.py - th / 2, H - th - 4));
+    this.tip.style.transform = "translate(" + Math.round(Math.max(4, tx)) + "px," + Math.round(ty) + "px)";
+  };
+
+  /* ------------------------------------------------------------- controls */
+  function slider(o) {
+    const input = $("input", { type: "range", id: o.id, min: o.min, max: o.max, step: o.step, value: o.value });
+    const out = $("output", { for: o.id });
+    const wrap = $("div", { class: "ctl" }, [$("label", { for: o.id, text: o.label }), input, out]);
+    const api = {
+      el: wrap, input: input,
+      get value() { return o.map ? o.map(+input.value) : +input.value; },
+      set: (v) => { input.value = v; api.show(); },
+      show: () => { out.textContent = o.fmt(api.value); }
+    };
+    input.addEventListener("input", api.show);
+    api.show();
+    return api;
+  }
+  function seg(o) {
+    let value = o.value;
+    const group = $("div", { class: "seg-mini", role: "radiogroup", "aria-labelledby": o.id + "-l" });
+    const btns = o.options.map((op) => {
+      const b = $("button", { type: "button", role: "radio", id: o.id + "-" + String(op.v).replace(/\W/g, ""), "aria-checked": String(op.v === value), text: op.t });
+      b.addEventListener("click", () => { value = op.v; btns.forEach((x, i) => x.setAttribute("aria-checked", String(o.options[i].v === value))); api.onchange && api.onchange(); });
+      group.appendChild(b);
+      return b;
+    });
+    const wrap = $("div", { class: "ctl ctl-seg" }, [$("span", { id: o.id + "-l", class: "ctl-l", text: o.label }), group]);
+    const api = { el: wrap, get value() { return value; }, onchange: null };
+    return api;
+  }
+  function button(id, text) { return $("button", { type: "button", class: "btn btn-quiet btn-small", id: id, text: text }); }
+  function legend(items) {
+    return $("ul", { class: "legend" }, items.map((it) => $("li", {}, [
+      $("span", { class: "key key-" + it[0] + (it[2] === true ? " key-dash" : it[2] === "dot" ? " key-dot" : ""), "aria-hidden": "true" }), document.createTextNode(it[1])
+    ])));
+  }
+  function readouts(defs) {
+    const dl = $("dl", { class: "demo-read" });
+    const vals = {};
+    defs.forEach((d) => {
+      const dd = $("dd", { text: "–" });
+      vals[d[0]] = dd;
+      dl.appendChild($("div", {}, [$("dt", { text: d[1] }), dd]));
+    });
+    return { el: dl, set: (k, v) => { vals[k].innerHTML = v; } };
+  }
+  function shell(root, parts) {
+    root.textContent = "";
+    const controls = $("div", { class: "demo-controls" }, parts.controls);
+    const plotBox = $("div", { class: "demo-plot" });
+    [controls, parts.legend, plotBox, parts.read && parts.read.el].forEach((x) => x && root.appendChild(x));
+    return new Plot(plotBox, parts.label);
+  }
+
+  /* ============================================================ the demos */
+  const DEMOS = {};
+
+  /* RIS: beam pattern of an N-element surface with b-bit phases */
+  DEMOS["ris-beam"] = function (root) {
+    const N = slider({ id: "ris-n", label: "Elements, N", min: 4, max: 64, step: 1, value: 16, fmt: (v) => String(v) });
+    const T = slider({ id: "ris-t", label: "Target angle", min: -60, max: 60, step: 1, value: 25, fmt: (v) => v + "°" });
+    const Bq = seg({ id: "ris-b", label: "Phase resolution", value: 2, options: [{ v: 1, t: "1 bit" }, { v: 2, t: "2 bits" }, { v: 3, t: "3 bits" }, { v: 0, t: "Continuous" }] });
+    const read = readouts([["g", "Gain toward target"], ["i", "Ideal, N²"], ["q", "Loss from quantized phases"], ["p", "Main beam at"]]);
+    const plot = shell(root, {
+      controls: [N.el, T.el, Bq.el], read: read,
+      legend: legend([["c1", "Configured surface"], ["ref", "Unconfigured surface (mirror)", true]]),
+      label: "Reflection gain of the surface against angle, with the target direction marked."
+    });
+    function af(phi, s) { let re = 0, im = 0; for (let i = 0; i < phi.length; i++) { const a = phi[i] + Math.PI * i * s; re += Math.cos(a); im += Math.sin(a); } return re * re + im * im; }
+    const run = frame(() => {
+      const n = N.value, th = T.value * Math.PI / 180, b = Bq.value;
+      const phi = [], zero = new Array(n).fill(0);
+      for (let i = 0; i < n; i++) {
+        let p = -Math.PI * i * Math.sin(th);
+        if (b) { const q = 2 * Math.PI / (1 << b); p = Math.round(p / q) * q; }
+        phi.push(p);
+      }
+      const cfgd = [], mirror = []; let best = -1, bestA = 0;
+      for (let a = -90; a <= 90.0001; a += 0.25) {
+        const s = Math.sin(a * Math.PI / 180), g = af(phi, s);
+        if (g > best) { best = g; bestA = a; }
+        cfgd.push([a, db(g)]); mirror.push([a, db(af(zero, s))]);
+      }
+      const gt = db(af(phi, Math.sin(th))), ideal = 20 * Math.log10(n);
+      plot.set({
+        x: { min: -90, max: 90, ticks: [-90, -60, -30, 0, 30, 60, 90], fmt: (v) => v + "°", label: "Reflection angle", hover: (v) => fmt(v, 1) + "°" },
+        y: { min: -10, max: 40, ticks: [-10, 0, 10, 20, 30, 40], label: "Gain over one element (dB)", hover: (v) => fmt(v, 1) + " dB" },
+        series: [{ name: "Configured", color: "c1", data: cfgd }, { name: "Mirror", color: "ref", data: mirror, dash: [6, 5], width: 1.5 }],
+        vlines: [{ x: T.value, label: "Target " + T.value + "°" }]
+      });
+      read.set("g", fmt(gt, 1) + " dB");
+      read.set("i", fmt(ideal, 1) + " dB");
+      read.set("q", fmt(Math.max(0, ideal - gt), 2) + " dB");
+      read.set("p", fmt(bestA, 1) + "°");
+    });
+    [N, T].forEach((s) => s.input.addEventListener("input", run));
+    Bq.onchange = run; run();
+  };
+
+  /* NOMA: two-user downlink rate region versus TDMA */
+  DEMOS["noma-region"] = function (root) {
+    const s1 = slider({ id: "noma-s1", label: "Near-user SNR", min: 0, max: 40, step: 1, value: 20, fmt: (v) => v + " dB" });
+    const s2 = slider({ id: "noma-s2", label: "Far-user SNR", min: -10, max: 30, step: 1, value: 5, fmt: (v) => v + " dB" });
+    const al = slider({ id: "noma-a", label: "Power to near user, α", min: 0.01, max: 0.5, step: 0.01, value: 0.2, fmt: (v) => v.toFixed(2) });
+    const read = readouts([["n", "NOMA rates (near, far)"], ["t", "TDMA, same near-user rate"], ["d", "Far user gains with NOMA"]]);
+    const plot = shell(root, {
+      controls: [s1.el, s2.el, al.el], read: read,
+      legend: legend([["c1", "NOMA (superposition and SIC)"], ["ref", "TDMA (time sharing)", true]]),
+      label: "Achievable rate pairs of the near and far user with NOMA and with TDMA."
+    });
+    const run = frame(() => {
+      if (s2.value > s1.value) s2.set(s1.value);
+      const S1 = Math.pow(10, s1.value / 10), S2 = Math.pow(10, s2.value / 10);
+      const C1 = Math.log2(1 + S1), C2 = Math.log2(1 + S2);
+      const R1 = (a) => Math.log2(1 + a * S1), R2 = (a) => Math.log2(1 + (1 - a) * S2 / (a * S2 + 1));
+      const noma = [], tdma = [];
+      for (let k = 0; k <= 400; k++) { const a = k / 400; noma.push([R1(a), R2(a)]); }
+      for (let k = 0; k <= 200; k++) { const t = k / 200; tdma.push([t * C1, (1 - t) * C2]); }
+      const a = al.value, r1 = R1(a), r2 = R2(a), r2t = (1 - r1 / C1) * C2;
+      const xm = niceMax(C1 * 1.04), ym = niceMax(C2 * 1.12);
+      plot.set({
+        x: { min: 0, max: xm, ticks: ticks(0, xm, 5), label: "Near-user rate R₁ (bit/s/Hz)", hover: (v) => "R₁ = " + fmt(v, 2) },
+        y: { min: 0, max: ym, ticks: ticks(0, ym, 4), label: "Far-user rate R₂ (bit/s/Hz)", fmt: (v) => String(+v.toFixed(2)), hover: (v) => fmt(v, 2) },
+        series: [{ name: "NOMA, R₂", color: "c1", data: noma }, { name: "TDMA, R₂", color: "ref", data: tdma, dash: [6, 5], width: 1.5 }],
+        points: [{ x: r1, y: r2, color: "c1", r: 5, label: "α = " + a.toFixed(2) }, { x: r1, y: r2t, color: "ref", r: 4 }]
+      });
+      read.set("n", fmt(r1, 2) + " and " + fmt(r2, 2) + " bit/s/Hz");
+      read.set("t", "far user " + fmt(r2t, 2) + " bit/s/Hz");
+      const gain = r2 - r2t;
+      read.set("d", (gain >= 0 ? "+" : "") + fmt(gain, 2) + " bit/s/Hz" + (r2t > 1e-6 ? " (" + (gain >= 0 ? "+" : "") + fmt(100 * gain / r2t, 0) + "%)" : ""));
+    });
+    [s1, s2, al].forEach((s) => s.input.addEventListener("input", run));
+    run();
+  };
+
+  /* ISAC: range profile of two equal targets after matched filtering */
+  DEMOS["isac-range"] = function (root) {
+    const BW = [[10e6, "10 MHz"], [20e6, "20 MHz, an LTE carrier"], [50e6, "50 MHz"], [100e6, "100 MHz, 5G NR in FR1"], [200e6, "200 MHz"],
+      [320e6, "320 MHz, Wi-Fi 7"], [400e6, "400 MHz, 5G NR in FR2"], [800e6, "800 MHz"], [1e9, "1 GHz"], [2e9, "2 GHz"], [4e9, "4 GHz, automotive radar"]];
+    const SEP = [0.05, 0.1, 0.2, 0.3, 0.5, 0.75, 1, 1.5, 2, 3, 5, 10];
+    const len = (m) => (m === 0 ? "0" : m < 1 ? +(m * 100).toPrecision(3) + " cm" : +m.toPrecision(3) + " m");
+    const b = slider({ id: "isac-b", label: "Bandwidth, B", min: 0, max: BW.length - 1, step: 1, value: 3, map: (i) => BW[i], fmt: (v) => v[1] });
+    const s = slider({ id: "isac-d", label: "Target separation", min: 0, max: SEP.length - 1, step: 1, value: 8, map: (i) => SEP[i], fmt: len });
+    const read = readouts([["r", "Range resolution, c/2B"], ["s", "Separation"], ["v", "Result"]]);
+    const plot = shell(root, {
+      controls: [b.el, s.el], read: read,
+      label: "Echo power against range for two equal targets, with their true positions marked."
+    });
+    const sinc2 = (x) => { if (Math.abs(x) < 1e-9) return 1; const v = Math.sin(Math.PI * x) / (Math.PI * x); return v * v; };
+    const run = frame(() => {
+      const B = b.value[0], d = s.value, dr = C0 / (2 * B);
+      const r1 = -d / 2, r2 = d / 2, span = 1.5 * d + 3 * dr;
+      const data = []; let mx = 0;
+      for (let k = 0; k <= 600; k++) {
+        const r = -span + (2 * span * k) / 600;
+        const p = sinc2(2 * B * (r - r1) / C0) + sinc2(2 * B * (r - r2) / C0);
+        mx = Math.max(mx, p); data.push([r, p]);
+      }
+      data.forEach((p) => { p[1] /= mx; });
+      const tk = ticks(-span, span, 6);
+      plot.set({
+        x: { min: -span, max: span, ticks: tk, label: "Range offset from the midpoint", fmt: (v) => (v < 0 ? "−" : "") + len(Math.abs(v)), hover: (v) => (v < 0 ? "−" : "") + len(Math.abs(v)) },
+        y: { min: 0, max: 1.05, ticks: [0, 0.25, 0.5, 0.75, 1], label: "Echo power (normalized)", fmt: (v) => v.toFixed(2), hover: (v) => v.toFixed(2) },
+        series: [{ name: "Echo", color: "c1", data: data }],
+        vlines: [{ x: r1 }, { x: r2 }]
+      });
+      read.set("r", len(dr));
+      read.set("s", len(d));
+      read.set("v", d >= dr ? '<span class="chip chip-ok">Two peaks: resolved</span>' : '<span class="chip chip-no">One peak: not resolved</span>');
+    });
+    [b, s].forEach((x) => x.input.addEventListener("input", run));
+    run();
+  };
+
+  /* V2X: Clarke fading envelope over time */
+  DEMOS["v2x-fading"] = function (root) {
+    const v = slider({ id: "v2x-v", label: "Speed", min: 0, max: 250, step: 5, value: 120, fmt: (x) => x + " km/h" });
+    const fc = seg({ id: "v2x-f", label: "Carrier frequency", value: 5.9, options: [{ v: 3.5, t: "3.5 GHz" }, { v: 5.9, t: "5.9 GHz" }, { v: 28, t: "28 GHz" }] });
+    const nb = button("v2x-new", "New channel");
+    const read = readouts([["d", "Maximum Doppler shift, f_D"], ["c", "Coherence time ≈ 0.423/f_D"], ["f", "Fades below −10 dB in 50 ms"]]);
+    const plot = shell(root, {
+      controls: [v.el, fc.el, $("div", { class: "ctl ctl-btn" }, [nb])], read: read,
+      label: "Received power of a mobile channel over 50 milliseconds."
+    });
+    let seed = 7;
+    const run = frame(() => {
+      const fD = (v.value / 3.6) * fc.value * 1e9 / C0, M = 32, rnd = rng(seed);
+      const ang = [], ph = [];
+      for (let m = 0; m < M; m++) { ang.push(2 * Math.PI * (m + rnd()) / M); ph.push(2 * Math.PI * rnd()); }
+      const data = []; let fades = 0, below = false;
+      for (let k = 0; k <= 1000; k++) {
+        const t = 0.05 * k / 1000; let re = 0, im = 0;
+        for (let m = 0; m < M; m++) { const a = 2 * Math.PI * fD * Math.cos(ang[m]) * t + ph[m]; re += Math.cos(a); im += Math.sin(a); }
+        const g = db((re * re + im * im) / M);
+        if (g < -10 && !below) fades++;
+        below = g < -10;
+        data.push([t * 1000, g]);
+      }
+      plot.set({
+        x: { min: 0, max: 50, ticks: [0, 10, 20, 30, 40, 50], label: "Time (ms)", hover: (x) => fmt(x, 2) + " ms" },
+        y: { min: -30, max: 10, ticks: [-30, -20, -10, 0, 10], label: "Received power (dB)", hover: (x) => fmt(x, 1) + " dB" },
+        series: [{ name: "Power", color: "c1", data: data }],
+        hlines: [{ y: -10, color: "ref", label: "−10 dB" }]
+      });
+      read.set("d", fD > 0 ? fmt(fD, fD < 100 ? 1 : 0) + " Hz" : "0 Hz");
+      const Tc = fD > 0 ? 0.423 / fD : Infinity;
+      read.set("c", isFinite(Tc) ? (Tc < 0.01 ? fmt(Tc * 1000, Tc < 0.001 ? 2 : 1) + " ms" : fmt(Tc, 2) + " s") : "unlimited (static channel)");
+      read.set("f", String(fades));
+    });
+    v.input.addEventListener("input", run);
+    fc.onchange = run;
+    nb.addEventListener("click", () => { seed = (seed * 9301 + 49297) % 233280; run(); });
+    run();
+  };
+
+  /* Fluid antenna: spatial fading along W wavelengths and port selection */
+  DEMOS["fas-ports"] = function (root) {
+    const w = slider({ id: "fas-w", label: "Antenna length, W", min: 0.5, max: 5, step: 0.5, value: 2, fmt: (x) => x + "λ" });
+    const n = slider({ id: "fas-n", label: "Ports, N", min: 2, max: 64, step: 1, value: 16, fmt: String });
+    const nb = button("fas-new", "New channel");
+    const read = readouts([["b", "Best port, this channel"], ["a", "Average gain of the best port"], ["o", "Outage below −10 dB"]]);
+    const plot = shell(root, {
+      controls: [w.el, n.el, $("div", { class: "ctl ctl-btn" }, [nb])], read: read,
+      legend: legend([["c1", "Channel gain along the antenna"], ["c2", "Best port", "dot"], ["ref", "Other ports", "dot"]]),
+      label: "Channel gain along a fluid antenna, with its ports and the best port marked."
+    });
+    let seed = 11;
+    function channel(rnd, M) {
+      const c = [], p = [];
+      for (let m = 0; m < M; m++) { c.push(2 * Math.PI * Math.cos(2 * Math.PI * rnd())); p.push(2 * Math.PI * rnd()); }
+      return (x) => { let re = 0, im = 0; for (let m = 0; m < M; m++) { const a = c[m] * x + p[m]; re += Math.cos(a); im += Math.sin(a); } return (re * re + im * im) / M; };
+    }
+    let mcKey = "", mcTimer = 0;
+    function monteCarlo(W, N) {
+      const key = W + ":" + N; if (key === mcKey) return; mcKey = key;
+      read.set("a", "computing…"); read.set("o", "computing…");
+      clearTimeout(mcTimer);
+      mcTimer = setTimeout(() => {
+        const rnd = rng(2024), trials = 1000; let sum = 0, out = 0;
+        for (let t = 0; t < trials; t++) {
+          const h = channel(rnd, 32); let best = 0;
+          for (let k = 0; k < N; k++) best = Math.max(best, h(k * W / (N - 1)));
+          sum += best; if (best < 0.1) out++;
+        }
+        read.set("a", "+" + fmt(db(sum / trials), 1) + " dB over a fixed antenna");
+        read.set("o", fmt(100 * out / trials, 1) + "% fluid, 9.5% fixed");
+      }, 140);
+    }
+    const run = frame(() => {
+      const W = w.value, N = n.value, h = channel(rng(seed), 64);
+      const data = [];
+      for (let k = 0; k <= 500; k++) { const x = W * k / 500; data.push([x, db(h(x))]); }
+      const ports = []; let bi = 0, bg = -1;
+      for (let k = 0; k < N; k++) { const x = k * W / (N - 1), g = h(x); ports.push([x, g]); if (g > bg) { bg = g; bi = k; } }
+      const pts = ports.map((p, k) => ({ x: p[0], y: Math.max(-30, db(p[1])), color: k === bi ? "c2" : "ref", r: k === bi ? 5.5 : 4 }));
+      pts.push(pts.splice(bi, 1)[0]);
+      pts[pts.length - 1].label = "Best port";
+      plot.set({
+        x: { min: 0, max: W, ticks: ticks(0, W, 5), label: "Position along the antenna (wavelengths)", fmt: (x) => String(+x.toFixed(2)), hover: (x) => fmt(x, 2) + "λ" },
+        y: { min: -30, max: 10, ticks: [-30, -20, -10, 0, 10], label: "Channel gain (dB)", hover: (x) => fmt(x, 1) + " dB" },
+        series: [{ name: "Gain", color: "c1", data: data }],
+        points: pts
+      });
+      read.set("b", "port " + (bi + 1) + ", " + (db(bg / ports[0][1]) >= 0 ? "+" : "") + fmt(db(bg / ports[0][1]), 1) + " dB over port 1");
+      monteCarlo(W, N);
+    });
+    [w, n].forEach((x) => x.input.addEventListener("input", run));
+    nb.addEventListener("click", () => { seed = (seed * 9301 + 49297) % 233280; run(); });
+    run();
+  };
+
+  /* Hardware impairments: spectral efficiency ceiling */
+  DEMOS["hwi-ceiling"] = function (root) {
+    const k = slider({ id: "hwi-k", label: "Impairment level κ (EVM)", min: 0, max: 25, step: 0.5, value: 8, fmt: (x) => x + "%" });
+    const presets = $("div", { class: "ctl ctl-presets" }, [$("span", { class: "ctl-l", text: "3GPP EVM limits" })]);
+    const row = $("div", { class: "seg-mini" });
+    [["QPSK", 17.5], ["16-QAM", 12.5], ["64-QAM", 8], ["256-QAM", 3.5]].forEach((p) => {
+      const bt = $("button", { type: "button", id: "hwi-" + p[0].replace(/\W/g, ""), text: p[0] + " " + p[1] + "%" });
+      bt.addEventListener("click", () => { k.set(p[1]); run(); });
+      row.appendChild(bt);
+    });
+    presets.appendChild(row);
+    const read = readouts([["s", "SNDR ceiling, 1/κ²"], ["c", "Capacity ceiling"], ["l", "Loss at 30 dB SNR"]]);
+    const plot = shell(root, {
+      controls: [k.el, presets], read: read,
+      legend: legend([["c1", "With impairments"], ["ref", "Ideal hardware", true]]),
+      label: "Spectral efficiency against SNR for ideal and impaired hardware."
+    });
+    const run = frame(() => {
+      const kk = k.value / 100, k2 = kk * kk;
+      const ideal = [], imp = [];
+      for (let s = -10; s <= 50.0001; s += 0.25) {
+        const S = Math.pow(10, s / 10);
+        ideal.push([s, Math.log2(1 + S)]);
+        imp.push([s, Math.log2(1 + S / (k2 * S + 1))]);
+      }
+      const ceil = k2 > 0 ? Math.log2(1 + 1 / k2) : null;
+      plot.set({
+        x: { min: -10, max: 50, ticks: [-10, 0, 10, 20, 30, 40, 50], label: "SNR (dB)", hover: (x) => "SNR " + fmt(x, 1) + " dB" },
+        y: { min: 0, max: 18, ticks: [0, 3, 6, 9, 12, 15, 18], label: "Spectral efficiency (bit/s/Hz)", hover: (x) => fmt(x, 2) + " bit/s/Hz" },
+        series: [{ name: "Impaired", color: "c1", data: imp }, { name: "Ideal", color: "ref", data: ideal, dash: [6, 5], width: 1.5 }],
+        hlines: ceil !== null ? [{ y: ceil, color: "c2", label: "Ceiling " + fmt(ceil, 2) + " bit/s/Hz" }] : []
+      });
+      read.set("s", ceil !== null ? fmt(db(1 / k2), 1) + " dB" : "none (ideal hardware)");
+      read.set("c", ceil !== null ? fmt(ceil, 2) + " bit/s/Hz" : "none");
+      const S30 = 1000;
+      read.set("l", fmt(Math.log2(1 + S30) - Math.log2(1 + S30 / (k2 * S30 + 1)), 2) + " bit/s/Hz");
+    });
+    k.input.addEventListener("input", run);
+    run();
+  };
+
+
+  /* Optimization: successive convex approximation on two-user power control */
+  DEMOS["opt-sca"] = function (root) {
+    const P = 100, a1 = 1, a2 = 0.4, LN2 = Math.LN2;
+    const bS = slider({ id: "sca-b", label: "Interference, cross-link gain", min: 0, max: 1, step: 0.01, value: 0.02, fmt: (v) => v.toFixed(2) });
+    const xS = slider({ id: "sca-x", label: "Starting point, power to user 1", min: 0, max: 1, step: 0.01, value: 0.05, fmt: (v) => Math.round(v * 100) + "%" });
+    const stepB = button("sca-step", "Next iteration"), runB = button("sca-run", "Run to convergence"), resetB = button("sca-reset", "Restart");
+    const btnRow = $("div", { class: "ctl ctl-btn" }, [$("div", { style: "display:flex;flex-wrap:wrap;gap:0.5rem" }, [stepB, runB, resetB])]);
+    const read = readouts([["t", "Iteration"], ["r", "Sum rate now"], ["g", "Best possible (grid search)"], ["s", "Status"]]);
+    const plot = shell(root, {
+      controls: [bS.el, xS.el, btnRow], read: read,
+      legend: legend([["c1", "Sum rate R(p)"], ["c2", "Concave surrogate at the current point"], ["ref", "Earlier iterates", "dot"]]),
+      label: "Sum rate of two interfering users against the share of power given to user 1, with the SCA surrogate and its iterates."
+    });
+    let x = 0.05, t = 0, trail = [], done = false;
+    const model = () => {
+      const b = bS.value;
+      const f = (u) => Math.log2(1 + P * (u * a1 + (1 - u) * b)) + Math.log2(1 + P * ((1 - u) * a2 + u * b));
+      const g = (u) => Math.log2(1 + P * (1 - u) * b) + Math.log2(1 + P * u * b);
+      const gp = (u) => (-P * b / (1 + P * (1 - u) * b) + P * b / (1 + P * u * b)) / LN2;
+      return { f: f, g: g, gp: gp, R: (u) => f(u) - g(u) };
+    };
+    function argmaxSurrogate(m, xk) {
+      const S = (u) => m.f(u) - m.g(xk) - m.gp(xk) * (u - xk);
+      let lo = 0, hi = 1;
+      for (let i = 0; i < 70; i++) {
+        const m1 = lo + (hi - lo) * 0.382, m2 = lo + (hi - lo) * 0.618;
+        if (S(m1) < S(m2)) lo = m1; else hi = m2;
+      }
+      const c = (lo + hi) / 2, cands = [0, 1, c];
+      return cands.reduce((best, u) => (S(u) > S(best) ? u : best), c);
+    }
+    function restart() { x = xS.value; t = 0; trail = []; done = false; draw(); }
+    function step() {
+      if (done) return;
+      const m = model(), xn = argmaxSurrogate(m, x);
+      trail.push(x); t++;
+      if (Math.abs(xn - x) < 1e-4) done = true;
+      x = xn;
+    }
+    const draw = frame(() => {
+      const m = model(), cur = [], sur = [];
+      let rmin = Infinity, rmax = -Infinity, xbest = 0;
+      for (let k = 0; k <= 400; k++) {
+        const u = k / 400, r = m.R(u);
+        cur.push([u, r]);
+        sur.push([u, m.f(u) - m.g(x) - m.gp(x) * (u - x)]);
+        if (r < rmin) rmin = r;
+        if (r > rmax) { rmax = r; xbest = u; }
+      }
+      const ymin = Math.max(0, Math.floor(rmin - 1)), ymax = Math.ceil(rmax + 0.6);
+      const pts = trail.slice(-8).map((u) => ({ x: u, y: m.R(u), color: "ref", r: 3.5 }));
+      pts.push({ x: x, y: m.R(x), color: "c1", r: 5.5, label: t ? "p after " + t + (t === 1 ? " step" : " steps") : "Start" });
+      plot.set({
+        x: { min: 0, max: 1, ticks: [0, 0.25, 0.5, 0.75, 1], fmt: (v) => Math.round(v * 100) + "%", label: "Share of total power given to user 1", hover: (v) => fmt(v * 100, 1) + "% to user 1" },
+        y: { min: ymin, max: ymax, ticks: ticks(ymin, ymax, 4), label: "Sum rate (bit/s/Hz)", fmt: (v) => String(+v.toFixed(1)), hover: (v) => fmt(v, 2) + " bit/s/Hz" },
+        series: [{ name: "Sum rate", color: "c1", data: cur }, { name: "Surrogate", color: "c2", data: sur, width: 1.75 }],
+        points: pts
+      });
+      const r = m.R(x), gap = rmax - r;
+      read.set("t", String(t));
+      read.set("r", fmt(r, 2) + " bit/s/Hz");
+      read.set("g", fmt(rmax, 2) + " bit/s/Hz at " + Math.round(xbest * 100) + "%");
+      read.set("s", !done ? (t ? "Improving" : "Press Next iteration")
+        : gap < 0.01 ? "Converged, global optimum"
+        : "Stuck at a local optimum, " + fmt(gap, 2) + " bit/s/Hz below best");
+    });
+    stepB.addEventListener("click", () => { step(); draw(); });
+    runB.addEventListener("click", () => { for (let i = 0; i < 60 && !done; i++) step(); draw(); });
+    resetB.addEventListener("click", restart);
+    bS.input.addEventListener("input", restart);
+    xS.input.addEventListener("input", restart);
+    restart();
+  };
+
+  /* ----------------------------------------------------------------- boot */
+  document.querySelectorAll(".demo[data-demo]").forEach((el) => {
+    const f = DEMOS[el.getAttribute("data-demo")];
+    if (f) f(el);
+  });
+  const redrawAll = () => plots.forEach((p) => p.redraw());
+  const mq = window.matchMedia("(prefers-color-scheme: dark)");
+  if (mq.addEventListener) mq.addEventListener("change", redrawAll);
+  new MutationObserver(redrawAll).observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
+})();
+</script>
+<script>
+(function () {
+  function tipFor(fig) {
+    let t = fig.querySelector(".ptip");
+    if (!t) { t = document.createElement("div"); t.className = "ptip"; t.hidden = true; fig.appendChild(t); }
+    return t;
+  }
+  function place(fig, tip, cx, cy) {
+    const fr = fig.getBoundingClientRect();
+    let x = cx - fr.left + 14, y = cy - fr.top + 14;
+    tip.hidden = false;
+    const w = tip.offsetWidth, h = tip.offsetHeight;
+    if (x + w > fr.width - 6) x = cx - fr.left - w - 14;
+    if (y + h > fr.height - 6) y = cy - fr.top - h - 14;
+    tip.style.transform = "translate(" + Math.max(4, x) + "px," + Math.max(4, y) + "px)";
+  }
+  // marks carrying their own tooltip
+  document.querySelectorAll("figure.viz").forEach(function (fig) {
+    const marks = fig.querySelectorAll("[data-tip]");
+    if (!marks.length) return;
+    const tip = tipFor(fig);
+    marks.forEach(function (m) {
+      m.classList.add("hov");
+      const show = function (e) { tip.innerHTML = m.getAttribute("data-tip"); place(fig, tip, e.clientX, e.clientY); };
+      m.addEventListener("pointermove", show);
+      m.addEventListener("pointerleave", function () { tip.hidden = true; });
+    });
+  });
+  // line plots: crosshair readout
+  document.querySelectorAll("figure.viz svg[data-plot]").forEach(function (svg) {
+    const fig = svg.closest("figure"), cfg = JSON.parse(svg.getAttribute("data-plot"));
+    const tip = tipFor(fig), ns = "http://www.w3.org/2000/svg";
+    const xh = document.createElementNS(ns, "line"); xh.setAttribute("class", "axis"); xh.setAttribute("y1", cfg.y0); xh.setAttribute("y2", cfg.y1); xh.style.display = "none";
+    svg.appendChild(xh);
+    const dots = cfg.series.map(function (s) { const c = document.createElementNS(ns, "circle"); c.setAttribute("r", 4.5); c.setAttribute("class", "f" + s.k); c.setAttribute("stroke", "var(--surface)"); c.setAttribute("stroke-width", 2); c.style.display = "none"; svg.appendChild(c); return c; });
+    const SUP = { "-": "⁻", "0": "⁰", "1": "¹", "2": "²", "3": "³", "4": "⁴", "5": "⁵", "6": "⁶", "7": "⁷", "8": "⁸", "9": "⁹" };
+    function fv(v) {
+      if (cfg.ypow) { const e = Math.pow(10, v).toExponential(1).split("e"); return e[0] + "×10" + String(+e[1]).split("").map(function (c) { return SUP[c] || c; }).join(""); }
+      return String(+v.toFixed(cfg.yd));
+    }
+    function sx(v) { return cfg.xlog ? Math.log10(v) : v; }
+    function px(v) { return cfg.x0 + (sx(v) - sx(cfg.xmin)) / (sx(cfg.xmax) - sx(cfg.xmin)) * (cfg.x1 - cfg.x0); }
+    function py(v) { return cfg.y1 - (v - cfg.ymin) / (cfg.ymax - cfg.ymin) * (cfg.y1 - cfg.y0); }
+    svg.addEventListener("pointermove", function (e) {
+      const pt = svg.createSVGPoint(); pt.x = e.clientX; pt.y = e.clientY;
+      const p = pt.matrixTransform(svg.getScreenCTM().inverse());
+      if (p.x < cfg.x0 - 4 || p.x > cfg.x1 + 4) { xh.style.display = "none"; dots.forEach(function (d) { d.style.display = "none"; }); tip.hidden = true; return; }
+      let rows = [], gx = null;
+      cfg.series.forEach(function (s, i) {
+        let best = null, bd = 1e9;
+        s.p.forEach(function (q) { const d = Math.abs(px(q[0]) - p.x); if (d < bd) { bd = d; best = q; } });
+        if (!best) return;
+        if (gx === null) gx = best;
+        const yy = py(best[1]);
+        if (yy >= cfg.y0 - 2 && yy <= cfg.y1 + 2) { dots[i].setAttribute("cx", px(best[0])); dots[i].setAttribute("cy", yy); dots[i].style.display = ""; } else dots[i].style.display = "none";
+        rows.push('<div><i style="--c:var(--k' + s.k + ')"></i>' + s.n + ": <b>" + fv(best[1]) + (cfg.yu || "") + "</b></div>");
+      });
+      if (gx === null) return;
+      xh.setAttribute("x1", px(gx[0])); xh.setAttribute("x2", px(gx[0])); xh.style.display = "";
+      tip.innerHTML = '<div><b>' + cfg.xl + " " + (+gx[0].toFixed(cfg.xd)) + (cfg.xu || "") + "</b></div>" + rows.join("");
+      place(fig, tip, e.clientX, e.clientY);
+    });
+    svg.addEventListener("pointerleave", function () { xh.style.display = "none"; dots.forEach(function (d) { d.style.display = "none"; }); tip.hidden = true; });
+  });
+})();
+</script>
 </body>
 </html>
