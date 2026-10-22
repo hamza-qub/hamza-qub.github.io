@@ -694,7 +694,7 @@ ol.refs a { font-family: var(--sans); font-size: 0.8125rem; white-space: nowrap;
       <p class="page-lede">Questions about the research, collaboration, or PhD and visiting positions: write below or email directly.</p>
       <form class="cform" id="cform" novalidate>
         <div class="full"><label for="cf-role">I am a <span class="req">*</span></label>
-          <select id="cf-role" name="role" required><option value="">Choose one</option><option>Prospective PhD student</option><option>Master’s or undergraduate student</option><option>Postdoc or visiting researcher</option><option>Academic collaborator</option><option>Industry</option><option>Journalist or other</option></select></div>
+          <select id="cf-role" name="role" required><option value="">Choose one</option><option value="Student - UG">Undergraduate student</option><option value="Student - PG">Master’s student</option><option value="PhD">PhD student or candidate</option><option value="PostDoc">Postdoctoral researcher</option><option value="Faculty">Faculty member</option><option value="Industry">Industry</option></select></div>
         <div><label for="cf-name">Full name <span class="req">*</span></label><input id="cf-name" name="name_" type="text" autocomplete="name" required></div>
         <div><label for="cf-email">Email <span class="req">*</span></label><input id="cf-email" name="email" type="email" autocomplete="email" required></div>
         <div><label for="cf-inst">Institution or company</label><input id="cf-inst" name="institution" type="text" autocomplete="organization"></div>
@@ -971,12 +971,13 @@ const SITE = {
 </script>
 <script>
 /* Contact form. Messages go to a Google Form (responses in a Google Sheet).
-   To connect it, fill in GFORM below with the form's formResponse URL and entry IDs.
-   Until then, the form opens the visitor's email app with the message filled in. */
+   Connected to the "Website Contact" Google Form; the message is sent together with the topics.
+   If GFORM.action is emptied, the form falls back to opening the visitor's email app. */
 (function contactForm() {
   const GFORM = {
-    action: "",            // e.g. "https://docs.google.com/forms/d/e/FORM_ID/formResponse"
-    fields: { role: "", name: "", email: "", institution: "", country: "", topics: "", link: "", message: "" }
+    action: "https://docs.google.com/forms/d/e/1FAIpQLScZRuGLuW1ln9cowL-mf6QLUbORTckNOr44mafB4lpo5g2GBg/formResponse",
+    fields: { role: "entry.320604890", name: "entry.1072254630", email: "entry.2049260483", institution: "entry.609139390",
+              country: "entry.729979069", topics: "entry.338617003", link: "entry.345461179" }
   };
   const f = document.getElementById("cform");
   if (!f) return;
@@ -994,7 +995,7 @@ const SITE = {
       const body = new URLSearchParams();
       Object.keys(GFORM.fields).forEach(function (k) {
         const id = GFORM.fields[k]; if (!id) return;
-        body.append(id, k === "topics" ? v.topics.join(", ") : v[k]);
+        body.append(id, k === "topics" ? "Topics: " + (v.topics.join(", ") || "none chosen") + "\n\nMessage:\n" + v.message : v[k]);
       });
       st.className = "status"; st.textContent = "Sending…";
       fetch(GFORM.action, { method: "POST", mode: "no-cors", body: body }).then(function () {
