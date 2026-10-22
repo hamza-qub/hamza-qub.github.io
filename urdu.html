@@ -547,6 +547,15 @@ ol.refs a { font-family: var(--sans); font-size: 0.8125rem; white-space: nowrap;
 .book h3 { font-size: 1.125rem; margin: 0.1rem 0 0.15rem; }
 .book .by { font-family: var(--sans); font-size: 0.875rem; color: var(--muted); margin: 0 0 0.6rem; }
 .book p.nt { font-size: 1rem; color: var(--ink-2); margin: 0; }
+.res-groups { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 18rem), 1fr)); gap: 0.5rem 2.5rem; }
+.res-group h3 { font-family: var(--sans); font-size: 0.9375rem; font-weight: 600; color: var(--ink-2); margin: 0.5rem 0 0.4rem; }
+.res-group ul { list-style: none; margin: 0; padding: 0; }
+.res-group li { padding: 0.75rem 0 0.85rem; border-top: 1px solid var(--line); }
+.res-group li a { font-weight: 600; }
+.res-group li span { display: block; font-size: 1rem; line-height: 1.5; color: var(--ink-2); margin-top: 0.15rem; }
+.couplet .who a { color: inherit; text-decoration-color: var(--line); }
+.couplet .who a:hover { color: var(--accent); text-decoration-color: var(--accent); }
+
 
 /* Contact copy button */
 .mail-row { display: flex; flex-wrap: wrap; align-items: center; gap: 0.75rem 1rem; margin-bottom: 1rem; }
@@ -641,19 +650,19 @@ ol.refs a { font-family: var(--sans); font-size: 0.8125rem; white-space: nowrap;
         <p class="ur" lang="ur"><span>ہزاروں خواہشیں ایسی کہ ہر خواہش پہ دم نکلے</span><span>بہت نکلے مرے ارمان لیکن پھر بھی کم نکلے</span></p>
         <p class="ro"><span>Hazaaron khwahishen aisi ke har khwahish pe dam nikle</span><span>Bahut nikle mere armaan lekin phir bhi kam nikle</span></p>
         <p class="en"><span>A thousand desires, each one enough to take my breath away;</span><span>many of my hopes came true, and still they were too few.</span></p>
-        <p class="who"><span>Mirza Ghalib, 1797–1869</span><span class="ur" lang="ur">مرزا غالب</span></p>
+        <p class="who"><span><a href="https://www.rekhta.org/poets/mirza-ghalib/ghazals" target="_blank" rel="noopener noreferrer">Mirza Ghalib</a>, 1797–1869</span><span class="ur" lang="ur">مرزا غالب</span></p>
       </li>
       <li class="couplet">
         <p class="ur" lang="ur"><span>دلِ ناداں تجھے ہوا کیا ہے</span><span>آخر اس درد کی دوا کیا ہے</span></p>
         <p class="ro"><span>Dil-e-naadaan tujhe hua kya hai</span><span>Aakhir is dard ki dawa kya hai</span></p>
         <p class="en"><span>Foolish heart, what has come over you?</span><span>What, in the end, is the cure for this pain?</span></p>
-        <p class="who"><span>Mirza Ghalib, 1797–1869</span><span class="ur" lang="ur">مرزا غالب</span></p>
+        <p class="who"><span><a href="https://www.rekhta.org/poets/mirza-ghalib/ghazals" target="_blank" rel="noopener noreferrer">Mirza Ghalib</a>, 1797–1869</span><span class="ur" lang="ur">مرزا غالب</span></p>
       </li>
       <li class="couplet">
         <p class="ur" lang="ur"><span>پتا پتا بوٹا بوٹا حال ہمارا جانے ہے</span><span>جانے نہ جانے گل ہی نہ جانے باغ تو سارا جانے ہے</span></p>
         <p class="ro"><span>Patta patta boota boota haal hamara jaane hai</span><span>Jaane na jaane gul hi na jaane, baagh to saara jaane hai</span></p>
         <p class="en"><span>Every leaf and every shrub knows the state I am in;</span><span>only the rose may not know. The whole garden knows.</span></p>
-        <p class="who"><span>Mir Taqi Mir, 1723–1810</span><span class="ur" lang="ur">میر تقی میر</span></p>
+        <p class="who"><span><a href="https://www.rekhta.org/poets/meer-taqi-meer/profile" target="_blank" rel="noopener noreferrer">Mir Taqi Mir</a>, 1723–1810</span><span class="ur" lang="ur">میر تقی میر</span></p>
       </li>
       </ul>
     </div>
@@ -690,7 +699,17 @@ ol.refs a { font-family: var(--sans); font-size: 0.8125rem; white-space: nowrap;
       </ul>
     </div>
   </section>
-  
+  <section class="urdu-sec" id="explore">
+    <div class="wrap">
+      <h2>Further reading <span class="ur" lang="ur">مزید مطالعہ</span></h2>
+      <p class="intro">Sites that keep Urdu literature open to everyone, whether you read the script or not. All open in a new tab.</p>
+      <div class="res-groups">
+        <section class="res-group"><h3>Read and listen</h3><ul><li><a href="https://www.rekhta.org/" target="_blank" rel="noopener noreferrer">Rekhta</a><span>The largest online collection of Urdu poetry, prose and e-books, with audio, video and meanings of difficult words.</span></li><li><a href="https://sufinama.org/" target="_blank" rel="noopener noreferrer">Sufinama</a><span>Sufi poetry and qawwali, from the Rekhta Foundation.</span></li><li><a href="https://franpritchett.com/00ghalib/index.html" target="_blank" rel="noopener noreferrer">A Desertful of Roses</a><span>All 234 Urdu ghazals of Ghalib, verse by verse, with translation and classical commentary, by Frances Pritchett.</span></li><li><a href="https://franpritchett.com/00garden/index.html" target="_blank" rel="noopener noreferrer">A Garden of Kashmir</a><span>The companion site for the ghazals of Mir Taqi Mir.</span></li><li><a href="https://iqbalcyberlibrary.net/en/index.php" target="_blank" rel="noopener noreferrer">Iqbal Cyber Library</a><span>Books, journals and theses on Allama Iqbal, from the Iqbal Academy Pakistan.</span></li></ul></section>
+        <section class="res-group"><h3>Learn the language</h3><ul><li><a href="https://www.rekhtadictionary.com/" target="_blank" rel="noopener noreferrer">Rekhta Dictionary</a><span>Urdu words with their meanings in Urdu, Hindi and English.</span></li><li><a href="https://rekhta.org/Cms/Aamozish" target="_blank" rel="noopener noreferrer">Rekhta Learning</a><span>Online courses in the Urdu language and script, poetry and literature.</span></li><li><a href="http://www.udb.gov.pk/" target="_blank" rel="noopener noreferrer">Urdu Dictionary Board</a><span>Publisher of the 22-volume Urdu Lughat, the standard historical dictionary of Urdu, now online.</span></li></ul></section>
+        <section class="res-group"><h3>Festivals and institutions</h3><ul><li><a href="https://jashnerekhta.org/" target="_blank" rel="noopener noreferrer">Jashn-e-Rekhta</a><span>An annual festival of Urdu poetry, music and storytelling, held in New Delhi since 2015.</span></li><li><a href="https://urducouncil.nic.in/" target="_blank" rel="noopener noreferrer">National Council for Promotion of Urdu Language</a><span>India’s national body for Urdu, which publishes books and runs language courses.</span></li></ul></section>
+      </div>
+    </div>
+  </section>
 </main>
 <footer class="site-footer">
   <div class="wrap foot"><p>&copy; 2026 Mohd Hamza Naim Shaikh. Last updated October 2026.</p>
